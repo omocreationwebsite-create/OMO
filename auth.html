@@ -3,116 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>O.M.Ocreation - Login & Signup</title>
+  <title>O.M.Ocreation - Authentication</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-    
-    /* Back to Homepage Button */
-    .back-home {
-      position: fixed;
-      top: 25px;
-      left: 25px;
-      z-index: 100;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-      padding: 10px 20px;
-      border-radius: 50px;
-      text-decoration: none;
-      color: white;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255,255,255,0.3);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .back-home:hover {
-      background: rgba(255,77,166,0.8);
-      transform: translateX(-5px);
-    }
-    
-    /* Main Container */
-    .auth-container {
-      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
-      position: relative;
-      z-index: 1;
+      padding: 20px;
+    }
+    
+    .auth-container {
+      max-width: 450px;
+      width: 100%;
     }
     
     .auth-card {
-      max-width: 450px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(10px);
+      background: white;
       border-radius: 30px;
-      padding: 45px 35px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-      animation: fadeInUp 0.6s ease-out;
+      padding: 40px 35px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
     }
     
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
-    .auth-header {
+    .logo {
       text-align: center;
-      margin-bottom: 35px;
+      margin-bottom: 30px;
     }
     
-    .auth-header .logo-icon {
+    .logo i {
       font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-    
-    .auth-header h1 {
-      font-size: 1.8rem;
-      color: #1a1a2e;
-      font-weight: 700;
-      font-family: 'Playfair Display', serif;
-    }
-    
-    .auth-header h1 span {
       color: #ff4da6;
     }
     
-    .auth-header p {
-      color: #666;
-      font-size: 0.85rem;
-      margin-top: 5px;
+    .logo h1 {
+      font-size: 1.8rem;
+      font-family: 'Playfair Display', serif;
+      color: #1a1a2e;
     }
     
-    /* Input Groups */
+    .logo h1 span { color: #ff4da6; }
+    .logo p { color: #666; font-size: 0.85rem; margin-top: 5px; }
+    
     .input-group {
       margin-bottom: 20px;
       position: relative;
@@ -124,7 +71,6 @@
       top: 50%;
       transform: translateY(-50%);
       color: #ff4da6;
-      font-size: 1rem;
     }
     
     .input-group input {
@@ -132,9 +78,8 @@
       padding: 14px 15px 14px 45px;
       border: 2px solid #eee;
       border-radius: 15px;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      background: white;
+      font-size: 0.95rem;
+      transition: 0.3s;
     }
     
     .input-group input:focus {
@@ -143,8 +88,7 @@
       box-shadow: 0 0 0 3px rgba(255,77,166,0.1);
     }
     
-    /* Submit Button */
-    .submit-btn {
+    .btn {
       width: 100%;
       padding: 14px;
       background: linear-gradient(135deg, #ff4da6, #e6398c);
@@ -154,31 +98,18 @@
       font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s;
       margin-top: 10px;
     }
     
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(255,77,166,0.3);
-    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,77,166,0.3); }
+    .btn:disabled { opacity: 0.6; transform: none; }
     
-    .submit-btn:disabled {
-      opacity: 0.6;
-      transform: none;
-    }
-    
-    /* Switch Link */
     .switch-link {
       text-align: center;
       margin-top: 25px;
       padding-top: 20px;
       border-top: 1px solid #eee;
-    }
-    
-    .switch-link p {
-      color: #666;
-      font-size: 0.85rem;
     }
     
     .switch-link a {
@@ -188,38 +119,29 @@
       cursor: pointer;
     }
     
-    .switch-link a:hover {
-      text-decoration: underline;
+    .forgot-link {
+      text-align: right;
+      margin: -10px 0 15px;
     }
     
-    /* Message */
+    .forgot-link a {
+      color: #999;
+      font-size: 0.75rem;
+      text-decoration: none;
+    }
+    
     .message {
       margin-top: 15px;
       padding: 12px;
       border-radius: 12px;
       text-align: center;
-      font-size: 0.8rem;
-      animation: fadeIn 0.3s ease;
+      font-size: 0.85rem;
+      display: none;
     }
     
-    .message.success {
-      background: rgba(46, 204, 113, 0.1);
-      color: #27ae60;
-      border: 1px solid rgba(46, 204, 113, 0.3);
-    }
+    .message.success { background: #d4edda; color: #155724; display: block; }
+    .message.error { background: #f8d7da; color: #721c24; display: block; }
     
-    .message.error {
-      background: rgba(231, 76, 60, 0.1);
-      color: #e74c3c;
-      border: 1px solid rgba(231, 76, 60, 0.3);
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Loading Spinner */
     .spinner {
       display: inline-block;
       width: 18px;
@@ -231,64 +153,25 @@
       margin-right: 8px;
     }
     
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     
-    /* Forgot Password */
-    .forgot-password {
-      text-align: right;
-      margin-top: -10px;
-      margin-bottom: 15px;
-    }
-    
-    .forgot-password a {
-      color: #999;
-      font-size: 0.75rem;
-      text-decoration: none;
-    }
-    
-    .forgot-password a:hover {
-      color: #ff4da6;
-    }
-    
-    /* Responsive */
     @media (max-width: 480px) {
-      .auth-card {
-        padding: 30px 20px;
-      }
-      
-      .auth-header h1 {
-        font-size: 1.5rem;
-      }
-      
-      .back-home {
-        top: 15px;
-        left: 15px;
-        padding: 8px 15px;
-        font-size: 0.8rem;
-      }
+      .auth-card { padding: 30px 20px; }
+      .logo h1 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- Back to Homepage Button -->
-<a href="index.html" class="back-home">
-  <i class="fas fa-arrow-left"></i> Back to Home
-</a>
-
 <div class="auth-container">
   <div class="auth-card">
-    
-    <!-- Header -->
-    <div class="auth-header">
-      <div class="logo-icon">💎</div>
+    <div class="logo">
+      <i class="fas fa-gem"></i>
       <h1>O.M.O<span>creation</span></h1>
       <p>Luxury Stone Fashion System</p>
     </div>
     
-    <!-- Login Form (visible by default) -->
+    <!-- Login Form -->
     <form id="loginForm">
       <div class="input-group">
         <i class="fas fa-envelope"></i>
@@ -298,17 +181,16 @@
         <i class="fas fa-lock"></i>
         <input type="password" id="loginPassword" placeholder="Password" required>
       </div>
-      <div class="forgot-password">
-        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+      <div class="forgot-link">
+        <a href="#" id="forgotPasswordBtn">Forgot Password?</a>
       </div>
-      <button type="submit" class="submit-btn" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
-      
+      <button type="submit" class="btn" id="loginSubmitBtn">Login <i class="fas fa-arrow-right"></i></button>
       <div class="switch-link">
-        <p>Don't have an account? <a id="showSignupLink">Sign Up</a></p>
+        <p>Don't have an account? <a id="showSignupBtn">Create Account</a></p>
       </div>
     </form>
     
-    <!-- Signup Form (hidden initially) -->
+    <!-- Signup Form (hidden) -->
     <form id="signupForm" style="display: none;">
       <div class="input-group">
         <i class="fas fa-user"></i>
@@ -326,63 +208,57 @@
         <i class="fas fa-check-circle"></i>
         <input type="password" id="confirmPassword" placeholder="Confirm password" required>
       </div>
-      <button type="submit" class="submit-btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
-      
+      <button type="submit" class="btn" id="signupSubmitBtn">Create Account <i class="fas fa-user-plus"></i></button>
       <div class="switch-link">
-        <p>Already have an account? <a id="showLoginLink">Login</a></p>
+        <p>Already have an account? <a id="showLoginBtn">Login</a></p>
       </div>
     </form>
     
-    <!-- Message Container -->
-    <div id="message" class="message" style="display: none;"></div>
-    
+    <div id="messageContainer"></div>
   </div>
 </div>
 
 <script>
-  // ============================================
-  // SUPABASE CONFIGURATION (YOUR REAL KEYS)
-  // ============================================
+  // YOUR SUPABASE KEYS
   const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_-JgM9Qf8t9AV3G_rxYXMAA_6YMm8bSg";
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   
-  // DOM Elements
+  // Elements
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
-  const loginBtn = document.getElementById('loginBtn');
-  const signupBtn = document.getElementById('signupBtn');
-  const showSignupLink = document.getElementById('showSignupLink');
-  const showLoginLink = document.getElementById('showLoginLink');
-  const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-  const messageDiv = document.getElementById('message');
+  const showSignupBtn = document.getElementById('showSignupBtn');
+  const showLoginBtn = document.getElementById('showLoginBtn');
+  const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+  const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+  const signupSubmitBtn = document.getElementById('signupSubmitBtn');
+  const messageContainer = document.getElementById('messageContainer');
   
-  // Show message function
-  function showMessage(text, type = 'error') {
-    messageDiv.textContent = text;
-    messageDiv.className = `message ${type}`;
-    messageDiv.style.display = 'block';
+  function showMessage(text, type) {
+    messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
     setTimeout(() => {
-      messageDiv.style.display = 'none';
+      messageContainer.innerHTML = '';
     }, 5000);
   }
   
-  // Switch to Signup form
-  function switchToSignup() {
+  // Show Signup Form
+  showSignupBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     loginForm.style.display = 'none';
     signupForm.style.display = 'block';
-    messageDiv.style.display = 'none';
-  }
+    messageContainer.innerHTML = '';
+  });
   
-  // Switch to Login form
-  function switchToLogin() {
+  // Show Login Form
+  showLoginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     signupForm.style.display = 'none';
     loginForm.style.display = 'block';
-    messageDiv.style.display = 'none';
-  }
+    messageContainer.innerHTML = '';
+  });
   
-  // Login handler
-  async function handleLogin(e) {
+  // LOGIN FUNCTION
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const email = document.getElementById('loginEmail').value;
@@ -393,37 +269,37 @@
       return;
     }
     
-    loginBtn.disabled = true;
-    loginBtn.innerHTML = '<span class="spinner"></span> Logging in...';
+    loginSubmitBtn.disabled = true;
+    loginSubmitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
     
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
       showMessage(error.message, 'error');
-      loginBtn.disabled = false;
-      loginBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
+      loginSubmitBtn.disabled = false;
+      loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
       return;
     }
     
-    // Check user role and status from users table
+    // Check user status
     const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select('role, status')
+      .select('status, role')
       .eq('id', data.user.id)
       .single();
     
-    if (profileError || !profile) {
+    if (profileError) {
       showMessage('User profile not found', 'error');
-      loginBtn.disabled = false;
-      loginBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
+      loginSubmitBtn.disabled = false;
+      loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
       return;
     }
     
     if (profile.status !== 'active') {
       showMessage('Your account is pending admin approval', 'error');
       await supabase.auth.signOut();
-      loginBtn.disabled = false;
-      loginBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
+      loginSubmitBtn.disabled = false;
+      loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
       return;
     }
     
@@ -432,10 +308,10 @@
     setTimeout(() => {
       window.location.href = 'dashboard.html';
     }, 1500);
-  }
+  });
   
-  // Signup handler
-  async function handleSignup(e) {
+  // SIGNUP FUNCTION
+  signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const fullName = document.getElementById('fullName').value;
@@ -458,19 +334,19 @@
       return;
     }
     
-    signupBtn.disabled = true;
-    signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
+    signupSubmitBtn.disabled = true;
+    signupSubmitBtn.innerHTML = '<span class="spinner"></span> Creating account...';
     
     const { data, error } = await supabase.auth.signUp({ email, password });
     
     if (error) {
       showMessage(error.message, 'error');
-      signupBtn.disabled = false;
-      signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+      signupSubmitBtn.disabled = false;
+      signupSubmitBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
       return;
     }
     
-    // Insert user into users table
+    // Insert into users table
     const { error: insertError } = await supabase
       .from('users')
       .insert([{
@@ -483,62 +359,46 @@
       }]);
     
     if (insertError) {
-      console.error('Error inserting user:', insertError);
+      console.error('Insert error:', insertError);
     }
     
     showMessage('Account created! Waiting for admin approval.', 'success');
-    signupBtn.disabled = false;
-    signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+    signupSubmitBtn.disabled = false;
+    signupSubmitBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
     
-    // Reset form and switch to login
+    // Reset form
     document.getElementById('fullName').value = '';
     document.getElementById('signupEmail').value = '';
     document.getElementById('signupPassword').value = '';
     document.getElementById('confirmPassword').value = '';
     
+    // Switch to login after 2 seconds
     setTimeout(() => {
-      switchToLogin();
+      signupForm.style.display = 'none';
+      loginForm.style.display = 'block';
     }, 2000);
-  }
+  });
   
-  // Forgot password handler
-  async function handleForgotPassword(e) {
+  // FORGOT PASSWORD
+  forgotPasswordBtn.addEventListener('click', async (e) => {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value;
     
     if (!email) {
-      showMessage('Please enter your email address to reset password', 'error');
+      showMessage('Please enter your email address', 'error');
       return;
     }
     
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/auth.html',
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
     
     if (error) {
       showMessage(error.message, 'error');
     } else {
-      showMessage(`Password reset link sent to ${email}. Check your inbox.`, 'success');
+      showMessage(`Password reset link sent to ${email}`, 'success');
     }
-  }
-  
-  // Event listeners
-  showSignupLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    switchToSignup();
   });
   
-  showLoginLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    switchToLogin();
-  });
-  
-  forgotPasswordLink.addEventListener('click', handleForgotPassword);
-  loginForm.addEventListener('submit', handleLogin);
-  signupForm.addEventListener('submit', handleSignup);
-  
-  console.log('%c✨ O.M.Ocreation Authentication Ready ✨', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
-  console.log('%cSupabase Connected ✅', 'color: #00ff88; font-size: 12px;');
+  console.log('%c✨ O.M.Ocreation Auth System Ready', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
 </script>
 </body>
 </html>
