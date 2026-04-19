@@ -47,10 +47,7 @@
       border-radius: 15px;
       font-size: 0.95rem;
     }
-    .input-group input:focus {
-      outline: none;
-      border-color: #ff4da6;
-    }
+    .input-group input:focus { outline: none; border-color: #ff4da6; }
     .btn {
       width: 100%;
       padding: 15px;
@@ -101,9 +98,7 @@
     }
     .debug-panel h4 { color: #ff4da6; margin-bottom: 8px; font-size: 12px; }
     .requirements { font-size: 0.7rem; color: #999; margin-top: 5px; padding-left: 15px; }
-    @media (max-width: 480px) {
-      .signup-card { padding: 30px 25px; }
-    }
+    @media (max-width: 480px) { .signup-card { padding: 30px 25px; } }
   </style>
 </head>
 <body>
@@ -132,9 +127,7 @@
       <i class="fas fa-check-circle"></i>
       <input type="password" id="confirmPassword" placeholder="Confirm password" required>
     </div>
-    <div class="requirements">
-      <i class="fas fa-info-circle"></i> Password must be at least 6 characters
-    </div>
+    <div class="requirements"><i class="fas fa-info-circle"></i> Password must be at least 6 characters</div>
     <button type="submit" class="btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
     <div class="login-link">
       <p>Already have an account? <a href="login.html">Login</a></p>
@@ -143,111 +136,77 @@
   
   <div id="messageContainer"></div>
   
-  <!-- Debug Panel -->
-  <div class="debug-panel" id="debugPanel">
+  <div class="debug-panel">
     <h4>🔍 Debug Console</h4>
     <div id="debugLog">Initializing...</div>
   </div>
 </div>
 
 <script>
-  // Debug function
-  const debugLog = document.getElementById('debugLog');
-  function log(msg, type = 'info') {
-    const color = type === 'error' ? '#ff6b6b' : (type === 'success' ? '#00ff88' : '#ffaa44');
-    debugLog.innerHTML += `<div style="color: ${color}; margin-bottom: 3px;">${new Date().toLocaleTimeString()} - ${msg}</div>`;
-    debugLog.scrollTop = debugLog.scrollHeight;
-    console.log(msg);
-  }
-  
-  log('Page loaded');
-  
-  // Check if Supabase loaded
-  if (typeof window.supabase === 'undefined') {
-    log('❌ Supabase library failed to load! Check internet connection.', 'error');
-  } else {
-    log('✅ Supabase library loaded', 'success');
-  }
-  
-  // Supabase configuration
-  const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
-  
-  log(`🔗 Supabase URL: ${SUPABASE_URL}`);
-  log(`🔑 Supabase Key: ${SUPABASE_ANON_KEY.substring(0, 30)}...`);
-  
-  // Initialize Supabase
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  log('✅ Supabase client created', 'success');
-  
-  // Get DOM elements
-  const signupForm = document.getElementById('signupForm');
-  const signupBtn = document.getElementById('signupBtn');
-  const messageContainer = document.getElementById('messageContainer');
-  
-  log('📋 Form elements found:', signupForm ? 'Yes' : 'No');
-  
-  function showMessage(text, type) {
-    messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
-    setTimeout(() => {
-      messageContainer.innerHTML = '';
-    }, 5000);
-  }
-  
-  // SIGNUP HANDLER
-  if (signupForm) {
-    log('✅ Adding signup event listener');
-    signupForm.addEventListener('submit', async (e) => {
+  (function() {
+    const debugLog = document.getElementById('debugLog');
+    function log(msg, type) {
+      const color = type === 'error' ? '#ff6b6b' : (type === 'success' ? '#00ff88' : '#ffaa44');
+      debugLog.innerHTML += `<div style="color: ${color}; margin-bottom: 3px;">${new Date().toLocaleTimeString()} - ${msg}</div>`;
+      debugLog.scrollTop = debugLog.scrollHeight;
+      console.log(msg);
+    }
+    
+    log('Signup page loaded');
+    
+    const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
+    
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    log('Supabase client created');
+    
+    const form = document.getElementById('signupForm');
+    const btn = document.getElementById('signupBtn');
+    const msgDiv = document.getElementById('messageContainer');
+    
+    function showMessage(text, type) {
+      msgDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+      setTimeout(() => { msgDiv.innerHTML = ''; }, 5000);
+    }
+    
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      log('📝 Signup form submitted');
+      log('Signup attempt');
       
       const fullName = document.getElementById('fullName').value;
       const email = document.getElementById('signupEmail').value;
       const password = document.getElementById('signupPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      
-      log(`👤 Name: ${fullName}`);
-      log(`📧 Email: ${email}`);
-      log(`🔒 Password length: ${password.length}`);
+      const confirm = document.getElementById('confirmPassword').value;
       
       if (!fullName || !email || !password) {
-        log('❌ Missing required fields', 'error');
         showMessage('Please fill all fields', 'error');
         return;
       }
-      
-      if (password !== confirmPassword) {
-        log('❌ Passwords do not match', 'error');
+      if (password !== confirm) {
         showMessage('Passwords do not match', 'error');
         return;
       }
-      
       if (password.length < 6) {
-        log('❌ Password too short', 'error');
         showMessage('Password must be at least 6 characters', 'error');
         return;
       }
       
-      signupBtn.disabled = true;
-      signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Creating account...';
       
-      log('🔄 Calling supabase.auth.signUp...');
-      
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
       
       if (error) {
-        log(`❌ Signup error: ${error.message}`, 'error');
+        log(`Signup error: ${error.message}`, 'error');
         showMessage(error.message, 'error');
-        signupBtn.disabled = false;
-        signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+        btn.disabled = false;
+        btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
         return;
       }
       
-      log(`✅ Signup successful! User ID: ${data.user.id}`, 'success');
+      log(`User created: ${data.user.id}`, 'success');
       
-      // Insert into users table
-      log('🔄 Inserting into users table...');
-      const { error: insertError } = await supabase
+      const { error: insertErr } = await supabaseClient
         .from('users')
         .insert([{
           id: data.user.id,
@@ -258,34 +217,21 @@
           created_at: new Date().toISOString()
         }]);
       
-      if (insertError) {
-        log(`❌ Insert error: ${insertError.message}`, 'error');
-        showMessage(`Profile error: ${insertError.message}`, 'error');
+      if (insertErr) {
+        log(`Insert error: ${insertErr.message}`, 'error');
+        showMessage(`Profile error: ${insertErr.message}`, 'error');
       } else {
-        log('✅ User inserted into users table!', 'success');
-        showMessage('Account created successfully! Please login after admin approval.', 'success');
-        
-        // Reset form
-        document.getElementById('fullName').value = '';
-        document.getElementById('signupEmail').value = '';
-        document.getElementById('signupPassword').value = '';
-        document.getElementById('confirmPassword').value = '';
-        
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          log('🔄 Redirecting to login page...');
-          window.location.href = 'login.html';
-        }, 2500);
+        log('User record inserted', 'success');
+        showMessage('Account created! Please login after admin approval.', 'success');
+        setTimeout(() => { window.location.href = 'login.html'; }, 2500);
       }
       
-      signupBtn.disabled = false;
-      signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+      btn.disabled = false;
+      btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
     });
-  } else {
-    log('❌ Signup form not found in DOM!', 'error');
-  }
-  
-  log('🚀 Signup page ready, waiting for user action', 'success');
+    
+    log('Signup page ready');
+  })();
 </script>
 </body>
 </html>
