@@ -24,7 +24,7 @@
     }
     
     .auth-container {
-      max-width: 450px;
+      max-width: 500px;
       width: 100%;
     }
     
@@ -141,6 +141,7 @@
     
     .message.success { background: #d4edda; color: #155724; display: block; }
     .message.error { background: #f8d7da; color: #721c24; display: block; }
+    .message.info { background: #d1ecf1; color: #0c5460; display: block; }
     
     .spinner {
       display: inline-block;
@@ -154,6 +155,23 @@
     }
     
     @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .debug-panel {
+      margin-top: 20px;
+      background: #1a1a2e;
+      color: #00ff88;
+      padding: 15px;
+      border-radius: 12px;
+      font-family: monospace;
+      font-size: 11px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .debug-panel h4 {
+      color: #ff4da6;
+      margin-bottom: 10px;
+    }
     
     @media (max-width: 480px) {
       .auth-card { padding: 30px 20px; }
@@ -215,14 +233,41 @@
     </form>
     
     <div id="messageContainer"></div>
+    
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debugPanel">
+      <h4>🔍 Debug Console</h4>
+      <div id="debugLog">Waiting for actions...</div>
+    </div>
   </div>
 </div>
 
 <script>
+  // ============================================
   // YOUR SUPABASE KEYS
+  // ============================================
   const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_-JgM9Qf8t9AV3G_rxYXMAA_6YMm8bSg";
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  
+  // Debug function
+  function debugLog(message, type = 'info') {
+    const debugDiv = document.getElementById('debugLog');
+    const timestamp = new Date().toLocaleTimeString();
+    const color = type === 'error' ? '#ff6b6b' : (type === 'success' ? '#00ff88' : '#ffaa44');
+    debugDiv.innerHTML += `<div style="color: ${color}; margin-bottom: 5px;">[${timestamp}] ${message}</div>`;
+    debugDiv.scrollTop = debugDiv.scrollHeight;
+    console.log(`[${timestamp}] ${message}`);
+  }
+  
+  // Show message
+  function showMessage(text, type) {
+    const messageContainer = document.getElementById('messageContainer');
+    messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
+    setTimeout(() => {
+      messageContainer.innerHTML = '';
+    }, 5000);
+  }
   
   // Elements
   const loginForm = document.getElementById('loginForm');
@@ -232,39 +277,56 @@
   const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
   const signupSubmitBtn = document.getElementById('signupSubmitBtn');
-  const messageContainer = document.getElementById('messageContainer');
   
-  function showMessage(text, type) {
-    messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
-    setTimeout(() => {
-      messageContainer.innerHTML = '';
-    }, 5000);
+  debugLog('✅ Auth system initialized');
+  debugLog(`🔗 Supabase URL: ${SUPABASE_URL}`);
+  debugLog(`🔑 Supabase Key: ${SUPABASE_ANON_KEY.substring(0, 20)}...`);
+  
+  // Test Supabase connection
+  async function testConnection() {
+    debugLog('🔄 Testing Supabase connection...');
+    const { data, error } = await supabase.from('users').select('count', { count: 'exact', head: true });
+    if (error) {
+      debugLog(`❌ Connection failed: ${error.message}`, 'error');
+    } else {
+      debugLog(`✅ Supabase connected successfully!`, 'success');
+    }
   }
+  testConnection();
   
   // Show Signup Form
   showSignupBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    debugLog('🔄 Switching to Signup form');
     loginForm.style.display = 'none';
     signupForm.style.display = 'block';
-    messageContainer.innerHTML = '';
+    document.getElementById('messageContainer').innerHTML = '';
   });
   
   // Show Login Form
   showLoginBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    debugLog('🔄 Switching to Login form');
     signupForm.style.display = 'none';
     loginForm.style.display = 'block';
-    messageContainer.innerHTML = '';
+    document.getElementById('messageContainer').innerHTML = '';
   });
   
+  // ============================================
   // LOGIN FUNCTION
+  // ============================================
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    debugLog('🔐 Login form submitted');
     
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
+    debugLog(`📧 Email entered: ${email}`);
+    debugLog(`🔒 Password length: ${password.length} characters`);
+    
     if (!email || !password) {
+      debugLog('❌ Login failed: Missing email or password', 'error');
       showMessage('Please enter email and password', 'error');
       return;
     }
@@ -272,37 +334,48 @@
     loginSubmitBtn.disabled = true;
     loginSubmitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
     
+    debugLog('🔄 Attempting Supabase sign in...');
+    
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
+      debugLog(`❌ Login error: ${error.message}`, 'error');
       showMessage(error.message, 'error');
       loginSubmitBtn.disabled = false;
       loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
       return;
     }
     
+    debugLog(`✅ Supabase auth successful! User ID: ${data.user.id}`, 'success');
+    
     // Check user status
+    debugLog('🔄 Checking user status from users table...');
     const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select('status, role')
+      .select('status, role, full_name')
       .eq('id', data.user.id)
       .single();
     
     if (profileError) {
-      showMessage('User profile not found', 'error');
+      debugLog(`❌ Profile error: ${profileError.message}`, 'error');
+      showMessage('User profile not found. Please contact admin.', 'error');
       loginSubmitBtn.disabled = false;
       loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
       return;
     }
     
+    debugLog(`📋 User profile: Role=${profile.role}, Status=${profile.status}`, 'success');
+    
     if (profile.status !== 'active') {
-      showMessage('Your account is pending admin approval', 'error');
+      debugLog(`❌ Access denied: Account status is ${profile.status}`, 'error');
+      showMessage(`Your account is ${profile.status}. Please wait for admin approval.`, 'error');
       await supabase.auth.signOut();
       loginSubmitBtn.disabled = false;
       loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
       return;
     }
     
+    debugLog(`✅ Login successful! Redirecting to dashboard...`, 'success');
     showMessage('Login successful! Redirecting...', 'success');
     
     setTimeout(() => {
@@ -310,26 +383,36 @@
     }, 1500);
   });
   
+  // ============================================
   // SIGNUP FUNCTION
+  // ============================================
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    debugLog('📝 Signup form submitted');
     
     const fullName = document.getElementById('fullName').value;
     const email = document.getElementById('signupEmail').value;
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     
+    debugLog(`👤 Name: ${fullName}`);
+    debugLog(`📧 Email: ${email}`);
+    debugLog(`🔒 Password length: ${password.length}`);
+    
     if (!fullName || !email || !password) {
+      debugLog('❌ Signup failed: Missing fields', 'error');
       showMessage('Please fill all fields', 'error');
       return;
     }
     
     if (password !== confirmPassword) {
+      debugLog('❌ Signup failed: Passwords do not match', 'error');
       showMessage('Passwords do not match', 'error');
       return;
     }
     
     if (password.length < 6) {
+      debugLog('❌ Signup failed: Password too short', 'error');
       showMessage('Password must be at least 6 characters', 'error');
       return;
     }
@@ -337,16 +420,22 @@
     signupSubmitBtn.disabled = true;
     signupSubmitBtn.innerHTML = '<span class="spinner"></span> Creating account...';
     
+    debugLog('🔄 Attempting Supabase sign up...');
+    
     const { data, error } = await supabase.auth.signUp({ email, password });
     
     if (error) {
+      debugLog(`❌ Signup error: ${error.message}`, 'error');
       showMessage(error.message, 'error');
       signupSubmitBtn.disabled = false;
       signupSubmitBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
       return;
     }
     
+    debugLog(`✅ Supabase auth successful! User ID: ${data.user.id}`, 'success');
+    
     // Insert into users table
+    debugLog('🔄 Inserting user into users table...');
     const { error: insertError } = await supabase
       .from('users')
       .insert([{
@@ -359,10 +448,13 @@
       }]);
     
     if (insertError) {
-      console.error('Insert error:', insertError);
+      debugLog(`❌ Insert error: ${insertError.message}`, 'error');
+      showMessage(`Profile creation error: ${insertError.message}`, 'error');
+    } else {
+      debugLog(`✅ User inserted into users table successfully!`, 'success');
+      showMessage('Account created! Waiting for admin approval.', 'success');
     }
     
-    showMessage('Account created! Waiting for admin approval.', 'success');
     signupSubmitBtn.disabled = false;
     signupSubmitBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
     
@@ -374,31 +466,52 @@
     
     // Switch to login after 2 seconds
     setTimeout(() => {
+      debugLog('🔄 Switching to login form');
       signupForm.style.display = 'none';
       loginForm.style.display = 'block';
     }, 2000);
   });
   
+  // ============================================
   // FORGOT PASSWORD
+  // ============================================
   forgotPasswordBtn.addEventListener('click', async (e) => {
     e.preventDefault();
+    debugLog('🔑 Forgot password requested');
     const email = document.getElementById('loginEmail').value;
     
     if (!email) {
+      debugLog('❌ No email entered for password reset', 'error');
       showMessage('Please enter your email address', 'error');
       return;
     }
     
+    debugLog(`📧 Sending reset email to: ${email}`);
     const { error } = await supabase.auth.resetPasswordForEmail(email);
     
     if (error) {
+      debugLog(`❌ Reset error: ${error.message}`, 'error');
       showMessage(error.message, 'error');
     } else {
+      debugLog(`✅ Password reset email sent successfully!`, 'success');
       showMessage(`Password reset link sent to ${email}`, 'success');
     }
   });
   
+  // ============================================
+  // MASTER ADMIN INFO
+  // ============================================
+  debugLog('========================================', 'info');
+  debugLog('👑 MASTER ADMIN INFORMATION', 'success');
+  debugLog('========================================', 'info');
+  debugLog('📧 Admin Email: admin@omocreation.com', 'info');
+  debugLog('🔑 Default Password: Admin@123', 'info');
+  debugLog('💡 After creating admin, update status to "active" in Supabase', 'info');
+  debugLog('========================================', 'info');
+  
   console.log('%c✨ O.M.Ocreation Auth System Ready', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
+  console.log('%c📧 Master Admin Email: admin@omocreation.com', 'color: #00ff88; font-size: 12px;');
+  console.log('%c🔑 Default Password: Admin@123', 'color: #ffaa44; font-size: 12px;');
 </script>
 </body>
 </html>
