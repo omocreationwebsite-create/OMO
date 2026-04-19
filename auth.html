@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>O.M.Ocreation Signup</title>
+<title>O.M.Ocreation Signup Debug</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -15,19 +15,20 @@ body {
   justify-content:center;
   align-items:center;
   height:100vh;
+  color:#000;
 }
 
 .card {
   background:white;
-  padding:30px;
+  padding:25px;
   border-radius:12px;
-  width:350px;
+  width:360px;
 }
 
 input {
   width:100%;
   padding:12px;
-  margin:10px 0;
+  margin:8px 0;
   border:1px solid #ccc;
   border-radius:8px;
 }
@@ -43,13 +44,24 @@ button {
 }
 
 button:disabled {
-  opacity:0.6;
+  opacity:0.5;
 }
 
 .msg {
   margin-top:10px;
-  font-size:14px;
-  color:#333;
+  font-size:13px;
+  white-space:pre-wrap;
+}
+
+.log {
+  background:#111;
+  color:#0f0;
+  font-size:11px;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  height:140px;
+  overflow:auto;
 }
 </style>
 </head>
@@ -57,15 +69,16 @@ button:disabled {
 <body>
 
 <div class="card">
-  <h2>Create Account</h2>
+  <h2>Signup Debug Mode</h2>
 
   <input id="name" placeholder="Full Name" />
   <input id="email" placeholder="Email" />
   <input id="password" type="password" placeholder="Password" />
 
-  <button id="btn" onclick="signup()">Sign Up</button>
+  <button id="btn" onclick="signup()">Create Account</button>
 
   <div class="msg" id="msg"></div>
+  <div class="log" id="log"></div>
 </div>
 
 <script>
@@ -75,10 +88,17 @@ const supabase = window.supabase.createClient(
 );
 
 const msg = document.getElementById("msg");
+const log = document.getElementById("log");
 const btn = document.getElementById("btn");
 
 function show(text) {
   msg.innerText = text;
+}
+
+function debug(label, data) {
+  const line = `\n[${label}]\n` + JSON.stringify(data, null, 2);
+  log.innerText += line + "\n-------------------\n";
+  console.log(label, data);
 }
 
 async function signup() {
@@ -87,61 +107,54 @@ async function signup() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  if (!fullName || !email || !password) {
-    show("Please fill all fields");
+  log.innerText = "";
+  show("Starting signup...");
+  btn.disabled = true;
+
+  // STEP 1: AUTH SIGNUP
+  const authRes = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  debug("AUTH RESPONSE", authRes);
+
+  if (authRes.error) {
+    show("AUTH ERROR: " + authRes.error.message);
+    btn.disabled = false;
     return;
   }
 
-  btn.disabled = true;
-  show("Creating account...");
+  const user = authRes.data?.user;
 
-  try {
+  debug("USER OBJECT", user);
 
-    // STEP 1: CREATE AUTH USER
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password
-    });
-
-    if (error) {
-      show(error.message);
-      btn.disabled = false;
-      return;
-    }
-
-    const user = data?.user;
-
-    if (!user) {
-      show("Signup failed: no user returned");
-      btn.disabled = false;
-      return;
-    }
-
-    // STEP 2: INSERT INTO USERS TABLE
-    const { error: insertError } = await supabase.from("users").insert([{
-      id: user.id,
-      full_name: fullName,
-      email: email,
-      role: "pending",
-      status: "pending",
-      created_at: new Date().toISOString()
-    }]);
-
-    if (insertError) {
-      console.log(insertError);
-      show("DB Error: " + insertError.message);
-      btn.disabled = false;
-      return;
-    }
-
-    show("Account created successfully!");
+  if (!user) {
+    show("No user returned from auth");
     btn.disabled = false;
-
-  } catch (err) {
-    console.log(err);
-    show("Unexpected error occurred");
-    btn.disabled = false;
+    return;
   }
+
+  // STEP 2: INSERT INTO USERS TABLE
+  const insertRes = await supabase.from("users").insert([{
+    id: user.id,
+    full_name: fullName,
+    email: email,
+    role: "pending",
+    status: "pending",
+    created_at: new Date().toISOString()
+  }]);
+
+  debug("INSERT RESPONSE", insertRes);
+
+  if (insertRes.error) {
+    show("DB ERROR: " + insertRes.error.message);
+    btn.disabled = false;
+    return;
+  }
+
+  show("SUCCESS: Account created!");
+  btn.disabled = false;
 }
 </script>
 
