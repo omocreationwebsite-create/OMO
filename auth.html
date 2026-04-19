@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>O.M.Ocreation - Authentication | Login & Signup</title>
+  <title>O.M.Ocreation - Login & Signup</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,31 +24,6 @@
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
-    }
-    
-    /* Animated Background */
-    .bg-animation {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-    }
-    
-    .orb {
-      position: absolute;
-      background: radial-gradient(circle, rgba(255,77,166,0.15), transparent);
-      border-radius: 50%;
-      animation: floatOrb 20s infinite ease-in-out;
-    }
-    
-    @keyframes floatOrb {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      25% { transform: translate(50px, -50px) scale(1.1); }
-      50% { transform: translate(-30px, 30px) scale(0.9); }
-      75% { transform: translate(40px, 40px) scale(1.05); }
     }
     
     /* Back to Homepage Button */
@@ -75,7 +50,6 @@
     .back-home:hover {
       background: rgba(255,77,166,0.8);
       transform: translateX(-5px);
-      border-color: transparent;
     }
     
     /* Main Container */
@@ -84,151 +58,63 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 5%;
+      padding: 40px 20px;
       position: relative;
       z-index: 1;
     }
     
-    .auth-wrapper {
-      max-width: 1300px;
+    .auth-card {
+      max-width: 450px;
       width: 100%;
-      position: relative;
-      min-height: 600px;
-    }
-    
-    /* Human Figure Container */
-    .figure-container {
-      position: absolute;
-      left: 5%;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 10;
-      transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    
-    .figure-container.moved {
-      left: 35%;
-    }
-    
-    .figure-container.resting {
-      left: 30%;
-      transform: translateY(-50%) rotate(2deg);
-    }
-    
-    .human-figure {
-      width: 280px;
-      height: 280px;
-      cursor: pointer;
-      transition: all 0.5s ease;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-    }
-    
-    .human-figure:hover {
-      transform: scale(1.02);
-    }
-    
-    .human-figure svg {
-      width: 100%;
-      height: 100%;
-    }
-    
-    /* Walking animation */
-    @keyframes walk {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(10px) rotate(2deg); }
-      75% { transform: translateX(-5px) rotate(-1deg); }
-    }
-    
-    .figure-container.walking {
-      animation: walk 0.8s ease-in-out infinite;
-    }
-    
-    /* Speech Bubble */
-    .speech-bubble {
-      position: absolute;
-      top: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      padding: 12px 20px;
-      border-radius: 30px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #ff4da6;
-      white-space: nowrap;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
-    }
-    
-    .speech-bubble::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      border-top: 8px solid white;
-    }
-    
-    .speech-bubble.show {
-      opacity: 1;
-    }
-    
-    /* Form Container - Floating */
-    .form-container {
-      position: absolute;
-      right: 5%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 420px;
-      max-width: 90%;
       background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(10px);
       border-radius: 30px;
-      padding: 40px 35px;
+      padding: 45px 35px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      z-index: 5;
+      animation: fadeInUp 0.6s ease-out;
     }
     
-    .form-container.moved {
-      right: 30%;
-      transform: translateY(-50%) scale(0.95);
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
-    .form-container.center {
-      right: 50%;
-      transform: translate(50%, -50%);
-    }
-    
-    /* Form Header */
-    .form-header {
+    .auth-header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
     }
     
-    .form-header .logo-icon {
+    .auth-header .logo-icon {
       font-size: 2.5rem;
       margin-bottom: 10px;
     }
     
-    .form-header h1 {
-      font-size: 1.6rem;
+    .auth-header h1 {
+      font-size: 1.8rem;
       color: #1a1a2e;
       font-weight: 700;
+      font-family: 'Playfair Display', serif;
     }
     
-    .form-header p {
+    .auth-header h1 span {
+      color: #ff4da6;
+    }
+    
+    .auth-header p {
       color: #666;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      margin-top: 5px;
     }
     
     /* Input Groups */
     .input-group {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       position: relative;
     }
     
@@ -282,43 +168,34 @@
       transform: none;
     }
     
-    /* Form Footer Links */
-    .form-footer {
+    /* Switch Link */
+    .switch-link {
       text-align: center;
-      margin-top: 20px;
-      padding-top: 15px;
+      margin-top: 25px;
+      padding-top: 20px;
       border-top: 1px solid #eee;
     }
     
-    .form-footer a {
-      color: #ff4da6;
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: 0.2s;
-    }
-    
-    .form-footer a:hover {
-      text-decoration: underline;
-    }
-    
-    .signup-prompt {
-      margin-top: 15px;
-      font-size: 0.85rem;
+    .switch-link p {
       color: #666;
-      text-align: center;
+      font-size: 0.85rem;
     }
     
-    .signup-prompt a {
+    .switch-link a {
       color: #ff4da6;
-      font-weight: 600;
       text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .switch-link a:hover {
+      text-decoration: underline;
     }
     
     /* Message */
     .message {
       margin-top: 15px;
-      padding: 10px;
+      padding: 12px;
       border-radius: 12px;
       text-align: center;
       font-size: 0.8rem;
@@ -328,11 +205,13 @@
     .message.success {
       background: rgba(46, 204, 113, 0.1);
       color: #27ae60;
+      border: 1px solid rgba(46, 204, 113, 0.3);
     }
     
     .message.error {
       background: rgba(231, 76, 60, 0.1);
       color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
     }
     
     @keyframes fadeIn {
@@ -356,48 +235,38 @@
       to { transform: rotate(360deg); }
     }
     
-    /* Hide/Show forms */
-    .hidden-form {
-      display: none;
+    /* Forgot Password */
+    .forgot-password {
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 15px;
+    }
+    
+    .forgot-password a {
+      color: #999;
+      font-size: 0.75rem;
+      text-decoration: none;
+    }
+    
+    .forgot-password a:hover {
+      color: #ff4da6;
     }
     
     /* Responsive */
-    @media (max-width: 992px) {
-      .figure-container {
-        display: none;
+    @media (max-width: 480px) {
+      .auth-card {
+        padding: 30px 20px;
       }
       
-      .form-container {
-        position: relative;
-        right: auto;
-        top: auto;
-        transform: none;
-        margin: 0 auto;
-      }
-      
-      .form-container.moved,
-      .form-container.center {
-        position: relative;
-        right: auto;
-        transform: none;
-        margin: 0 auto;
+      .auth-header h1 {
+        font-size: 1.5rem;
       }
       
       .back-home {
         top: 15px;
         left: 15px;
-        padding: 8px 16px;
+        padding: 8px 15px;
         font-size: 0.8rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .form-container {
-        padding: 30px 20px;
-      }
-      
-      .form-header h1 {
-        font-size: 1.3rem;
       }
     }
   </style>
@@ -406,127 +275,66 @@
 
 <!-- Back to Homepage Button -->
 <a href="index.html" class="back-home">
-  <i class="fas fa-arrow-left"></i> Back to Homepage
+  <i class="fas fa-arrow-left"></i> Back to Home
 </a>
 
-<div class="bg-animation" id="bgAnimation"></div>
-
 <div class="auth-container">
-  <div class="auth-wrapper">
+  <div class="auth-card">
     
-    <!-- Human Figure that pulls the form -->
-    <div class="figure-container" id="figureContainer">
-      <div class="speech-bubble" id="speechBubble">✨ Pulling the form for you! ✨</div>
-      <div class="human-figure" id="humanFigure">
-        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#ff4da6"/>
-              <stop offset="100%" stop-color="transparent"/>
-            </radialGradient>
-            <linearGradient id="dressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#ff4da6"/>
-              <stop offset="100%" stop-color="#e6398c"/>
-            </linearGradient>
-          </defs>
-          
-          <circle cx="100" cy="100" r="80" fill="url(#glowGradient)" opacity="0.3"/>
-          
-          <!-- Body/Dress -->
-          <path d="M70 80 L130 80 L140 160 L60 160 Z" fill="url(#dressGradient)" stroke="#ff4da6" stroke-width="1.5"/>
-          
-          <!-- Head -->
-          <circle cx="100" cy="55" r="25" fill="#FFE0BD" stroke="#ff4da6" stroke-width="1.5"/>
-          
-          <!-- Hair -->
-          <path d="M75 50 Q75 25 100 25 Q125 25 125 50" fill="#2d1b0e"/>
-          <path d="M75 50 Q70 40 72 35" stroke="#2d1b0e" stroke-width="3" fill="none"/>
-          <path d="M125 50 Q130 40 128 35" stroke="#2d1b0e" stroke-width="3" fill="none"/>
-          
-          <!-- Eyes -->
-          <ellipse cx="90" cy="55" rx="3" ry="4" fill="#1a1a2e" class="eye-left"/>
-          <ellipse cx="110" cy="55" rx="3" ry="4" fill="#1a1a2e" class="eye-right"/>
-          <circle cx="91" cy="54" r="1" fill="white"/>
-          <circle cx="111" cy="54" r="1" fill="white"/>
-          
-          <!-- Smile -->
-          <path d="M93 63 Q100 70 107 63" stroke="#e6398c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          
-          <!-- Crown -->
-          <path d="M85 32 L90 22 L95 30 L100 20 L105 30 L110 22 L115 32" fill="#ffd700" stroke="#ffd700" stroke-width="1"/>
-          <circle cx="100" cy="24" r="2" fill="#ff4da6"/>
-          
-          <!-- Necklace -->
-          <path d="M90 72 Q100 80 110 72" stroke="#ffd700" stroke-width="1.5" fill="none"/>
-          <circle cx="100" cy="76" r="2" fill="#ff4da6"/>
-          
-          <!-- Arms (pulling motion) -->
-          <path d="M70 90 L45 105 L40 120" stroke="#FFE0BD" stroke-width="6" fill="none" stroke-linecap="round" class="arm-left"/>
-          <path d="M130 90 L155 105 L160 120" stroke="#FFE0BD" stroke-width="6" fill="none" stroke-linecap="round" class="arm-right"/>
-          
-          <!-- Hands -->
-          <circle cx="40" cy="120" r="5" fill="#ff4da6" class="hand-left"/>
-          <circle cx="160" cy="120" r="5" fill="#ff4da6" class="hand-right"/>
-        </svg>
-      </div>
+    <!-- Header -->
+    <div class="auth-header">
+      <div class="logo-icon">💎</div>
+      <h1>O.M.O<span>creation</span></h1>
+      <p>Luxury Stone Fashion System</p>
     </div>
     
-    <!-- Floating Form Container -->
-    <div class="form-container" id="formContainer">
-      <div class="form-header">
-        <div class="logo-icon">💎</div>
-        <h1>O.M.O<span style="color:#ff4da6">creation</span></h1>
-        <p>Luxury Stone Fashion System</p>
+    <!-- Login Form (visible by default) -->
+    <form id="loginForm">
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="loginEmail" placeholder="Email address" required>
       </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+      </div>
+      <div class="forgot-password">
+        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+      </div>
+      <button type="submit" class="submit-btn" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
       
-      <!-- Login Form -->
-      <form id="loginForm">
-        <div class="input-group">
-          <i class="fas fa-envelope"></i>
-          <input type="email" id="loginEmail" placeholder="Email address" required>
-        </div>
-        <div class="input-group">
-          <i class="fas fa-lock"></i>
-          <input type="password" id="loginPassword" placeholder="Password" required>
-        </div>
-        <button type="submit" class="submit-btn" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
-        
-        <div class="form-footer">
-          <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-        </div>
-        
-        <div class="signup-prompt">
-          Don't have an account? <a href="#" id="showSignupLink">Sign Up</a>
-        </div>
-      </form>
+      <div class="switch-link">
+        <p>Don't have an account? <a id="showSignupLink">Sign Up</a></p>
+      </div>
+    </form>
+    
+    <!-- Signup Form (hidden initially) -->
+    <form id="signupForm" style="display: none;">
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="fullName" placeholder="Full name" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="signupEmail" placeholder="Email address" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-check-circle"></i>
+        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+      </div>
+      <button type="submit" class="submit-btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
       
-      <!-- Signup Form (hidden initially) -->
-      <form id="signupForm" class="hidden-form">
-        <div class="input-group">
-          <i class="fas fa-user"></i>
-          <input type="text" id="fullName" placeholder="Full name" required>
-        </div>
-        <div class="input-group">
-          <i class="fas fa-envelope"></i>
-          <input type="email" id="signupEmail" placeholder="Email address" required>
-        </div>
-        <div class="input-group">
-          <i class="fas fa-lock"></i>
-          <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
-        </div>
-        <div class="input-group">
-          <i class="fas fa-check-circle"></i>
-          <input type="password" id="confirmPassword" placeholder="Confirm password" required>
-        </div>
-        <button type="submit" class="submit-btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
-        
-        <div class="form-footer">
-          <a href="#" id="showLoginLink">← Back to Login</a>
-        </div>
-      </form>
-      
-      <div id="message" class="message" style="display: none;"></div>
-    </div>
+      <div class="switch-link">
+        <p>Already have an account? <a id="showLoginLink">Login</a></p>
+      </div>
+    </form>
+    
+    <!-- Message Container -->
+    <div id="message" class="message" style="display: none;"></div>
     
   </div>
 </div>
@@ -540,10 +348,6 @@
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   
   // DOM Elements
-  const figureContainer = document.getElementById('figureContainer');
-  const formContainer = document.getElementById('formContainer');
-  const speechBubble = document.getElementById('speechBubble');
-  
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
   const loginBtn = document.getElementById('loginBtn');
@@ -552,8 +356,6 @@
   const showLoginLink = document.getElementById('showLoginLink');
   const forgotPasswordLink = document.getElementById('forgotPasswordLink');
   const messageDiv = document.getElementById('message');
-  
-  let isLoginMode = true;
   
   // Show message function
   function showMessage(text, type = 'error') {
@@ -565,60 +367,24 @@
     }, 5000);
   }
   
-  // ANIMATION: Human figure pulls form to center
-  function animateFigurePulling() {
-    speechBubble.classList.add('show');
-    figureContainer.classList.add('walking');
-    
-    setTimeout(() => {
-      figureContainer.classList.add('moved');
-    }, 500);
-    
-    setTimeout(() => {
-      formContainer.classList.add('center');
-    }, 800);
-    
-    setTimeout(() => {
-      figureContainer.classList.remove('walking');
-      figureContainer.classList.add('resting');
-      speechBubble.textContent = '💎 Here to serve you! 💎';
-      
-      // Make eyes blink
-      setInterval(() => {
-        const leftEye = document.querySelector('.eye-left');
-        const rightEye = document.querySelector('.eye-right');
-        if (leftEye && rightEye) {
-          leftEye.setAttribute('ry', '1');
-          rightEye.setAttribute('ry', '1');
-          setTimeout(() => {
-            leftEye.setAttribute('ry', '4');
-            rightEye.setAttribute('ry', '4');
-          }, 150);
-        }
-      }, 3000);
-    }, 2000);
-    
-    setTimeout(() => {
-      speechBubble.classList.remove('show');
-    }, 6000);
+  // Switch to Signup form
+  function switchToSignup() {
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'block';
+    messageDiv.style.display = 'none';
   }
   
-  // Toggle between Login and Signup forms
-  function showLogin() {
-    isLoginMode = true;
-    loginForm.classList.remove('hidden-form');
-    signupForm.classList.add('hidden-form');
-  }
-  
-  function showSignup() {
-    isLoginMode = false;
-    loginForm.classList.add('hidden-form');
-    signupForm.classList.remove('hidden-form');
+  // Switch to Login form
+  function switchToLogin() {
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'block';
+    messageDiv.style.display = 'none';
   }
   
   // Login handler
   async function handleLogin(e) {
     e.preventDefault();
+    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
@@ -639,21 +405,21 @@
       return;
     }
     
-    // Check user role from users table
-    const { data: userData, error: userError } = await supabase
+    // Check user role and status from users table
+    const { data: profile, error: profileError } = await supabase
       .from('users')
       .select('role, status')
       .eq('id', data.user.id)
       .single();
     
-    if (userError || !userData) {
+    if (profileError || !profile) {
       showMessage('User profile not found', 'error');
       loginBtn.disabled = false;
       loginBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
       return;
     }
     
-    if (userData.status !== 'approved') {
+    if (profile.status !== 'active') {
       showMessage('Your account is pending admin approval', 'error');
       await supabase.auth.signOut();
       loginBtn.disabled = false;
@@ -664,13 +430,7 @@
     showMessage('Login successful! Redirecting...', 'success');
     
     setTimeout(() => {
-      if (userData.role === 'admin') {
-        window.location.href = 'admin-dashboard.html';
-      } else if (userData.role === 'attendant') {
-        window.location.href = 'attendant-dashboard.html';
-      } else {
-        window.location.href = 'staff-dashboard.html';
-      }
+      window.location.href = 'dashboard.html';
     }, 1500);
   }
   
@@ -736,7 +496,9 @@
     document.getElementById('signupPassword').value = '';
     document.getElementById('confirmPassword').value = '';
     
-    setTimeout(() => showLogin(), 2000);
+    setTimeout(() => {
+      switchToLogin();
+    }, 2000);
   }
   
   // Forgot password handler
@@ -750,7 +512,7 @@
     }
     
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/reset-password.html',
+      redirectTo: window.location.origin + '/auth.html',
     });
     
     if (error) {
@@ -763,42 +525,19 @@
   // Event listeners
   showSignupLink.addEventListener('click', (e) => {
     e.preventDefault();
-    showSignup();
+    switchToSignup();
   });
   
   showLoginLink.addEventListener('click', (e) => {
     e.preventDefault();
-    showLogin();
+    switchToLogin();
   });
   
   forgotPasswordLink.addEventListener('click', handleForgotPassword);
   loginForm.addEventListener('submit', handleLogin);
   signupForm.addEventListener('submit', handleSignup);
   
-  // Create background orbs
-  function createOrbs() {
-    const container = document.getElementById('bgAnimation');
-    for (let i = 0; i < 20; i++) {
-      const orb = document.createElement('div');
-      orb.classList.add('orb');
-      const size = Math.random() * 200 + 50;
-      orb.style.width = size + 'px';
-      orb.style.height = size + 'px';
-      orb.style.left = Math.random() * 100 + '%';
-      orb.style.top = Math.random() * 100 + '%';
-      orb.style.animationDelay = Math.random() * 15 + 's';
-      orb.style.animationDuration = Math.random() * 20 + 15 + 's';
-      container.appendChild(orb);
-    }
-  }
-  createOrbs();
-  
-  // Start animation on page load
-  setTimeout(() => {
-    animateFigurePulling();
-  }, 500);
-  
-  console.log('%c✨ O.M.Ocreation Authentication System Ready ✨', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
+  console.log('%c✨ O.M.Ocreation Authentication Ready ✨', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
   console.log('%cSupabase Connected ✅', 'color: #00ff88; font-size: 12px;');
 </script>
 </body>
