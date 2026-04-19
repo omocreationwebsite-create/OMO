@@ -1,113 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Image Test - OMO Repo</title>
+  <title>Image Test - Absolute Path</title>
   <style>
-    body { font-family: monospace; padding: 20px; background: #f0f0f0; }
-    .test { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; }
-    img { max-width: 150px; max-height: 120px; border: 2px solid #ccc; margin: 5px; border-radius: 8px; }
-    .success { color: green; font-weight: bold; }
-    .fail { color: red; font-weight: bold; }
-    h1 { color: #ff4da6; }
+    body { font-family: monospace; padding: 20px; }
+    img { max-width: 150px; margin: 5px; border: 2px solid #ccc; }
+    .good { border-color: green; }
+    .bad { border-color: red; }
   </style>
 </head>
 <body>
-  <h1>🎯 O.M.Ocreation - Image Path Test</h1>
-  <p>Testing images from <code>assets/</code> folder with <code>.jpg</code> extension</p>
-
-  <div class="test">
-    <h3>📷 Hero Images (p1.jpg to p6.jpg)</h3>
-    <div id="hero"></div>
-  </div>
-
-  <div class="test">
-    <h3>🖼️ Gallery Images (pp1.jpg to pp6.jpg)</h3>
-    <div id="gallery"></div>
-  </div>
-
-  <div class="test">
-    <h3>🏷️ Logo (log1.jpg)</h3>
-    <div id="logo"></div>
-  </div>
-
-  <div class="test">
-    <h3>✅ Results:</h3>
-    <div id="results"></div>
-  </div>
+  <h1>Testing with /OMO/assets/ path</h1>
+  <div id="hero"></div>
+  <div id="gallery"></div>
+  <div id="logo"></div>
 
   <script>
-    const heroFiles = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
-    const galleryFiles = ['pp1', 'pp2', 'pp3', 'pp4', 'pp5', 'pp6'];
-    const logoFile = 'log1';
-    
-    let successCount = 0;
-    let totalCount = heroFiles.length + galleryFiles.length + 1;
-    const resultsDiv = document.getElementById('results');
-
-    function checkComplete() {
-      if (successCount === totalCount) {
-        resultsDiv.innerHTML = '<p class="success">✅ ALL IMAGES LOADED SUCCESSFULLY! Your paths are correct.</p>';
-      } else {
-        resultsDiv.innerHTML = `<p class="fail">❌ ${successCount}/${totalCount} images loaded. Check that your images are in the <strong>assets</strong> folder at the root of your repository.</p>`;
-      }
-    }
+    const hero = ['p1','p2','p3','p4','p5','p6'];
+    const gallery = ['pp1','pp2','pp3','pp4','pp5','pp6'];
+    const logo = 'log1';
 
     const heroDiv = document.getElementById('hero');
     const galleryDiv = document.getElementById('gallery');
     const logoDiv = document.getElementById('logo');
 
-    heroFiles.forEach(file => {
-      const img = document.createElement('img');
-      img.src = `assets/${file}.jpg`;
-      img.onload = () => { 
-        console.log(`✅ Loaded: assets/${file}.jpg`);
-        successCount++;
-        checkComplete();
-      };
-      img.onerror = () => { 
-        console.log(`❌ Failed: assets/${file}.jpg`);
-        checkComplete();
-      };
+    hero.forEach(f => {
+      const img = new Image();
+      img.src = `/OMO/assets/${f}.jpg`;
+      img.onload = () => { img.style.borderColor = 'green'; console.log('✅', img.src); };
+      img.onerror = () => { img.style.borderColor = 'red'; console.log('❌', img.src); };
       heroDiv.appendChild(img);
-      heroDiv.appendChild(document.createTextNode(` assets/${file}.jpg `));
+      heroDiv.appendChild(document.createTextNode(` ${img.src} `));
       heroDiv.appendChild(document.createElement('br'));
     });
 
-    galleryFiles.forEach(file => {
-      const img = document.createElement('img');
-      img.src = `assets/${file}.jpg`;
-      img.onload = () => { 
-        console.log(`✅ Loaded: assets/${file}.jpg`);
-        successCount++;
-        checkComplete();
-      };
-      img.onerror = () => { 
-        console.log(`❌ Failed: assets/${file}.jpg`);
-        checkComplete();
-      };
+    gallery.forEach(f => {
+      const img = new Image();
+      img.src = `/OMO/assets/${f}.jpg`;
+      img.onload = () => { img.style.borderColor = 'green'; console.log('✅', img.src); };
+      img.onerror = () => { img.style.borderColor = 'red'; console.log('❌', img.src); };
       galleryDiv.appendChild(img);
-      galleryDiv.appendChild(document.createTextNode(` assets/${file}.jpg `));
+      galleryDiv.appendChild(document.createTextNode(` ${img.src} `));
       galleryDiv.appendChild(document.createElement('br'));
     });
 
-    const logoImg = document.createElement('img');
-    logoImg.src = `assets/${logoFile}.jpg`;
-    logoImg.onload = () => { 
-      console.log(`✅ Logo loaded: assets/${logoFile}.jpg`);
-      successCount++;
-      checkComplete();
-    };
-    logoImg.onerror = () => { 
-      console.log(`❌ Logo failed: assets/${logoFile}.jpg`);
-      checkComplete();
-    };
+    const logoImg = new Image();
+    logoImg.src = `/OMO/assets/${logo}.jpg`;
+    logoImg.onload = () => { logoImg.style.borderColor = 'green'; console.log('✅', logoImg.src); };
+    logoImg.onerror = () => { logoImg.style.borderColor = 'red'; console.log('❌', logoImg.src); };
     logoDiv.appendChild(logoImg);
-    logoDiv.appendChild(document.createTextNode(` assets/${logoFile}.jpg `));
+    logoDiv.appendChild(document.createTextNode(` ${logoImg.src} `));
   </script>
-
-  <p style="margin-top: 20px; padding: 10px; background: #e0e0e0; border-radius: 8px;">
-    <strong>📌 Note:</strong> Your images should be in: <code>OMO/assets/p1.jpg</code>, <code>OMO/assets/pp1.jpg</code>, etc.<br>
-    <strong>🌐 Live URL:</strong> <code>https://omocreationwebsite-create.github.io/OMO/</code>
-  </p>
 </body>
 </html>
