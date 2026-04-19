@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>O.M.Ocreation - Create Account</title>
+  <title>O.M.Ocreation - Sign Up</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -26,11 +26,6 @@
       border-radius: 30px;
       padding: 45px 40px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-      animation: fadeIn 0.5s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
     .logo { text-align: center; margin-bottom: 35px; }
     .logo i { font-size: 2.5rem; color: #ff4da6; }
@@ -44,7 +39,6 @@
       top: 50%;
       transform: translateY(-50%);
       color: #ff4da6;
-      font-size: 1rem;
     }
     .input-group input {
       width: 100%;
@@ -52,12 +46,10 @@
       border: 2px solid #eee;
       border-radius: 15px;
       font-size: 0.95rem;
-      transition: 0.3s;
     }
     .input-group input:focus {
       outline: none;
       border-color: #ff4da6;
-      box-shadow: 0 0 0 3px rgba(255,77,166,0.1);
     }
     .btn {
       width: 100%;
@@ -69,15 +61,12 @@
       font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
-      transition: 0.3s;
       margin-top: 10px;
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,77,166,0.3); }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .login-link { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
-    .login-link p { color: #666; font-size: 0.85rem; }
     .login-link a { color: #ff4da6; text-decoration: none; font-weight: 600; }
-    .login-link a:hover { text-decoration: underline; }
     .message {
       margin-top: 15px;
       padding: 12px;
@@ -99,42 +88,25 @@
       margin-right: 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .back-home {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-      padding: 8px 18px;
-      border-radius: 50px;
-      text-decoration: none;
-      color: white;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: 0.3s;
+    .debug-panel {
+      margin-top: 20px;
+      background: #1a1a2e;
+      color: #00ff88;
+      padding: 12px;
+      border-radius: 12px;
+      font-family: monospace;
+      font-size: 11px;
+      max-height: 150px;
+      overflow-y: auto;
     }
-    .back-home:hover { background: rgba(255,77,166,0.8); transform: translateX(-3px); }
-    .requirements {
-      font-size: 0.7rem;
-      color: #999;
-      margin-top: 5px;
-      padding-left: 15px;
-    }
-    .requirements i { color: #ff4da6; margin-right: 5px; }
+    .debug-panel h4 { color: #ff4da6; margin-bottom: 8px; font-size: 12px; }
+    .requirements { font-size: 0.7rem; color: #999; margin-top: 5px; padding-left: 15px; }
     @media (max-width: 480px) {
       .signup-card { padding: 30px 25px; }
-      .logo h1 { font-size: 1.5rem; }
-      .back-home { top: 15px; left: 15px; padding: 6px 12px; font-size: 0.75rem; }
     }
   </style>
 </head>
 <body>
-
-<a href="index.html" class="back-home">
-  <i class="fas fa-arrow-left"></i> Back to Home
-</a>
 
 <div class="signup-card">
   <div class="logo">
@@ -146,15 +118,15 @@
   <form id="signupForm">
     <div class="input-group">
       <i class="fas fa-user"></i>
-      <input type="text" id="fullName" placeholder="Full name" required autocomplete="name">
+      <input type="text" id="fullName" placeholder="Full name" required>
     </div>
     <div class="input-group">
       <i class="fas fa-envelope"></i>
-      <input type="email" id="signupEmail" placeholder="Email address" required autocomplete="email">
+      <input type="email" id="signupEmail" placeholder="Email address" required>
     </div>
     <div class="input-group">
       <i class="fas fa-lock"></i>
-      <input type="password" id="signupPassword" placeholder="Password" required autocomplete="new-password">
+      <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
     </div>
     <div class="input-group">
       <i class="fas fa-check-circle"></i>
@@ -164,27 +136,56 @@
       <i class="fas fa-info-circle"></i> Password must be at least 6 characters
     </div>
     <button type="submit" class="btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
-    
     <div class="login-link">
       <p>Already have an account? <a href="login.html">Login</a></p>
     </div>
   </form>
   
   <div id="messageContainer"></div>
+  
+  <!-- Debug Panel -->
+  <div class="debug-panel" id="debugPanel">
+    <h4>🔍 Debug Console</h4>
+    <div id="debugLog">Initializing...</div>
+  </div>
 </div>
 
 <script>
-  // ============================================
-  // YOUR SUPABASE KEYS
-  // ============================================
+  // Debug function
+  const debugLog = document.getElementById('debugLog');
+  function log(msg, type = 'info') {
+    const color = type === 'error' ? '#ff6b6b' : (type === 'success' ? '#00ff88' : '#ffaa44');
+    debugLog.innerHTML += `<div style="color: ${color}; margin-bottom: 3px;">${new Date().toLocaleTimeString()} - ${msg}</div>`;
+    debugLog.scrollTop = debugLog.scrollHeight;
+    console.log(msg);
+  }
+  
+  log('Page loaded');
+  
+  // Check if Supabase loaded
+  if (typeof window.supabase === 'undefined') {
+    log('❌ Supabase library failed to load! Check internet connection.', 'error');
+  } else {
+    log('✅ Supabase library loaded', 'success');
+  }
+  
+  // Supabase configuration
   const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
   
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  log(`🔗 Supabase URL: ${SUPABASE_URL}`);
+  log(`🔑 Supabase Key: ${SUPABASE_ANON_KEY.substring(0, 30)}...`);
   
+  // Initialize Supabase
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  log('✅ Supabase client created', 'success');
+  
+  // Get DOM elements
   const signupForm = document.getElementById('signupForm');
   const signupBtn = document.getElementById('signupBtn');
   const messageContainer = document.getElementById('messageContainer');
+  
+  log('📋 Form elements found:', signupForm ? 'Yes' : 'No');
   
   function showMessage(text, type) {
     messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
@@ -194,76 +195,97 @@
   }
   
   // SIGNUP HANDLER
-  signupForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const fullName = document.getElementById('fullName').value;
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    
-    if (!fullName || !email || !password) {
-      showMessage('Please fill all fields', 'error');
-      return;
-    }
-    
-    if (password !== confirmPassword) {
-      showMessage('Passwords do not match', 'error');
-      return;
-    }
-    
-    if (password.length < 6) {
-      showMessage('Password must be at least 6 characters', 'error');
-      return;
-    }
-    
-    signupBtn.disabled = true;
-    signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
-    
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    
-    if (error) {
-      showMessage(error.message, 'error');
+  if (signupForm) {
+    log('✅ Adding signup event listener');
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      log('📝 Signup form submitted');
+      
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      log(`👤 Name: ${fullName}`);
+      log(`📧 Email: ${email}`);
+      log(`🔒 Password length: ${password.length}`);
+      
+      if (!fullName || !email || !password) {
+        log('❌ Missing required fields', 'error');
+        showMessage('Please fill all fields', 'error');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        log('❌ Passwords do not match', 'error');
+        showMessage('Passwords do not match', 'error');
+        return;
+      }
+      
+      if (password.length < 6) {
+        log('❌ Password too short', 'error');
+        showMessage('Password must be at least 6 characters', 'error');
+        return;
+      }
+      
+      signupBtn.disabled = true;
+      signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
+      
+      log('🔄 Calling supabase.auth.signUp...');
+      
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      
+      if (error) {
+        log(`❌ Signup error: ${error.message}`, 'error');
+        showMessage(error.message, 'error');
+        signupBtn.disabled = false;
+        signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+        return;
+      }
+      
+      log(`✅ Signup successful! User ID: ${data.user.id}`, 'success');
+      
+      // Insert into users table
+      log('🔄 Inserting into users table...');
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert([{
+          id: data.user.id,
+          full_name: fullName,
+          email: email,
+          role: 'pending',
+          status: 'pending',
+          created_at: new Date().toISOString()
+        }]);
+      
+      if (insertError) {
+        log(`❌ Insert error: ${insertError.message}`, 'error');
+        showMessage(`Profile error: ${insertError.message}`, 'error');
+      } else {
+        log('✅ User inserted into users table!', 'success');
+        showMessage('Account created successfully! Please login after admin approval.', 'success');
+        
+        // Reset form
+        document.getElementById('fullName').value = '';
+        document.getElementById('signupEmail').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          log('🔄 Redirecting to login page...');
+          window.location.href = 'login.html';
+        }, 2500);
+      }
+      
       signupBtn.disabled = false;
       signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-      return;
-    }
-    
-    // Insert into users table
-    const { error: insertError } = await supabase
-      .from('users')
-      .insert([{
-        id: data.user.id,
-        full_name: fullName,
-        email: email,
-        role: 'pending',
-        status: 'pending',
-        created_at: new Date().toISOString()
-      }]);
-    
-    if (insertError) {
-      console.error('Insert error:', insertError);
-      showMessage(`Profile error: ${insertError.message}`, 'error');
-    } else {
-      showMessage('Account created successfully! Please login after admin approval.', 'success');
-      
-      // Reset form
-      document.getElementById('fullName').value = '';
-      document.getElementById('signupEmail').value = '';
-      document.getElementById('signupPassword').value = '';
-      document.getElementById('confirmPassword').value = '';
-      
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 2500);
-    }
-    
-    signupBtn.disabled = false;
-    signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-  });
+    });
+  } else {
+    log('❌ Signup form not found in DOM!', 'error');
+  }
   
-  console.log('%c📝 Signup page ready', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
+  log('🚀 Signup page ready, waiting for user action', 'success');
 </script>
 </body>
 </html>
