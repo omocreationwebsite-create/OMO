@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -89,46 +88,23 @@
   </style>
 </head>
 <body>
-
 <div class="signup-card">
-  <div class="logo">
-    <i class="fas fa-gem"></i>
-    <h1>O.M.O<span>creation</span></h1>
-    <p>Create your account</p>
-  </div>
-  
+  <div class="logo"><i class="fas fa-gem"></i><h1>O.M.O<span>creation</span></h1><p>Create your account</p></div>
   <form id="signupForm">
-    <div class="input-group">
-      <i class="fas fa-user"></i>
-      <input type="text" id="fullName" placeholder="Full name" required>
-    </div>
-    <div class="input-group">
-      <i class="fas fa-envelope"></i>
-      <input type="email" id="signupEmail" placeholder="Email address" required>
-    </div>
-    <div class="input-group">
-      <i class="fas fa-lock"></i>
-      <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
-    </div>
-    <div class="input-group">
-      <i class="fas fa-check-circle"></i>
-      <input type="password" id="confirmPassword" placeholder="Confirm password" required>
-    </div>
+    <div class="input-group"><i class="fas fa-user"></i><input type="text" id="fullName" placeholder="Full name" required></div>
+    <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="signupEmail" placeholder="Email address" required></div>
+    <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required></div>
+    <div class="input-group"><i class="fas fa-check-circle"></i><input type="password" id="confirmPassword" placeholder="Confirm password" required></div>
     <button type="submit" class="btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
-    <div class="login-link">
-      <p>Already have an account? <a href="login.html">Login</a></p>
-    </div>
+    <div class="login-link"><p>Already have an account? <a href="login.html">Login</a></p></div>
   </form>
-  
   <div id="messageContainer"></div>
 </div>
-
 <script>
-  // Supabase configuration
+(function() {
   const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
-  
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   
   const form = document.getElementById('signupForm');
   const btn = document.getElementById('signupBtn');
@@ -141,71 +117,29 @@
   
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
     const fullName = document.getElementById('fullName').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
     const confirm = document.getElementById('confirmPassword').value;
-    
-    if (!fullName || !email || !password) {
-      showMessage('Please fill all fields', 'error');
-      return;
-    }
-    if (password !== confirm) {
-      showMessage('Passwords do not match', 'error');
-      return;
-    }
-    if (password.length < 6) {
-      showMessage('Password must be at least 6 characters', 'error');
-      return;
-    }
-    
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Creating account...';
-    
-    // Sign up with Supabase Auth
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    
-    if (error) {
-      showMessage(error.message, 'error');
-      btn.disabled = false;
-      btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-      return;
-    }
-    
-    // Insert into users table
-    const { error: insertError } = await supabase
-      .from('users')
-      .insert([{
-        id: data.user.id,
-        full_name: fullName,
-        email: email,
-        role: 'pending',
-        status: 'pending',
-        created_at: new Date().toISOString()
-      }]);
-    
-    if (insertError) {
-      console.error('Insert error:', insertError);
-      showMessage(`Database error: ${insertError.message}`, 'error');
-    } else {
-      showMessage('Account created! Please wait for admin approval.', 'success');
-      
-      // Reset form
-      document.getElementById('fullName').value = '';
-      document.getElementById('signupEmail').value = '';
-      document.getElementById('signupPassword').value = '';
-      document.getElementById('confirmPassword').value = '';
-      
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 2000);
-    }
-    
-    btn.disabled = false;
-    btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+    if (!fullName || !email || !password) { showMessage('Please fill all fields', 'error'); return; }
+    if (password !== confirm) { showMessage('Passwords do not match', 'error'); return; }
+    if (password.length < 6) { showMessage('Password must be at least 6 characters', 'error'); return; }
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Creating account...';
+    const { data, error } = await _supabase.auth.signUp({ email, password });
+    if (error) { showMessage(error.message, 'error'); btn.disabled = false; btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>'; return; }
+    const { error: insertError } = await _supabase.from('users').insert([{
+      id: data.user.id,
+      full_name: fullName,
+      email: email,
+      role: 'pending',
+      status: 'pending',
+      created_at: new Date().toISOString()
+    }]);
+    if (insertError) { showMessage(`Database error: ${insertError.message}`, 'error'); } 
+    else { showMessage('Account created! Please wait for admin approval.', 'success'); document.getElementById('fullName').value = ''; document.getElementById('signupEmail').value = ''; document.getElementById('signupPassword').value = ''; document.getElementById('confirmPassword').value = ''; setTimeout(() => { window.location.href = 'login.html'; }, 2000); }
+    btn.disabled = false; btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
   });
+})();
 </script>
 </body>
 </html>
