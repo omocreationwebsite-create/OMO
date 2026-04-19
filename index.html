@@ -1,55 +1,224 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Image Test - Absolute Path</title>
+  <title>🔍 OMO Image Debugger</title>
   <style>
-    body { font-family: monospace; padding: 20px; }
-    img { max-width: 150px; margin: 5px; border: 2px solid #ccc; }
-    .good { border-color: green; }
-    .bad { border-color: red; }
+    body { font-family: monospace; padding: 20px; background: #1a1a2e; color: #fff; }
+    h1 { color: #ff4da6; }
+    .test { background: #2d2d4a; padding: 15px; margin: 10px 0; border-radius: 8px; }
+    img { max-width: 150px; max-height: 120px; border: 2px solid #555; margin: 5px; border-radius: 8px; }
+    .success { color: #00ff88; }
+    .fail { color: #ff4466; }
+    .info { color: #ffaa44; }
+    .debug { background: #0a0a1a; padding: 10px; font-size: 12px; border-radius: 5px; margin-top: 10px; overflow-x: auto; }
+    pre { white-space: pre-wrap; word-wrap: break-word; }
   </style>
 </head>
 <body>
-  <h1>Testing with /OMO/assets/ path</h1>
-  <div id="hero"></div>
-  <div id="gallery"></div>
-  <div id="logo"></div>
+  <h1>🔍 O.M.Ocreation - Image Path Debugger</h1>
+  
+  <div class="test">
+    <h3>📡 PAGE INFORMATION</h3>
+    <div id="pageInfo"></div>
+  </div>
+
+  <div class="test">
+    <h3>📷 HERO IMAGES (p1.jpg to p6.jpg)</h3>
+    <div id="hero"></div>
+  </div>
+
+  <div class="test">
+    <h3>🖼️ GALLERY IMAGES (pp1.jpg to pp6.jpg)</h3>
+    <div id="gallery"></div>
+  </div>
+
+  <div class="test">
+    <h3>🏷️ LOGO (log1.jpg)</h3>
+    <div id="logo"></div>
+  </div>
+
+  <div class="test">
+    <h3>🐛 DEBUG LOG</h3>
+    <div id="debug" class="debug"></div>
+  </div>
 
   <script>
-    const hero = ['p1','p2','p3','p4','p5','p6'];
-    const gallery = ['pp1','pp2','pp3','pp4','pp5','pp6'];
-    const logo = 'log1';
+    const debugDiv = document.getElementById('debug');
+    const pageInfoDiv = document.getElementById('pageInfo');
+    
+    function log(message, type = 'info') {
+      const color = type === 'success' ? '#00ff88' : (type === 'fail' ? '#ff4466' : '#ffaa44');
+      debugDiv.innerHTML += `<div style="color: ${color}">${message}</div>`;
+      console.log(message);
+    }
 
+    // Page information
+    const pageUrl = window.location.href;
+    const pathname = window.location.pathname;
+    const origin = window.location.origin;
+    
+    pageInfoDiv.innerHTML = `
+      <p>🌐 Full URL: <code>${pageUrl}</code></p>
+      <p>📂 Pathname: <code>${pathname}</code></p>
+      <p>🏠 Origin: <code>${origin}</code></p>
+      <p>📁 Current directory: <code>${pathname.substring(0, pathname.lastIndexOf('/'))}</code></p>
+    `;
+    
+    log(`🔍 DEBUG STARTED at ${new Date().toLocaleTimeString()}`);
+    log(`📍 Page URL: ${pageUrl}`);
+    log(`📍 Pathname: ${pathname}`);
+    
+    // Try to determine repository name from URL
+    const pathParts = pathname.split('/').filter(p => p);
+    log(`📍 URL parts: ${JSON.stringify(pathParts)}`);
+    
+    let repoName = '';
+    if (pathParts.length > 0) {
+      repoName = pathParts[0];
+      log(`📦 Detected repository name: "${repoName}"`);
+    } else {
+      log(`⚠️ No repository name detected - you may be at the root domain`);
+    }
+    
+    // Try different path combinations
+    const pathsToTest = [];
+    
+    // Add all possible path combinations
+    pathsToTest.push(`assets/p1.jpg`);
+    pathsToTest.push(`/assets/p1.jpg`);
+    pathsToTest.push(`./assets/p1.jpg`);
+    pathsToTest.push(`../assets/p1.jpg`);
+    
+    if (repoName) {
+      pathsToTest.push(`/${repoName}/assets/p1.jpg`);
+      pathsToTest.push(`${repoName}/assets/p1.jpg`);
+    }
+    
+    log(`\n🔬 Testing different path patterns:`);
+    pathsToTest.forEach(p => {
+      log(`   Pattern: ${p}`);
+    });
+    
+    const heroFiles = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+    const galleryFiles = ['pp1', 'pp2', 'pp3', 'pp4', 'pp5', 'pp6'];
+    const logoFile = 'log1';
+    
+    let successCount = 0;
+    let totalTests = 0;
+    
+    function testImage(path, name, container) {
+      totalTests++;
+      const img = new Image();
+      const fullPath = path;
+      
+      log(`\n🔄 Testing: ${fullPath}`);
+      
+      img.onload = () => {
+        log(`✅ SUCCESS: ${fullPath} loaded!`, 'success');
+        successCount++;
+        const imgElement = document.createElement('img');
+        imgElement.src = fullPath;
+        imgElement.style.borderColor = '#00ff88';
+        container.appendChild(imgElement);
+        container.appendChild(document.createTextNode(` ${fullPath} `));
+        container.appendChild(document.createElement('br'));
+      };
+      
+      img.onerror = () => {
+        log(`❌ FAILED: ${fullPath} - 404 Not Found`, 'fail');
+        const errorDiv = document.createElement('div');
+        errorDiv.style.color = '#ff4466';
+        errorDiv.innerHTML = `❌ ${fullPath} - NOT FOUND`;
+        container.appendChild(errorDiv);
+      };
+      
+      img.src = fullPath;
+    }
+    
+    // Function to try multiple paths for each image
+    function tryMultiplePaths(file, extension, container, type) {
+      const pathsToTry = [];
+      
+      // Add all possible path combinations
+      pathsToTry.push(`assets/${file}.${extension}`);
+      pathsToTry.push(`/assets/${file}.${extension}`);
+      pathsToTry.push(`./assets/${file}.${extension}`);
+      pathsToTry.push(`../assets/${file}.${extension}`);
+      
+      if (repoName) {
+        pathsToTry.push(`/${repoName}/assets/${file}.${extension}`);
+        pathsToTry.push(`${repoName}/assets/${file}.${extension}`);
+        pathsToTry.push(`../${repoName}/assets/${file}.${extension}`);
+      }
+      
+      // Also try without extension
+      pathsToTry.push(`assets/${file}`);
+      pathsToTry.push(`/assets/${file}`);
+      
+      log(`\n📋 Trying ${totalTests + 1} paths for ${file}.${extension}:`);
+      
+      let found = false;
+      
+      pathsToTry.forEach(path => {
+        if (!found) {
+          const img = new Image();
+          img.onload = () => {
+            if (!found) {
+              found = true;
+              log(`✅ FOUND at: ${path}`, 'success');
+              const imgElement = document.createElement('img');
+              imgElement.src = path;
+              imgElement.style.borderColor = '#00ff88';
+              container.appendChild(imgElement);
+              container.appendChild(document.createTextNode(` ✅ ${path}`));
+              container.appendChild(document.createElement('br'));
+              successCount++;
+            }
+          };
+          img.onerror = () => {
+            log(`   ❌ Not at: ${path}`);
+          };
+          img.src = path;
+        }
+      });
+      
+      setTimeout(() => {
+        if (!found) {
+          log(`❌ ALL PATHS FAILED for ${file}.${extension}`, 'fail');
+          container.innerHTML += `<div style="color:#ff4466">❌ ${file}.${extension} - NOT FOUND in any path</div>`;
+        }
+        totalTests++;
+      }, 500);
+    }
+    
     const heroDiv = document.getElementById('hero');
     const galleryDiv = document.getElementById('gallery');
     const logoDiv = document.getElementById('logo');
-
-    hero.forEach(f => {
-      const img = new Image();
-      img.src = `/OMO/assets/${f}.jpg`;
-      img.onload = () => { img.style.borderColor = 'green'; console.log('✅', img.src); };
-      img.onerror = () => { img.style.borderColor = 'red'; console.log('❌', img.src); };
-      heroDiv.appendChild(img);
-      heroDiv.appendChild(document.createTextNode(` ${img.src} `));
-      heroDiv.appendChild(document.createElement('br'));
+    
+    log(`\n🎯 Starting image tests...\n`);
+    
+    // Test hero images
+    heroFiles.forEach(file => {
+      tryMultiplePaths(file, 'jpg', heroDiv, 'hero');
     });
-
-    gallery.forEach(f => {
-      const img = new Image();
-      img.src = `/OMO/assets/${f}.jpg`;
-      img.onload = () => { img.style.borderColor = 'green'; console.log('✅', img.src); };
-      img.onerror = () => { img.style.borderColor = 'red'; console.log('❌', img.src); };
-      galleryDiv.appendChild(img);
-      galleryDiv.appendChild(document.createTextNode(` ${img.src} `));
-      galleryDiv.appendChild(document.createElement('br'));
+    
+    // Test gallery images
+    galleryFiles.forEach(file => {
+      tryMultiplePaths(file, 'jpg', galleryDiv, 'gallery');
     });
-
-    const logoImg = new Image();
-    logoImg.src = `/OMO/assets/${logo}.jpg`;
-    logoImg.onload = () => { logoImg.style.borderColor = 'green'; console.log('✅', logoImg.src); };
-    logoImg.onerror = () => { logoImg.style.borderColor = 'red'; console.log('❌', logoImg.src); };
-    logoDiv.appendChild(logoImg);
-    logoDiv.appendChild(document.createTextNode(` ${logoImg.src} `));
+    
+    // Test logo
+    tryMultiplePaths(logoFile, 'jpg', logoDiv, 'logo');
+    
+    // Summary after all tests
+    setTimeout(() => {
+      log(`\n📊 SUMMARY: ${successCount} out of ${heroFiles.length + galleryFiles.length + 1} images found`);
+      if (successCount === heroFiles.length + galleryFiles.length + 1) {
+        log(`🎉 ALL IMAGES FOUND! Your correct path is assets/...jpg`, 'success');
+      } else {
+        log(`⚠️ Some images missing. Check that your files are in the correct folder.`, 'fail');
+      }
+    }, 3000);
   </script>
 </body>
 </html>
