@@ -3,105 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>O.M.Ocreation - Authentication</title>
-  
+  <title>O.M.Ocreation - Login & Signup</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
-    
-    .auth-container { max-width: 450px; width: 100%; }
-    
     .auth-card {
+      max-width: 450px;
+      width: 100%;
       background: white;
       border-radius: 30px;
       padding: 40px 35px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-      animation: fadeIn 0.5s ease;
     }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
     .logo { text-align: center; margin-bottom: 30px; }
     .logo i { font-size: 2.5rem; color: #ff4da6; }
     .logo h1 { font-size: 1.8rem; font-family: 'Playfair Display', serif; color: #1a1a2e; }
     .logo h1 span { color: #ff4da6; }
-    .logo p { color: #666; font-size: 0.85rem; margin-top: 5px; }
-    
+    .logo p { color: #666; font-size: 0.85rem; }
     .input-group { margin-bottom: 20px; position: relative; }
     .input-group i {
-      position: absolute; left: 15px; top: 50%;
-      transform: translateY(-50%); color: #ff4da6;
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ff4da6;
     }
-    
     .input-group input {
-      width: 100%; padding: 14px 15px 14px 45px;
-      border: 2px solid #eee; border-radius: 15px;
-      font-size: 0.95rem; transition: 0.3s;
+      width: 100%;
+      padding: 14px 15px 14px 45px;
+      border: 2px solid #eee;
+      border-radius: 15px;
+      font-size: 0.95rem;
+      transition: 0.3s;
     }
-    
     .input-group input:focus {
-      outline: none; border-color: #ff4da6;
+      outline: none;
+      border-color: #ff4da6;
       box-shadow: 0 0 0 3px rgba(255,77,166,0.1);
     }
-    
     .btn {
-      width: 100%; padding: 14px;
+      width: 100%;
+      padding: 14px;
       background: linear-gradient(135deg, #ff4da6, #e6398c);
-      color: white; border: none; border-radius: 15px;
-      font-weight: 600; font-size: 1rem; cursor: pointer;
-      transition: 0.3s; margin-top: 10px;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
     }
-    
     .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,77,166,0.3); }
-    .btn:disabled { opacity: 0.6; transform: none; cursor: not-allowed; }
-    
-    .switch-link {
-      text-align: center; margin-top: 25px;
-      padding-top: 20px; border-top: 1px solid #eee;
-    }
-    
-    .switch-link p { font-size: 0.9rem; color: #666; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .switch-link { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
     .switch-link a { color: #ff4da6; text-decoration: none; font-weight: 600; cursor: pointer; }
-    
     .forgot-link { text-align: right; margin: -10px 0 15px; }
-    .forgot-link a { color: #999; font-size: 0.75rem; text-decoration: none; cursor: pointer; }
-    .forgot-link a:hover { color: #ff4da6; }
-    
+    .forgot-link a { color: #999; font-size: 0.75rem; text-decoration: none; }
     .message {
-      margin-top: 15px; padding: 12px;
-      border-radius: 12px; text-align: center;
-      font-size: 0.85rem; display: none; font-weight: 500;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 0.85rem;
+      display: none;
     }
-    
     .message.success { background: #d4edda; color: #155724; display: block; }
     .message.error { background: #f8d7da; color: #721c24; display: block; }
-    
     .spinner {
-      display: inline-block; width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,0.3); border-top-color: white;
-      border-radius: 50%; animation: spin 0.8s linear infinite;
-      margin-right: 8px; vertical-align: middle;
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
     }
-    
     @keyframes spin { to { transform: rotate(360deg); } }
-    
     @media (max-width: 480px) {
       .auth-card { padding: 30px 20px; }
       .logo h1 { font-size: 1.5rem; }
@@ -110,66 +101,69 @@
 </head>
 <body>
 
-<div class="auth-container">
-  <div class="auth-card">
-    <div class="logo">
-      <i class="fas fa-gem"></i>
-      <h1>O.M.O<span>creation</span></h1>
-      <p>Luxury Stone Fashion System</p>
-    </div>
-    
-    <form id="loginForm">
-      <div class="input-group">
-        <i class="fas fa-envelope"></i>
-        <input type="email" id="loginEmail" placeholder="Email address" required>
-      </div>
-      <div class="input-group">
-        <i class="fas fa-lock"></i>
-        <input type="password" id="loginPassword" placeholder="Password" required>
-      </div>
-      <div class="forgot-link">
-        <a id="forgotPasswordBtn">Forgot Password?</a>
-      </div>
-      <button type="submit" class="btn" id="loginSubmitBtn">Login <i class="fas fa-arrow-right"></i></button>
-      <div class="switch-link">
-        <p>Don't have an account? <a id="showSignupBtn">Create Account</a></p>
-      </div>
-    </form>
-    
-    <form id="signupForm" style="display: none;">
-      <div class="input-group">
-        <i class="fas fa-user"></i>
-        <input type="text" id="fullName" placeholder="Full name" required>
-      </div>
-      <div class="input-group">
-        <i class="fas fa-envelope"></i>
-        <input type="email" id="signupEmail" placeholder="Email address" required>
-      </div>
-      <div class="input-group">
-        <i class="fas fa-lock"></i>
-        <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
-      </div>
-      <div class="input-group">
-        <i class="fas fa-check-circle"></i>
-        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
-      </div>
-      <button type="submit" class="btn" id="signupSubmitBtn">Create Account <i class="fas fa-user-plus"></i></button>
-      <div class="switch-link">
-        <p>Already have an account? <a id="showLoginBtn">Login</a></p>
-      </div>
-    </form>
-    
-    <div id="messageContainer"></div>
+<div class="auth-card">
+  <div class="logo">
+    <i class="fas fa-gem"></i>
+    <h1>O.M.O<span>creation</span></h1>
+    <p>Luxury Stone Fashion System</p>
   </div>
+  
+  <!-- LOGIN FORM -->
+  <form id="loginForm">
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="email" id="loginEmail" placeholder="Email address" required>
+    </div>
+    <div class="input-group">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+    </div>
+    <div class="forgot-link">
+      <a href="#" id="forgotPasswordBtn">Forgot Password?</a>
+    </div>
+    <button type="submit" class="btn" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
+    <div class="switch-link">
+      <p>Don't have an account? <a id="showSignupBtn">Create Account</a></p>
+    </div>
+  </form>
+  
+  <!-- SIGNUP FORM (HIDDEN INITIALLY) -->
+  <form id="signupForm" style="display: none;">
+    <div class="input-group">
+      <i class="fas fa-user"></i>
+      <input type="text" id="fullName" placeholder="Full name" required>
+    </div>
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="email" id="signupEmail" placeholder="Email address" required>
+    </div>
+    <div class="input-group">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
+    </div>
+    <div class="input-group">
+      <i class="fas fa-check-circle"></i>
+      <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+    </div>
+    <button type="submit" class="btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
+    <div class="switch-link">
+      <p>Already have an account? <a id="showLoginBtn">Login</a></p>
+    </div>
+  </form>
+  
+  <div id="messageContainer"></div>
 </div>
 
 <script>
-  // --- CRITICAL FIX 1: YOU MUST USE A VALID ANON KEY ---
-  // The key you provided ("sb_publishable_...") is NOT a valid Supabase anon key. 
-  // Valid Supabase anon keys ALWAYS start with "eyJ". Get it from Supabase -> Project Settings -> API
+  // ============================================
+  // ⚠️ IMPORTANT: REPLACE WITH YOUR REAL ANON KEY
+  // Go to Supabase Dashboard → Settings → API
+  // Copy the "anon public" key (starts with eyJ)
+  // ============================================
   const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
-  const SUPABASE_ANON_KEY = "YOUR_VALID_SUPABASE_ANON_KEY_STARTING_WITH_eyJ"; 
+  const SUPABASE_ANON_KEY = "YOUR_REAL_ANON_KEY_HERE_STARTS_WITH_eyJ";
   
+  // Create Supabase client
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   
   // DOM Elements
@@ -178,36 +172,57 @@
   const showSignupBtn = document.getElementById('showSignupBtn');
   const showLoginBtn = document.getElementById('showLoginBtn');
   const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
-  const loginSubmitBtn = document.getElementById('loginSubmitBtn');
-  const signupSubmitBtn = document.getElementById('signupSubmitBtn');
+  const loginBtn = document.getElementById('loginBtn');
+  const signupBtn = document.getElementById('signupBtn');
   const messageContainer = document.getElementById('messageContainer');
   
-  // Utility: Display messages
+  // Show message function
   function showMessage(text, type) {
     messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
     setTimeout(() => {
       messageContainer.innerHTML = '';
-    }, 6000); // Increased timeout slightly so users have time to read
+    }, 5000);
   }
   
-  // Toggle Forms
-  showSignupBtn.addEventListener('click', () => {
+  // Test Supabase connection on load
+  async function testConnection() {
+    console.log('Testing Supabase connection...');
+    const { data, error } = await supabase.from('users').select('count', { count: 'exact', head: true });
+    if (error) {
+      console.error('Supabase connection error:', error);
+      showMessage('Database connection error. Please check configuration.', 'error');
+    } else {
+      console.log('Supabase connected successfully!');
+    }
+  }
+  testConnection();
+  
+  // Toggle to Signup form
+  showSignupBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('Switching to signup form');
     loginForm.style.display = 'none';
     signupForm.style.display = 'block';
     messageContainer.innerHTML = '';
   });
   
-  showLoginBtn.addEventListener('click', () => {
+  // Toggle to Login form
+  showLoginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('Switching to login form');
     signupForm.style.display = 'none';
     loginForm.style.display = 'block';
     messageContainer.innerHTML = '';
   });
   
-  // --- LOGIN LOGIC ---
+  // ============================================
+  // LOGIN HANDLER
+  // ============================================
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    console.log('Login form submitted');
     
-    const email = document.getElementById('loginEmail').value.trim();
+    const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
     if (!email || !password) {
@@ -215,60 +230,60 @@
       return;
     }
     
-    // UI Loading state
-    loginSubmitBtn.disabled = true;
-    loginSubmitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<span class="spinner"></span> Logging in...';
     
-    // Authenticate with Supabase
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
+      console.error('Login error:', error);
       showMessage(error.message, 'error');
-      loginSubmitBtn.disabled = false;
-      loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
       return;
     }
     
-    // If login is successful, check user status in public.users table
-    if (data && data.user) {
-        const { data: profile, error: profileError } = await supabase
-          .from('users')
-          .select('status, role')
-          .eq('id', data.user.id)
-          .single();
-        
-        if (profileError) {
-          // If they exist in auth but not in the users table yet
-          showMessage('User profile not found in database.', 'error');
-          await supabase.auth.signOut();
-          loginSubmitBtn.disabled = false;
-          loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
-          return;
-        }
-        
-        // Check Admin Approval Status
-        if (profile.status !== 'active') {
-          showMessage('Your account is pending admin approval', 'error');
-          await supabase.auth.signOut();
-          loginSubmitBtn.disabled = false;
-          loginSubmitBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
-          return;
-        }
-        
-        // SUCCESS: Move to proper page
-        showMessage('Login successful! Redirecting...', 'success');
-        setTimeout(() => {
-          window.location.href = 'dashboard.html'; // Ensure dashboard.html exists!
-        }, 1500);
+    console.log('Login successful:', data.user.id);
+    
+    // Check user status in users table
+    const { data: profile, error: profileError } = await supabase
+      .from('users')
+      .select('status, role')
+      .eq('id', data.user.id)
+      .single();
+    
+    if (profileError) {
+      console.error('Profile error:', profileError);
+      showMessage('User profile not found', 'error');
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
+      return;
     }
+    
+    if (profile.status !== 'active') {
+      showMessage(`Your account is ${profile.status}. Please wait for admin approval.`, 'error');
+      await supabase.auth.signOut();
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = 'Login <i class="fas fa-arrow-right"></i>';
+      return;
+    }
+    
+    showMessage('Login successful! Redirecting...', 'success');
+    
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 1500);
   });
   
-  // --- SIGNUP LOGIC ---
+  // ============================================
+  // SIGNUP HANDLER
+  // ============================================
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    console.log('Signup form submitted');
     
-    const fullName = document.getElementById('fullName').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
+    const fullName = document.getElementById('fullName').value;
+    const email = document.getElementById('signupEmail').value;
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     
@@ -287,81 +302,72 @@
       return;
     }
     
-    // UI Loading State
-    signupSubmitBtn.disabled = true;
-    signupSubmitBtn.innerHTML = '<span class="spinner"></span> Creating account...';
+    signupBtn.disabled = true;
+    signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
     
-    // Create Auth User
-    const { data, error } = await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-            data: { full_name: fullName } // Good practice to store name in auth metadata too
-        }
-    });
+    const { data, error } = await supabase.auth.signUp({ email, password });
     
     if (error) {
+      console.error('Signup error:', error);
       showMessage(error.message, 'error');
-      signupSubmitBtn.disabled = false;
-      signupSubmitBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+      signupBtn.disabled = false;
+      signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
       return;
     }
     
-    // Insert into public.users table
-    if (data && data.user) {
-        const { error: insertError } = await supabase
-          .from('users')
-          .insert([{
-            id: data.user.id,
-            full_name: fullName,
-            email: email,
-            role: 'pending',
-            status: 'pending',
-            created_at: new Date().toISOString()
-          }]);
-        
-        if (insertError) {
-          console.error('Insert error:', insertError);
-          showMessage('Auth succeeded, but profile creation failed. Check console.', 'error');
-          signupSubmitBtn.disabled = false;
-          signupSubmitBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-          return;
-        }
-        
-        // SUCCESS: Switch to login
-        showMessage('Account created! Waiting for admin approval.', 'success');
-        
-        // Reset form
-        signupForm.reset();
-        
-        // Switch to login after 2.5 seconds
-        setTimeout(() => {
-          signupSubmitBtn.disabled = false;
-          signupSubmitBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-          signupForm.style.display = 'none';
-          loginForm.style.display = 'block';
-        }, 2500);
+    console.log('Signup successful:', data.user.id);
+    
+    // Insert into users table
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert([{
+        id: data.user.id,
+        full_name: fullName,
+        email: email,
+        role: 'pending',
+        status: 'pending',
+        created_at: new Date().toISOString()
+      }]);
+    
+    if (insertError) {
+      console.error('Insert error:', insertError);
+      showMessage(`Profile error: ${insertError.message}`, 'error');
+    } else {
+      showMessage('Account created! Waiting for admin approval.', 'success');
     }
+    
+    signupBtn.disabled = false;
+    signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+    
+    // Reset form
+    document.getElementById('fullName').value = '';
+    document.getElementById('signupEmail').value = '';
+    document.getElementById('signupPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+    
+    // Switch to login after 2 seconds
+    setTimeout(() => {
+      signupForm.style.display = 'none';
+      loginForm.style.display = 'block';
+    }, 2000);
   });
   
-  // --- FORGOT PASSWORD LOGIC ---
-  forgotPasswordBtn.addEventListener('click', async () => {
-    const email = document.getElementById('loginEmail').value.trim();
+  // ============================================
+  // FORGOT PASSWORD HANDLER
+  // ============================================
+  forgotPasswordBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
     
     if (!email) {
-      showMessage('Please enter your email address in the field above to reset password.', 'error');
+      showMessage('Please enter your email address', 'error');
       return;
     }
     
-    forgotPasswordBtn.innerText = "Sending...";
-    
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/reset-password.html', // Best practice: Explicit redirect
-    });
-    
-    forgotPasswordBtn.innerText = "Forgot Password?";
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
     
     if (error) {
+      console.error('Reset error:', error);
       showMessage(error.message, 'error');
     } else {
       showMessage(`Password reset link sent to ${email}`, 'success');
@@ -369,6 +375,7 @@
   });
   
   console.log('%c✨ O.M.Ocreation Auth System Ready', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
+  console.log('%c⚠️ Make sure you replaced SUPABASE_ANON_KEY with your real anon key (starts with eyJ)', 'color: #ffaa44; font-size: 12px;');
 </script>
 </body>
 </html>
