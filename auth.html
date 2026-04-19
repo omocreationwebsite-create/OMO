@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -30,7 +31,7 @@
     .logo i { font-size: 2.5rem; color: #ff4da6; }
     .logo h1 { font-size: 1.8rem; font-family: 'Playfair Display', serif; color: #1a1a2e; }
     .logo h1 span { color: #ff4da6; }
-    .logo p { color: #666; font-size: 0.85rem; }
+    .logo p { color: #666; font-size: 0.85rem; margin-top: 5px; }
     .input-group { margin-bottom: 20px; position: relative; }
     .input-group i {
       position: absolute;
@@ -84,19 +85,6 @@
       margin-right: 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .debug-panel {
-      margin-top: 20px;
-      background: #1a1a2e;
-      color: #00ff88;
-      padding: 12px;
-      border-radius: 12px;
-      font-family: monospace;
-      font-size: 11px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    .debug-panel h4 { color: #ff4da6; margin-bottom: 8px; }
-    .requirements { font-size: 0.7rem; color: #999; margin-top: 5px; padding-left: 15px; }
     @media (max-width: 480px) { .signup-card { padding: 30px 25px; } }
   </style>
 </head>
@@ -126,7 +114,6 @@
       <i class="fas fa-check-circle"></i>
       <input type="password" id="confirmPassword" placeholder="Confirm password" required>
     </div>
-    <div class="requirements"><i class="fas fa-info-circle"></i> Password must be at least 6 characters</div>
     <button type="submit" class="btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
     <div class="login-link">
       <p>Already have an account? <a href="login.html">Login</a></p>
@@ -134,150 +121,91 @@
   </form>
   
   <div id="messageContainer"></div>
-  
-  <div class="debug-panel">
-    <h4>🔍 Debug Console</h4>
-    <div id="debugLog">Initializing...</div>
-  </div>
 </div>
 
 <script>
-  (function() {
-    const debugLog = document.getElementById('debugLog');
-    function log(msg, type) {
-      const color = type === 'error' ? '#ff6b6b' : (type === 'success' ? '#00ff88' : '#ffaa44');
-      debugLog.innerHTML += `<div style="color: ${color}; margin-bottom: 3px;">${new Date().toLocaleTimeString()} - ${msg}</div>`;
-      debugLog.scrollTop = debugLog.scrollHeight;
-      console.log(msg);
+  // Supabase configuration
+  const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
+  
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  
+  const form = document.getElementById('signupForm');
+  const btn = document.getElementById('signupBtn');
+  const msgDiv = document.getElementById('messageContainer');
+  
+  function showMessage(text, type) {
+    msgDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+    setTimeout(() => { msgDiv.innerHTML = ''; }, 5000);
+  }
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('confirmPassword').value;
+    
+    if (!fullName || !email || !password) {
+      showMessage('Please fill all fields', 'error');
+      return;
+    }
+    if (password !== confirm) {
+      showMessage('Passwords do not match', 'error');
+      return;
+    }
+    if (password.length < 6) {
+      showMessage('Password must be at least 6 characters', 'error');
+      return;
     }
     
-    log('Signup page loaded');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Creating account...';
     
-    // Supabase configuration
-    const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
+    // Sign up with Supabase Auth
+    const { data, error } = await supabase.auth.signUp({ email, password });
     
-    // Check if Supabase library loaded
-    if (typeof window.supabase === 'undefined') {
-      log('❌ Supabase library not loaded!', 'error');
+    if (error) {
+      showMessage(error.message, 'error');
+      btn.disabled = false;
+      btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+      return;
+    }
+    
+    // Insert into users table
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert([{
+        id: data.user.id,
+        full_name: fullName,
+        email: email,
+        role: 'pending',
+        status: 'pending',
+        created_at: new Date().toISOString()
+      }]);
+    
+    if (insertError) {
+      console.error('Insert error:', insertError);
+      showMessage(`Database error: ${insertError.message}`, 'error');
     } else {
-      log('✅ Supabase library found', 'success');
+      showMessage('Account created! Please wait for admin approval.', 'success');
+      
+      // Reset form
+      document.getElementById('fullName').value = '';
+      document.getElementById('signupEmail').value = '';
+      document.getElementById('signupPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
     }
     
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    log('Supabase client created');
-    
-    // Test connection by counting users
-    async function testConnection() {
-      try {
-        const { count, error } = await supabaseClient.from('users').select('*', { count: 'exact', head: true });
-        if (error) {
-          log(`❌ Connection test failed: ${error.message}`, 'error');
-        } else {
-          log(`✅ Supabase connected! Users count: ${count}`, 'success');
-        }
-      } catch (err) {
-        log(`❌ Exception: ${err.message}`, 'error');
-      }
-    }
-    testConnection();
-    
-    const form = document.getElementById('signupForm');
-    const btn = document.getElementById('signupBtn');
-    const msgDiv = document.getElementById('messageContainer');
-    
-    function showMessage(text, type) {
-      msgDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
-      setTimeout(() => { msgDiv.innerHTML = ''; }, 5000);
-    }
-    
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      log('Signup form submitted - processing...');
-      
-      const fullName = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('signupEmail').value.trim();
-      const password = document.getElementById('signupPassword').value;
-      const confirm = document.getElementById('confirmPassword').value;
-      
-      log(`Name: ${fullName}, Email: ${email}`);
-      
-      if (!fullName || !email || !password) {
-        log('❌ Missing fields', 'error');
-        showMessage('Please fill all fields', 'error');
-        return;
-      }
-      if (password !== confirm) {
-        log('❌ Passwords do not match', 'error');
-        showMessage('Passwords do not match', 'error');
-        return;
-      }
-      if (password.length < 6) {
-        log('❌ Password too short', 'error');
-        showMessage('Password must be at least 6 characters', 'error');
-        return;
-      }
-      
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Creating account...';
-      
-      try {
-        log('Calling supabase.auth.signUp...');
-        const { data, error } = await supabaseClient.auth.signUp({ email, password });
-        
-        if (error) {
-          log(`❌ Signup error: ${error.message}`, 'error');
-          showMessage(error.message, 'error');
-          btn.disabled = false;
-          btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-          return;
-        }
-        
-        log(`✅ User created in Auth: ${data.user.id}`, 'success');
-        
-        // Insert into users table
-        log('Inserting into users table...');
-        const { error: insertError } = await supabaseClient
-          .from('users')
-          .insert([{
-            id: data.user.id,
-            full_name: fullName,
-            email: email,
-            role: 'pending',
-            status: 'pending',
-            created_at: new Date().toISOString()
-          }]);
-        
-        if (insertError) {
-          log(`❌ Insert error: ${insertError.message}`, 'error');
-          showMessage(`Profile error: ${insertError.message}`, 'error');
-        } else {
-          log('✅ User record inserted', 'success');
-          showMessage('Account created! Please login after admin approval.', 'success');
-          
-          // Reset form
-          document.getElementById('fullName').value = '';
-          document.getElementById('signupEmail').value = '';
-          document.getElementById('signupPassword').value = '';
-          document.getElementById('confirmPassword').value = '';
-          
-          // Redirect to login after delay
-          setTimeout(() => {
-            log('Redirecting to login page...');
-            window.location.href = 'login.html';
-          }, 2500);
-        }
-      } catch (err) {
-        log(`❌ Unexpected error: ${err.message}`, 'error');
-        showMessage('Network error. Please check your connection.', 'error');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-      }
-    });
-    
-    log('Signup page ready - waiting for form submission');
-  })();
+    btn.disabled = false;
+    btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+  });
 </script>
 </body>
 </html>
