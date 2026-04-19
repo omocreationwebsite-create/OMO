@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -31,7 +30,7 @@
     .logo i { font-size: 2.5rem; color: #ff4da6; }
     .logo h1 { font-size: 1.8rem; font-family: 'Playfair Display', serif; color: #1a1a2e; }
     .logo h1 span { color: #ff4da6; }
-    .logo p { color: #666; font-size: 0.85rem; margin-top: 5px; }
+    .logo p { color: #666; font-size: 0.85rem; }
     .input-group { margin-bottom: 20px; position: relative; }
     .input-group i {
       position: absolute;
@@ -93,10 +92,10 @@
       border-radius: 12px;
       font-family: monospace;
       font-size: 11px;
-      max-height: 150px;
+      max-height: 200px;
       overflow-y: auto;
     }
-    .debug-panel h4 { color: #ff4da6; margin-bottom: 8px; font-size: 12px; }
+    .debug-panel h4 { color: #ff4da6; margin-bottom: 8px; }
     .requirements { font-size: 0.7rem; color: #999; margin-top: 5px; padding-left: 15px; }
     @media (max-width: 480px) { .signup-card { padding: 30px 25px; } }
   </style>
@@ -154,11 +153,34 @@
     
     log('Signup page loaded');
     
+    // Supabase configuration
     const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
     
+    // Check if Supabase library loaded
+    if (typeof window.supabase === 'undefined') {
+      log('❌ Supabase library not loaded!', 'error');
+    } else {
+      log('✅ Supabase library found', 'success');
+    }
+    
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     log('Supabase client created');
+    
+    // Test connection by counting users
+    async function testConnection() {
+      try {
+        const { count, error } = await supabaseClient.from('users').select('*', { count: 'exact', head: true });
+        if (error) {
+          log(`❌ Connection test failed: ${error.message}`, 'error');
+        } else {
+          log(`✅ Supabase connected! Users count: ${count}`, 'success');
+        }
+      } catch (err) {
+        log(`❌ Exception: ${err.message}`, 'error');
+      }
+    }
+    testConnection();
     
     const form = document.getElementById('signupForm');
     const btn = document.getElementById('signupBtn');
@@ -171,22 +193,27 @@
     
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      log('Signup attempt');
+      log('Signup form submitted - processing...');
       
-      const fullName = document.getElementById('fullName').value;
-      const email = document.getElementById('signupEmail').value;
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
       const password = document.getElementById('signupPassword').value;
       const confirm = document.getElementById('confirmPassword').value;
       
+      log(`Name: ${fullName}, Email: ${email}`);
+      
       if (!fullName || !email || !password) {
+        log('❌ Missing fields', 'error');
         showMessage('Please fill all fields', 'error');
         return;
       }
       if (password !== confirm) {
+        log('❌ Passwords do not match', 'error');
         showMessage('Passwords do not match', 'error');
         return;
       }
       if (password.length < 6) {
+        log('❌ Password too short', 'error');
         showMessage('Password must be at least 6 characters', 'error');
         return;
       }
@@ -194,43 +221,62 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Creating account...';
       
-      const { data, error } = await supabaseClient.auth.signUp({ email, password });
-      
-      if (error) {
-        log(`Signup error: ${error.message}`, 'error');
-        showMessage(error.message, 'error');
+      try {
+        log('Calling supabase.auth.signUp...');
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        
+        if (error) {
+          log(`❌ Signup error: ${error.message}`, 'error');
+          showMessage(error.message, 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
+          return;
+        }
+        
+        log(`✅ User created in Auth: ${data.user.id}`, 'success');
+        
+        // Insert into users table
+        log('Inserting into users table...');
+        const { error: insertError } = await supabaseClient
+          .from('users')
+          .insert([{
+            id: data.user.id,
+            full_name: fullName,
+            email: email,
+            role: 'pending',
+            status: 'pending',
+            created_at: new Date().toISOString()
+          }]);
+        
+        if (insertError) {
+          log(`❌ Insert error: ${insertError.message}`, 'error');
+          showMessage(`Profile error: ${insertError.message}`, 'error');
+        } else {
+          log('✅ User record inserted', 'success');
+          showMessage('Account created! Please login after admin approval.', 'success');
+          
+          // Reset form
+          document.getElementById('fullName').value = '';
+          document.getElementById('signupEmail').value = '';
+          document.getElementById('signupPassword').value = '';
+          document.getElementById('confirmPassword').value = '';
+          
+          // Redirect to login after delay
+          setTimeout(() => {
+            log('Redirecting to login page...');
+            window.location.href = 'login.html';
+          }, 2500);
+        }
+      } catch (err) {
+        log(`❌ Unexpected error: ${err.message}`, 'error');
+        showMessage('Network error. Please check your connection.', 'error');
+      } finally {
         btn.disabled = false;
         btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
-        return;
       }
-      
-      log(`User created: ${data.user.id}`, 'success');
-      
-      const { error: insertErr } = await supabaseClient
-        .from('users')
-        .insert([{
-          id: data.user.id,
-          full_name: fullName,
-          email: email,
-          role: 'pending',
-          status: 'pending',
-          created_at: new Date().toISOString()
-        }]);
-      
-      if (insertErr) {
-        log(`Insert error: ${insertErr.message}`, 'error');
-        showMessage(`Profile error: ${insertErr.message}`, 'error');
-      } else {
-        log('User record inserted', 'success');
-        showMessage('Account created! Please login after admin approval.', 'success');
-        setTimeout(() => { window.location.href = 'login.html'; }, 2500);
-      }
-      
-      btn.disabled = false;
-      btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
     });
     
-    log('Signup page ready');
+    log('Signup page ready - waiting for form submission');
   })();
 </script>
 </body>
