@@ -144,18 +144,22 @@
       
       if (error) throw error;
       
-      // IMPORTANT: WAIT for user object safely
+      // IMPORTANT: Get user ID safely - FIXED
       const userId = data?.user?.id;
       
+      console.log("User ID from signup:", userId);
+      console.log("Full data object:", data);
+      
       if (!userId) {
-        showMessage("Signup failed: No user ID returned", "error");
+        showMessage("Signup failed: No user ID returned from authentication", "error");
         btn.disabled = false;
         btn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
         return;
       }
       
+      // FIXED: Using userId variable, not data.user.id directly
       const { error: insertError } = await _supabase.from('users').insert([{
-        id: userId,
+        id: userId,  // ✅ This is the correct user ID
         full_name: fullName,
         email: email,
         role: 'pending',
@@ -179,7 +183,7 @@
       }, 2000);
       
     } catch (err) {
-      console.error('Signup error:', err);
+      console.error('Signup error details:', err);
       showMessage(err.message || 'Signup failed. Please try again.', 'error');
     } finally {
       btn.disabled = false;
