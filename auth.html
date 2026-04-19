@@ -26,8 +26,8 @@
       position: relative;
     }
     
-    /* Animated Background Particles */
-    .particles {
+    /* Animated Background */
+    .bg-animation {
       position: fixed;
       top: 0;
       left: 0;
@@ -37,18 +37,45 @@
       overflow: hidden;
     }
     
-    .particle {
+    .orb {
       position: absolute;
-      background: radial-gradient(circle, rgba(255,77,166,0.3), transparent);
+      background: radial-gradient(circle, rgba(255,77,166,0.15), transparent);
       border-radius: 50%;
-      animation: floatParticle 15s infinite ease-in-out;
+      animation: floatOrb 20s infinite ease-in-out;
     }
     
-    @keyframes floatParticle {
-      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-      10% { opacity: 0.5; }
-      90% { opacity: 0.5; }
-      100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+    @keyframes floatOrb {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(50px, -50px) scale(1.1); }
+      50% { transform: translate(-30px, 30px) scale(0.9); }
+      75% { transform: translate(40px, 40px) scale(1.05); }
+    }
+    
+    /* Back to Homepage Button */
+    .back-home {
+      position: fixed;
+      top: 25px;
+      left: 25px;
+      z-index: 100;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .back-home:hover {
+      background: rgba(255,77,166,0.8);
+      transform: translateX(-5px);
+      border-color: transparent;
     }
     
     /* Main Container */
@@ -62,141 +89,122 @@
       z-index: 1;
     }
     
-    /* Glass Morphism Card */
     .auth-wrapper {
-      max-width: 1200px;
+      max-width: 1300px;
       width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(15px);
-      border-radius: 40px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      overflow: hidden;
-      animation: fadeInUp 0.8s ease-out;
-    }
-    
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .auth-grid {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    
-    /* Left Side - Human Illustration */
-    .auth-illustration {
-      flex: 1;
-      min-width: 300px;
-      background: linear-gradient(135deg, rgba(255,77,166,0.1), rgba(255,133,193,0.05));
-      padding: 50px 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       position: relative;
-      overflow: hidden;
+      min-height: 600px;
     }
     
-    /* Floating human figure SVG */
+    /* Human Figure Container */
+    .figure-container {
+      position: absolute;
+      left: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .figure-container.moved {
+      left: 35%;
+    }
+    
+    .figure-container.resting {
+      left: 30%;
+      transform: translateY(-50%) rotate(2deg);
+    }
+    
     .human-figure {
-      position: relative;
       width: 280px;
       height: 280px;
-      margin-bottom: 30px;
-      animation: floatHuman 4s ease-in-out infinite;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
     }
     
-    @keyframes floatHuman {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-15px); }
+    .human-figure:hover {
+      transform: scale(1.02);
     }
     
     .human-figure svg {
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
     }
     
-    .illustration-text {
-      text-align: center;
-      color: white;
+    /* Walking animation */
+    @keyframes walk {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(10px) rotate(2deg); }
+      75% { transform: translateX(-5px) rotate(-1deg); }
     }
     
-    .illustration-text h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #ff4da6, #ff85c1);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+    .figure-container.walking {
+      animation: walk 0.8s ease-in-out infinite;
     }
     
-    .illustration-text p {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      line-height: 1.6;
-    }
-    
-    .decorative-circles {
+    /* Speech Bubble */
+    .speech-bubble {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
-      right: 20px;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-    
-    .circle {
-      width: 8px;
-      height: 8px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    
-    .circle:nth-child(2) { animation-delay: 0.3s; }
-    .circle:nth-child(3) { animation-delay: 0.6s; }
-    .circle:nth-child(4) { animation-delay: 0.9s; }
-    .circle:nth-child(5) { animation-delay: 1.2s; }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.3); }
-    }
-    
-    /* Right Side - Form */
-    .auth-form-container {
-      flex: 1;
-      min-width: 350px;
-      padding: 50px 40px;
-      background: rgba(255, 255, 255, 0.95);
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 12px 20px;
       border-radius: 30px;
-      margin: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      animation: slideInRight 0.8s ease-out;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #ff4da6;
+      white-space: nowrap;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
     }
     
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid white;
     }
     
+    .speech-bubble.show {
+      opacity: 1;
+    }
+    
+    /* Form Container - Floating */
+    .form-container {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 420px;
+      max-width: 90%;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      padding: 40px 35px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 5;
+    }
+    
+    .form-container.moved {
+      right: 30%;
+      transform: translateY(-50%) scale(0.95);
+    }
+    
+    .form-container.center {
+      right: 50%;
+      transform: translate(50%, -50%);
+    }
+    
+    /* Form Header */
     .form-header {
       text-align: center;
       margin-bottom: 30px;
@@ -208,48 +216,19 @@
     }
     
     .form-header h1 {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       color: #1a1a2e;
       font-weight: 700;
     }
     
     .form-header p {
       color: #666;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
     
-    /* Toggle Buttons */
-    .toggle-buttons {
-      display: flex;
-      gap: 15px;
-      background: #f0f0f0;
-      border-radius: 60px;
-      padding: 5px;
-      margin-bottom: 30px;
-    }
-    
-    .toggle-btn {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      background: transparent;
-      font-weight: 600;
-      font-size: 1rem;
-      border-radius: 60px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      color: #666;
-    }
-    
-    .toggle-btn.active {
-      background: linear-gradient(135deg, #ff4da6, #e6398c);
-      color: white;
-      box-shadow: 0 5px 15px rgba(255,77,166,0.3);
-    }
-    
-    /* Form Inputs */
+    /* Input Groups */
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       position: relative;
     }
     
@@ -291,23 +270,6 @@
       cursor: pointer;
       transition: all 0.3s ease;
       margin-top: 10px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .submit-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: 0.5s;
-    }
-    
-    .submit-btn:hover::before {
-      left: 100%;
     }
     
     .submit-btn:hover {
@@ -320,26 +282,57 @@
       transform: none;
     }
     
+    /* Form Footer Links */
+    .form-footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    
+    .form-footer a {
+      color: #ff4da6;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .signup-prompt {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      color: #666;
+      text-align: center;
+    }
+    
+    .signup-prompt a {
+      color: #ff4da6;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    
     /* Message */
     .message {
-      margin-top: 20px;
-      padding: 12px;
+      margin-top: 15px;
+      padding: 10px;
       border-radius: 12px;
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       animation: fadeIn 0.3s ease;
     }
     
     .message.success {
       background: rgba(46, 204, 113, 0.1);
       color: #27ae60;
-      border: 1px solid rgba(46, 204, 113, 0.3);
     }
     
     .message.error {
       background: rgba(231, 76, 60, 0.1);
       color: #e74c3c;
-      border: 1px solid rgba(231, 76, 60, 0.3);
     }
     
     @keyframes fadeIn {
@@ -347,48 +340,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Responsive */
-    @media (max-width: 992px) {
-      .auth-grid {
-        flex-direction: column;
-      }
-      
-      .auth-illustration {
-        padding: 40px 20px;
-      }
-      
-      .human-figure {
-        width: 200px;
-        height: 200px;
-      }
-      
-      .auth-form-container {
-        margin: 20px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .auth-form-container {
-        padding: 30px 20px;
-        margin: 15px;
-      }
-      
-      .toggle-btn {
-        padding: 10px;
-        font-size: 0.9rem;
-      }
-      
-      .human-figure {
-        width: 150px;
-        height: 150px;
-      }
-      
-      .illustration-text h2 {
-        font-size: 1.3rem;
-      }
-    }
-    
-    /* Loading spinner */
+    /* Loading Spinner */
     .spinner {
       display: inline-block;
       width: 18px;
@@ -403,158 +355,204 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+    
+    /* Hide/Show forms */
+    .hidden-form {
+      display: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+      .figure-container {
+        display: none;
+      }
+      
+      .form-container {
+        position: relative;
+        right: auto;
+        top: auto;
+        transform: none;
+        margin: 0 auto;
+      }
+      
+      .form-container.moved,
+      .form-container.center {
+        position: relative;
+        right: auto;
+        transform: none;
+        margin: 0 auto;
+      }
+      
+      .back-home {
+        top: 15px;
+        left: 15px;
+        padding: 8px 16px;
+        font-size: 0.8rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 30px 20px;
+      }
+      
+      .form-header h1 {
+        font-size: 1.3rem;
+      }
+    }
   </style>
 </head>
 <body>
 
-<!-- Animated Particles -->
-<div class="particles" id="particles"></div>
+<!-- Back to Homepage Button -->
+<a href="index.html" class="back-home">
+  <i class="fas fa-arrow-left"></i> Back to Homepage
+</a>
+
+<div class="bg-animation" id="bgAnimation"></div>
 
 <div class="auth-container">
   <div class="auth-wrapper">
-    <div class="auth-grid">
-      
-      <!-- Left Side - Human Illustration -->
-      <div class="auth-illustration">
-        <div class="human-figure">
-          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Glow behind figure -->
-            <circle cx="100" cy="100" r="80" fill="url(#glowGradient)" opacity="0.3"/>
-            <defs>
-              <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#ff4da6"/>
-                <stop offset="100%" stop-color="transparent"/>
-              </radialGradient>
-            </defs>
-            
-            <!-- Body / Dress -->
-            <path d="M70 80 L130 80 L140 160 L60 160 Z" fill="url(#dressGradient)" stroke="#ff4da6" stroke-width="1.5"/>
-            <defs>
-              <linearGradient id="dressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ff4da6"/>
-                <stop offset="100%" stop-color="#e6398c"/>
-              </linearGradient>
-            </defs>
-            
-            <!-- Head -->
-            <circle cx="100" cy="55" r="25" fill="#FFE0BD" stroke="#ff4da6" stroke-width="1.5"/>
-            
-            <!-- Hair -->
-            <path d="M75 50 Q75 25 100 25 Q125 25 125 50" fill="#2d1b0e" stroke="#2d1b0e" stroke-width="1"/>
-            <path d="M75 50 Q70 40 72 35" stroke="#2d1b0e" stroke-width="3" fill="none"/>
-            <path d="M125 50 Q130 40 128 35" stroke="#2d1b0e" stroke-width="3" fill="none"/>
-            
-            <!-- Eyes -->
-            <ellipse cx="90" cy="55" rx="3" ry="4" fill="#1a1a2e"/>
-            <ellipse cx="110" cy="55" rx="3" ry="4" fill="#1a1a2e"/>
-            <circle cx="91" cy="54" r="1" fill="white"/>
-            <circle cx="111" cy="54" r="1" fill="white"/>
-            
-            <!-- Smile -->
-            <path d="M93 63 Q100 70 107 63" stroke="#e6398c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            
-            <!-- Crown/Tiara -->
-            <path d="M85 32 L90 22 L95 30 L100 20 L105 30 L110 22 L115 32" fill="#ffd700" stroke="#ffd700" stroke-width="1"/>
-            <circle cx="100" cy="24" r="2" fill="#ff4da6"/>
-            
-            <!-- Necklace -->
-            <path d="M90 72 Q100 80 110 72" stroke="#ffd700" stroke-width="1.5" fill="none"/>
-            <circle cx="100" cy="76" r="2" fill="#ff4da6"/>
-            
-            <!-- Arms -->
-            <path d="M70 90 L50 110 L55 125" stroke="#FFE0BD" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M130 90 L150 110 L145 125" stroke="#FFE0BD" stroke-width="6" fill="none" stroke-linecap="round"/>
-            
-            <!-- Hands with stones -->
-            <circle cx="55" cy="125" r="4" fill="#ff4da6"/>
-            <circle cx="145" cy="125" r="4" fill="#ff4da6"/>
-          </svg>
-        </div>
-        <div class="illustration-text">
-          <h2>Welcome to O.M.Ocreation</h2>
-          <p>Your gateway to luxury stone fashion, premium rhinestones, and bridal elegance.</p>
-        </div>
-        <div class="decorative-circles">
-          <div class="circle"></div>
-          <div class="circle"></div>
-          <div class="circle"></div>
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-      </div>
-      
-      <!-- Right Side - Login/Signup Form -->
-      <div class="auth-form-container">
-        <div class="form-header">
-          <div class="logo-icon">💎</div>
-          <h1>O.M.O<span style="color:#ff4da6">creation</span></h1>
-          <p>Luxury Stone Fashion System</p>
-        </div>
-        
-        <!-- Toggle Buttons -->
-        <div class="toggle-buttons">
-          <button class="toggle-btn" id="loginTab">Login</button>
-          <button class="toggle-btn" id="signupTab">Sign Up</button>
-        </div>
-        
-        <!-- Login Form -->
-        <form id="loginForm">
-          <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="loginEmail" placeholder="Email address" required>
-          </div>
-          <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-          </div>
-          <button type="submit" class="submit-btn" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
-        </form>
-        
-        <!-- Signup Form (hidden by default) -->
-        <form id="signupForm" style="display: none;">
-          <div class="input-group">
-            <i class="fas fa-user"></i>
-            <input type="text" id="fullName" placeholder="Full name" required>
-          </div>
-          <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="signupEmail" placeholder="Email address" required>
-          </div>
-          <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
-          </div>
-          <div class="input-group">
-            <i class="fas fa-check-circle"></i>
-            <input type="password" id="confirmPassword" placeholder="Confirm password" required>
-          </div>
-          <button type="submit" class="submit-btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
-        </form>
-        
-        <div id="message" class="message" style="display: none;"></div>
+    
+    <!-- Human Figure that pulls the form -->
+    <div class="figure-container" id="figureContainer">
+      <div class="speech-bubble" id="speechBubble">✨ Pulling the form for you! ✨</div>
+      <div class="human-figure" id="humanFigure">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ff4da6"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+            <linearGradient id="dressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff4da6"/>
+              <stop offset="100%" stop-color="#e6398c"/>
+            </linearGradient>
+          </defs>
+          
+          <circle cx="100" cy="100" r="80" fill="url(#glowGradient)" opacity="0.3"/>
+          
+          <!-- Body/Dress -->
+          <path d="M70 80 L130 80 L140 160 L60 160 Z" fill="url(#dressGradient)" stroke="#ff4da6" stroke-width="1.5"/>
+          
+          <!-- Head -->
+          <circle cx="100" cy="55" r="25" fill="#FFE0BD" stroke="#ff4da6" stroke-width="1.5"/>
+          
+          <!-- Hair -->
+          <path d="M75 50 Q75 25 100 25 Q125 25 125 50" fill="#2d1b0e"/>
+          <path d="M75 50 Q70 40 72 35" stroke="#2d1b0e" stroke-width="3" fill="none"/>
+          <path d="M125 50 Q130 40 128 35" stroke="#2d1b0e" stroke-width="3" fill="none"/>
+          
+          <!-- Eyes -->
+          <ellipse cx="90" cy="55" rx="3" ry="4" fill="#1a1a2e" class="eye-left"/>
+          <ellipse cx="110" cy="55" rx="3" ry="4" fill="#1a1a2e" class="eye-right"/>
+          <circle cx="91" cy="54" r="1" fill="white"/>
+          <circle cx="111" cy="54" r="1" fill="white"/>
+          
+          <!-- Smile -->
+          <path d="M93 63 Q100 70 107 63" stroke="#e6398c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          
+          <!-- Crown -->
+          <path d="M85 32 L90 22 L95 30 L100 20 L105 30 L110 22 L115 32" fill="#ffd700" stroke="#ffd700" stroke-width="1"/>
+          <circle cx="100" cy="24" r="2" fill="#ff4da6"/>
+          
+          <!-- Necklace -->
+          <path d="M90 72 Q100 80 110 72" stroke="#ffd700" stroke-width="1.5" fill="none"/>
+          <circle cx="100" cy="76" r="2" fill="#ff4da6"/>
+          
+          <!-- Arms (pulling motion) -->
+          <path d="M70 90 L45 105 L40 120" stroke="#FFE0BD" stroke-width="6" fill="none" stroke-linecap="round" class="arm-left"/>
+          <path d="M130 90 L155 105 L160 120" stroke="#FFE0BD" stroke-width="6" fill="none" stroke-linecap="round" class="arm-right"/>
+          
+          <!-- Hands -->
+          <circle cx="40" cy="120" r="5" fill="#ff4da6" class="hand-left"/>
+          <circle cx="160" cy="120" r="5" fill="#ff4da6" class="hand-right"/>
+        </svg>
       </div>
     </div>
+    
+    <!-- Floating Form Container -->
+    <div class="form-container" id="formContainer">
+      <div class="form-header">
+        <div class="logo-icon">💎</div>
+        <h1>O.M.O<span style="color:#ff4da6">creation</span></h1>
+        <p>Luxury Stone Fashion System</p>
+      </div>
+      
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="loginEmail" placeholder="Email address" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder="Password" required>
+        </div>
+        <button type="submit" class="submit-btn" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
+        
+        <div class="form-footer">
+          <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+        </div>
+        
+        <div class="signup-prompt">
+          Don't have an account? <a href="#" id="showSignupLink">Sign Up</a>
+        </div>
+      </form>
+      
+      <!-- Signup Form (hidden initially) -->
+      <form id="signupForm" class="hidden-form">
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="fullName" placeholder="Full name" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="signupEmail" placeholder="Email address" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-check-circle"></i>
+          <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+        </div>
+        <button type="submit" class="submit-btn" id="signupBtn">Create Account <i class="fas fa-user-plus"></i></button>
+        
+        <div class="form-footer">
+          <a href="#" id="showLoginLink">← Back to Login</a>
+        </div>
+      </form>
+      
+      <div id="message" class="message" style="display: none;"></div>
+    </div>
+    
   </div>
 </div>
 
 <script>
-  // Supabase Configuration
+  // ============================================
+  // SUPABASE CONFIGURATION (YOUR REAL KEYS)
+  // ============================================
   const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_-JgM9Qf8t9AV3G_rxYXMAA_6YMm8bSg";
-  
-  // Initialize Supabase
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   
   // DOM Elements
-  const loginTab = document.getElementById('loginTab');
-  const signupTab = document.getElementById('signupTab');
+  const figureContainer = document.getElementById('figureContainer');
+  const formContainer = document.getElementById('formContainer');
+  const speechBubble = document.getElementById('speechBubble');
+  
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
   const loginBtn = document.getElementById('loginBtn');
   const signupBtn = document.getElementById('signupBtn');
+  const showSignupLink = document.getElementById('showSignupLink');
+  const showLoginLink = document.getElementById('showLoginLink');
+  const forgotPasswordLink = document.getElementById('forgotPasswordLink');
   const messageDiv = document.getElementById('message');
   
-  // Current mode
   let isLoginMode = true;
   
   // Show message function
@@ -567,27 +565,60 @@
     }, 5000);
   }
   
-  // Toggle between login and signup
-  function toggleMode(isLogin) {
-    isLoginMode = isLogin;
+  // ANIMATION: Human figure pulls form to center
+  function animateFigurePulling() {
+    speechBubble.classList.add('show');
+    figureContainer.classList.add('walking');
     
-    if (isLogin) {
-      loginForm.style.display = 'block';
-      signupForm.style.display = 'none';
-      loginTab.classList.add('active');
-      signupTab.classList.remove('active');
-    } else {
-      loginForm.style.display = 'none';
-      signupForm.style.display = 'block';
-      signupTab.classList.add('active');
-      loginTab.classList.remove('active');
-    }
+    setTimeout(() => {
+      figureContainer.classList.add('moved');
+    }, 500);
+    
+    setTimeout(() => {
+      formContainer.classList.add('center');
+    }, 800);
+    
+    setTimeout(() => {
+      figureContainer.classList.remove('walking');
+      figureContainer.classList.add('resting');
+      speechBubble.textContent = '💎 Here to serve you! 💎';
+      
+      // Make eyes blink
+      setInterval(() => {
+        const leftEye = document.querySelector('.eye-left');
+        const rightEye = document.querySelector('.eye-right');
+        if (leftEye && rightEye) {
+          leftEye.setAttribute('ry', '1');
+          rightEye.setAttribute('ry', '1');
+          setTimeout(() => {
+            leftEye.setAttribute('ry', '4');
+            rightEye.setAttribute('ry', '4');
+          }, 150);
+        }
+      }, 3000);
+    }, 2000);
+    
+    setTimeout(() => {
+      speechBubble.classList.remove('show');
+    }, 6000);
+  }
+  
+  // Toggle between Login and Signup forms
+  function showLogin() {
+    isLoginMode = true;
+    loginForm.classList.remove('hidden-form');
+    signupForm.classList.add('hidden-form');
+  }
+  
+  function showSignup() {
+    isLoginMode = false;
+    loginForm.classList.add('hidden-form');
+    signupForm.classList.remove('hidden-form');
   }
   
   // Login handler
   async function handleLogin(e) {
     e.preventDefault();
-    
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
@@ -599,10 +630,7 @@
     loginBtn.disabled = true;
     loginBtn.innerHTML = '<span class="spinner"></span> Logging in...';
     
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
       showMessage(error.message, 'error');
@@ -635,7 +663,6 @@
     
     showMessage('Login successful! Redirecting...', 'success');
     
-    // Redirect based on role
     setTimeout(() => {
       if (userData.role === 'admin') {
         window.location.href = 'admin-dashboard.html';
@@ -674,10 +701,7 @@
     signupBtn.disabled = true;
     signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
     
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password
-    });
+    const { data, error } = await supabase.auth.signUp({ email, password });
     
     if (error) {
       showMessage(error.message, 'error');
@@ -689,62 +713,93 @@
     // Insert user into users table
     const { error: insertError } = await supabase
       .from('users')
-      .insert([
-        {
-          id: data.user.id,
-          full_name: fullName,
-          email: email,
-          role: 'pending',
-          status: 'pending',
-          created_at: new Date().toISOString()
-        }
-      ]);
+      .insert([{
+        id: data.user.id,
+        full_name: fullName,
+        email: email,
+        role: 'pending',
+        status: 'pending',
+        created_at: new Date().toISOString()
+      }]);
     
     if (insertError) {
       console.error('Error inserting user:', insertError);
     }
     
-    showMessage('Account created! Waiting for admin approval. You will receive an email when approved.', 'success');
+    showMessage('Account created! Waiting for admin approval.', 'success');
     signupBtn.disabled = false;
     signupBtn.innerHTML = 'Create Account <i class="fas fa-user-plus"></i>';
     
-    // Reset form
+    // Reset form and switch to login
     document.getElementById('fullName').value = '';
     document.getElementById('signupEmail').value = '';
     document.getElementById('signupPassword').value = '';
     document.getElementById('confirmPassword').value = '';
     
-    // Switch to login mode after 3 seconds
-    setTimeout(() => {
-      toggleMode(true);
-    }, 3000);
+    setTimeout(() => showLogin(), 2000);
+  }
+  
+  // Forgot password handler
+  async function handleForgotPassword(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    
+    if (!email) {
+      showMessage('Please enter your email address to reset password', 'error');
+      return;
+    }
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/reset-password.html',
+    });
+    
+    if (error) {
+      showMessage(error.message, 'error');
+    } else {
+      showMessage(`Password reset link sent to ${email}. Check your inbox.`, 'success');
+    }
   }
   
   // Event listeners
-  loginTab.addEventListener('click', () => toggleMode(true));
-  signupTab.addEventListener('click', () => toggleMode(false));
+  showSignupLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSignup();
+  });
+  
+  showLoginLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showLogin();
+  });
+  
+  forgotPasswordLink.addEventListener('click', handleForgotPassword);
   loginForm.addEventListener('submit', handleLogin);
   signupForm.addEventListener('submit', handleSignup);
   
-  // Create floating particles
-  function createParticles() {
-    const container = document.getElementById('particles');
-    for (let i = 0; i < 30; i++) {
-      const particle = document.createElement('div');
-      particle.classList.add('particle');
-      const size = Math.random() * 100 + 30;
-      particle.style.width = size + 'px';
-      particle.style.height = size + 'px';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 15 + 's';
-      particle.style.animationDuration = Math.random() * 20 + 10 + 's';
-      container.appendChild(particle);
+  // Create background orbs
+  function createOrbs() {
+    const container = document.getElementById('bgAnimation');
+    for (let i = 0; i < 20; i++) {
+      const orb = document.createElement('div');
+      orb.classList.add('orb');
+      const size = Math.random() * 200 + 50;
+      orb.style.width = size + 'px';
+      orb.style.height = size + 'px';
+      orb.style.left = Math.random() * 100 + '%';
+      orb.style.top = Math.random() * 100 + '%';
+      orb.style.animationDelay = Math.random() * 15 + 's';
+      orb.style.animationDuration = Math.random() * 20 + 15 + 's';
+      container.appendChild(orb);
     }
   }
-  createParticles();
+  createOrbs();
+  
+  // Start animation on page load
+  setTimeout(() => {
+    animateFigurePulling();
+  }, 500);
   
   console.log('%c✨ O.M.Ocreation Authentication System Ready ✨', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
+  console.log('%cSupabase Connected ✅', 'color: #00ff88; font-size: 12px;');
 </script>
 </body>
 </html>
