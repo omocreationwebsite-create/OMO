@@ -118,6 +118,7 @@ button:disabled {
   <input id="email" type="email" placeholder="Email" />
   <input id="password" type="password" placeholder="Password (min 6 characters)" />
 
+  <!-- ✅ FIXED: Added onclick to call signup function -->
   <button id="btn" onclick="signup()">Create Account</button>
 
   <div id="msg" class="msg"></div>
@@ -178,8 +179,9 @@ function clearDebug() {
   addDebug("LOG CLEARED", "Debug console reset");
 }
 
-async function signup() {
-  addDebug("🚀 SIGNUP STARTED", "Function called");
+// ✅ SIGNUP FUNCTION - Now properly called by button onclick
+window.signup = async function() {
+  addDebug("🚀 SIGNUP STARTED", "Function called - button clicked!");
   
   const fullName = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
@@ -290,13 +292,24 @@ async function signup() {
     btn.disabled = false;
     btn.innerText = "Create Account";
   }
-}
+};
 
-// Initial debug
+// Test that function exists
 addDebug("✅ SYSTEM READY", {
   supabaseUrl: "https://gogrmiflvfdetvtggzrk.supabase.co",
   timestamp: new Date().toISOString(),
-  status: "Waiting for user input"
+  status: "Waiting for user input",
+  buttonExists: !!document.getElementById("btn"),
+  signupFunctionExists: typeof window.signup === "function"
+});
+
+// Also add event listener as backup
+document.addEventListener("DOMContentLoaded", function() {
+  const btn = document.getElementById("btn");
+  if (btn) {
+    addDebug("🔗 Backup event listener attached", "Button click will also trigger signup");
+    btn.addEventListener("click", window.signup);
+  }
 });
 </script>
 </body>
