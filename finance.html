@@ -37,20 +37,26 @@
     .stat-value { font-size: 2rem; font-weight: 700; color: var(--dark); }
     .stat-change { font-size: 0.75rem; margin-top: 6px; }
     .stat-change.positive { color: var(--success); } .stat-change.negative { color: var(--danger); }
+    .settings-card { background: linear-gradient(135deg, var(--primary-soft), white); border-radius: 20px; padding: 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+    .settings-card h3 { font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+    .point-value-input { display: flex; align-items: center; gap: 15px; }
+    .point-value-input input { width: 150px; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; font-size: 1rem; font-weight: 600; text-align: center; }
     .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
     .panel { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
     .panel-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
     .panel-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
     .chart-container { position: relative; height: 250px; }
     .table-wrapper { overflow-x: auto; }
-    .data-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    .data-table { width: 100%; border-collapse: collapse; min-width: 800px; }
     .data-table th { text-align: left; padding: 14px 10px; font-size: 0.7rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
     .data-table td { padding: 14px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 0.85rem; }
     .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
     .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
     .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
     .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
+    .btn-success { background: var(--success); color: white; }
     .suggestion-card { background: rgba(245,158,11,0.1); border-left: 4px solid var(--warning); padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; }
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
     .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
@@ -78,11 +84,22 @@
   <header class="top-bar"><h1 class="page-title">Finance & Accounting</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
     
+    <!-- Point Value Setting -->
+    <div class="settings-card">
+      <h3><i class="fas fa-coins" style="color:var(--primary);"></i> Point Value Configuration</h3>
+      <div class="point-value-input">
+        <label style="font-weight:600;">₦ per 5 points:</label>
+        <input type="number" id="pointValueInput" min="100" step="100" value="500" style="width:120px;">
+        <button class="btn btn-primary" onclick="updatePointValue()"><i class="fas fa-save"></i> Save</button>
+      </div>
+      <p style="font-size:0.75rem;color:var(--gray);"><i class="fas fa-info-circle"></i> Staff earn +5 points for early/on-time completion, -5 for late. This sets the ₦ value per 5 points.</p>
+    </div>
+    
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-header"><span>Revenue (MTD)</span><div class="stat-icon"><i class="fas fa-arrow-up"></i></div></div><div class="stat-value" id="revenueMTD">₦0</div><div class="stat-change" id="revenueChange">vs last month</div></div>
       <div class="stat-card"><div class="stat-header"><span>Expenses (MTD)</span><div class="stat-icon"><i class="fas fa-arrow-down"></i></div></div><div class="stat-value" id="expensesMTD">₦0</div><div class="stat-change" id="expensesChange">vs last month</div></div>
       <div class="stat-card"><div class="stat-header"><span>Net Profit</span><div class="stat-icon"><i class="fas fa-chart-line"></i></div></div><div class="stat-value" id="netProfit">₦0</div><div class="stat-change" id="profitChange">vs last month</div></div>
-      <div class="stat-card"><div class="stat-header"><span>Salary Payout</span><div class="stat-icon"><i class="fas fa-users"></i></div></div><div class="stat-value" id="salaryPayout">₦0</div><div class="stat-change">Monthly payroll</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Total Payroll</span><div class="stat-icon"><i class="fas fa-users"></i></div></div><div class="stat-value" id="totalPayroll">₦0</div><div class="stat-change">Base + Points</div></div>
     </div>
     
     <div class="charts-row">
@@ -96,8 +113,14 @@
       </div>
     </div>
     
+    <!-- Salary Breakdown Table -->
     <div class="panel">
-      <div class="panel-header"><h3><i class="fas fa-calendar-alt"></i> Monthly Comparison</h3><button class="btn btn-outline btn-sm" onclick="exportFinance()"><i class="fas fa-download"></i> Export</button></div>
+      <div class="panel-header"><h3><i class="fas fa-money-bill-wave"></i> Staff Salary Breakdown (This Month)</h3><button class="btn btn-outline btn-sm" onclick="exportSalaries()"><i class="fas fa-download"></i> Export</button></div>
+      <div class="table-wrapper"><table class="data-table"><thead><tr><th>Staff</th><th>Role</th><th>Base Salary</th><th>Points</th><th>Point Value (₦)</th><th>Points Bonus</th><th>Final Salary</th></tr></thead><tbody id="salaryTable"></tbody></table></div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header"><h3><i class="fas fa-calendar-alt"></i> Monthly Comparison</h3></div>
       <div class="table-wrapper"><table class="data-table"><thead><tr><th>Month</th><th>Revenue</th><th>Purchases</th><th>Salaries</th><th>Total Expenses</th><th>Profit</th><th>vs Previous</th></tr></thead><tbody id="monthlyTable"></tbody></table></div>
     </div>
     
@@ -114,83 +137,86 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, getDocs, query, where, updateDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-  let currentUser = null, barChart = null, pieChart = null;
+  let currentUser = null, userData = null, barChart = null, pieChart = null, globalPointValue = 500;
 
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
   function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
 
+  async function loadPointValue() {
+    const snap = await getDoc(doc(db, 'system_settings', 'points'));
+    if (snap.exists()) { globalPointValue = snap.data().value || 500; document.getElementById('pointValueInput').value = globalPointValue; }
+    else { await setDoc(doc(db, 'system_settings', 'points'), { value: 500, updatedAt: serverTimestamp() }); globalPointValue = 500; }
+  }
+
+  window.updatePointValue = async () => {
+    const newValue = parseInt(document.getElementById('pointValueInput').value) || 500;
+    await setDoc(doc(db, 'system_settings', 'points'), { value: newValue, updatedBy: currentUser.uid, updatedAt: serverTimestamp() });
+    const users = await getDocs(query(collection(db, 'users'), where('role', 'in', ['staff','attendant','attendant_chief'])));
+    const batch = writeBatch(db); users.forEach(d => batch.update(d.ref, { pointValueNaira: newValue })); await batch.commit();
+    globalPointValue = newValue; showToast(`Point value set to ₦${newValue} per 5 points`, 'success'); loadFinanceData();
+  };
+
   async function loadFinanceData() {
+    await loadPointValue();
     const now = new Date(); const thisMonth = now.getMonth(); const thisYear = now.getFullYear();
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     
-    // Sales (Money In)
-    const salesSnap = await getDocs(collection(db, 'sales'));
-    const monthlyData = {};
-    let revenueMTD = 0, revenueLastMonth = 0;
+    const salesSnap = await getDocs(collection(db, 'sales')); const monthlyData = {}; let revenueMTD = 0, revenueLastMonth = 0;
     salesSnap.forEach(d => { const s = d.data(); const date = s.createdAt?.toDate(); if (date) { const key = `${date.getFullYear()}-${date.getMonth()}`; if (!monthlyData[key]) monthlyData[key] = { revenue: 0, purchases: 0, salaries: 0 }; monthlyData[key].revenue += s.totalAmount||0; if (date.getMonth() === thisMonth && date.getFullYear() === thisYear) revenueMTD += s.totalAmount||0; if (date.getMonth() === thisMonth-1 && date.getFullYear() === thisYear) revenueLastMonth += s.totalAmount||0; } });
     
-    // Purchases (Money Out - Stock Refill)
-    const purchaseSnap = await getDocs(collection(db, 'purchase_requests'));
-    let expensesMTD = 0, expensesLastMonth = 0;
+    const purchaseSnap = await getDocs(collection(db, 'purchase_requests')); let expensesMTD = 0, expensesLastMonth = 0;
     purchaseSnap.forEach(d => { const p = d.data(); if (p.status === 'purchased') { const date = p.purchasedAt?.toDate(); if (date) { const key = `${date.getFullYear()}-${date.getMonth()}`; if (!monthlyData[key]) monthlyData[key] = { revenue: 0, purchases: 0, salaries: 0 }; const total = p.receivedItems?.reduce((s,i) => s + ((i.received||i.suggested) * i.price), 0) || 0; monthlyData[key].purchases += total; if (date.getMonth() === thisMonth && date.getFullYear() === thisYear) expensesMTD += total; if (date.getMonth() === thisMonth-1 && date.getFullYear() === thisYear) expensesLastMonth += total; } } });
     
-    // Salaries (Money Out - Staff Payroll)
     const usersSnap = await getDocs(query(collection(db, 'users'), where('role', 'in', ['staff','attendant','attendant_chief']), where('status', '==', 'active')));
-    let salaryPayout = 0; usersSnap.forEach(d => { salaryPayout += d.data().baseSalary || 0; });
-    Object.keys(monthlyData).forEach(k => { monthlyData[k].salaries = salaryPayout; });
-    expensesMTD += salaryPayout; expensesLastMonth += salaryPayout;
+    let totalPayroll = 0; const salaryRows = [];
+    usersSnap.forEach(d => { const u = d.data(); const baseSalary = u.baseSalary || 0; const points = u.totalPoints || 0; const pointBonus = points * (globalPointValue / 5); const finalSalary = baseSalary + pointBonus; totalPayroll += finalSalary; salaryRows.push({ name: u.fullName, role: u.role, baseSalary, points, pointBonus, finalSalary }); });
     
-    const netProfit = revenueMTD - expensesMTD;
-    const lastProfit = revenueLastMonth - expensesLastMonth;
+    Object.keys(monthlyData).forEach(k => { monthlyData[k].salaries = totalPayroll; });
+    expensesMTD += totalPayroll; expensesLastMonth += totalPayroll;
+    const netProfit = revenueMTD - expensesMTD; const lastProfit = revenueLastMonth - expensesLastMonth;
     
     document.getElementById('revenueMTD').textContent = formatCurrency(revenueMTD);
     document.getElementById('expensesMTD').textContent = formatCurrency(expensesMTD);
     document.getElementById('netProfit').textContent = formatCurrency(netProfit);
-    document.getElementById('salaryPayout').textContent = formatCurrency(salaryPayout);
+    document.getElementById('totalPayroll').textContent = formatCurrency(totalPayroll);
     
     const revChange = revenueLastMonth ? ((revenueMTD - revenueLastMonth) / revenueLastMonth * 100).toFixed(1) : 0;
     const expChange = expensesLastMonth ? ((expensesMTD - expensesLastMonth) / expensesLastMonth * 100).toFixed(1) : 0;
     const profChange = lastProfit ? ((netProfit - lastProfit) / Math.abs(lastProfit) * 100).toFixed(1) : 0;
-    
     document.getElementById('revenueChange').innerHTML = `<span class="${revChange>=0?'positive':'negative'}"><i class="fas fa-arrow-${revChange>=0?'up':'down'}"></i> ${Math.abs(revChange)}%</span> vs last month`;
     document.getElementById('expensesChange').innerHTML = `<span class="${expChange<=0?'positive':'negative'}"><i class="fas fa-arrow-${expChange<=0?'down':'up'}"></i> ${Math.abs(expChange)}%</span> vs last month`;
     document.getElementById('profitChange').innerHTML = `<span class="${profChange>=0?'positive':'negative'}"><i class="fas fa-arrow-${profChange>=0?'up':'down'}"></i> ${Math.abs(profChange)}%</span> vs last month`;
     
-    // Table
-    const tbody = document.getElementById('monthlyTable'); tbody.innerHTML = '';
-    const sorted = Object.entries(monthlyData).sort((a,b) => b[0].localeCompare(a[0])).slice(0, 6);
-    let prevProfit = 0;
-    sorted.forEach(([key, data], i) => { const [y, m] = key.split('-'); const totalExp = data.purchases + data.salaries; const profit = data.revenue - totalExp; const change = i < sorted.length-1 ? ((profit - prevProfit) / (Math.abs(prevProfit) || 1) * 100).toFixed(1) : '-'; tbody.innerHTML += `<tr><td>${months[parseInt(m)]} ${y}</td><td>${formatCurrency(data.revenue)}</td><td>${formatCurrency(data.purchases)}</td><td>${formatCurrency(data.salaries)}</td><td>${formatCurrency(totalExp)}</td><td>${formatCurrency(profit)}</td><td><span class="badge badge-${change>0?'success':'danger'}">${change>0?'+':''}${change}%</span></td></tr>`; prevProfit = profit; });
+    const salaryTbody = document.getElementById('salaryTable'); salaryTbody.innerHTML = '';
+    salaryRows.sort((a,b) => b.finalSalary - a.finalSalary).forEach(s => { salaryTbody.innerHTML += `<tr><td>${s.name}</td><td>${s.role}</td><td>${formatCurrency(s.baseSalary)}</td><td>${s.points}</td><td>₦${globalPointValue/5}/pt</td><td class="${s.pointBonus>=0?'positive':'negative'}">${s.pointBonus>=0?'+':''}${formatCurrency(s.pointBonus)}</td><td><strong>${formatCurrency(s.finalSalary)}</strong></td></tr>`; });
     
-    // Bar Chart
-    const barCtx = document.getElementById('barChart').getContext('2d');
-    if (barChart) barChart.destroy();
+    const monthlyTbody = document.getElementById('monthlyTable'); monthlyTbody.innerHTML = '';
+    const sorted = Object.entries(monthlyData).sort((a,b) => b[0].localeCompare(a[0])).slice(0, 6); let prevProfit = 0;
+    sorted.forEach(([key, data], i) => { const [y, m] = key.split('-'); const totalExp = data.purchases + data.salaries; const profit = data.revenue - totalExp; const change = i < sorted.length-1 ? ((profit - prevProfit) / (Math.abs(prevProfit) || 1) * 100).toFixed(1) : '-'; monthlyTbody.innerHTML += `<tr><td>${months[parseInt(m)]} ${y}</td><td>${formatCurrency(data.revenue)}</td><td>${formatCurrency(data.purchases)}</td><td>${formatCurrency(data.salaries)}</td><td>${formatCurrency(totalExp)}</td><td>${formatCurrency(profit)}</td><td><span class="badge badge-${change>0?'success':'danger'}">${change>0?'+':''}${change}%</span></td></tr>`; prevProfit = profit; });
+    
+    if (barChart) barChart.destroy(); const barCtx = document.getElementById('barChart').getContext('2d');
     const chartData = sorted.reverse().slice(-6);
-    barChart = new Chart(barCtx, { type: 'bar', data: { labels: chartData.map(([k]) => months[parseInt(k.split('-')[1])] + ' ' + k.split('-')[0]), datasets: [{ label: 'Revenue', data: chartData.map(([,d]) => d.revenue), backgroundColor: '#10b981' }, { label: 'Expenses', data: chartData.map(([,d]) => d.purchases + d.salaries), backgroundColor: '#ef4444' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+    barChart = new Chart(barCtx, { type: 'bar', data: { labels: chartData.map(([k]) => months[parseInt(k.split('-')[1])] + ' ' + k.split('-')[0]), datasets: [{ label: 'Revenue', data: chartData.map(([,d]) => d.revenue), backgroundColor: '#10b981' }, { label: 'Expenses', data: chartData.map(([,d]) => d.purchases + d.salaries), backgroundColor: '#ef4444' }] }, options: { responsive: true, maintainAspectRatio: false } });
     
-    // Pie Chart
-    const pieCtx = document.getElementById('pieChart').getContext('2d');
-    if (pieChart) pieChart.destroy();
+    if (pieChart) pieChart.destroy(); const pieCtx = document.getElementById('pieChart').getContext('2d');
     const currentMonthData = monthlyData[`${thisYear}-${thisMonth}`] || { purchases: 0, salaries: 0 };
-    pieChart = new Chart(pieCtx, { type: 'pie', data: { labels: ['Stock Purchases', 'Staff Salaries'], datasets: [{ data: [currentMonthData.purchases, currentMonthData.salaries], backgroundColor: ['#f59e0b', '#3b82f6'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+    pieChart = new Chart(pieCtx, { type: 'pie', data: { labels: ['Stock Purchases', 'Staff Salaries'], datasets: [{ data: [currentMonthData.purchases, currentMonthData.salaries], backgroundColor: ['#f59e0b', '#3b82f6'] }] }, options: { responsive: true, maintainAspectRatio: false } });
     
-    // Suggestions
     const suggestions = document.getElementById('suggestions'); let html = '';
     const expenseRatio = revenueMTD ? (expensesMTD / revenueMTD) : 0;
-    if (expenseRatio > 0.8) html += `<div class="suggestion-card"><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> <strong>High Expense Ratio:</strong> Expenses are ${(expenseRatio*100).toFixed(1)}% of revenue. Consider reducing costs.</div>`;
-    if (currentMonthData?.purchases > revenueMTD * 0.5) html += `<div class="suggestion-card"><i class="fas fa-box" style="color:var(--info);"></i> <strong>High Stock Spending:</strong> Purchases are ${((currentMonthData.purchases/revenueMTD)*100).toFixed(1)}% of revenue.</div>`;
-    if (netProfit < 0) html += `<div class="suggestion-card"><i class="fas fa-chart-pie" style="color:var(--danger);"></i> <strong>Net Loss:</strong> Expenses exceed revenue. Urgent review needed.</div>`;
-    if (revenueMTD > revenueLastMonth * 1.2) html += `<div class="suggestion-card"><i class="fas fa-trend-up" style="color:var(--success);"></i> <strong>Strong Growth:</strong> Revenue up ${revChange}% from last month!</div>`;
+    if (expenseRatio > 0.8) html += `<div class="suggestion-card"><i class="fas fa-exclamation-triangle"></i> <strong>High Expense Ratio:</strong> Expenses are ${(expenseRatio*100).toFixed(1)}% of revenue.</div>`;
+    if (netProfit < 0) html += `<div class="suggestion-card"><i class="fas fa-chart-pie"></i> <strong>Net Loss:</strong> Expenses exceed revenue.</div>`;
+    if (revenueMTD > revenueLastMonth * 1.2) html += `<div class="suggestion-card"><i class="fas fa-trend-up" style="color:var(--success);"></i> <strong>Strong Growth:</strong> Revenue up ${revChange}%!</div>`;
     suggestions.innerHTML = html || '<div class="suggestion-card">✅ All metrics look good!</div>';
   }
 
-  window.exportFinance = () => { const rows = []; document.querySelectorAll('#monthlyTable tr').forEach(r => { const cols = r.querySelectorAll('td'); if (cols.length) rows.push(Array.from(cols).map(c => c.textContent).join(',')); }); const csv = ['Month,Revenue,Purchases,Salaries,Total Expenses,Profit,Change'].concat(rows).join('\n'); const b = new Blob([csv], {type:'text/csv'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `finance_${new Date().toISOString().split('T')[0]}.csv`; a.click(); showToast('Exported', 'success'); };
+  window.exportSalaries = () => { const rows = []; document.querySelectorAll('#salaryTable tr').forEach(r => { const cols = r.querySelectorAll('td'); if (cols.length) rows.push(Array.from(cols).map(c => c.textContent.replace(/[₦,+]/g,'').trim()).join(',')); }); const csv = ['Staff,Role,Base Salary,Points,Point Value,Points Bonus,Final Salary'].concat(rows).join('\n'); const b = new Blob([csv], {type:'text/csv'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `salaries_${new Date().toISOString().split('T')[0]}.csv`; a.click(); showToast('Exported', 'success'); };
 
-  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } const userData = snap.data(); document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin'; document.getElementById('userRole').textContent = userData.role; document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0); document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); await loadFinanceData(); });
+  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } userData = snap.data(); document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin'; document.getElementById('userRole').textContent = userData.role; document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0); document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); await loadFinanceData(); });
   document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
 </script>
 </body>
