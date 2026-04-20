@@ -3,211 +3,325 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>O.M.Ocreation - Sign Up</title>
+<title>O.M.Ocreation Auth System</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body {
   font-family: Arial;
-  background: linear-gradient(135deg,#111,#222);
+  background: linear-gradient(135deg, #0f172a, #1e293b);
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
-  margin:0;
+  color:white;
 }
+
 .card {
-  background:#fff;
-  padding:30px;
-  border-radius:15px;
-  width:350px;
+  width: 380px;
+  background: white;
+  color: black;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
+
+h2 {
+  text-align:center;
+  margin-bottom: 15px;
+}
+
 input {
   width:100%;
   padding:12px;
-  margin:10px 0;
-  border:1px solid #ccc;
-  border-radius:8px;
+  margin:8px 0;
+  border:1px solid #ddd;
+  border-radius:10px;
   box-sizing:border-box;
 }
+
 button {
   width:100%;
   padding:12px;
-  background:#ff4da6;
-  border:none;
-  color:white;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:16px;
-}
-.msg {
   margin-top:10px;
-  font-size:14px;
-  padding:10px;
-  border-radius:8px;
+  border:none;
+  border-radius:10px;
+  background:#ff4da6;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
 }
-.msg.error {
-  background:#f8d7da;
-  color:#721c24;
+
+button:disabled {
+  opacity:0.5;
 }
-.msg.success {
-  background:#d4edda;
-  color:#155724;
+
+.switch {
+  text-align:center;
+  margin-top:10px;
+  font-size:13px;
+  color:#555;
+  cursor:pointer;
 }
+
 .debug {
-  background:#1a1a2e;
+  margin-top:10px;
+  background:#111;
   color:#0f0;
-  font-family:monospace;
   font-size:11px;
   padding:10px;
-  margin-top:15px;
-  border-radius:8px;
-  height:150px;
+  height:140px;
   overflow:auto;
+  border-radius:10px;
+}
+
+.mode {
+  text-align:center;
+  font-size:12px;
+  margin-bottom:10px;
+  color:#666;
 }
 </style>
 </head>
+
 <body>
 
 <div class="card">
-  <h2>Sign Up</h2>
 
-  <input type="text" id="name" placeholder="Full Name" />
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Password" />
+  <h2>O.M.Ocreation</h2>
+  <div class="mode" id="modeText">Signup Mode</div>
 
-  <button id="signupBtn">Create Account</button>
+  <input id="name" placeholder="Full Name" />
+  <input id="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password" />
 
-  <div id="msg" class="msg" style="display:none"></div>
-  <div class="debug" id="debug">[Ready] Click the button above...</div>
+  <button id="authBtn">Create Account</button>
+
+  <div class="switch" id="toggleMode">Switch to Login</div>
+
+  <div class="debug" id="debug"></div>
+
 </div>
 
 <script>
-// Supabase
+// ============================================
+// SUPABASE CONFIGURATION (ANON KEY ADDED)
+// ============================================
 const supabase = window.supabase.createClient(
   "https://gogrmiflvfdetvtggzrk.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ"
 );
 
-// Elements
-const nameInput = document.getElementById("name");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const btn = document.getElementById("signupBtn");
-const msgDiv = document.getElementById("msg");
-const debugDiv = document.getElementById("debug");
+// STATE
+let mode = "signup";
 
-function log(msg) {
+// UI
+const btn = document.getElementById("authBtn");
+const debugBox = document.getElementById("debug");
+const modeText = document.getElementById("modeText");
+const toggle = document.getElementById("toggleMode");
+
+function log(title, data) {
   const timestamp = new Date().toLocaleTimeString();
-  debugDiv.innerHTML += `\n[${timestamp}] ${msg}`;
-  debugDiv.scrollTop = debugDiv.scrollHeight;
-  console.log(msg);
+  debugBox.innerText += `\n[${timestamp}] 📌 ${title}\n` + JSON.stringify(data, null, 2) + "\n----------------\n";
+  debugBox.scrollTop = debugBox.scrollHeight;
+  console.log(title, data);
 }
 
-function showMessage(text, type) {
-  msgDiv.className = "msg " + type;
-  msgDiv.innerHTML = text;
-  msgDiv.style.display = "block";
-  setTimeout(() => {
-    msgDiv.style.display = "none";
-  }, 5000);
+function clearDebug() {
+  debugBox.innerText = "";
 }
 
-// THIS IS THE SIGNUP FUNCTION
-async function handleSignup() {
-  log("🔴 BUTTON CLICKED! Function started!");
+function setMode(newMode) {
+  mode = newMode;
+  modeText.innerText = newMode === "signup" ? "Signup Mode" : "Login Mode";
+  btn.innerText = newMode === "signup" ? "Create Account" : "Login";
   
-  const fullName = nameInput.value.trim();
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
-  
-  log(`Name: ${fullName}, Email: ${email}, Password length: ${password.length}`);
-  
-  if (!fullName || !email || !password) {
-    log("❌ Validation failed: Missing fields");
-    showMessage("Please fill all fields", "error");
+  // Show/hide name field based on mode
+  const nameField = document.getElementById("name");
+  if (newMode === "login") {
+    nameField.style.display = "none";
+  } else {
+    nameField.style.display = "block";
+  }
+}
+
+// BUTTON CLICK
+btn.addEventListener("click", async () => {
+
+  clearDebug();
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  log("INPUT", { name, email, passwordLength: password.length, mode: mode });
+
+  // Validation
+  if (!email || !password) {
+    log("ERROR", "Email and password are required");
+    alert("Email and password are required");
     return;
   }
-  
+
+  if (mode === "signup" && !name) {
+    log("ERROR", "Full name is required for signup");
+    alert("Full name is required for signup");
+    return;
+  }
+
   if (password.length < 6) {
-    log("❌ Validation failed: Password too short");
-    showMessage("Password must be at least 6 characters", "error");
+    log("ERROR", "Password must be at least 6 characters");
+    alert("Password must be at least 6 characters");
     return;
   }
-  
+
   btn.disabled = true;
-  btn.innerText = "Creating...";
-  log("📡 Calling Supabase auth.signUp...");
-  
+  btn.innerText = mode === "signup" ? "Creating..." : "Logging in...";
+
   try {
-    // STEP 1: Auth
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password
-    });
-    
-    if (error) {
-      log("❌ Auth error: " + error.message);
-      showMessage("Auth error: " + error.message, "error");
-      btn.disabled = false;
-      btn.innerText = "Create Account";
-      return;
-    }
-    
-    const userId = data?.user?.id;
-    log("✅ Auth success! User ID: " + userId);
-    
-    if (!userId) {
-      log("❌ No user ID returned");
-      showMessage("No user ID returned", "error");
-      btn.disabled = false;
-      btn.innerText = "Create Account";
-      return;
-    }
-    
-    // STEP 2: Insert into users table
-    log("📡 Inserting into users table...");
-    const { error: insertError } = await supabase
-      .from("users")
-      .insert([{
-        id: userId,
-        full_name: fullName,
+
+    if (mode === "signup") {
+
+      log("STEP 1", "SIGNUP STARTED - Calling auth.signUp()");
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
+
+      log("AUTH RESPONSE", { data: data || null, error: error || null });
+
+      if (error) {
+        log("AUTH ERROR", error.message);
+        alert("Auth Error: " + error.message);
+        btn.disabled = false;
+        btn.innerText = "Create Account";
+        return;
+      }
+
+      const user = data?.user;
+
+      log("USER OBJECT", user || null);
+
+      if (!user || !user.id) {
+        log("ERROR", "No user ID returned from auth");
+        alert("Signup failed: No user ID returned");
+        btn.disabled = false;
+        btn.innerText = "Create Account";
+        return;
+      }
+
+      log("USER CREATED", { userId: user.id, email: user.email });
+
+      // Insert into users table
+      log("STEP 2", "Inserting into users table");
+
+      const insertRes = await supabase.from("users").insert([{
+        id: user.id,
+        full_name: name,
         email: email,
         role: "pending",
         status: "pending",
+        base_salary: 0,
         created_at: new Date().toISOString()
       }]);
-    
-    if (insertError) {
-      log("❌ Insert error: " + insertError.message);
-      showMessage("Database error: " + insertError.message, "error");
-      btn.disabled = false;
-      btn.innerText = "Create Account";
-      return;
+
+      log("DB INSERT RESPONSE", insertRes);
+
+      if (insertRes.error) {
+        log("DB INSERT ERROR", insertRes.error.message);
+        alert("Database Error: " + insertRes.error.message);
+      } else {
+        log("SUCCESS", "Account created successfully!");
+        alert("Signup successful! Please wait for admin approval.");
+        // Clear form
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
+      }
+
+    } else {
+
+      // LOGIN MODE
+      log("STEP 1", "LOGIN STARTED - Calling auth.signInWithPassword()");
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      log("LOGIN RESPONSE", { data: data || null, error: error || null });
+
+      if (error) {
+        log("LOGIN ERROR", error.message);
+        alert("Login Error: " + error.message);
+        btn.disabled = false;
+        btn.innerText = "Login";
+        return;
+      }
+
+      const user = data?.user;
+      log("USER LOGGED IN", { userId: user?.id, email: user?.email });
+
+      // Check user status from users table
+      const { data: profile, error: profileError } = await supabase
+        .from("users")
+        .select("status, role")
+        .eq("id", user.id)
+        .single();
+
+      if (profileError) {
+        log("PROFILE ERROR", profileError.message);
+        alert("User profile not found");
+        btn.disabled = false;
+        btn.innerText = "Login";
+        return;
+      }
+
+      log("USER PROFILE", profile);
+
+      if (profile.status !== "active") {
+        log("ACCESS DENIED", `Account status: ${profile.status}`);
+        alert(`Your account is ${profile.status}. Please wait for admin approval.`);
+        await supabase.auth.signOut();
+        btn.disabled = false;
+        btn.innerText = "Login";
+        return;
+      }
+
+      log("SUCCESS", "Login successful! Redirecting to dashboard...");
+      alert("Login successful! Redirecting to dashboard...");
+      
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1500);
     }
-    
-    log("✅ ALL DONE! User created successfully!");
-    showMessage("Account created! Redirecting to login...", "success");
-    
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 2000);
-    
+
   } catch (err) {
-    log("💥 Unexpected error: " + err.message);
-    showMessage("Error: " + err.message, "error");
-    btn.disabled = false;
-    btn.innerText = "Create Account";
+    log("UNEXPECTED ERROR", { message: err.message, stack: err.stack });
+    alert("Unexpected error: " + err.message);
   }
-}
 
-// ATTACH EVENT LISTENER - This is critical!
-btn.addEventListener("click", handleSignup);
+  btn.disabled = false;
+  btn.innerText = mode === "signup" ? "Create Account" : "Login";
+});
 
-log("✅ Page loaded. Click the 'Create Account' button to test.");
-log(`Button exists: ${!!btn}`);
-log(`Button text: ${btn.innerText}`);
+// MODE TOGGLE
+toggle.addEventListener("click", () => {
+  setMode(mode === "signup" ? "login" : "signup");
+});
+
+// Initialize
+setMode("signup");
+log("SYSTEM READY", { 
+  supabaseUrl: "https://gogrmiflvfdetvtggzrk.supabase.co",
+  timestamp: new Date().toISOString(),
+  mode: "signup",
+  instructions: "Fill in the form and click the button"
+});
 </script>
+
 </body>
 </html>
