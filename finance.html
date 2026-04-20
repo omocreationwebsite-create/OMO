@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ff4da6">
+  <title>Finance · FashionStone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --header-height: 64px; }
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; min-height: 100vh; width: 100%; }
+    .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 99; display: none; }
+    .sidebar-overlay.active { display: block; }
+    .sidebar { width: 280px; background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .sidebar-brand { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; }
+    .logo-text { font-size: 1.2rem; font-weight: 700; }
+    .logo-text span { color: var(--primary); }
+    .sidebar-close { background: none; border: none; color: rgba(255,255,255,0.6); font-size: 1.3rem; cursor: pointer; padding: 8px; }
+    .sidebar-nav { padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 14px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; text-align: left; }
+    .nav-item i { width: 22px; font-size: 1.1rem; }
+    .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
+    .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 16px; }
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: auto; }
+    .user-profile { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; }
+    .user-details h4 { font-size: 0.9rem; font-weight: 600; }
+    .user-details p { font-size: 0.7rem; opacity: 0.6; }
+    .main-content { min-height: 100vh; width: 100%; }
+    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
+    .top-bar-left { display: flex; align-items: center; gap: 16px; }
+    .menu-toggle { background: none; border: none; font-size: 1.3rem; color: var(--gray); cursor: pointer; padding: 8px; }
+    .page-title { font-size: 1.2rem; font-weight: 700; color: var(--dark); }
+    .back-btn { display: flex; align-items: center; gap: 6px; color: var(--primary); font-size: 0.8rem; font-weight: 600; background: var(--primary-soft); padding: 8px 14px; border-radius: 30px; border: none; cursor: pointer; }
+    .content-wrapper { padding: 16px; max-width: 1400px; margin: 0 auto; }
+    @media (min-width: 768px) { .content-wrapper { padding: 24px; } .page-title { font-size: 1.4rem; } }
+    .stats-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; }
+    @media (min-width: 480px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+    .stat-card { background: white; padding: 18px 16px; border-radius: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
+    .stat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .stat-header span { font-size: 0.7rem; color: var(--gray); font-weight: 600; text-transform: uppercase; }
+    .stat-icon { width: 36px; height: 36px; border-radius: 12px; background: var(--primary-soft); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1rem; }
+    .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--dark); }
+    .panel { background: white; border-radius: 20px; padding: 18px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .panel-header h3 { font-size: 1rem; font-weight: 700; color: var(--dark); }
+    .table-wrapper { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.8rem; }
+    .data-table th { text-align: left; padding: 12px 8px; font-size: 0.65rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
+    .data-table td { padding: 12px 8px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+    .badge { padding: 4px 10px; border-radius: 40px; font-size: 0.65rem; font-weight: 600; }
+    .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
+    .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
+    .btn { padding: 8px 14px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; }
+    .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
+    .suggestion-card { background: rgba(245,158,11,0.1); border-left: 4px solid var(--warning); padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; }
+    .toast-container { position: fixed; bottom: 16px; right: 16px; left: 16px; z-index: 9999; }
+    @media (min-width: 480px) { .toast-container { left: auto; } }
+    .toast { background: white; padding: 12px 16px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 10px; transform: translateY(100px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 8px; }
+    .toast.show { transform: translateY(0); }
+  </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header"><div class="sidebar-brand"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+  <nav class="sidebar-nav" id="sidebarNav"></nav>
+  <div class="sidebar-footer"><div class="user-profile"><div class="user-avatar" id="userAvatar">U</div><div class="user-details"><h4 id="userName">Loading...</h4><p id="userRole">•••</p></div></div></div>
+</aside>
+<main class="main-content">
+  <header class="top-bar"><div class="top-bar-left"><button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button><h1 class="page-title">Finance & Accounting</h1></div><div class="top-bar-right"><button class="back-btn" onclick="window.location.href='dashboard.html'"><i class="fas fa-arrow-left"></i> Dashboard</button></div></header>
+  <div class="content-wrapper">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-header"><span>Revenue (MTD)</span><div class="stat-icon"><i class="fas fa-arrow-up"></i></div></div><div class="stat-value" id="revenueMTD">₦0</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Expenses (MTD)</span><div class="stat-icon"><i class="fas fa-arrow-down"></i></div></div><div class="stat-value" id="expensesMTD">₦0</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Net Profit</span><div class="stat-icon"><i class="fas fa-chart-line"></i></div></div><div class="stat-value" id="netProfit">₦0</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Salary Payout</span><div class="stat-icon"><i class="fas fa-users"></i></div></div><div class="stat-value" id="salaryPayout">₦0</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3><i class="fas fa-chart-bar"></i> Monthly Comparison</h3><button class="btn btn-outline btn-sm" id="exportBtn"><i class="fas fa-download"></i> Export</button></div>
+      <div class="table-wrapper"><table class="data-table"><thead><tr><th>Month</th><th>Revenue</th><th>Expenses</th><th>Profit</th><th>vs Previous</th></tr></thead><tbody id="monthlyTable"></tbody></table></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3><i class="fas fa-lightbulb"></i> AI Suggestions</h3></div>
+      <div id="suggestions"></div>
+    </div>
+  </div>
+</main>
+<div class="toast-container" id="toastContainer"></div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let currentUser = null, userData = null;
+  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
+  function showToast(msg, type = 'success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => { t.classList.remove('show'); t.remove(); }, 4000); }
+  async function loadFinanceData() {
+    const now = new Date(); const thisMonth = now.getMonth(); const thisYear = now.getFullYear();
+    const salesSnap = await getDocs(collection(db, 'sales')); let revenueMTD = 0; const monthlyData = {};
+    salesSnap.forEach(d => { const s = d.data(); const date = s.createdAt?.toDate(); if (date) { const key = `${date.getFullYear()}-${date.getMonth()}`; if (!monthlyData[key]) monthlyData[key] = { revenue: 0, expenses: 0 }; monthlyData[key].revenue += s.totalAmount||0; if (date.getMonth() === thisMonth && date.getFullYear() === thisYear) revenueMTD += s.totalAmount||0; } });
+    const purchaseSnap = await getDocs(collection(db, 'purchase_requests')); let expensesMTD = 0;
+    purchaseSnap.forEach(d => { const p = d.data(); if (p.status === 'purchased') { const date = p.purchasedAt?.toDate(); if (date) { const key = `${date.getFullYear()}-${date.getMonth()}`; if (!monthlyData[key]) monthlyData[key] = { revenue: 0, expenses: 0 }; const total = p.receivedItems?.reduce((s, i) => s + (i.received * i.price), 0) || 0; monthlyData[key].expenses += total; if (date.getMonth() === thisMonth && date.getFullYear() === thisYear) expensesMTD += total; } } });
+    const usersSnap = await getDocs(query(collection(db, 'users'), where('role', 'in', ['staff', 'attendant', 'attendant_chief']), where('status', '==', 'active')));
+    let salaryPayout = 0; usersSnap.forEach(d => { salaryPayout += d.data().baseSalary || 0; });
+    const netProfit = revenueMTD - expensesMTD;
+    document.getElementById('revenueMTD').textContent = formatCurrency(revenueMTD);
+    document.getElementById('expensesMTD').textContent = formatCurrency(expensesMTD);
+    document.getElementById('netProfit').textContent = formatCurrency(netProfit);
+    document.getElementById('salaryPayout').textContent = formatCurrency(salaryPayout);
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; const tbody = document.getElementById('monthlyTable'); tbody.innerHTML = '';
+    const sorted = Object.entries(monthlyData).sort((a,b) => b[0].localeCompare(a[0])).slice(0, 6);
+    let prevProfit = 0;
+    sorted.forEach(([key, data], i) => { const [y, m] = key.split('-'); const profit = data.revenue - data.expenses; const change = i < sorted.length-1 ? ((profit - prevProfit) / (prevProfit || 1) * 100).toFixed(1) : '-'; tbody.innerHTML += `<tr><td>${months[parseInt(m)]} ${y}</td><td>${formatCurrency(data.revenue)}</td><td>${formatCurrency(data.expenses)}</td><td>${formatCurrency(profit)}</td><td><span class="badge badge-${change>0?'success':'danger'}">${change>0?'+':''}${change}%</span></td></tr>`; prevProfit = profit; });
+    const suggestions = document.getElementById('suggestions');
+    let html = '';
+    if (expensesMTD > revenueMTD * 0.7) html += '<div class="suggestion-card"><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> <strong>High Expenses:</strong> Expenses are ' + ((expensesMTD/revenueMTD)*100).toFixed(1) + '% of revenue. Consider reviewing costs.</div>';
+    if (revenueMTD > 0 && revenueMTD < 50000) html += '<div class="suggestion-card"><i class="fas fa-chart-line" style="color:var(--info);"></i> <strong>Low Revenue:</strong> Sales are below target. Consider promotions.</div>';
+    const lowStockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', '==', 'low')));
+    if (lowStockSnap.size > 0) html += `<div class="suggestion-card"><i class="fas fa-box" style="color:var(--warning);"></i> <strong>Restock Needed:</strong> ${lowStockSnap.size} items are running low.</div>`;
+    if (netProfit < 0) html += '<div class="suggestion-card"><i class="fas fa-chart-pie" style="color:var(--danger);"></i> <strong>Net Loss:</strong> Expenses exceed revenue. Urgent action needed.</div>';
+    suggestions.innerHTML = html || '<div class="suggestion-card">✅ All metrics look good!</div>';
+  }
+  document.getElementById('exportBtn').addEventListener('click', () => { const csv = ['Month,Revenue,Expenses,Profit'].join('\n'); const blob = new Blob([csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `finance_${new Date().toISOString().split('T')[0]}.csv`; a.click(); });
+  function setupSidebar(role) { const nav = document.getElementById('sidebarNav'); nav.innerHTML = `<button class="nav-item" onclick="window.location.href='dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button><button class="nav-item" onclick="window.location.href='staff-management.html'"><i class="fas fa-users-cog"></i><span>Staff</span></button><button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span>Inventory</span></button><button class="nav-item" onclick="window.location.href='purchases.html'"><i class="fas fa-shopping-cart"></i><span>Purchases</span></button><button class="nav-item" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i><span>Customers</span></button><button class="nav-item" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><span>Sales</span></button><button class="nav-item active"><i class="fas fa-chart-pie"></i><span>Finance</span></button><button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>`; document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; }); }
+  onAuthStateChanged(auth, async (user) => { if (!user) { window.location.href = 'auth.html'; return; } currentUser = user; const userSnap = await getDoc(doc(db, 'users', user.uid)); if (!userSnap.exists() || (userSnap.data().role !== 'admin' && userSnap.data().role !== 'super_admin')) { window.location.href = 'dashboard.html'; return; } userData = userSnap.data(); document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin'; document.getElementById('userRole').textContent = userData.role; document.getElementById('userAvatar').textContent = (userData.fullName || 'A').charAt(0).toUpperCase(); setupSidebar(userData.role); loadFinanceData(); });
+  const sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay');
+  document.getElementById('menuToggle').addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('active'); });
+  document.getElementById('sidebarClose').addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); });
+  overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); });
+</script>
+</body>
+</html>
