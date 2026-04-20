@@ -393,7 +393,7 @@
 </div>
 
 <script type="module">
-  // ========== FIREBASE CONFIG ==========
+  // ========== FIREBASE CONFIG (NEW PROJECT) ==========
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { 
     getAuth, 
@@ -414,15 +414,15 @@
     setDoc
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // YOUR FIREBASE CONFIG
+  // YOUR NEW FIREBASE CONFIG
   const firebaseConfig = {
-    apiKey: "AIzaSyD-H3OMXf2Ec6NtN1IxXtA0vZ34PceqQfg",
-    authDomain: "fashion-erp-system.firebaseapp.com",
-    projectId: "fashion-erp-system",
-    storageBucket: "fashion-erp-system.firebasestorage.app",
-    messagingSenderId: "330378955681",
-    appId: "1:330378955681:web:e48c08806bba7f2394d9e0",
-    measurementId: "G-RVBMRSFGQ8"
+    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
+    authDomain: "fashion-46e5d.firebaseapp.com",
+    projectId: "fashion-46e5d",
+    storageBucket: "fashion-46e5d.firebasestorage.app",
+    messagingSenderId: "408062284317",
+    appId: "1:408062284317:web:eb905bce68926c10a0ecf4",
+    measurementId: "G-2B7LMCWS3R"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -599,14 +599,30 @@
       const userSnap = await getDoc(userRef);
       
       if (!userSnap.exists()) {
-        log('User document not found in Firestore', 'error');
-        showResult(false, 'Error', 'User profile not found');
-        await signOut(auth);
-        loginBtn.disabled = false;
-        return;
+        log('User document not found in Firestore. Creating...', 'info');
+        
+        // Create user document if it doesn't exist
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email,
+          fullName: user.email.split('@')[0],
+          phone: '',
+          role: 'pending',
+          baseSalary: 0,
+          pointValueNaira: 100,
+          totalPoints: 0,
+          status: 'active',
+          createdAt: serverTimestamp(),
+          leaveDaysRemaining: 2,
+          profileCompleted: false,
+          emailVerified: true
+        });
+        
+        log('User document created', 'success');
       }
       
-      const userData = userSnap.data();
+      const finalUserSnap = await getDoc(userRef);
+      const userData = finalUserSnap.data();
       
       if (userData.role !== 'super_admin' && userData.role !== 'admin') {
         log(`User is not admin (role: ${userData.role})`, 'error');
@@ -660,7 +676,6 @@
     promoteBtn.disabled = true;
     
     try {
-      // Find user by email in Firestore
       const usersQuery = query(collection(db, 'users'), where('email', '==', email));
       const snapshot = await getDocs(usersQuery);
       
@@ -677,7 +692,6 @@
       
       log(`Found user: ${userData.fullName || email} (UID: ${userId})`);
       
-      // Update user role
       await updateDoc(doc(db, 'users', userId), {
         role: role,
         status: 'active',
@@ -690,10 +704,7 @@
       log(`✅ Successfully promoted ${email} to ${role}!`, 'success');
       showResult(true, 'Success!', `${email} is now a ${role.replace('_', ' ')}`);
       
-      // Clear input
       targetEmail.value = '';
-      
-      // Refresh user list
       setTimeout(() => loadAllUsers(), 1000);
       
     } catch (error) {
@@ -730,7 +741,8 @@
     }
   });
 
-  log('🔧 Admin tool loaded. Login to begin.');
+  log('🔧 Admin tool loaded. Project: fashion-46e5d');
+  log('Ready to promote users.');
 </script>
 
 </body>
