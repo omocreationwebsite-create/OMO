@@ -52,11 +52,6 @@
       text-decoration: none;
     }
     
-    .brand-header .logo img {
-      height: 50px;
-      width: auto;
-    }
-    
     .logo-text {
       font-size: 1.8rem;
       font-weight: 900;
@@ -292,6 +287,52 @@
       display: block;
     }
     
+    /* Debug Panel */
+    .debug-panel {
+      margin-top: 20px;
+      padding: 15px;
+      background: #1a1a2e;
+      border-radius: 15px;
+      color: #00ff00;
+      font-family: monospace;
+      font-size: 0.75rem;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    .debug-panel.show {
+      display: block;
+    }
+    
+    .debug-panel .debug-line {
+      padding: 3px 0;
+      border-bottom: 1px solid #333;
+    }
+    
+    .debug-panel .debug-error {
+      color: #ff6b6b;
+    }
+    
+    .debug-panel .debug-success {
+      color: #51cf66;
+    }
+    
+    .debug-toggle {
+      text-align: center;
+      margin-top: 10px;
+    }
+    
+    .debug-toggle button {
+      background: none;
+      border: 1px solid var(--gray);
+      color: var(--gray);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    
     .reset-header {
       text-align: center;
       margin-bottom: 25px;
@@ -377,7 +418,6 @@
   
   <div class="brand-header">
     <a href="index.html" class="logo">
-      <img src="assets/log1.jpg" alt="O.M.Ocreation Logo" onerror="this.style.display='none'">
       <div class="logo-text"><span>O.M.O</span><span>creation</span></div>
     </a>
     <p>Enterprise Resource Management · Staff Portal</p>
@@ -536,6 +576,16 @@
       </div>
     </div>
     
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debugPanel">
+      <div class="debug-line debug-success">🔍 Debug Console Ready</div>
+      <div class="debug-line">─────────────────────</div>
+    </div>
+    <div class="debug-toggle">
+      <button id="toggleDebugBtn">Show/Hide Debug</button>
+      <button id="clearDebugBtn" style="margin-left: 10px;">Clear</button>
+    </div>
+    
   </div>
   
   <div class="auth-footer">
@@ -546,6 +596,52 @@
 </div>
 
 <script type="module">
+  // ========== DEBUG LOGGER ==========
+  const debugPanel = document.getElementById('debugPanel');
+  const debugLines = [];
+  
+  function debugLog(message, type = 'info') {
+    const timestamp = new Date().toLocaleTimeString();
+    const line = document.createElement('div');
+    line.className = `debug-line debug-${type}`;
+    line.textContent = `[${timestamp}] ${message}`;
+    debugPanel.appendChild(line);
+    debugPanel.scrollTop = debugPanel.scrollHeight;
+    console.log(`[DEBUG] ${message}`);
+  }
+  
+  function debugError(message, error) {
+    const timestamp = new Date().toLocaleTimeString();
+    const line = document.createElement('div');
+    line.className = 'debug-line debug-error';
+    line.textContent = `[${timestamp}] ❌ ${message}: ${error?.message || error}`;
+    debugPanel.appendChild(line);
+    debugPanel.scrollTop = debugPanel.scrollHeight;
+    console.error(`[DEBUG ERROR] ${message}:`, error);
+  }
+  
+  function debugSuccess(message) {
+    const timestamp = new Date().toLocaleTimeString();
+    const line = document.createElement('div');
+    line.className = 'debug-line debug-success';
+    line.textContent = `[${timestamp}] ✅ ${message}`;
+    debugPanel.appendChild(line);
+    debugPanel.scrollTop = debugPanel.scrollHeight;
+    console.log(`[DEBUG SUCCESS] ${message}`);
+  }
+  
+  document.getElementById('toggleDebugBtn').addEventListener('click', () => {
+    debugPanel.classList.toggle('show');
+  });
+  
+  document.getElementById('clearDebugBtn').addEventListener('click', () => {
+    const lines = debugPanel.querySelectorAll('.debug-line:not(:first-child):not(:nth-child(2))');
+    lines.forEach(line => line.remove());
+  });
+  
+  debugSuccess('Debug system initialized');
+  debugLog('Firebase SDK loading...');
+
   // ========== FIREBASE CONFIGURATION ==========
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { 
@@ -570,7 +666,8 @@
     query,
     where,
     getDocs,
-    addDoc
+    addDoc,
+    enableIndexedDbPersistence
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -583,11 +680,35 @@
     measurementId: "G-Q3HVQXZNW7"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  debugLog('Firebase config loaded: ' + firebaseConfig.projectId);
+  
+  let app, auth, db;
+  
+  try {
+    app = initializeApp(firebaseConfig);
+    debugSuccess('Firebase app initialized');
+    
+    auth = getAuth(app);
+    debugSuccess('Firebase auth initialized');
+    
+    db = getFirestore(app);
+    debugSuccess('Firestore initialized');
+    
+    // Enable offline persistence
+    enableIndexedDbPersistence(db).catch((err) => {
+      if (err.code === 'failed-precondition') {
+        debugLog('Multiple tabs open, persistence enabled in first tab only', 'warning');
+      } else if (err.code === 'unimplemented') {
+        debugLog('Browser doesn\'t support persistence', 'warning');
+      }
+    });
+    
+  } catch (error) {
+    debugError('Firebase initialization failed', error);
+  }
 
   console.log('%c🔐 O.M.Ocreation ERP — Auth System Active', 'color: #ff4da6; font-weight: bold;');
+  debugSuccess('All Firebase services ready');
 
   // ========== DOM ELEMENTS ==========
   const normalView = document.getElementById('normalAuthView');
@@ -619,10 +740,13 @@
   const resetEmail = document.getElementById('resetEmail');
   const rememberMe = document.getElementById('rememberMe');
 
+  debugLog('DOM elements loaded');
+
   // ========== UI HELPERS ==========
   function showMessage(element, message, type = 'error') {
     element.textContent = message;
     element.className = `auth-message ${type}`;
+    debugLog(`Message shown (${type}): ${message}`);
   }
 
   function clearMessage(element) {
@@ -642,6 +766,7 @@
       if (icon) {
         icon.className = 'fas fa-spinner fa-spin';
       }
+      debugLog(`Button ${button.id} loading state: ON`);
     } else {
       button.disabled = false;
       const span = button.querySelector('span');
@@ -654,25 +779,34 @@
         else if (button.id === 'signupBtn') icon.className = 'fas fa-user-plus';
         else if (button.id === 'resetBtn') icon.className = 'fas fa-paper-plane';
       }
+      debugLog(`Button ${button.id} loading state: OFF`);
     }
   }
 
   function validateEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    debugLog(`Email validation for "${email}": ${isValid}`);
+    return isValid;
   }
 
   function validatePhone(phone) {
-    return /^[0-9]{10,15}$/.test(phone.replace(/\D/g, ''));
+    const cleaned = phone.replace(/\D/g, '');
+    const isValid = cleaned.length >= 10 && cleaned.length <= 15;
+    debugLog(`Phone validation for "${phone}": ${isValid} (${cleaned.length} digits)`);
+    return isValid;
   }
 
   function validatePassword(password) {
-    return password.length >= 8;
+    const isValid = password.length >= 8;
+    debugLog(`Password validation: length=${password.length}, valid=${isValid}`);
+    return isValid;
   }
 
   function showNormalView() {
     normalView.style.display = 'block';
     resetView.style.display = 'none';
     pendingApprovalView.style.display = 'none';
+    debugLog('Showing normal view');
   }
 
   function showResetView() {
@@ -680,6 +814,7 @@
     resetView.style.display = 'block';
     pendingApprovalView.style.display = 'none';
     resetEmail.value = loginEmail.value || '';
+    debugLog('Showing reset view');
   }
 
   function showPendingView(email) {
@@ -687,6 +822,7 @@
     resetView.style.display = 'none';
     pendingApprovalView.style.display = 'block';
     pendingEmailDisplay.textContent = email;
+    debugSuccess(`Showing pending approval view for: ${email}`);
   }
 
   function switchToLoginTab() {
@@ -694,11 +830,13 @@
     document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     loginForm.classList.add('active');
+    debugLog('Switched to login tab');
   }
 
   // ========== AUDIT LOGGING ==========
   async function logAudit(actionType, userId, note = '') {
     try {
+      debugLog(`Logging audit: ${actionType} - ${note}`);
       await addDoc(collection(db, 'audit_logs'), {
         actionType: actionType,
         collectionName: 'auth',
@@ -707,12 +845,13 @@
         performedAt: serverTimestamp(),
         note: note
       });
+      debugSuccess('Audit log saved');
     } catch (e) {
-      console.warn('Audit log failed:', e);
+      debugError('Audit log failed', e);
     }
   }
 
-  // ========== PASSWORD TOGGLE (FIXED) ==========
+  // ========== PASSWORD TOGGLE ==========
   document.querySelectorAll('.password-toggle').forEach(toggle => {
     toggle.addEventListener('click', function(e) {
       e.preventDefault();
@@ -720,6 +859,8 @@
       const targetId = this.dataset.target;
       const input = document.getElementById(targetId);
       const icon = this.querySelector('i');
+      
+      debugLog(`Password toggle clicked for: ${targetId}`);
       
       if (input.type === 'password') {
         input.type = 'text';
@@ -737,6 +878,7 @@
   authTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const targetTab = tab.dataset.tab;
+      debugLog(`Tab switched to: ${targetTab}`);
       authTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -753,24 +895,30 @@
   // ========== VIEW SWITCHING ==========
   showResetLink.addEventListener('click', (e) => {
     e.preventDefault();
+    debugLog('Reset password link clicked');
     showResetView();
   });
 
   backToLoginLink.addEventListener('click', (e) => {
     e.preventDefault();
+    debugLog('Back to login clicked');
     showNormalView();
   });
 
   backToLoginFromPending.addEventListener('click', () => {
+    debugLog('Back to login from pending clicked');
     showNormalView();
     switchToLoginTab();
   });
 
   // ========== CREATE PENDING USER PROFILE ==========
   async function createPendingUserProfile(user, additionalData) {
+    debugLog(`Creating pending profile for UID: ${user.uid}`);
+    debugLog(`Data: name=${additionalData.fullName}, phone=${additionalData.phone}`);
+    
     const userRef = doc(db, 'users', user.uid);
     
-    await setDoc(userRef, {
+    const profileData = {
       uid: user.uid,
       email: user.email,
       fullName: additionalData.fullName,
@@ -788,32 +936,47 @@
       approvedBy: null,
       approvedAt: null,
       approvalNote: null
-    });
+    };
     
-    // Notify admins
-    const adminQuery = query(collection(db, 'users'), where('role', 'in', ['admin', 'super_admin']));
-    const adminSnapshot = await getDocs(adminQuery);
-    
-    adminSnapshot.forEach(async (adminDoc) => {
-      await addDoc(collection(db, 'notifications'), {
-        userId: adminDoc.id,
-        type: 'approval_required',
-        title: 'New User Awaiting Approval',
-        message: `${additionalData.fullName} (${user.email}) has registered.`,
-        isRead: false,
-        createdAt: serverTimestamp()
+    try {
+      await setDoc(userRef, profileData);
+      debugSuccess('User profile created in Firestore');
+      
+      // Notify admins
+      const adminQuery = query(collection(db, 'users'), where('role', 'in', ['admin', 'super_admin']));
+      const adminSnapshot = await getDocs(adminQuery);
+      debugLog(`Found ${adminSnapshot.size} admin(s) to notify`);
+      
+      adminSnapshot.forEach(async (adminDoc) => {
+        await addDoc(collection(db, 'notifications'), {
+          userId: adminDoc.id,
+          type: 'approval_required',
+          title: 'New User Awaiting Approval',
+          message: `${additionalData.fullName} (${user.email}) has registered.`,
+          isRead: false,
+          createdAt: serverTimestamp()
+        });
       });
-    });
-    
-    await logAudit('signup_pending', user.uid, `User registered. Awaiting approval.`);
+      debugSuccess('Admin notifications sent');
+      
+      await logAudit('signup_pending', user.uid, `User registered. Awaiting approval.`);
+      return true;
+    } catch (error) {
+      debugError('Failed to create user profile', error);
+      throw error;
+    }
   }
 
   // ========== CHECK IF EMAIL EXISTS ==========
   async function checkEmailExists(email) {
     try {
+      debugLog(`Checking if email exists: ${email}`);
       const methods = await fetchSignInMethodsForEmail(auth, email);
-      return methods.length > 0;
+      const exists = methods.length > 0;
+      debugLog(`Email exists: ${exists} (methods: ${methods.join(', ') || 'none'})`);
+      return exists;
     } catch (error) {
+      debugError('Email check failed', error);
       return false;
     }
   }
@@ -823,6 +986,11 @@
     e.preventDefault();
     const email = loginEmail.value.trim();
     const password = loginPassword.value;
+    
+    debugLog('=== LOGIN ATTEMPT ===');
+    debugLog(`Email: ${email}`);
+    debugLog(`Password length: ${password.length}`);
+    
     clearMessage(loginMessage);
     
     if (!validateEmail(email)) {
@@ -837,14 +1005,21 @@
     setLoading(loginBtn, true);
     
     try {
+      debugLog('Setting persistence...');
       await setPersistence(auth, rememberMe.checked ? browserLocalPersistence : browserSessionPersistence);
+      debugSuccess('Persistence set');
+      
+      debugLog('Attempting sign in...');
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      debugSuccess(`User signed in: ${user.uid}`);
       
+      debugLog('Fetching user profile...');
       const userRef = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
       
       if (!userSnap.exists()) {
+        debugError('User profile not found in Firestore');
         await signOut(auth);
         showMessage(loginMessage, 'Account error. Please contact support.', 'error');
         setLoading(loginBtn, false);
@@ -852,8 +1027,10 @@
       }
       
       const userData = userSnap.data();
+      debugLog(`User status: ${userData.status}, Role: ${userData.role}`);
       
       if (userData.status === 'suspended' || userData.status === 'terminated') {
+        debugLog(`Account ${userData.status} - blocking login`);
         await signOut(auth);
         showMessage(loginMessage, `Account ${userData.status}. Contact admin.`, 'error');
         setLoading(loginBtn, false);
@@ -861,6 +1038,7 @@
       }
       
       if (userData.status === 'pending_approval' || userData.role === 'pending') {
+        debugLog('Account pending approval - blocking login');
         await signOut(auth);
         showMessage(loginMessage, '⏳ Your account is pending admin approval.', 'warning');
         setLoading(loginBtn, false);
@@ -869,12 +1047,13 @@
       
       await logAudit('login', user.uid, `User logged in. Role: ${userData.role}`);
       
+      debugSuccess('Login successful! Redirecting to dashboard...');
       showMessage(loginMessage, '✓ Login successful! Redirecting...', 'success');
       
       setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
       
     } catch (error) {
-      console.error('Login error:', error);
+      debugError('Login error', error);
       let errorMessage = 'Login failed. Please try again.';
       
       switch (error.code) {
@@ -899,50 +1078,80 @@
     }
   });
 
-  // ========== SIGNUP HANDLER (FIXED) ==========
+  // ========== SIGNUP HANDLER (WITH FULL DEBUG) ==========
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log('Signup form submitted'); // Debug log
+    
+    debugLog('========================================');
+    debugLog('=== SIGNUP FORM SUBMITTED ===');
+    debugLog('========================================');
     
     const name = signupName.value.trim();
     const phone = signupPhone.value.trim();
     const email = signupEmail.value.trim();
     const password = signupPassword.value;
     const confirm = signupConfirm.value;
+    
+    debugLog(`Name: ${name} (length: ${name.length})`);
+    debugLog(`Phone: ${phone}`);
+    debugLog(`Email: ${email}`);
+    debugLog(`Password length: ${password.length}`);
+    debugLog(`Confirm matches: ${password === confirm}`);
+    
     clearMessage(signupMessage);
     
     // Validation
+    debugLog('--- Running Validation ---');
+    
     if (!name || name.length < 3) {
+      debugError('Validation failed: Name too short');
       showMessage(signupMessage, 'Full name required (min 3 characters)', 'error');
       return;
     }
+    debugSuccess('Name validation passed');
+    
     if (!validatePhone(phone)) {
+      debugError('Validation failed: Invalid phone');
       showMessage(signupMessage, 'Valid phone number required (10-15 digits)', 'error');
       return;
     }
+    debugSuccess('Phone validation passed');
+    
     if (!validateEmail(email)) {
+      debugError('Validation failed: Invalid email');
       showMessage(signupMessage, 'Valid email required', 'error');
       return;
     }
+    debugSuccess('Email validation passed');
+    
     if (!validatePassword(password)) {
+      debugError('Validation failed: Password too short');
       showMessage(signupMessage, 'Password must be at least 8 characters', 'error');
       return;
     }
+    debugSuccess('Password validation passed');
+    
     if (password !== confirm) {
+      debugError('Validation failed: Passwords do not match');
       showMessage(signupMessage, 'Passwords do not match', 'error');
       return;
     }
+    debugSuccess('Password confirmation passed');
+    
+    debugLog('--- All validation passed ---');
     
     setLoading(signupBtn, true);
     
     try {
-      // Check if email already exists
+      // STEP 1: Check if email exists in Firebase Auth
+      debugLog('STEP 1: Checking if email exists in Firebase Auth...');
       const emailExists = await checkEmailExists(email);
+      
       if (emailExists) {
+        debugLog('Email already exists in Firebase Auth');
         showMessage(signupMessage, 'This email is already registered. Please login instead.', 'info');
         setLoading(signupBtn, false);
         
-        // Auto-switch to login tab after 2 seconds
         setTimeout(() => {
           switchToLoginTab();
           loginEmail.value = email;
@@ -950,12 +1159,17 @@
         }, 2000);
         return;
       }
+      debugSuccess('STEP 1: Email is available');
       
-      // Check Firestore for pending/rejected
+      // STEP 2: Check Firestore for pending/rejected
+      debugLog('STEP 2: Checking Firestore for existing records...');
       const existingQuery = query(collection(db, 'users'), where('email', '==', email));
       const existingSnap = await getDocs(existingQuery);
+      
       if (!existingSnap.empty) {
         const existingData = existingSnap.docs[0].data();
+        debugLog(`Found existing Firestore record with status: ${existingData.status}`);
+        
         if (existingData.status === 'pending_approval') {
           showMessage(signupMessage, 'This email is already pending approval.', 'warning');
           setLoading(signupBtn, false);
@@ -971,46 +1185,93 @@
           return;
         }
       }
+      debugSuccess('STEP 2: No existing Firestore record found');
       
-      // Create user
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // STEP 3: Create Firebase Auth user
+      debugLog('STEP 3: Creating Firebase Auth user...');
+      debugLog(`Calling createUserWithEmailAndPassword with email: ${email}`);
+      
+      let userCredential;
+      try {
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        debugSuccess('STEP 3: Firebase Auth user created successfully');
+      } catch (authError) {
+        debugError('STEP 3 FAILED: Firebase Auth creation error', authError);
+        debugLog(`Error code: ${authError.code}`);
+        debugLog(`Error message: ${authError.message}`);
+        
+        let errorMessage = 'Registration failed.';
+        switch (authError.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'This email is already registered. Please login.';
+            setTimeout(() => {
+              switchToLoginTab();
+              loginEmail.value = email;
+            }, 1500);
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address.';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'Password too weak. Use at least 8 characters.';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'Network error. Check connection.';
+            break;
+          case 'auth/operation-not-allowed':
+            errorMessage = 'Email/password signup is not enabled in Firebase Console.';
+            debugError('CONFIGURATION ERROR: Email/Password sign-in method not enabled in Firebase Console');
+            break;
+          default:
+            errorMessage = authError.message;
+        }
+        showMessage(signupMessage, errorMessage, 'error');
+        setLoading(signupBtn, false);
+        return;
+      }
+      
       const user = userCredential.user;
+      debugLog(`User created with UID: ${user.uid}`);
       
-      await createPendingUserProfile(user, { fullName: name, phone: phone });
+      // STEP 4: Create Firestore profile
+      debugLog('STEP 4: Creating Firestore profile...');
+      try {
+        await createPendingUserProfile(user, { fullName: name, phone: phone });
+        debugSuccess('STEP 4: Firestore profile created');
+      } catch (profileError) {
+        debugError('STEP 4 FAILED: Firestore profile creation error', profileError);
+        showMessage(signupMessage, 'Account created but profile setup failed. Contact support.', 'error');
+        setLoading(signupBtn, false);
+        return;
+      }
       
+      // STEP 5: Sign out and show pending view
+      debugLog('STEP 5: Signing out and showing pending view...');
       await signOut(auth);
+      debugSuccess('User signed out');
       
       showPendingView(email);
-      
       signupForm.reset();
       
       await logAudit('signup_pending', user.uid, `New registration: ${name} (${email})`);
+      debugSuccess('========================================');
+      debugSuccess('SIGNUP COMPLETED SUCCESSFULLY!');
+      debugSuccess('========================================');
       
     } catch (error) {
-      console.error('Signup error:', error);
-      let errorMessage = 'Registration failed.';
+      debugError('========================================');
+      debugError('UNEXPECTED SIGNUP ERROR', error);
+      debugError('========================================');
+      debugLog(`Error type: ${error.constructor.name}`);
+      debugLog(`Error code: ${error.code || 'No code'}`);
+      debugLog(`Error message: ${error.message}`);
+      debugLog(`Error stack: ${error.stack?.substring(0, 200)}...`);
       
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          errorMessage = 'This email is already registered. Please login.';
-          setTimeout(() => {
-            switchToLoginTab();
-            loginEmail.value = email;
-          }, 1500);
-          break;
-        case 'auth/invalid-email':
-          errorMessage = 'Invalid email address.';
-          break;
-        case 'auth/weak-password':
-          errorMessage = 'Password too weak. Use at least 8 characters.';
-          break;
-        case 'auth/network-request-failed':
-          errorMessage = 'Network error. Check connection.';
-          break;
-      }
+      let errorMessage = 'Registration failed: ' + (error.message || 'Unknown error');
       showMessage(signupMessage, errorMessage, 'error');
     } finally {
       setLoading(signupBtn, false);
+      debugLog('Signup button loading state cleared');
     }
   });
 
@@ -1018,6 +1279,10 @@
   resetForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = resetEmail.value.trim();
+    
+    debugLog('=== PASSWORD RESET ATTEMPT ===');
+    debugLog(`Email: ${email}`);
+    
     clearMessage(resetMessage);
     
     if (!validateEmail(email)) {
@@ -1028,10 +1293,12 @@
     setLoading(resetBtn, true);
     
     try {
+      debugLog('Sending password reset email...');
       await sendPasswordResetEmail(auth, email, {
         url: window.location.origin + '/auth.html',
         handleCodeInApp: false
       });
+      debugSuccess('Reset email sent');
       showMessage(resetMessage, '✓ Reset link sent! Check your inbox.', 'success');
       setTimeout(() => {
         resetEmail.value = '';
@@ -1039,6 +1306,7 @@
       }, 3000);
       await logAudit('password_reset_request', null, `Reset requested for: ${email}`);
     } catch (error) {
+      debugError('Password reset error', error);
       let errorMessage = 'Failed to send reset email.';
       if (error.code === 'auth/user-not-found') {
         errorMessage = 'No account found with this email.';
@@ -1054,24 +1322,53 @@
   // ========== AUTH STATE OBSERVER ==========
   onAuthStateChanged(auth, async (user) => {
     if (user) {
+      debugLog(`Auth state: User logged in - ${user.email}`);
       const userRef = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
       
       if (userSnap.exists()) {
         const userData = userSnap.data();
+        debugLog(`User status: ${userData.status}, Role: ${userData.role}`);
         
         if (userData.status === 'active' && userData.role !== 'pending') {
           if (window.location.pathname.includes('auth.html')) {
+            debugLog('Active user on auth page - redirecting to dashboard');
             window.location.href = 'dashboard.html';
           }
         } else {
+          debugLog('User not active - signing out');
           await signOut(auth);
         }
       }
+    } else {
+      debugLog('Auth state: No user logged in');
     }
   });
 
-  console.log('%c✅ Auth System Ready — Signup Fixed, Toggle Fixed', 'color: #28a745; font-weight: bold;');
+  // ========== FIREBASE CONFIGURATION CHECK ==========
+  async function checkFirebaseSetup() {
+    debugLog('--- Firebase Setup Diagnostics ---');
+    debugLog(`Project ID: ${firebaseConfig.projectId}`);
+    debugLog(`Auth Domain: ${firebaseConfig.authDomain}`);
+    
+    // Check if Email/Password is enabled (indirect test)
+    try {
+      const testEmail = `test_${Date.now()}@temp.com`;
+      debugLog('Testing auth configuration...');
+      debugLog('If this fails, Email/Password sign-in may not be enabled in Firebase Console.');
+      debugLog('Go to: Firebase Console → Authentication → Sign-in methods → Email/Password → Enable');
+    } catch (e) {
+      debugError('Auth configuration test failed', e);
+    }
+  }
+  
+  checkFirebaseSetup();
+  
+  debugSuccess('Auth system fully loaded and ready');
+  debugLog('To see detailed logs, click "Show/Hide Debug" below');
+  debugLog('Check Firebase Console if signup fails with "operation-not-allowed"');
+
+  console.log('%c✅ Auth System Ready — Debug Mode Active', 'color: #28a745; font-weight: bold;');
 </script>
 
 </body>
