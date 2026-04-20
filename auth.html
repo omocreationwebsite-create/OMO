@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>O.M.Ocreation - Sign Up</title>
+<title>O.M.Ocreation - Sign Up (Debug Mode)</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -14,14 +14,17 @@ body {
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh;
+  min-height:100vh;
+  margin:0;
+  padding:20px;
 }
 
 .card {
   background:#fff;
   padding:30px;
   border-radius:15px;
-  width:350px;
+  width:400px;
+  max-width:100%;
 }
 
 input {
@@ -30,6 +33,7 @@ input {
   margin:10px 0;
   border:1px solid #ccc;
   border-radius:8px;
+  box-sizing:border-box;
 }
 
 button {
@@ -40,59 +44,172 @@ button {
   color:white;
   border-radius:8px;
   cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
 }
 
 button:disabled {
   opacity:0.5;
+  cursor:not-allowed;
 }
 
 .msg {
   margin-top:10px;
-  font-size:14px;
+  padding:10px;
+  border-radius:8px;
+  font-size:13px;
+  display:none;
+}
+
+.msg.error {
+  background:#f8d7da;
+  color:#721c24;
+  display:block;
+}
+
+.msg.success {
+  background:#d4edda;
+  color:#155724;
+  display:block;
+}
+
+.msg.info {
+  background:#d1ecf1;
+  color:#0c5460;
+  display:block;
+}
+
+.debug-panel {
+  margin-top:20px;
+  background:#1a1a2e;
+  color:#00ff88;
+  font-family:monospace;
+  font-size:11px;
+  padding:12px;
+  border-radius:8px;
+  max-height:300px;
+  overflow:auto;
+  white-space:pre-wrap;
+  word-break:break-all;
+}
+
+.debug-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+}
+
+.clear-btn {
+  background:#ff4da6;
+  padding:4px 12px;
+  font-size:11px;
+  width:auto;
+  margin:0;
 }
 </style>
 </head>
-
 <body>
 
 <div class="card">
-  <h2>Sign Up</h2>
+  <h2>🔐 Sign Up (Debug Mode)</h2>
 
-  <input id="name" placeholder="Full Name" />
-  <input id="email" placeholder="Email" />
-  <input id="password" type="password" placeholder="Password" />
+  <input id="name" type="text" placeholder="Full Name" />
+  <input id="email" type="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password (min 6 characters)" />
 
   <button id="btn" onclick="signup()">Create Account</button>
 
-  <div class="msg" id="msg"></div>
+  <div id="msg" class="msg"></div>
+
+  <div class="debug-panel">
+    <div class="debug-header">
+      <span>🐛 DEBUG CONSOLE</span>
+      <button class="clear-btn" onclick="clearDebug()">Clear</button>
+    </div>
+    <div id="debugLog">[READY] Waiting for signup...\n</div>
+  </div>
 </div>
 
 <script>
+// Supabase configuration
 const supabase = window.supabase.createClient(
   "https://gogrmiflvfdetvtggzrk.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ"
 );
 
-const msg = document.getElementById("msg");
+// DOM elements
+const msgDiv = document.getElementById("msg");
+const debugDiv = document.getElementById("debugLog");
 const btn = document.getElementById("btn");
 
-async function signup() {
+// Debug function
+function addDebug(label, data) {
+  const timestamp = new Date().toLocaleTimeString();
+  let output = `\n[${timestamp}] 📌 ${label}\n`;
+  output += "─".repeat(50) + "\n";
+  
+  if (data !== undefined) {
+    if (typeof data === 'object') {
+      try {
+        output += JSON.stringify(data, null, 2);
+      } catch(e) {
+        output += "[Cannot display]";
+      }
+    } else {
+      output += String(data);
+    }
+  }
+  output += "\n" + "─".repeat(50) + "\n";
+  
+  debugDiv.innerText += output;
+  debugDiv.scrollTop = debugDiv.scrollHeight;
+  console.log(`[${label}]`, data);
+}
 
+function showMessage(text, type) {
+  msgDiv.className = "msg " + type;
+  msgDiv.innerText = text;
+  addDebug(`📢 MESSAGE (${type})`, text);
+}
+
+function clearDebug() {
+  debugDiv.innerText = "[LOG CLEARED] Ready for next attempt...\n";
+  addDebug("LOG CLEARED", "Debug console reset");
+}
+
+async function signup() {
+  addDebug("🚀 SIGNUP STARTED", "Function called");
+  
   const fullName = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  console.log("START SIGNUP");
+  addDebug("📝 INPUT VALUES", {
+    fullName: fullName || "[EMPTY]",
+    email: email || "[EMPTY]",
+    passwordLength: password ? password.length : 0
+  });
 
+  // Validation
   if (!fullName || !email || !password) {
-    msg.innerText = "Please fill all fields";
+    addDebug("❌ VALIDATION FAILED", "Missing required fields");
+    showMessage("Please fill all fields", "error");
+    return;
+  }
+
+  if (password.length < 6) {
+    addDebug("❌ VALIDATION FAILED", "Password too short (min 6 characters)");
+    showMessage("Password must be at least 6 characters", "error");
     return;
   }
 
   btn.disabled = true;
-  msg.innerText = "Creating account...";
+  btn.innerText = "⏳ Creating account...";
+  showMessage("Creating account...", "info");
 
   try {
+    addDebug("🔄 STEP 1", "Calling supabase.auth.signUp()");
 
     // STEP 1: CREATE AUTH USER
     const { data, error } = await supabase.auth.signUp({
@@ -100,55 +217,87 @@ async function signup() {
       password
     });
 
-    console.log("AUTH RESULT:", data, error);
+    addDebug("📦 AUTH RESPONSE", { data: data || null, error: error || null });
 
     if (error) {
-      msg.innerText = "Auth Error: " + error.message;
+      addDebug("❌ AUTH ERROR", error.message);
+      showMessage("Auth Error: " + error.message, "error");
       btn.disabled = false;
+      btn.innerText = "Create Account";
       return;
     }
 
     const user = data?.user;
+    addDebug("👤 USER OBJECT", user || null);
 
     if (!user) {
-      msg.innerText = "No user returned from auth";
+      addDebug("❌ CRITICAL ERROR", "No user object returned from auth");
+      showMessage("No user returned from auth", "error");
       btn.disabled = false;
+      btn.innerText = "Create Account";
       return;
     }
 
-    console.log("USER CREATED:", user.id);
+    addDebug("✅ USER CREATED", { userId: user.id, email: user.email });
 
-    // STEP 2: INSERT PROFILE (SAFE)
-    const { error: insertError } = await supabase
+    // STEP 2: INSERT PROFILE
+    addDebug("🔄 STEP 2", "Inserting into users table");
+
+    const userRecord = {
+      id: user.id,
+      full_name: fullName,
+      email: email,
+      role: "pending",
+      status: "pending",
+      base_salary: 0,
+      created_at: new Date().toISOString()
+    };
+
+    addDebug("📦 USER RECORD TO INSERT", userRecord);
+
+    const { error: insertError, data: insertData } = await supabase
       .from("users")
-      .insert([{
-        id: user.id,
-        full_name: fullName,
-        email: email,
-        role: "pending",
-        status: "pending",
-        base_salary: 0
-      }]);
+      .insert([userRecord])
+      .select();
+
+    addDebug("📦 INSERT RESPONSE", { 
+      error: insertError || null, 
+      data: insertData || null 
+    });
 
     if (insertError) {
-      console.log("INSERT ERROR:", insertError);
-      msg.innerText = "Profile creation failed: " + insertError.message;
+      addDebug("❌ DATABASE ERROR", insertError.message);
+      showMessage("Profile creation failed: " + insertError.message, "error");
       btn.disabled = false;
+      btn.innerText = "Create Account";
       return;
     }
 
-    msg.innerText = "Signup successful! Redirecting...";
+    addDebug("🎉 SUCCESS", "User created and profile saved!");
+    showMessage("Signup successful! Redirecting to login...", "success");
+
     setTimeout(() => {
+      addDebug("🔄 REDIRECT", "Redirecting to login.html");
       window.location.href = "login.html";
-    }, 1500);
+    }, 2000);
 
   } catch (err) {
-    console.log(err);
-    msg.innerText = "Unexpected error: " + err.message;
+    addDebug("💥 UNEXPECTED ERROR", {
+      message: err.message,
+      stack: err.stack
+    });
+    showMessage("Unexpected error: " + err.message, "error");
     btn.disabled = false;
+    btn.innerText = "Create Account";
   }
 }
-</script>
 
+// Initial debug
+addDebug("✅ SYSTEM READY", {
+  supabaseUrl: "https://gogrmiflvfdetvtggzrk.supabase.co",
+  timestamp: new Date().toISOString(),
+  status: "Waiting for user input"
+});
+</script>
 </body>
 </html>
