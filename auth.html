@@ -1,1376 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
-  <title>Sign In · O.M.Ocreation ERP</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ff4da6">
+  <title>Sign In · FashionStone ERP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #fff0f6 0%, #ffffff 50%, #fff0f6 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    
-    :root {
-      --pink: #ff4da6;
-      --pink-dark: #e6398c;
-      --pink-light: #ffb3d9;
-      --pink-soft: #fff0f6;
-      --dark: #1a1a2e;
-      --gray: #666;
-      --error: #dc3545;
-      --success: #28a745;
-      --warning: #ffc107;
-      --info: #17a2b8;
-    }
-    
-    .auth-container {
-      width: 100%;
-      max-width: 520px;
-    }
-    
-    .brand-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    
-    .brand-header .logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    
-    .logo-text {
-      font-size: 1.8rem;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-    }
-    
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
+    body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #fff0f6 0%, #ffffff 50%, #fff0f6 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .auth-container { width: 100%; max-width: 480px; }
+    .brand-header { text-align: center; margin-bottom: 30px; }
+    .logo-text { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
     .logo-text span:first-child { color: var(--dark); }
-    .logo-text span:last-child { color: var(--pink); }
-    
-    .brand-header p {
-      color: var(--gray);
-      font-size: 0.9rem;
-      margin-top: 8px;
-    }
-    
-    .auth-card {
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(12px);
-      border-radius: 30px;
-      padding: 40px 35px;
-      box-shadow: 0 25px 50px -12px rgba(255, 77, 166, 0.25);
-      border: 1px solid rgba(255, 77, 166, 0.15);
-    }
-    
-    .auth-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 35px;
-      border-bottom: 2px solid var(--pink-soft);
-      padding-bottom: 5px;
-    }
-    
-    .auth-tab {
-      flex: 1;
-      text-align: center;
-      padding: 12px 0;
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: var(--gray);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-radius: 12px 12px 0 0;
-      position: relative;
-    }
-    
-    .auth-tab.active {
-      color: var(--pink);
-    }
-    
-    .auth-tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: -7px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--pink), var(--pink-light));
-      border-radius: 3px;
-    }
-    
-    .auth-form {
-      display: none;
-    }
-    
-    .auth-form.active {
-      display: block;
-    }
-    
-    .form-group {
-      margin-bottom: 22px;
-    }
-    
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--dark);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    
-    .input-wrapper i.fa-envelope,
-    .input-wrapper i.fa-lock,
-    .input-wrapper i.fa-user,
-    .input-wrapper i.fa-phone {
-      position: absolute;
-      left: 16px;
-      color: var(--pink);
-      font-size: 1rem;
-      opacity: 0.7;
-      pointer-events: none;
-    }
-    
-    .input-wrapper input {
-      width: 100%;
-      padding: 14px 48px 14px 48px;
-      border: 1.5px solid rgba(255, 77, 166, 0.2);
-      border-radius: 50px;
-      font-size: 0.95rem;
-      font-family: 'Poppins', sans-serif;
-      transition: all 0.2s ease;
-      background: white;
-      outline: none;
-    }
-    
-    .input-wrapper input:focus {
-      border-color: var(--pink);
-      box-shadow: 0 0 0 4px rgba(255, 77, 166, 0.1);
-    }
-    
-    .password-toggle {
-      position: absolute;
-      right: 16px;
-      cursor: pointer;
-      color: var(--gray);
-      font-size: 1.1rem;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-      z-index: 10;
-      background: none;
-      border: none;
-      padding: 5px;
-      pointer-events: auto;
-    }
-    
-    .password-toggle:hover {
-      opacity: 1;
-      color: var(--pink);
-    }
-    
-    .form-options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-      font-size: 0.85rem;
-    }
-    
-    .remember-me {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--gray);
-      cursor: pointer;
-    }
-    
-    .remember-me input {
-      accent-color: var(--pink);
-      width: 16px;
-      height: 16px;
-    }
-    
-    .forgot-link {
-      color: var(--pink);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      padding: 15px 28px;
-      border-radius: 50px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      font-size: 1rem;
-      border: none;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
-      color: white;
-      box-shadow: 0 8px 20px rgba(255, 77, 166, 0.3);
-    }
-    
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(255, 77, 166, 0.4);
-    }
-    
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    
-    .auth-message {
-      margin-top: 20px;
-      padding: 14px 18px;
-      border-radius: 50px;
-      font-size: 0.85rem;
-      text-align: center;
-      display: none;
-    }
-    
-    .auth-message.error {
-      background: rgba(220, 53, 69, 0.1);
-      color: var(--error);
-      border: 1px solid rgba(220, 53, 69, 0.3);
-      display: block;
-    }
-    
-    .auth-message.success {
-      background: rgba(40, 167, 69, 0.1);
-      color: var(--success);
-      border: 1px solid rgba(40, 167, 69, 0.3);
-      display: block;
-    }
-    
-    .auth-message.info {
-      background: rgba(255, 77, 166, 0.1);
-      color: var(--pink-dark);
-      border: 1px solid rgba(255, 77, 166, 0.3);
-      display: block;
-    }
-    
-    .auth-message.warning {
-      background: rgba(255, 193, 7, 0.1);
-      color: #856404;
-      border: 1px solid rgba(255, 193, 7, 0.3);
-      display: block;
-    }
-    
-    /* Debug Panel */
-    .debug-panel {
-      margin-top: 20px;
-      padding: 15px;
-      background: #1a1a2e;
-      border-radius: 15px;
-      color: #00ff00;
-      font-family: monospace;
-      font-size: 0.75rem;
-      max-height: 200px;
-      overflow-y: auto;
-      display: none;
-    }
-    
-    .debug-panel.show {
-      display: block;
-    }
-    
-    .debug-panel .debug-line {
-      padding: 3px 0;
-      border-bottom: 1px solid #333;
-    }
-    
-    .debug-panel .debug-error {
-      color: #ff6b6b;
-    }
-    
-    .debug-panel .debug-success {
-      color: #51cf66;
-    }
-    
-    .debug-toggle {
-      text-align: center;
-      margin-top: 10px;
-    }
-    
-    .debug-toggle button {
-      background: none;
-      border: 1px solid var(--gray);
-      color: var(--gray);
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      cursor: pointer;
-    }
-    
-    .reset-header {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    
-    .reset-header i {
-      font-size: 3rem;
-      color: var(--pink);
-      margin-bottom: 15px;
-    }
-    
-    .reset-header h3 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 8px;
-    }
-    
-    .back-to-login {
-      text-align: center;
-      margin-top: 20px;
-    }
-    
-    .back-to-login a {
-      color: var(--pink);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    
-    .auth-footer {
-      text-align: center;
-      margin-top: 25px;
-      color: var(--gray);
-      font-size: 0.8rem;
-    }
-    
-    .auth-footer a {
-      color: var(--pink);
-      text-decoration: none;
-    }
-    
-    .pending-notice {
-      background: linear-gradient(135deg, rgba(255,193,7,0.15), rgba(255,77,166,0.1));
-      border-radius: 20px;
-      padding: 25px;
-      text-align: center;
-      margin-top: 20px;
-    }
-    
-    .pending-notice i {
-      font-size: 3rem;
-      color: var(--warning);
-      margin-bottom: 15px;
-    }
-    
-    .pending-notice h4 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      color: var(--dark);
-    }
-    
-    .announcement-banner {
-      background: var(--info);
-      color: white;
-      padding: 12px 18px;
-      border-radius: 50px;
-      margin-bottom: 20px;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    @media (max-width: 500px) {
-      .auth-card { padding: 30px 20px; }
-      .logo-text { font-size: 1.5rem; }
-    }
+    .logo-text span:last-child { color: var(--primary); }
+    .brand-header p { color: var(--gray); font-size: 0.85rem; margin-top: 5px; }
+    .auth-card { background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); border-radius: 30px; padding: 35px 30px; box-shadow: 0 25px 50px -12px rgba(255,77,166,0.25); border: 1px solid rgba(255,77,166,0.15); }
+    .auth-tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid var(--primary-soft); padding-bottom: 5px; }
+    .auth-tab { flex: 1; text-align: center; padding: 12px 0; font-weight: 600; font-size: 1rem; color: var(--gray); cursor: pointer; border: none; background: none; }
+    .auth-tab.active { color: var(--primary); position: relative; }
+    .auth-tab.active::after { content: ''; position: absolute; bottom: -7px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 3px; }
+    .auth-form { display: none; }
+    .auth-form.active { display: block; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .input-wrapper { position: relative; }
+    .input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1rem; }
+    .input-wrapper input { width: 100%; padding: 14px 16px 14px 48px; border: 1.5px solid rgba(255,77,166,0.2); border-radius: 50px; font-size: 0.9rem; outline: none; transition: all 0.2s; }
+    .input-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,77,166,0.1); }
+    .password-toggle { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--gray); background: none; border: none; }
+    .btn { width: 100%; padding: 15px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; border: none; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .auth-message { margin-top: 18px; padding: 14px; border-radius: 50px; font-size: 0.8rem; text-align: center; display: none; }
+    .auth-message.error { background: rgba(220,53,69,0.1); color: var(--danger); display: block; }
+    .auth-message.success { background: rgba(40,167,69,0.1); color: var(--success); display: block; }
+    .auth-message.info { background: rgba(255,77,166,0.1); color: var(--primary-dark); display: block; }
+    .pending-notice { text-align: center; padding: 30px 20px; }
+    .pending-notice i { font-size: 3.5rem; color: var(--warning); margin-bottom: 20px; }
+    .pending-notice h3 { font-size: 1.3rem; margin-bottom: 10px; }
+    .pending-notice p { color: var(--gray); margin-bottom: 25px; }
+    .auth-footer { text-align: center; margin-top: 20px; color: var(--gray); font-size: 0.75rem; }
+    .auth-footer a { color: var(--primary); text-decoration: none; }
   </style>
 </head>
 <body>
-
 <div class="auth-container">
-  
   <div class="brand-header">
-    <a href="index.html" class="logo">
-      <div class="logo-text"><span>O.M.O</span><span>creation</span></div>
-    </a>
-    <p>Enterprise Resource Management · Staff Portal</p>
+    <div class="logo-text"><span>Fashion</span><span>Stone</span></div>
+    <p>Enterprise Resource Management</p>
   </div>
-  
-  <div class="auth-card" id="authCard">
-    
-    <div class="announcement-banner" id="globalAnnouncement">
-      <i class="fas fa-bullhorn"></i>
-      <span id="announcementMessage">New accounts require admin approval before login.</span>
-    </div>
-    
-    <div id="normalAuthView">
+  <div class="auth-card">
+    <div id="mainView">
       <div class="auth-tabs">
-        <div class="auth-tab active" data-tab="login">Sign In</div>
-        <div class="auth-tab" data-tab="signup">Register</div>
+        <button class="auth-tab active" data-tab="login">Sign In</button>
+        <button class="auth-tab" data-tab="signup">Register</button>
       </div>
-      
-      <!-- Login Form -->
       <form id="loginForm" class="auth-form active">
-        <div class="form-group">
-          <label>Email Address</label>
-          <div class="input-wrapper">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="loginEmail" placeholder="staff@omocreation.com" required autocomplete="email">
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Password</label>
-          <div class="input-wrapper">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
-            <button type="button" class="password-toggle" data-target="loginPassword">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
-        </div>
-        
-        <div class="form-options">
-          <label class="remember-me">
-            <input type="checkbox" id="rememberMe"> Remember me
-          </label>
-          <a href="#" class="forgot-link" id="showResetLink">Forgot password?</a>
-        </div>
-        
-        <button type="submit" class="btn btn-primary" id="loginBtn">
-          <span>Sign In</span> <i class="fas fa-arrow-right"></i>
-        </button>
-        
+        <div class="form-group"><label>Email</label><div class="input-wrapper"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="staff@fashionstone.com" required></div></div>
+        <div class="form-group"><label>Password</label><div class="input-wrapper"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="••••••••" required><button type="button" class="password-toggle" data-target="loginPassword"><i class="fas fa-eye"></i></button></div></div>
+        <button type="submit" class="btn" id="loginBtn"><span>Sign In</span></button>
         <div id="loginMessage" class="auth-message"></div>
       </form>
-      
-      <!-- Signup Form -->
       <form id="signupForm" class="auth-form">
-        <div class="form-group">
-          <label>Full Name</label>
-          <div class="input-wrapper">
-            <i class="fas fa-user"></i>
-            <input type="text" id="signupName" placeholder="Oluwaseun Adeyemi" required autocomplete="name">
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Phone Number</label>
-          <div class="input-wrapper">
-            <i class="fas fa-phone"></i>
-            <input type="tel" id="signupPhone" placeholder="08012345678" required>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Email Address</label>
-          <div class="input-wrapper">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="signupEmail" placeholder="staff@omocreation.com" required autocomplete="email">
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Password</label>
-          <div class="input-wrapper">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="signupPassword" placeholder="Min. 8 characters" required autocomplete="new-password">
-            <button type="button" class="password-toggle" data-target="signupPassword">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Confirm Password</label>
-          <div class="input-wrapper">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="signupConfirm" placeholder="Re-enter password" required autocomplete="new-password">
-            <button type="button" class="password-toggle" data-target="signupConfirm">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
-        </div>
-        
-        <button type="submit" class="btn btn-primary" id="signupBtn">
-          <span>Register for Approval</span> <i class="fas fa-user-plus"></i>
-        </button>
-        
-        <p style="font-size: 0.75rem; color: var(--gray); text-align: center; margin-top: 15px;">
-          <i class="fas fa-info-circle"></i> Your account will be reviewed by an administrator.
-        </p>
-        
+        <div class="form-group"><label>Full Name</label><div class="input-wrapper"><i class="fas fa-user"></i><input type="text" id="signupName" placeholder="Oluwaseun Adeyemi" required></div></div>
+        <div class="form-group"><label>Phone Number</label><div class="input-wrapper"><i class="fas fa-phone"></i><input type="tel" id="signupPhone" placeholder="08012345678" required></div></div>
+        <div class="form-group"><label>Email</label><div class="input-wrapper"><i class="fas fa-envelope"></i><input type="email" id="signupEmail" placeholder="staff@fashionstone.com" required></div></div>
+        <div class="form-group"><label>Password</label><div class="input-wrapper"><i class="fas fa-lock"></i><input type="password" id="signupPassword" placeholder="Min. 8 characters" required><button type="button" class="password-toggle" data-target="signupPassword"><i class="fas fa-eye"></i></button></div></div>
+        <div class="form-group"><label>Confirm Password</label><div class="input-wrapper"><i class="fas fa-lock"></i><input type="password" id="signupConfirm" placeholder="Re-enter password" required><button type="button" class="password-toggle" data-target="signupConfirm"><i class="fas fa-eye"></i></button></div></div>
+        <button type="submit" class="btn" id="signupBtn"><span>Register</span></button>
         <div id="signupMessage" class="auth-message"></div>
       </form>
     </div>
-    
-    <!-- Password Reset View -->
-    <div id="resetView" style="display: none;">
-      <div class="reset-header">
-        <i class="fas fa-key"></i>
-        <h3>Reset Password</h3>
-        <p>Enter your email address and we'll send you a link to reset your password.</p>
-      </div>
-      
-      <form id="resetForm">
-        <div class="form-group">
-          <label>Email Address</label>
-          <div class="input-wrapper">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="resetEmail" placeholder="staff@omocreation.com" required>
-          </div>
-        </div>
-        
-        <button type="submit" class="btn btn-primary" id="resetBtn">
-          <span>Send Reset Link</span> <i class="fas fa-paper-plane"></i>
-        </button>
-        
-        <div id="resetMessage" class="auth-message"></div>
-      </form>
-      
-      <div class="back-to-login">
-        <a href="#" id="backToLoginLink"><i class="fas fa-arrow-left"></i> Back to Sign In</a>
-      </div>
-    </div>
-    
-    <!-- Pending Approval View -->
-    <div id="pendingApprovalView" style="display: none;">
+    <div id="pendingView" style="display:none;">
       <div class="pending-notice">
         <i class="fas fa-clock"></i>
-        <h4>Registration Submitted!</h4>
-        <p id="pendingEmailDisplay">your@email.com</p>
-        <p style="margin-top: 15px;">Your account is pending administrator approval. You will be notified once approved.</p>
-        <p style="margin-top: 20px; font-size: 0.8rem;">
-          <i class="fas fa-users"></i> Approvals typically take 1-2 business hours.
-        </p>
-        <button class="btn btn-primary" id="backToLoginFromPending" style="margin-top: 25px;">
-          <i class="fas fa-arrow-left"></i> Return to Sign In
-        </button>
+        <h3>Registration Submitted!</h3>
+        <p>Your account has been created and is pending administrator approval.</p>
+        <p style="font-size:0.8rem;">You will be able to login once an admin approves your account.</p>
+        <button class="btn" id="backToLoginBtn">Return to Sign In</button>
       </div>
     </div>
-    
-    <!-- Debug Panel -->
-    <div class="debug-panel" id="debugPanel">
-      <div class="debug-line debug-success">🔍 Debug Console Ready</div>
-      <div class="debug-line">─────────────────────</div>
-    </div>
-    <div class="debug-toggle">
-      <button id="toggleDebugBtn">Show/Hide Debug</button>
-      <button id="clearDebugBtn" style="margin-left: 10px;">Clear</button>
-    </div>
-    
   </div>
-  
   <div class="auth-footer">
-    <p>🔐 Secure Enterprise Access · <a href="index.html">Return to Homepage</a></p>
-    <p style="margin-top: 10px;">© 2026 O.M.Ocreation · All Rights Reserved</p>
+    <p>© 2026 FashionStone · <a href="index.html">Home</a></p>
   </div>
-  
 </div>
-
 <script type="module">
-  // ========== DEBUG LOGGER ==========
-  const debugPanel = document.getElementById('debugPanel');
-  const debugLines = [];
-  
-  function debugLog(message, type = 'info') {
-    const timestamp = new Date().toLocaleTimeString();
-    const line = document.createElement('div');
-    line.className = `debug-line debug-${type}`;
-    line.textContent = `[${timestamp}] ${message}`;
-    debugPanel.appendChild(line);
-    debugPanel.scrollTop = debugPanel.scrollHeight;
-    console.log(`[DEBUG] ${message}`);
-  }
-  
-  function debugError(message, error) {
-    const timestamp = new Date().toLocaleTimeString();
-    const line = document.createElement('div');
-    line.className = 'debug-line debug-error';
-    line.textContent = `[${timestamp}] ❌ ${message}: ${error?.message || error}`;
-    debugPanel.appendChild(line);
-    debugPanel.scrollTop = debugPanel.scrollHeight;
-    console.error(`[DEBUG ERROR] ${message}:`, error);
-  }
-  
-  function debugSuccess(message) {
-    const timestamp = new Date().toLocaleTimeString();
-    const line = document.createElement('div');
-    line.className = 'debug-line debug-success';
-    line.textContent = `[${timestamp}] ✅ ${message}`;
-    debugPanel.appendChild(line);
-    debugPanel.scrollTop = debugPanel.scrollHeight;
-    console.log(`[DEBUG SUCCESS] ${message}`);
-  }
-  
-  document.getElementById('toggleDebugBtn').addEventListener('click', () => {
-    debugPanel.classList.toggle('show');
-  });
-  
-  document.getElementById('clearDebugBtn').addEventListener('click', () => {
-    const lines = debugPanel.querySelectorAll('.debug-line:not(:first-child):not(:nth-child(2))');
-    lines.forEach(line => line.remove());
-  });
-  
-  debugSuccess('Debug system initialized');
-  debugLog('Firebase SDK loading...');
-
-  // ========== FIREBASE CONFIGURATION ==========
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { 
-    getAuth, 
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
-    setPersistence,
-    browserLocalPersistence,
-    browserSessionPersistence,
-    onAuthStateChanged,
-    signOut,
-    fetchSignInMethodsForEmail
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { 
-    getFirestore,
-    doc,
-    setDoc,
-    serverTimestamp,
-    collection,
-    getDoc,
-    query,
-    where,
-    getDocs,
-    addDoc,
-    enableIndexedDbPersistence
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
-  authDomain: "fashion-46e5d.firebaseapp.com",
-  projectId: "fashion-46e5d",
-  storageBucket: "fashion-46e5d.firebasestorage.app",
-  messagingSenderId: "408062284317",
-  appId: "1:408062284317:web:eb905bce68926c10a0ecf4",
-  measurementId: "G-2B7LMCWS3R"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
+    authDomain: "fashion-46e5d.firebaseapp.com",
+    projectId: "fashion-46e5d",
+    storageBucket: "fashion-46e5d.firebasestorage.app",
+    messagingSenderId: "408062284317",
+    appId: "1:408062284317:web:eb905bce68926c10a0ecf4"
+  };
 
-  debugLog('Firebase config loaded: ' + firebaseConfig.projectId);
-  
-  let app, auth, db;
-  
-  try {
-    app = initializeApp(firebaseConfig);
-    debugSuccess('Firebase app initialized');
-    
-    auth = getAuth(app);
-    debugSuccess('Firebase auth initialized');
-    
-    db = getFirestore(app);
-    debugSuccess('Firestore initialized');
-    
-    // Enable offline persistence
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code === 'failed-precondition') {
-        debugLog('Multiple tabs open, persistence enabled in first tab only', 'warning');
-      } else if (err.code === 'unimplemented') {
-        debugLog('Browser doesn\'t support persistence', 'warning');
-      }
-    });
-    
-  } catch (error) {
-    debugError('Firebase initialization failed', error);
-  }
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-  console.log('%c🔐 O.M.Ocreation ERP — Auth System Active', 'color: #ff4da6; font-weight: bold;');
-  debugSuccess('All Firebase services ready');
-
-  // ========== DOM ELEMENTS ==========
-  const normalView = document.getElementById('normalAuthView');
-  const resetView = document.getElementById('resetView');
-  const pendingApprovalView = document.getElementById('pendingApprovalView');
-  const authTabs = document.querySelectorAll('.auth-tab');
+  const mainView = document.getElementById('mainView');
+  const pendingView = document.getElementById('pendingView');
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
-  const resetForm = document.getElementById('resetForm');
   const loginMessage = document.getElementById('loginMessage');
   const signupMessage = document.getElementById('signupMessage');
-  const resetMessage = document.getElementById('resetMessage');
-  const showResetLink = document.getElementById('showResetLink');
-  const backToLoginLink = document.getElementById('backToLoginLink');
-  const backToLoginFromPending = document.getElementById('backToLoginFromPending');
-  const pendingEmailDisplay = document.getElementById('pendingEmailDisplay');
-
   const loginBtn = document.getElementById('loginBtn');
   const signupBtn = document.getElementById('signupBtn');
-  const resetBtn = document.getElementById('resetBtn');
 
-  const loginEmail = document.getElementById('loginEmail');
-  const loginPassword = document.getElementById('loginPassword');
-  const signupName = document.getElementById('signupName');
-  const signupPhone = document.getElementById('signupPhone');
-  const signupEmail = document.getElementById('signupEmail');
-  const signupPassword = document.getElementById('signupPassword');
-  const signupConfirm = document.getElementById('signupConfirm');
-  const resetEmail = document.getElementById('resetEmail');
-  const rememberMe = document.getElementById('rememberMe');
+  function showMessage(el, msg, type) { el.textContent = msg; el.className = `auth-message ${type}`; }
+  function setLoading(btn, loading) { btn.disabled = loading; btn.querySelector('span').textContent = loading ? 'Processing...' : (btn.id === 'loginBtn' ? 'Sign In' : 'Register'); }
 
-  debugLog('DOM elements loaded');
-
-  // ========== UI HELPERS ==========
-  function showMessage(element, message, type = 'error') {
-    element.textContent = message;
-    element.className = `auth-message ${type}`;
-    debugLog(`Message shown (${type}): ${message}`);
-  }
-
-  function clearMessage(element) {
-    element.textContent = '';
-    element.className = 'auth-message';
-  }
-
-  function setLoading(button, isLoading) {
-    if (isLoading) {
-      button.disabled = true;
-      const span = button.querySelector('span');
-      const icon = button.querySelector('i');
-      if (span) {
-        button.dataset.originalText = span.textContent;
-        span.textContent = 'Processing...';
-      }
-      if (icon) {
-        icon.className = 'fas fa-spinner fa-spin';
-      }
-      debugLog(`Button ${button.id} loading state: ON`);
-    } else {
-      button.disabled = false;
-      const span = button.querySelector('span');
-      const icon = button.querySelector('i');
-      if (span && button.dataset.originalText) {
-        span.textContent = button.dataset.originalText;
-      }
-      if (icon) {
-        if (button.id === 'loginBtn') icon.className = 'fas fa-arrow-right';
-        else if (button.id === 'signupBtn') icon.className = 'fas fa-user-plus';
-        else if (button.id === 'resetBtn') icon.className = 'fas fa-paper-plane';
-      }
-      debugLog(`Button ${button.id} loading state: OFF`);
-    }
-  }
-
-  function validateEmail(email) {
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    debugLog(`Email validation for "${email}": ${isValid}`);
-    return isValid;
-  }
-
-  function validatePhone(phone) {
-    const cleaned = phone.replace(/\D/g, '');
-    const isValid = cleaned.length >= 10 && cleaned.length <= 15;
-    debugLog(`Phone validation for "${phone}": ${isValid} (${cleaned.length} digits)`);
-    return isValid;
-  }
-
-  function validatePassword(password) {
-    const isValid = password.length >= 8;
-    debugLog(`Password validation: length=${password.length}, valid=${isValid}`);
-    return isValid;
-  }
-
-  function showNormalView() {
-    normalView.style.display = 'block';
-    resetView.style.display = 'none';
-    pendingApprovalView.style.display = 'none';
-    debugLog('Showing normal view');
-  }
-
-  function showResetView() {
-    normalView.style.display = 'none';
-    resetView.style.display = 'block';
-    pendingApprovalView.style.display = 'none';
-    resetEmail.value = loginEmail.value || '';
-    debugLog('Showing reset view');
-  }
-
-  function showPendingView(email) {
-    normalView.style.display = 'none';
-    resetView.style.display = 'none';
-    pendingApprovalView.style.display = 'block';
-    pendingEmailDisplay.textContent = email;
-    debugSuccess(`Showing pending approval view for: ${email}`);
-  }
-
-  function switchToLoginTab() {
-    authTabs.forEach(t => t.classList.remove('active'));
-    document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+  document.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', function() {
+    document.querySelectorAll('.auth-tab').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-    loginForm.classList.add('active');
-    debugLog('Switched to login tab');
-  }
+    document.getElementById(this.dataset.tab + 'Form').classList.add('active');
+  }));
 
-  // ========== AUDIT LOGGING ==========
-  async function logAudit(actionType, userId, note = '') {
-    try {
-      debugLog(`Logging audit: ${actionType} - ${note}`);
-      await addDoc(collection(db, 'audit_logs'), {
-        actionType: actionType,
-        collectionName: 'auth',
-        documentId: userId || 'system',
-        performedBy: userId || 'system',
-        performedAt: serverTimestamp(),
-        note: note
-      });
-      debugSuccess('Audit log saved');
-    } catch (e) {
-      debugError('Audit log failed', e);
-    }
-  }
+  document.querySelectorAll('.password-toggle').forEach(t => t.addEventListener('click', function() {
+    const input = document.getElementById(this.dataset.target);
+    const icon = this.querySelector('i');
+    input.type = input.type === 'password' ? 'text' : 'password';
+    icon.classList.toggle('fa-eye'); icon.classList.toggle('fa-eye-slash');
+  }));
 
-  // ========== PASSWORD TOGGLE ==========
-  document.querySelectorAll('.password-toggle').forEach(toggle => {
-    toggle.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const targetId = this.dataset.target;
-      const input = document.getElementById(targetId);
-      const icon = this.querySelector('i');
-      
-      debugLog(`Password toggle clicked for: ${targetId}`);
-      
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-      } else {
-        input.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-      }
-    });
-  });
+  document.getElementById('backToLoginBtn').addEventListener('click', () => { mainView.style.display = 'block'; pendingView.style.display = 'none'; });
 
-  // ========== TAB SWITCHING ==========
-  authTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const targetTab = tab.dataset.tab;
-      debugLog(`Tab switched to: ${targetTab}`);
-      authTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-      if (targetTab === 'login') {
-        loginForm.classList.add('active');
-      } else {
-        signupForm.classList.add('active');
-      }
-      clearMessage(loginMessage);
-      clearMessage(signupMessage);
-    });
-  });
-
-  // ========== VIEW SWITCHING ==========
-  showResetLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    debugLog('Reset password link clicked');
-    showResetView();
-  });
-
-  backToLoginLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    debugLog('Back to login clicked');
-    showNormalView();
-  });
-
-  backToLoginFromPending.addEventListener('click', () => {
-    debugLog('Back to login from pending clicked');
-    showNormalView();
-    switchToLoginTab();
-  });
-
-  // ========== CREATE PENDING USER PROFILE ==========
-  async function createPendingUserProfile(user, additionalData) {
-    debugLog(`Creating pending profile for UID: ${user.uid}`);
-    debugLog(`Data: name=${additionalData.fullName}, phone=${additionalData.phone}`);
-    
-    const userRef = doc(db, 'users', user.uid);
-    
-    const profileData = {
-      uid: user.uid,
-      email: user.email,
-      fullName: additionalData.fullName,
-      phone: additionalData.phone,
-      role: 'pending',
-      baseSalary: 0,
-      pointValueNaira: 100,
-      totalPoints: 0,
-      status: 'pending_approval',
-      createdAt: serverTimestamp(),
-      leaveDaysRemaining: 2,
-      profileImageUrl: null,
-      emailVerified: false,
-      profileCompleted: false,
-      approvedBy: null,
-      approvedAt: null,
-      approvalNote: null
-    };
-    
-    try {
-      await setDoc(userRef, profileData);
-      debugSuccess('User profile created in Firestore');
-      
-      // Notify admins
-      const adminQuery = query(collection(db, 'users'), where('role', 'in', ['admin', 'super_admin']));
-      const adminSnapshot = await getDocs(adminQuery);
-      debugLog(`Found ${adminSnapshot.size} admin(s) to notify`);
-      
-      adminSnapshot.forEach(async (adminDoc) => {
-        await addDoc(collection(db, 'notifications'), {
-          userId: adminDoc.id,
-          type: 'approval_required',
-          title: 'New User Awaiting Approval',
-          message: `${additionalData.fullName} (${user.email}) has registered.`,
-          isRead: false,
-          createdAt: serverTimestamp()
-        });
-      });
-      debugSuccess('Admin notifications sent');
-      
-      await logAudit('signup_pending', user.uid, `User registered. Awaiting approval.`);
-      return true;
-    } catch (error) {
-      debugError('Failed to create user profile', error);
-      throw error;
-    }
-  }
-
-  // ========== CHECK IF EMAIL EXISTS ==========
-  async function checkEmailExists(email) {
-    try {
-      debugLog(`Checking if email exists: ${email}`);
-      const methods = await fetchSignInMethodsForEmail(auth, email);
-      const exists = methods.length > 0;
-      debugLog(`Email exists: ${exists} (methods: ${methods.join(', ') || 'none'})`);
-      return exists;
-    } catch (error) {
-      debugError('Email check failed', error);
-      return false;
-    }
-  }
-
-  // ========== LOGIN HANDLER ==========
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = loginEmail.value.trim();
-    const password = loginPassword.value;
-    
-    debugLog('=== LOGIN ATTEMPT ===');
-    debugLog(`Email: ${email}`);
-    debugLog(`Password length: ${password.length}`);
-    
-    clearMessage(loginMessage);
-    
-    if (!validateEmail(email)) {
-      showMessage(loginMessage, 'Please enter a valid email address', 'error');
-      return;
-    }
-    if (!password) {
-      showMessage(loginMessage, 'Password is required', 'error');
-      return;
-    }
-    
-    setLoading(loginBtn, true);
-    
-    try {
-      debugLog('Setting persistence...');
-      await setPersistence(auth, rememberMe.checked ? browserLocalPersistence : browserSessionPersistence);
-      debugSuccess('Persistence set');
-      
-      debugLog('Attempting sign in...');
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      debugSuccess(`User signed in: ${user.uid}`);
-      
-      debugLog('Fetching user profile...');
-      const userRef = doc(db, 'users', user.uid);
-      const userSnap = await getDoc(userRef);
-      
-      if (!userSnap.exists()) {
-        debugError('User profile not found in Firestore');
-        await signOut(auth);
-        showMessage(loginMessage, 'Account error. Please contact support.', 'error');
-        setLoading(loginBtn, false);
-        return;
-      }
-      
-      const userData = userSnap.data();
-      debugLog(`User status: ${userData.status}, Role: ${userData.role}`);
-      
-      if (userData.status === 'suspended' || userData.status === 'terminated') {
-        debugLog(`Account ${userData.status} - blocking login`);
-        await signOut(auth);
-        showMessage(loginMessage, `Account ${userData.status}. Contact admin.`, 'error');
-        setLoading(loginBtn, false);
-        return;
-      }
-      
-      if (userData.status === 'pending_approval' || userData.role === 'pending') {
-        debugLog('Account pending approval - blocking login');
-        await signOut(auth);
-        showMessage(loginMessage, '⏳ Your account is pending admin approval.', 'warning');
-        setLoading(loginBtn, false);
-        return;
-      }
-      
-      await logAudit('login', user.uid, `User logged in. Role: ${userData.role}`);
-      
-      debugSuccess('Login successful! Redirecting to dashboard...');
-      showMessage(loginMessage, '✓ Login successful! Redirecting...', 'success');
-      
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
-      
-    } catch (error) {
-      debugError('Login error', error);
-      let errorMessage = 'Login failed. Please try again.';
-      
-      switch (error.code) {
-        case 'auth/user-not-found':
-        case 'auth/wrong-password':
-        case 'auth/invalid-credential':
-          errorMessage = 'Invalid email or password';
-          break;
-        case 'auth/user-disabled':
-          errorMessage = 'This account has been disabled.';
-          break;
-        case 'auth/too-many-requests':
-          errorMessage = 'Too many attempts. Try later.';
-          break;
-        case 'auth/network-request-failed':
-          errorMessage = 'Network error. Check connection.';
-          break;
-      }
-      showMessage(loginMessage, errorMessage, 'error');
-    } finally {
-      setLoading(loginBtn, false);
-    }
-  });
-
-  // ========== SIGNUP HANDLER (WITH FULL DEBUG) ==========
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    debugLog('========================================');
-    debugLog('=== SIGNUP FORM SUBMITTED ===');
-    debugLog('========================================');
-    
-    const name = signupName.value.trim();
-    const phone = signupPhone.value.trim();
-    const email = signupEmail.value.trim();
-    const password = signupPassword.value;
-    const confirm = signupConfirm.value;
-    
-    debugLog(`Name: ${name} (length: ${name.length})`);
-    debugLog(`Phone: ${phone}`);
-    debugLog(`Email: ${email}`);
-    debugLog(`Password length: ${password.length}`);
-    debugLog(`Confirm matches: ${password === confirm}`);
-    
-    clearMessage(signupMessage);
-    
-    // Validation
-    debugLog('--- Running Validation ---');
-    
-    if (!name || name.length < 3) {
-      debugError('Validation failed: Name too short');
-      showMessage(signupMessage, 'Full name required (min 3 characters)', 'error');
-      return;
-    }
-    debugSuccess('Name validation passed');
-    
-    if (!validatePhone(phone)) {
-      debugError('Validation failed: Invalid phone');
-      showMessage(signupMessage, 'Valid phone number required (10-15 digits)', 'error');
-      return;
-    }
-    debugSuccess('Phone validation passed');
-    
-    if (!validateEmail(email)) {
-      debugError('Validation failed: Invalid email');
-      showMessage(signupMessage, 'Valid email required', 'error');
-      return;
-    }
-    debugSuccess('Email validation passed');
-    
-    if (!validatePassword(password)) {
-      debugError('Validation failed: Password too short');
-      showMessage(signupMessage, 'Password must be at least 8 characters', 'error');
-      return;
-    }
-    debugSuccess('Password validation passed');
-    
-    if (password !== confirm) {
-      debugError('Validation failed: Passwords do not match');
-      showMessage(signupMessage, 'Passwords do not match', 'error');
-      return;
-    }
-    debugSuccess('Password confirmation passed');
-    
-    debugLog('--- All validation passed ---');
-    
+    const name = document.getElementById('signupName').value.trim();
+    const phone = document.getElementById('signupPhone').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('signupConfirm').value;
+
+    if (!name || !phone || !email || !password) { showMessage(signupMessage, 'All fields required', 'error'); return; }
+    if (password.length < 8) { showMessage(signupMessage, 'Password must be at least 8 characters', 'error'); return; }
+    if (password !== confirm) { showMessage(signupMessage, 'Passwords do not match', 'error'); return; }
+
     setLoading(signupBtn, true);
-    
     try {
-      // STEP 1: Check if email exists in Firebase Auth
-      debugLog('STEP 1: Checking if email exists in Firebase Auth...');
-      const emailExists = await checkEmailExists(email);
-      
-      if (emailExists) {
-        debugLog('Email already exists in Firebase Auth');
-        showMessage(signupMessage, 'This email is already registered. Please login instead.', 'info');
-        setLoading(signupBtn, false);
-        
-        setTimeout(() => {
-          switchToLoginTab();
-          loginEmail.value = email;
-          clearMessage(signupMessage);
-        }, 2000);
-        return;
-      }
-      debugSuccess('STEP 1: Email is available');
-      
-      // STEP 2: Check Firestore for pending/rejected
-      debugLog('STEP 2: Checking Firestore for existing records...');
-      const existingQuery = query(collection(db, 'users'), where('email', '==', email));
-      const existingSnap = await getDocs(existingQuery);
-      
-      if (!existingSnap.empty) {
-        const existingData = existingSnap.docs[0].data();
-        debugLog(`Found existing Firestore record with status: ${existingData.status}`);
-        
-        if (existingData.status === 'pending_approval') {
-          showMessage(signupMessage, 'This email is already pending approval.', 'warning');
-          setLoading(signupBtn, false);
-          return;
-        } else {
-          showMessage(signupMessage, 'This email is already registered. Please login.', 'info');
-          setLoading(signupBtn, false);
-          setTimeout(() => {
-            switchToLoginTab();
-            loginEmail.value = email;
-            clearMessage(signupMessage);
-          }, 2000);
-          return;
-        }
-      }
-      debugSuccess('STEP 2: No existing Firestore record found');
-      
-      // STEP 3: Create Firebase Auth user
-      debugLog('STEP 3: Creating Firebase Auth user...');
-      debugLog(`Calling createUserWithEmailAndPassword with email: ${email}`);
-      
-      let userCredential;
-      try {
-        userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        debugSuccess('STEP 3: Firebase Auth user created successfully');
-      } catch (authError) {
-        debugError('STEP 3 FAILED: Firebase Auth creation error', authError);
-        debugLog(`Error code: ${authError.code}`);
-        debugLog(`Error message: ${authError.message}`);
-        
-        let errorMessage = 'Registration failed.';
-        switch (authError.code) {
-          case 'auth/email-already-in-use':
-            errorMessage = 'This email is already registered. Please login.';
-            setTimeout(() => {
-              switchToLoginTab();
-              loginEmail.value = email;
-            }, 1500);
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Invalid email address.';
-            break;
-          case 'auth/weak-password':
-            errorMessage = 'Password too weak. Use at least 8 characters.';
-            break;
-          case 'auth/network-request-failed':
-            errorMessage = 'Network error. Check connection.';
-            break;
-          case 'auth/operation-not-allowed':
-            errorMessage = 'Email/password signup is not enabled in Firebase Console.';
-            debugError('CONFIGURATION ERROR: Email/Password sign-in method not enabled in Firebase Console');
-            break;
-          default:
-            errorMessage = authError.message;
-        }
-        showMessage(signupMessage, errorMessage, 'error');
-        setLoading(signupBtn, false);
-        return;
-      }
-      
+      const q = query(collection(db, 'users'), where('email', '==', email));
+      const snap = await getDocs(q);
+      if (!snap.empty) { showMessage(signupMessage, 'Email already registered', 'error'); setLoading(signupBtn, false); return; }
+
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      debugLog(`User created with UID: ${user.uid}`);
-      
-      // STEP 4: Create Firestore profile
-      debugLog('STEP 4: Creating Firestore profile...');
-      try {
-        await createPendingUserProfile(user, { fullName: name, phone: phone });
-        debugSuccess('STEP 4: Firestore profile created');
-      } catch (profileError) {
-        debugError('STEP 4 FAILED: Firestore profile creation error', profileError);
-        showMessage(signupMessage, 'Account created but profile setup failed. Contact support.', 'error');
-        setLoading(signupBtn, false);
-        return;
-      }
-      
-      // STEP 5: Sign out and show pending view
-      debugLog('STEP 5: Signing out and showing pending view...');
-      await signOut(auth);
-      debugSuccess('User signed out');
-      
-      showPendingView(email);
-      signupForm.reset();
-      
-      await logAudit('signup_pending', user.uid, `New registration: ${name} (${email})`);
-      debugSuccess('========================================');
-      debugSuccess('SIGNUP COMPLETED SUCCESSFULLY!');
-      debugSuccess('========================================');
-      
-    } catch (error) {
-      debugError('========================================');
-      debugError('UNEXPECTED SIGNUP ERROR', error);
-      debugError('========================================');
-      debugLog(`Error type: ${error.constructor.name}`);
-      debugLog(`Error code: ${error.code || 'No code'}`);
-      debugLog(`Error message: ${error.message}`);
-      debugLog(`Error stack: ${error.stack?.substring(0, 200)}...`);
-      
-      let errorMessage = 'Registration failed: ' + (error.message || 'Unknown error');
-      showMessage(signupMessage, errorMessage, 'error');
-    } finally {
-      setLoading(signupBtn, false);
-      debugLog('Signup button loading state cleared');
-    }
-  });
 
-  // ========== PASSWORD RESET ==========
-  resetForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = resetEmail.value.trim();
-    
-    debugLog('=== PASSWORD RESET ATTEMPT ===');
-    debugLog(`Email: ${email}`);
-    
-    clearMessage(resetMessage);
-    
-    if (!validateEmail(email)) {
-      showMessage(resetMessage, 'Valid email required', 'error');
-      return;
-    }
-    
-    setLoading(resetBtn, true);
-    
-    try {
-      debugLog('Sending password reset email...');
-      await sendPasswordResetEmail(auth, email, {
-        url: window.location.origin + '/auth.html',
-        handleCodeInApp: false
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid, fullName: name, phone, email, role: 'pending', status: 'pending_approval',
+        baseSalary: 0, totalPoints: 0, pointValueNaira: 100, tasksCompleted: 0, leaveDaysRemaining: 2,
+        profileCompleted: false, createdAt: serverTimestamp()
       });
-      debugSuccess('Reset email sent');
-      showMessage(resetMessage, '✓ Reset link sent! Check your inbox.', 'success');
-      setTimeout(() => {
-        resetEmail.value = '';
-        showNormalView();
-      }, 3000);
-      await logAudit('password_reset_request', null, `Reset requested for: ${email}`);
-    } catch (error) {
-      debugError('Password reset error', error);
-      let errorMessage = 'Failed to send reset email.';
-      if (error.code === 'auth/user-not-found') {
-        errorMessage = 'No account found with this email.';
-      } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = 'Too many requests. Try later.';
-      }
-      showMessage(resetMessage, errorMessage, 'error');
-    } finally {
-      setLoading(resetBtn, false);
-    }
+
+      await signOut(auth);
+      mainView.style.display = 'none';
+      pendingView.style.display = 'block';
+      signupForm.reset();
+    } catch (err) { showMessage(signupMessage, 'Registration failed: ' + err.message, 'error'); }
+    setLoading(signupBtn, false);
   });
 
-  // ========== AUTH STATE OBSERVER ==========
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    if (!email || !password) { showMessage(loginMessage, 'Email and password required', 'error'); return; }
+
+    setLoading(loginBtn, true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+
+      if (!userDoc.exists()) { await signOut(auth); showMessage(loginMessage, 'Account error. Contact support.', 'error'); setLoading(loginBtn, false); return; }
+
+      const userData = userDoc.data();
+      if (userData.status === 'pending_approval') { await signOut(auth); showMessage(loginMessage, 'Your account is pending admin approval', 'info'); setLoading(loginBtn, false); return; }
+      if (userData.status === 'suspended' || userData.status === 'terminated') { await signOut(auth); showMessage(loginMessage, `Account ${userData.status}`, 'error'); setLoading(loginBtn, false); return; }
+
+      if (userData.role === 'admin' || userData.role === 'super_admin') window.location.href = 'admin-dashboard.html';
+      else if (userData.role === 'attendant' || userData.role === 'attendant_chief') window.location.href = 'attendant-dashboard.html';
+      else window.location.href = 'staff-dashboard.html';
+    } catch (err) { showMessage(loginMessage, err.code === 'auth/invalid-credential' ? 'Invalid email or password' : 'Login failed', 'error'); }
+    setLoading(loginBtn, false);
+  });
+
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      debugLog(`Auth state: User logged in - ${user.email}`);
-      const userRef = doc(db, 'users', user.uid);
-      const userSnap = await getDoc(userRef);
-      
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        debugLog(`User status: ${userData.status}, Role: ${userData.role}`);
-        
-        if (userData.status === 'active' && userData.role !== 'pending') {
-          if (window.location.pathname.includes('auth.html')) {
-            debugLog('Active user on auth page - redirecting to dashboard');
-            window.location.href = 'dashboard.html';
-          }
-        } else {
-          debugLog('User not active - signing out');
-          await signOut(auth);
-        }
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists() && userDoc.data().status === 'active') {
+        const role = userDoc.data().role;
+        if (role === 'admin' || role === 'super_admin') window.location.href = 'admin-dashboard.html';
+        else if (role === 'attendant' || role === 'attendant_chief') window.location.href = 'attendant-dashboard.html';
+        else if (role === 'staff') window.location.href = 'staff-dashboard.html';
       }
-    } else {
-      debugLog('Auth state: No user logged in');
     }
   });
-
-  // ========== FIREBASE CONFIGURATION CHECK ==========
-  async function checkFirebaseSetup() {
-    debugLog('--- Firebase Setup Diagnostics ---');
-    debugLog(`Project ID: ${firebaseConfig.projectId}`);
-    debugLog(`Auth Domain: ${firebaseConfig.authDomain}`);
-    
-    // Check if Email/Password is enabled (indirect test)
-    try {
-      const testEmail = `test_${Date.now()}@temp.com`;
-      debugLog('Testing auth configuration...');
-      debugLog('If this fails, Email/Password sign-in may not be enabled in Firebase Console.');
-      debugLog('Go to: Firebase Console → Authentication → Sign-in methods → Email/Password → Enable');
-    } catch (e) {
-      debugError('Auth configuration test failed', e);
-    }
-  }
-  
-  checkFirebaseSetup();
-  
-  debugSuccess('Auth system fully loaded and ready');
-  debugLog('To see detailed logs, click "Show/Hide Debug" below');
-  debugLog('Check Firebase Console if signup fails with "operation-not-allowed"');
-
-  console.log('%c✅ Auth System Ready — Debug Mode Active', 'color: #28a745; font-weight: bold;');
 </script>
-
 </body>
 </html>
