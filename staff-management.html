@@ -2,667 +2,210 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ff4da6">
   <title>Staff Management · FashionStone</title>
-  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    :root {
-      --primary: #ff4da6;
-      --primary-dark: #e6398c;
-      --primary-light: #ffb3d9;
-      --primary-soft: #fff0f6;
-      --dark: #0f0f1a;
-      --gray: #6b7280;
-      --gray-light: #f3f4f6;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --info: #3b82f6;
-      --sidebar-width: 280px;
-      --header-height: 64px;
-    }
-    
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f9fafb;
-      display: flex;
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
-    
-    .sidebar {
-      width: var(--sidebar-width);
-      background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
-      color: white;
-      position: fixed;
-      height: 100vh;
-      overflow-y: auto;
-      transition: transform 0.3s;
-      z-index: 100;
-      transform: translateX(0);
-    }
-    .sidebar.collapsed { transform: translateX(-100%); }
-    
-    .sidebar-header {
-      padding: 24px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
-    
-    .logo-text { font-size: 1.2rem; font-weight: 700; }
-    .logo-text span { color: var(--primary); }
-    
-    .sidebar-nav { padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
-    
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 16px;
-      border-radius: 14px;
-      color: rgba(255,255,255,0.65);
-      cursor: pointer;
-      border: none;
-      background: none;
-      width: 100%;
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-align: left;
-      transition: all 0.15s;
-    }
-    
-    .nav-item i { width: 22px; font-size: 1.1rem; }
-    .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 70px; --sidebar-width: 280px; }
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+    .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; }
+    .logo-text { font-size: 1.25rem; font-weight: 700; } .logo-text span { color: var(--primary); }
+    .sidebar-nav { padding: 20px 12px; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; margin-bottom: 3px; }
+    .nav-item i { width: 22px; } .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
     .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
     .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 20px; }
-    
-    .sidebar-footer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 20px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-    
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); position: absolute; bottom: 0; width: 100%; }
     .user-profile { display: flex; align-items: center; gap: 12px; }
-    .user-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      color: white;
-    }
-    .user-details h4 { font-size: 0.9rem; font-weight: 600; }
-    .user-details p { font-size: 0.7rem; opacity: 0.6; }
-    
-    .main-content {
-      flex: 1;
-      margin-left: var(--sidebar-width);
-      transition: margin-left 0.3s;
-      min-height: 100vh;
-      width: calc(100% - var(--sidebar-width));
-    }
-    .sidebar.collapsed + .main-content { margin-left: 0; width: 100%; }
-    
-    .top-bar {
-      height: var(--header-height);
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(12px);
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(0,0,0,0.04);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-    
-    .top-bar-left { display: flex; align-items: center; gap: 16px; }
-    .menu-toggle { background: none; border: none; font-size: 1.3rem; color: var(--gray); cursor: pointer; padding: 8px; border-radius: 10px; }
-    .page-title { font-size: 1.4rem; font-weight: 700; color: var(--dark); }
-    
-    .content-wrapper { padding: 24px; max-width: 1400px; margin: 0 auto; }
-    
-    .tabs-container {
-      background: white;
-      border-radius: 20px;
-      padding: 6px;
-      margin-bottom: 20px;
-      display: flex;
-      gap: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      border: 1px solid rgba(0,0,0,0.04);
-    }
-    
-    .tab {
-      padding: 12px 20px;
-      border-radius: 16px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      border: none;
-      background: none;
-      color: var(--gray);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
-      justify-content: center;
-    }
-    .tab:hover { background: var(--gray-light); }
+    .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .user-details h4 { font-size: 0.85rem; } .user-details p { font-size: 0.7rem; opacity: 0.6; }
+    .main-content { flex: 1; margin-left: var(--sidebar-width); }
+    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+    .content-wrapper { padding: 28px; max-width: 1600px; }
+    .tabs-container { background: white; border-radius: 20px; padding: 6px; margin-bottom: 24px; display: flex; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-wrap: wrap; }
+    .tab { padding: 12px 20px; border-radius: 16px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; background: none; color: var(--gray); display: flex; align-items: center; gap: 6px; }
     .tab.active { background: var(--primary); color: white; }
-    
-    .filter-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    
-    .search-wrapper {
-      flex: 1;
-      min-width: 200px;
-      position: relative;
-    }
+    .tab .count { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 30px; font-size: 0.7rem; }
+    .filter-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .search-wrapper { flex: 1; min-width: 200px; position: relative; }
     .search-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
-    .search-input {
-      width: 100%;
-      padding: 12px 16px 12px 42px;
-      border: 1.5px solid rgba(0,0,0,0.08);
-      border-radius: 40px;
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .search-input:focus { border-color: var(--primary); }
-    
-    .filter-select {
-      padding: 12px 20px;
-      border: 1.5px solid rgba(0,0,0,0.08);
-      border-radius: 40px;
-      font-size: 0.85rem;
-      background: white;
-    }
-    
-    .panel {
-      background: white;
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      border: 1px solid rgba(0,0,0,0.04);
-      overflow-x: auto;
-    }
-    
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .panel-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--dark); }
-    
+    .search-input { width: 100%; padding: 12px 16px 12px 42px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; font-size: 0.85rem; outline: none; }
+    .filter-select { padding: 12px 20px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; font-size: 0.85rem; background: white; }
+    .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .panel-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .panel-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
     .table-wrapper { overflow-x: auto; }
-    
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1000px;
-      font-size: 0.85rem;
-    }
-    .data-table th {
-      text-align: left;
-      padding: 14px 12px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--gray);
-      text-transform: uppercase;
-      border-bottom: 1.5px solid var(--primary-soft);
-      white-space: nowrap;
-    }
-    .data-table td { padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); white-space: nowrap; }
-    .data-table tr:hover td { background: rgba(255,77,166,0.02); }
-    
-    .badge {
-      padding: 5px 12px;
-      border-radius: 40px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
+    .data-table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+    .data-table th { text-align: left; padding: 14px 10px; font-size: 0.7rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
+    .data-table td { padding: 14px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 0.85rem; }
+    .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
     .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
-    .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
-    
-    .btn {
-      padding: 10px 18px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: white;
-      border: 1px solid rgba(0,0,0,0.08);
-      white-space: nowrap;
-    }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; }
-    .btn-sm { padding: 6px 14px; font-size: 0.75rem; }
-    .btn-success { background: var(--success); color: white; border: none; }
-    .btn-danger { background: var(--danger); color: white; border: none; }
-    
+    .badge-pending { background: rgba(107,114,128,0.1); color: var(--gray); }
+    .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
+    .btn-sm { padding: 6px 12px; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
     .empty-state { text-align: center; padding: 40px; color: var(--gray); }
-    
-    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
-    .toast {
-      background: white;
-      padding: 14px 20px;
-      border-radius: 50px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transform: translateX(400px);
-      transition: transform 0.25s;
-      border-left: 4px solid var(--primary);
-      margin-top: 10px;
-    }
-    .toast.show { transform: translateX(0); }
-    
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 16px;
-    }
-    
-    .modal {
-      background: white;
-      border-radius: 28px;
-      padding: 28px;
-      max-width: 460px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-    
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal { background: white; border-radius: 28px; padding: 28px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--gray); }
     .form-group { margin-bottom: 18px; }
     .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
-    .form-control {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid rgba(0,0,0,0.08);
-      border-radius: 14px;
-      font-size: 0.9rem;
-      outline: none;
-    }
+    .form-control { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; font-size: 0.9rem; outline: none; }
     .form-control:focus { border-color: var(--primary); }
-    
-    @media (max-width: 768px) {
-      .sidebar { transform: translateX(-100%); }
-      .sidebar:not(.collapsed) { transform: translateX(0); }
-      .main-content { margin-left: 0 !important; width: 100% !important; }
-      .content-wrapper { padding: 16px; }
-      .top-bar { padding: 0 16px; }
-      .page-title { font-size: 1.2rem; }
-      .tabs-container { flex-wrap: wrap; }
-      .tab { flex: 0 0 auto; }
-    }
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
+    .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
+    .toast.show { transform: translateX(0); }
+    .page-view { display: none; } .page-view.active { display: block; }
+    .bulk-actions { background: var(--primary-soft); padding: 12px 20px; border-radius: 40px; margin-bottom: 20px; display: none; align-items: center; gap: 15px; }
+    .bulk-actions.show { display: flex; }
+    @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } }
   </style>
 </head>
 <body>
 
-<aside class="sidebar collapsed" id="sidebar">
-  <div class="sidebar-header">
-    <div class="logo-icon">💎</div>
-    <div class="logo-text"><span>Fashion</span>Stone</div>
-  </div>
-  <nav class="sidebar-nav" id="sidebarNav"></nav>
-  <div class="sidebar-footer">
-    <div class="user-profile">
-      <div class="user-avatar" id="userAvatar">U</div>
-      <div class="user-details">
-        <h4 id="userName">Loading...</h4>
-        <p id="userRole">•••</p>
-      </div>
-    </div>
-  </div>
+<aside class="sidebar">
+  <div class="sidebar-header"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div>
+  <nav class="sidebar-nav">
+    <button class="nav-item" onclick="window.location.href='admin-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
+    <button class="nav-item" onclick="window.location.href='approvals.html'"><i class="fas fa-check-circle"></i><span>Approvals</span></button>
+    <button class="nav-item active"><i class="fas fa-users-cog"></i><span>Staff Management</span></button>
+    <button class="nav-item" onclick="window.location.href='finance.html'"><i class="fas fa-chart-line"></i><span>Finance</span></button>
+    <button class="nav-item" onclick="window.location.href='audit.html'"><i class="fas fa-history"></i><span>Audit Logs</span></button>
+    <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+  </nav>
+  <div class="sidebar-footer"><div class="user-profile"><div class="user-avatar" id="userAvatar">A</div><div class="user-details"><h4 id="userName">Admin</h4><p id="userRole">Admin</p></div></div></div>
 </aside>
 
 <main class="main-content">
-  <header class="top-bar">
-    <div class="top-bar-left">
-      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
-      <h1 class="page-title">Staff Management</h1>
-    </div>
-    <button class="btn btn-outline" onclick="window.location.href='dashboard.html'"><i class="fas fa-arrow-left"></i> Dashboard</button>
-  </header>
-  
+  <header class="top-bar"><h1 class="page-title">Staff Management</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
     
     <div class="tabs-container">
-      <button class="tab active" data-tab="all"><i class="fas fa-users"></i> All Staff <span id="allCount">0</span></button>
-      <button class="tab" data-tab="pending"><i class="fas fa-clock"></i> Pending <span id="pendingCount">0</span></button>
-      <button class="tab" data-tab="suspended"><i class="fas fa-pause-circle"></i> Suspended <span id="suspendedCount">0</span></button>
-      <button class="tab" data-tab="terminated"><i class="fas fa-ban"></i> Terminated <span id="terminatedCount">0</span></button>
+      <button class="tab active" data-tab="all"><i class="fas fa-users"></i> All Staff <span class="count" id="allCount">0</span></button>
+      <button class="tab" data-tab="pending"><i class="fas fa-clock"></i> Pending <span class="count" id="pendingCount">0</span></button>
+      <button class="tab" data-tab="suspended"><i class="fas fa-pause-circle"></i> Suspended <span class="count" id="suspendedCount">0</span></button>
+      <button class="tab" data-tab="terminated"><i class="fas fa-ban"></i> Terminated <span class="count" id="terminatedCount">0</span></button>
     </div>
+    
+    <div class="bulk-actions" id="bulkActions"><span id="selectedCount">0 selected</span><button class="btn btn-sm btn-outline" onclick="bulkChangeRole()"><i class="fas fa-tag"></i> Change Role</button><button class="btn btn-sm btn-warning" onclick="bulkSuspend()"><i class="fas fa-pause"></i> Suspend</button><button class="btn btn-sm btn-outline" onclick="clearSelection()">Cancel</button></div>
     
     <div class="filter-bar">
-      <div class="search-wrapper">
-        <i class="fas fa-search"></i>
-        <input type="text" class="search-input" id="searchInput" placeholder="Search by name or email...">
-      </div>
-      <select class="filter-select" id="roleFilter">
-        <option value="all">All Roles</option>
-        <option value="staff">Staff</option>
-        <option value="attendant">Attendant</option>
-        <option value="attendant_chief">Chief Attendant</option>
-      </select>
+      <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" class="search-input" id="searchInput" placeholder="Search by name or email..."></div>
+      <select class="filter-select" id="roleFilter"><option value="all">All Roles</option><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option><option value="admin">Admin</option></select>
       <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export</button>
+      <button class="btn btn-primary" onclick="openAddStaffModal()"><i class="fas fa-plus"></i> Add Staff</button>
     </div>
     
-    <div class="panel">
-      <div class="panel-header">
-        <h3><i class="fas fa-list"></i> <span id="tableTitle">All Staff</span></h3>
-        <div>
-          <button class="btn btn-primary btn-sm" id="addStaffBtn"><i class="fas fa-plus"></i> Add Staff</button>
-          <button class="btn btn-outline btn-sm" id="refreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
-        </div>
-      </div>
-      
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Base Salary</th><th>Points</th><th>Tasks</th><th>Leave</th><th>Actions</th></tr>
-          </thead>
-          <tbody id="staffTableBody"></tbody>
-        </table>
+    <div id="allPanel" class="page-view active">
+      <div class="panel">
+        <div class="panel-header"><h3><i class="fas fa-list"></i> <span id="tableTitle">All Staff</span></h3><button class="btn btn-outline btn-sm" onclick="refreshData()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th style="width:30px;"><input type="checkbox" id="selectAll"></th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Base Salary</th><th>Points</th><th>Tasks</th><th>Leave</th><th>Actions</th></tr></thead><tbody id="staffTable"></tbody></table></div>
       </div>
     </div>
+    
+    <div id="pendingPanel" class="page-view"><div class="panel"><div class="panel-header"><h3>Pending Approvals</h3></div><div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th><th>Assign Role</th><th>Salary (₦)</th><th>Actions</th></tr></thead><tbody id="pendingTable"></tbody></table></div></div></div>
+    <div id="suspendedPanel" class="page-view"><div class="panel"><div class="panel-header"><h3>Suspended Staff</h3></div><div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Role</th><th>Suspended Date</th><th>Reason</th><th>Actions</th></tr></thead><tbody id="suspendedTable"></tbody></table></div></div></div>
+    <div id="terminatedPanel" class="page-view"><div class="panel"><div class="panel-header"><h3>Terminated Staff</h3></div><div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Role</th><th>Terminated Date</th><th>Reason</th></tr></thead><tbody id="terminatedTable"></tbody></table></div></div></div>
     
   </div>
 </main>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-header" style="display:flex;justify-content:space-between;margin-bottom:20px;">
-      <h3 id="modalTitle">Modal</h3>
-      <button class="modal-close" id="modalClose">&times;</button>
-    </div>
-    <div id="modalContent"></div>
-  </div>
-</div>
-
+<div class="modal-overlay" id="modalOverlay"><div class="modal"><div class="modal-header"><h3 id="modalTitle">Modal</h3><button class="modal-close" onclick="hideModal()">&times;</button></div><div id="modalContent"></div></div></div>
 <div class="toast-container" id="toastContainer"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, updateDoc, serverTimestamp, addDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, updateDoc, serverTimestamp, addDoc, getDocs, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
-    authDomain: "fashion-46e5d.firebaseapp.com",
-    projectId: "fashion-46e5d",
-    storageBucket: "fashion-46e5d.firebasestorage.app",
-    messagingSenderId: "408062284317",
-    appId: "1:408062284317:web:eb905bce68926c10a0ecf4"
-  };
+  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let currentUser = null, userData = null, unsubscribes = [], allUsers = [], currentTab = 'all', selectedUsers = new Set();
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  let currentUser = null;
-  let userData = null;
-  let currentTab = 'all';
-  let allUsers = [];
-  let unsubscribe = null;
-
+  function formatDate(d) { if (!d) return '-'; return d.toDate().toLocaleDateString('en-GB', {day:'2-digit',month:'short'}); }
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
-  
-  function showToast(msg, type = 'success') {
-    const c = document.getElementById('toastContainer');
-    const t = document.createElement('div');
-    t.className = `toast ${type}`;
-    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`;
-    c.appendChild(t);
-    setTimeout(() => t.classList.add('show'), 10);
-    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 4000);
-  }
+  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  async function logAudit(action, note) { try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } catch(e) {} }
+  window.hideModal = () => document.getElementById('modalOverlay').style.display = 'none';
 
-  function showModal(title, content) {
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalContent').innerHTML = content;
-    document.getElementById('modalOverlay').style.display = 'flex';
-  }
+  function updateBulkUI() { const d = document.getElementById('bulkActions'); const s = document.getElementById('selectedCount'); if (selectedUsers.size > 0) { d.classList.add('show'); s.textContent = `${selectedUsers.size} selected`; } else { d.classList.remove('show'); } }
+  window.clearSelection = () => { selectedUsers.clear(); document.querySelectorAll('.staff-checkbox').forEach(cb => cb.checked = false); document.getElementById('selectAll').checked = false; updateBulkUI(); };
+  window.bulkChangeRole = () => { let opts = ''; ['staff','attendant','attendant_chief'].forEach(r => opts += `<option value="${r}">${r}</option>`); showModal('Bulk Role Change', `<select class="form-control" id="bulkRole">${opts}</select><button class="btn btn-primary" style="margin-top:15px;" onclick="applyBulkRole()">Apply to ${selectedUsers.size} staff</button>`); };
+  window.applyBulkRole = async () => { const role = document.getElementById('bulkRole').value; const batch = writeBatch(db); selectedUsers.forEach(id => batch.update(doc(db, 'users', id), { role })); await batch.commit(); await logAudit('bulk_role_change', `Changed ${selectedUsers.size} to ${role}`); showToast(`Updated ${selectedUsers.size} staff`, 'success'); hideModal(); clearSelection(); };
+  window.bulkSuspend = async () => { const reason = prompt('Suspension reason:') || 'No reason'; const batch = writeBatch(db); selectedUsers.forEach(id => batch.update(doc(db, 'users', id), { status: 'suspended', suspendedBy: currentUser.uid, suspendedAt: serverTimestamp(), suspensionReason: reason })); await batch.commit(); await logAudit('bulk_suspend', `Suspended ${selectedUsers.size} staff`); showToast(`Suspended ${selectedUsers.size} staff`, 'warning'); clearSelection(); };
 
-  function hideModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-
-  async function logAudit(action, note) {
-    try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } catch(e) {}
-  }
-
-  function filterAndRender() {
-    let filtered = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin');
+  function renderTables() {
+    const staffUsers = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin');
+    document.getElementById('allCount').textContent = staffUsers.filter(u => u.status === 'active').length;
+    document.getElementById('pendingCount').textContent = staffUsers.filter(u => u.status === 'pending_approval').length;
+    document.getElementById('suspendedCount').textContent = staffUsers.filter(u => u.status === 'suspended').length;
+    document.getElementById('terminatedCount').textContent = staffUsers.filter(u => u.status === 'terminated').length;
     
-    if (currentTab === 'pending') filtered = filtered.filter(u => u.status === 'pending_approval');
-    else if (currentTab === 'suspended') filtered = filtered.filter(u => u.status === 'suspended');
-    else if (currentTab === 'terminated') filtered = filtered.filter(u => u.status === 'terminated');
-    else filtered = filtered.filter(u => u.status === 'active');
-    
-    const roleFilter = document.getElementById('roleFilter').value;
-    if (roleFilter !== 'all') filtered = filtered.filter(u => u.role === roleFilter);
-    
-    const search = document.getElementById('searchInput').value.toLowerCase();
+    let filtered = [...staffUsers]; const search = document.getElementById('searchInput').value.toLowerCase();
     if (search) filtered = filtered.filter(u => (u.fullName||'').toLowerCase().includes(search) || (u.email||'').toLowerCase().includes(search));
+    const role = document.getElementById('roleFilter').value; if (role !== 'all') filtered = filtered.filter(u => u.role === role);
     
-    const tbody = document.getElementById('staffTableBody');
-    tbody.innerHTML = '';
+    const activeFiltered = filtered.filter(u => u.status === 'active');
+    const pendingFiltered = filtered.filter(u => u.status === 'pending_approval');
+    const suspendedFiltered = filtered.filter(u => u.status === 'suspended');
+    const terminatedFiltered = filtered.filter(u => u.status === 'terminated');
     
-    if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><i class="fas fa-users"></i><p>No staff found</p></div></td></tr>';
-      return;
-    }
+    document.getElementById('tableTitle').textContent = currentTab === 'all' ? 'All Staff' : currentTab === 'pending' ? 'Pending Approvals' : currentTab === 'suspended' ? 'Suspended Staff' : 'Terminated Staff';
     
-    filtered.forEach(u => {
-      const isPending = currentTab === 'pending';
-      tbody.innerHTML += `<tr>
-        <td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td>
-        <td>${isPending ? `<select id="role-${u.id}" class="form-control" style="padding:4px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select>` : `<span class="badge badge-${u.role?.includes('attendant')?'info':'success'}">${u.role}</span>`}</td>
-        <td><span class="badge badge-${u.status==='active'?'success':u.status==='pending_approval'?'warning':u.status==='suspended'?'warning':'danger'}">${u.status}</span></td>
-        <td>${isPending ? `<input type="number" id="salary-${u.id}" value="50000" style="width:90px;padding:4px;">` : formatCurrency(u.baseSalary)}</td>
-        <td>${u.totalPoints||0}</td><td>${u.tasksCompleted||0}</td><td>${u.leaveDaysRemaining||2}</td>
-        <td style="display:flex;gap:6px;">
-          ${isPending ? `<button class="btn btn-sm btn-success" onclick="window.approveUser('${u.id}')"><i class="fas fa-check"></i></button><button class="btn btn-sm btn-danger" onclick="window.rejectUser('${u.id}')"><i class="fas fa-times"></i></button>` : 
-            `<button class="btn btn-sm btn-outline" onclick="window.editStaff('${u.id}')"><i class="fas fa-edit"></i></button>
-             ${u.status==='active'?`<button class="btn btn-sm btn-warning" onclick="window.suspendStaff('${u.id}')"><i class="fas fa-pause"></i></button>`:''}
-             ${u.status==='suspended'?`<button class="btn btn-sm btn-success" onclick="window.reinstateStaff('${u.id}')"><i class="fas fa-play"></i></button>`:''}`}
-        </td>
-      </tr>`;
-    });
+    const tbody = document.getElementById('staffTable'); tbody.innerHTML = '';
+    activeFiltered.forEach(u => { tbody.innerHTML += `<tr><td><input type="checkbox" class="staff-checkbox" data-id="${u.uid}" ${currentTab!=='all'?'disabled':''}></td><td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td><td><span class="badge badge-${u.role==='attendant_chief'?'info':u.role==='attendant'?'info':'success'}">${u.role}</span></td><td><span class="badge badge-success">Active</span></td><td>${formatCurrency(u.baseSalary)}</td><td>${u.totalPoints||0}</td><td>${u.tasksCompleted||0}</td><td>${u.leaveDaysRemaining||2}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-outline" onclick="openEditStaff('${u.uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-warning" onclick="suspendStaff('${u.uid}')"><i class="fas fa-pause"></i></button><button class="btn btn-sm btn-danger" onclick="requestTermination('${u.uid}')"><i class="fas fa-ban"></i></button></td></tr>`; });
+    if (activeFiltered.length === 0) tbody.innerHTML = '<tr><td colspan="11"><div class="empty-state">No staff found</div></td></tr>';
+    
+    const pendingTbody = document.getElementById('pendingTable'); pendingTbody.innerHTML = '';
+    pendingFiltered.forEach(u => { pendingTbody.innerHTML += `<tr><td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td><td>${formatDate(u.createdAt)}</td><td><select id="role-${u.uid}" class="form-control" style="padding:5px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></td><td><input type="number" id="salary-${u.uid}" style="width:90px;padding:5px;" value="50000"></td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approveUser('${u.uid}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectUser('${u.uid}')">Reject</button></td></tr>`; });
+    if (pendingFiltered.length === 0) pendingTbody.innerHTML = '<tr><td colspan="7"><div class="empty-state">No pending approvals</div></td></tr>';
+    
+    const suspendedTbody = document.getElementById('suspendedTable'); suspendedTbody.innerHTML = '';
+    suspendedFiltered.forEach(u => { suspendedTbody.innerHTML += `<tr><td>${u.fullName||'-'}</td><td>${u.role}</td><td>${formatDate(u.suspendedAt)}</td><td>${u.suspensionReason||'-'}</td><td><button class="btn btn-sm btn-success" onclick="reinstateStaff('${u.uid}')">Reinstate</button></td></tr>`; });
+    if (suspendedFiltered.length === 0) suspendedTbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">No suspended staff</div></td></tr>';
+    
+    const terminatedTbody = document.getElementById('terminatedTable'); terminatedTbody.innerHTML = '';
+    terminatedFiltered.forEach(u => { terminatedTbody.innerHTML += `<tr><td>${u.fullName||'-'}</td><td>${u.role}</td><td>${formatDate(u.terminatedAt)}</td><td>${u.terminationReason||'-'}</td></tr>`; });
+    if (terminatedFiltered.length === 0) terminatedTbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No terminated staff</div></td></tr>';
+    
+    document.querySelectorAll('.staff-checkbox').forEach(cb => { cb.checked = selectedUsers.has(cb.dataset.id); cb.addEventListener('change', e => { if (e.target.checked) selectedUsers.add(e.target.dataset.id); else selectedUsers.delete(e.target.dataset.id); updateBulkUI(); }); });
+    document.getElementById('selectAll').addEventListener('change', e => { document.querySelectorAll('.staff-checkbox:not(:disabled)').forEach(cb => { cb.checked = e.target.checked; if (e.target.checked) selectedUsers.add(cb.dataset.id); else selectedUsers.delete(cb.dataset.id); }); updateBulkUI(); });
   }
 
-  function loadUsers() {
-    if (unsubscribe) unsubscribe();
-    const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
-    unsubscribe = onSnapshot(q, (snap) => {
-      allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      const staffUsers = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin');
-      document.getElementById('allCount').textContent = staffUsers.filter(u => u.status === 'active').length;
-      document.getElementById('pendingCount').textContent = staffUsers.filter(u => u.status === 'pending_approval').length;
-      document.getElementById('suspendedCount').textContent = staffUsers.filter(u => u.status === 'suspended').length;
-      document.getElementById('terminatedCount').textContent = staffUsers.filter(u => u.status === 'terminated').length;
-      filterAndRender();
-    });
-  }
+  function loadUsers() { unsubscribes.forEach(u => u()); unsubscribes = []; unsubscribes.push(onSnapshot(query(collection(db, 'users'), orderBy('createdAt', 'desc')), snap => { allUsers = snap.docs.map(d => ({uid:d.id, ...d.data()})); renderTables(); })); }
 
-  window.approveUser = async (userId) => {
-    const role = document.getElementById(`role-${userId}`).value;
-    const salary = parseFloat(document.getElementById(`salary-${userId}`).value) || 0;
-    await updateDoc(doc(db, 'users', userId), { role, baseSalary: salary, status: 'active', approvedBy: currentUser.uid, approvedByName: userData.fullName, approvedAt: serverTimestamp() });
-    await setDoc(doc(db, 'users', userId, 'stats', 'current'), { tasksCompletedMTD: 0, tasksCompletedTotal: 0, pointsEarnedMTD: 0, pointsDeductedMTD: 0, updatedAt: serverTimestamp() });
-    await addDoc(collection(db, 'notifications'), { userId, type: 'approved', title: 'Account Approved', message: `Welcome! You are now a ${role}.`, isRead: false, createdAt: serverTimestamp() });
-    await logAudit('approve_user', `Approved as ${role}`);
-    showToast('User approved', 'success');
-  };
+  window.approveUser = async (uid) => { const role = document.getElementById(`role-${uid}`).value; const salary = parseFloat(document.getElementById(`salary-${uid}`).value) || 0; await updateDoc(doc(db, 'users', uid), { role, baseSalary: salary, status: 'active', approvedBy: currentUser.uid, approvedByName: userData.fullName, approvedAt: serverTimestamp() }); await addDoc(collection(db, 'notifications'), { userId: uid, type: 'approved', title: 'Account Approved', message: `You are now a ${role}.`, isRead: false, createdAt: serverTimestamp() }); await logAudit('approve_user', `Approved as ${role} with salary ₦${salary}`); showToast('User approved', 'success'); };
+  window.rejectUser = async (uid) => { const reason = prompt('Rejection reason:') || 'No reason'; await updateDoc(doc(db, 'users', uid), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp(), rejectionReason: reason }); await logAudit('reject_user', `Rejected. Reason: ${reason}`); showToast('User rejected', 'info'); };
+  window.suspendStaff = async (uid) => { const reason = prompt('Suspension reason:') || 'No reason'; await updateDoc(doc(db, 'users', uid), { status: 'suspended', suspendedBy: currentUser.uid, suspendedAt: serverTimestamp(), suspensionReason: reason }); await logAudit('suspend_staff', `Suspended. Reason: ${reason}`); showToast('Staff suspended', 'warning'); };
+  window.reinstateStaff = async (uid) => { await updateDoc(doc(db, 'users', uid), { status: 'active', reinstatedBy: currentUser.uid, reinstatedAt: serverTimestamp() }); await logAudit('reinstate_staff', 'Reinstated'); showToast('Staff reinstated', 'success'); };
+  window.requestTermination = (uid) => { const u = allUsers.find(x => x.uid === uid); const reason = prompt(`Termination reason for ${u?.fullName}:`); if (!reason) return; showModal('Termination Request', `<p>Request termination for <strong>${u.fullName}</strong></p><p>Reason: ${reason}</p><p style="color:var(--warning);">This requires another admin's approval.</p><button class="btn btn-danger" onclick="submitTermination('${uid}','${reason.replace(/'/g,"\\'")}')">Request Approval</button>`); };
+  window.submitTermination = async (uid, reason) => { const reqRef = await addDoc(collection(db, 'termination_requests'), { userId: uid, requestedBy: currentUser.uid, requestedByName: userData.fullName, reason, status: 'pending_approval', createdAt: serverTimestamp(), approvedBy: [] }); const admins = await getDocs(query(collection(db, 'users'), where('role', 'in', ['admin','super_admin']))); admins.forEach(async d => { if (d.id !== currentUser.uid) await addDoc(collection(db, 'notifications'), { userId: d.id, type: 'termination_approval', title: 'Termination Approval', message: `${userData.fullName} requested termination.`, isRead: false, requestId: reqRef.id, createdAt: serverTimestamp() }); }); await logAudit('termination_request', `Requested termination. Reason: ${reason}`); showToast('Termination request sent', 'info'); hideModal(); };
+  window.openEditStaff = (uid) => { const u = allUsers.find(x => x.uid === uid); showModal('Edit Staff', `<div class="form-group"><label>Name</label><input class="form-control" id="editName" value="${u.fullName||''}"></div><div class="form-group"><label>Email</label><input class="form-control" id="editEmail" value="${u.email||''}"></div><div class="form-group"><label>Phone</label><input class="form-control" id="editPhone" value="${u.phone||''}"></div><div class="form-group"><label>Role</label><select class="form-control" id="editRole"><option value="staff" ${u.role==='staff'?'selected':''}>Staff</option><option value="attendant" ${u.role==='attendant'?'selected':''}>Attendant</option><option value="attendant_chief" ${u.role==='attendant_chief'?'selected':''}>Chief Attendant</option></select></div><div class="form-group"><label>Base Salary (₦)</label><input type="number" class="form-control" id="editSalary" value="${u.baseSalary||0}"></div><div class="form-group"><label>Leave Days</label><input type="number" class="form-control" id="editLeave" value="${u.leaveDaysRemaining||2}"></div><button class="btn btn-primary" onclick="saveEdit('${uid}')">Save</button>`); };
+  window.saveEdit = async (uid) => { await updateDoc(doc(db, 'users', uid), { fullName: document.getElementById('editName').value, email: document.getElementById('editEmail').value, phone: document.getElementById('editPhone').value, role: document.getElementById('editRole').value, baseSalary: parseFloat(document.getElementById('editSalary').value)||0, leaveDaysRemaining: parseInt(document.getElementById('editLeave').value)||2 }); await logAudit('edit_staff', `Updated profile`); showToast('Saved', 'success'); hideModal(); };
+  window.openAddStaffModal = () => { showModal('Add Staff', `<div class="form-group"><label>Full Name</label><input class="form-control" id="newName"></div><div class="form-group"><label>Email</label><input type="email" class="form-control" id="newEmail"></div><div class="form-group"><label>Phone</label><input class="form-control" id="newPhone"></div><div class="form-group"><label>Role</label><select class="form-control" id="newRole"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></div><div class="form-group"><label>Base Salary (₦)</label><input type="number" class="form-control" id="newSalary" value="50000"></div><button class="btn btn-primary" onclick="addStaff()">Add Staff</button>`); };
+  window.addStaff = async () => { const ref = doc(collection(db, 'users')); await setDoc(ref, { uid: ref.id, fullName: document.getElementById('newName').value, email: document.getElementById('newEmail').value, phone: document.getElementById('newPhone').value, role: document.getElementById('newRole').value, baseSalary: parseFloat(document.getElementById('newSalary').value)||0, status: 'active', pointValueNaira: 100, totalPoints: 0, tasksCompleted: 0, leaveDaysRemaining: 2, createdAt: serverTimestamp(), addedBy: currentUser.uid }); await logAudit('add_staff', `Added new staff`); showToast('Staff added', 'success'); hideModal(); };
 
-  window.rejectUser = async (userId) => {
-    await updateDoc(doc(db, 'users', userId), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp() });
-    await logAudit('reject_user', 'User rejected');
-    showToast('User rejected', 'info');
-  };
+  window.refreshData = () => loadUsers();
+  document.getElementById('exportBtn').addEventListener('click', () => { const staff = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin'); const csv = ['Name,Email,Phone,Role,Status,Base Salary,Points,Tasks,Leave'].concat(staff.map(u => `"${u.fullName||''}","${u.email||''}","${u.phone||''}",${u.role},${u.status},${u.baseSalary||0},${u.totalPoints||0},${u.tasksCompleted||0},${u.leaveDaysRemaining||2}`)).join('\n'); const b = new Blob([csv], {type:'text/csv'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `staff_${new Date().toISOString().split('T')[0]}.csv`; a.click(); showToast('Exported', 'success'); });
+  document.getElementById('searchInput').addEventListener('input', renderTables);
+  document.getElementById('roleFilter').addEventListener('change', renderTables);
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', function() { document.querySelectorAll('.tab').forEach(x => x.classList.remove('active')); this.classList.add('active'); currentTab = this.dataset.tab; document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active')); document.getElementById(currentTab + 'Panel').classList.add('active'); renderTables(); }));
 
-  window.suspendStaff = async (userId) => {
-    const reason = prompt('Reason for suspension:') || 'No reason';
-    await updateDoc(doc(db, 'users', userId), { status: 'suspended', suspendedBy: currentUser.uid, suspendedAt: serverTimestamp(), suspensionReason: reason });
-    await logAudit('suspend_staff', reason);
-    showToast('Staff suspended', 'warning');
-  };
-
-  window.reinstateStaff = async (userId) => {
-    await updateDoc(doc(db, 'users', userId), { status: 'active', reinstatedBy: currentUser.uid, reinstatedAt: serverTimestamp() });
-    await logAudit('reinstate_staff', 'Reinstated');
-    showToast('Staff reinstated', 'success');
-  };
-
-  window.editStaff = (userId) => {
-    const user = allUsers.find(u => u.id === userId);
-    showModal('Edit Staff', `
-      <div class="form-group"><label>Name</label><input class="form-control" id="editName" value="${user.fullName||''}"></div>
-      <div class="form-group"><label>Email</label><input class="form-control" id="editEmail" value="${user.email||''}"></div>
-      <div class="form-group"><label>Phone</label><input class="form-control" id="editPhone" value="${user.phone||''}"></div>
-      <div class="form-group"><label>Salary</label><input type="number" class="form-control" id="editSalary" value="${user.baseSalary||0}"></div>
-      <button class="btn btn-primary" onclick="window.saveEdit('${userId}')">Save</button>
-    `);
-  };
-
-  window.saveEdit = async (userId) => {
-    await updateDoc(doc(db, 'users', userId), {
-      fullName: document.getElementById('editName').value,
-      email: document.getElementById('editEmail').value,
-      phone: document.getElementById('editPhone').value,
-      baseSalary: parseFloat(document.getElementById('editSalary').value) || 0
-    });
-    hideModal();
-    showToast('Staff updated', 'success');
-  };
-
-  window.addStaff = () => {
-    showModal('Add Staff', `
-      <div class="form-group"><label>Name</label><input class="form-control" id="newName"></div>
-      <div class="form-group"><label>Email</label><input type="email" class="form-control" id="newEmail"></div>
-      <div class="form-group"><label>Phone</label><input class="form-control" id="newPhone"></div>
-      <div class="form-group"><label>Role</label><select class="form-control" id="newRole"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></div>
-      <div class="form-group"><label>Salary</label><input type="number" class="form-control" id="newSalary" value="50000"></div>
-      <button class="btn btn-primary" onclick="window.createStaff()">Add Staff</button>
-    `);
-  };
-
-  window.createStaff = async () => {
-    const ref = doc(collection(db, 'users'));
-    await setDoc(ref, {
-      uid: ref.id, fullName: document.getElementById('newName').value, email: document.getElementById('newEmail').value,
-      phone: document.getElementById('newPhone').value, role: document.getElementById('newRole').value,
-      baseSalary: parseFloat(document.getElementById('newSalary').value) || 0, status: 'active',
-      pointValueNaira: 100, totalPoints: 0, tasksCompleted: 0, leaveDaysRemaining: 2,
-      createdAt: serverTimestamp(), addedBy: currentUser.uid
-    });
-    await setDoc(doc(db, 'users', ref.id, 'stats', 'current'), { tasksCompletedMTD: 0, tasksCompletedTotal: 0, updatedAt: serverTimestamp() });
-    hideModal();
-    showToast('Staff added', 'success');
-  };
-
-  document.getElementById('exportBtn').addEventListener('click', () => {
-    let filtered = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin');
-    if (currentTab === 'pending') filtered = filtered.filter(u => u.status === 'pending_approval');
-    else if (currentTab === 'suspended') filtered = filtered.filter(u => u.status === 'suspended');
-    else if (currentTab === 'terminated') filtered = filtered.filter(u => u.status === 'terminated');
-    else filtered = filtered.filter(u => u.status === 'active');
-    
-    const csv = [['Name','Email','Phone','Role','Status','Salary','Points','Tasks'].join(',')];
-    filtered.forEach(u => csv.push([u.fullName,u.email,u.phone,u.role,u.status,u.baseSalary,u.totalPoints,u.tasksCompleted].map(c => `"${c||''}"`).join(',')));
-    
-    const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `staff_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    showToast('Exported', 'success');
-  });
-
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = 'auth.html'; return; }
-    currentUser = user;
-    const userSnap = await getDoc(doc(db, 'users', user.uid));
-    if (!userSnap.exists() || (userSnap.data().role !== 'admin' && userSnap.data().role !== 'super_admin')) { window.location.href = 'dashboard.html'; return; }
-    userData = userSnap.data();
-    
-    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin';
-    document.getElementById('userRole').textContent = userData.role;
-    document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0);
-    
-    document.getElementById('sidebarNav').innerHTML = `
-      <button class="nav-item" onclick="window.location.href='dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
-      <button class="nav-item active"><i class="fas fa-users-cog"></i><span>Staff Management</span></button>
-      <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
-    `;
-    document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
-    
-    loadUsers();
-  });
-
-  document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('collapsed'));
-  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', function() {
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-    this.classList.add('active');
-    currentTab = this.dataset.tab;
-    document.getElementById('tableTitle').textContent = this.textContent.trim();
-    filterAndRender();
-  }));
-  
-  document.getElementById('searchInput').addEventListener('input', filterAndRender);
-  document.getElementById('roleFilter').addEventListener('change', filterAndRender);
-  document.getElementById('refreshBtn').addEventListener('click', loadUsers);
-  document.getElementById('addStaffBtn').addEventListener('click', () => window.addStaff());
-  document.getElementById('modalClose').addEventListener('click', hideModal);
-  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) hideModal(); });
-
-  window.addStaff = addStaff;
-  window.createStaff = createStaff;
+  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } userData = snap.data(); document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin'; document.getElementById('userRole').textContent = userData.role; document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0); document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadUsers(); });
+  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
 </script>
 </body>
 </html>
