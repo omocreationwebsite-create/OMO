@@ -145,17 +145,21 @@
       align-items: center;
     }
     
-    .input-wrapper i {
+    .input-wrapper i.fa-envelope,
+    .input-wrapper i.fa-lock,
+    .input-wrapper i.fa-user,
+    .input-wrapper i.fa-phone {
       position: absolute;
       left: 16px;
       color: var(--pink);
       font-size: 1rem;
       opacity: 0.7;
+      pointer-events: none;
     }
     
     .input-wrapper input {
       width: 100%;
-      padding: 14px 16px 14px 48px;
+      padding: 14px 48px 14px 48px;
       border: 1.5px solid rgba(255, 77, 166, 0.2);
       border-radius: 50px;
       font-size: 0.95rem;
@@ -175,9 +179,14 @@
       right: 16px;
       cursor: pointer;
       color: var(--gray);
+      font-size: 1.1rem;
       opacity: 0.7;
       transition: opacity 0.2s;
       z-index: 10;
+      background: none;
+      border: none;
+      padding: 5px;
+      pointer-events: auto;
     }
     
     .password-toggle:hover {
@@ -324,7 +333,6 @@
       text-decoration: none;
     }
     
-    /* Pending Approval Notice */
     .pending-notice {
       background: linear-gradient(135deg, rgba(255,193,7,0.15), rgba(255,77,166,0.1));
       border-radius: 20px;
@@ -345,12 +353,6 @@
       color: var(--dark);
     }
     
-    .pending-notice p {
-      color: var(--gray);
-      font-size: 0.9rem;
-    }
-    
-    /* Announcement Banner */
     .announcement-banner {
       background: var(--info);
       color: white;
@@ -361,10 +363,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-    
-    .announcement-banner i {
-      font-size: 1.2rem;
     }
     
     @media (max-width: 500px) {
@@ -387,7 +385,6 @@
   
   <div class="auth-card" id="authCard">
     
-    <!-- Announcement Banner -->
     <div class="announcement-banner" id="globalAnnouncement">
       <i class="fas fa-bullhorn"></i>
       <span id="announcementMessage">New accounts require admin approval before login.</span>
@@ -414,7 +411,9 @@
           <div class="input-wrapper">
             <i class="fas fa-lock"></i>
             <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
-            <i class="fas fa-eye password-toggle" data-target="loginPassword"></i>
+            <button type="button" class="password-toggle" data-target="loginPassword">
+              <i class="fas fa-eye"></i>
+            </button>
           </div>
         </div>
         
@@ -463,7 +462,9 @@
           <div class="input-wrapper">
             <i class="fas fa-lock"></i>
             <input type="password" id="signupPassword" placeholder="Min. 8 characters" required autocomplete="new-password">
-            <i class="fas fa-eye password-toggle" data-target="signupPassword"></i>
+            <button type="button" class="password-toggle" data-target="signupPassword">
+              <i class="fas fa-eye"></i>
+            </button>
           </div>
         </div>
         
@@ -472,7 +473,9 @@
           <div class="input-wrapper">
             <i class="fas fa-lock"></i>
             <input type="password" id="signupConfirm" placeholder="Re-enter password" required autocomplete="new-password">
-            <i class="fas fa-eye password-toggle" data-target="signupConfirm"></i>
+            <button type="button" class="password-toggle" data-target="signupConfirm">
+              <i class="fas fa-eye"></i>
+            </button>
           </div>
         </div>
         
@@ -481,7 +484,7 @@
         </button>
         
         <p style="font-size: 0.75rem; color: var(--gray); text-align: center; margin-top: 15px;">
-          <i class="fas fa-info-circle"></i> Your account will be reviewed by an administrator. You will be notified when approved.
+          <i class="fas fa-info-circle"></i> Your account will be reviewed by an administrator.
         </p>
         
         <div id="signupMessage" class="auth-message"></div>
@@ -517,18 +520,18 @@
       </div>
     </div>
     
-    <!-- Pending Approval View (shown after successful signup) -->
+    <!-- Pending Approval View -->
     <div id="pendingApprovalView" style="display: none;">
       <div class="pending-notice">
         <i class="fas fa-clock"></i>
-        <h4>Registration Submitted</h4>
+        <h4>Registration Submitted!</h4>
         <p id="pendingEmailDisplay">your@email.com</p>
-        <p style="margin-top: 15px;">Your account is pending administrator approval. You will receive an email notification once your account has been reviewed.</p>
+        <p style="margin-top: 15px;">Your account is pending administrator approval. You will be notified once approved.</p>
         <p style="margin-top: 20px; font-size: 0.8rem;">
           <i class="fas fa-users"></i> Approvals typically take 1-2 business hours.
         </p>
         <button class="btn btn-primary" id="backToLoginFromPending" style="margin-top: 25px;">
-          <i class="fas fa-arrow-left"></i> Back to Sign In
+          <i class="fas fa-arrow-left"></i> Return to Sign In
         </button>
       </div>
     </div>
@@ -554,7 +557,8 @@
     browserLocalPersistence,
     browserSessionPersistence,
     onAuthStateChanged,
-    signOut
+    signOut,
+    fetchSignInMethodsForEmail
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { 
     getFirestore,
@@ -583,7 +587,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  console.log('%c🔐 O.M.Ocreation ERP — Admin Approval System Active', 'color: #ff4da6; font-weight: bold;');
+  console.log('%c🔐 O.M.Ocreation ERP — Auth System Active', 'color: #ff4da6; font-weight: bold;');
 
   // ========== DOM ELEMENTS ==========
   const normalView = document.getElementById('normalAuthView');
@@ -600,8 +604,6 @@
   const backToLoginLink = document.getElementById('backToLoginLink');
   const backToLoginFromPending = document.getElementById('backToLoginFromPending');
   const pendingEmailDisplay = document.getElementById('pendingEmailDisplay');
-  const globalAnnouncement = document.getElementById('globalAnnouncement');
-  const announcementMessage = document.getElementById('announcementMessage');
 
   const loginBtn = document.getElementById('loginBtn');
   const signupBtn = document.getElementById('signupBtn');
@@ -687,6 +689,13 @@
     pendingEmailDisplay.textContent = email;
   }
 
+  function switchToLoginTab() {
+    authTabs.forEach(t => t.classList.remove('active'));
+    document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    loginForm.classList.add('active');
+  }
+
   // ========== AUDIT LOGGING ==========
   async function logAudit(actionType, userId, note = '') {
     try {
@@ -703,20 +712,26 @@
     }
   }
 
-  // ========== LOAD SYSTEM ANNOUNCEMENT ==========
-  async function loadAnnouncement() {
-    try {
-      const q = query(collection(db, 'announcements'), where('targetRole', '==', 'all'), where('status', '==', 'active'));
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
-        const data = snapshot.docs[0].data();
-        announcementMessage.textContent = data.body || 'New accounts require admin approval before login.';
-        globalAnnouncement.style.display = 'flex';
+  // ========== PASSWORD TOGGLE (FIXED) ==========
+  document.querySelectorAll('.password-toggle').forEach(toggle => {
+    toggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const targetId = this.dataset.target;
+      const input = document.getElementById(targetId);
+      const icon = this.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
       }
-    } catch (e) {
-      console.warn('Announcement load failed:', e);
-    }
-  }
+    });
+  });
 
   // ========== TAB SWITCHING ==========
   authTabs.forEach(tab => {
@@ -735,24 +750,6 @@
     });
   });
 
-  // ========== PASSWORD TOGGLE ==========
-  document.querySelectorAll('.password-toggle').forEach(toggle => {
-    toggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const targetId = this.dataset.target;
-      const input = document.getElementById(targetId);
-      if (input.type === 'password') {
-        input.type = 'text';
-        this.classList.remove('fa-eye');
-        this.classList.add('fa-eye-slash');
-      } else {
-        input.type = 'password';
-        this.classList.remove('fa-eye-slash');
-        this.classList.add('fa-eye');
-      }
-    });
-  });
-
   // ========== VIEW SWITCHING ==========
   showResetLink.addEventListener('click', (e) => {
     e.preventDefault();
@@ -766,6 +763,7 @@
 
   backToLoginFromPending.addEventListener('click', () => {
     showNormalView();
+    switchToLoginTab();
   });
 
   // ========== CREATE PENDING USER PROFILE ==========
@@ -777,8 +775,8 @@
       email: user.email,
       fullName: additionalData.fullName,
       phone: additionalData.phone,
-      role: 'pending',           // Awaiting admin assignment
-      baseSalary: 0,             // Admin sets during approval
+      role: 'pending',
+      baseSalary: 0,
       pointValueNaira: 100,
       totalPoints: 0,
       status: 'pending_approval',
@@ -786,13 +784,13 @@
       leaveDaysRemaining: 2,
       profileImageUrl: null,
       emailVerified: false,
-      profileCompleted: false,    // Will be set to true after first login form
+      profileCompleted: false,
       approvedBy: null,
       approvedAt: null,
       approvalNote: null
     });
     
-    // Create notification for admins
+    // Notify admins
     const adminQuery = query(collection(db, 'users'), where('role', 'in', ['admin', 'super_admin']));
     const adminSnapshot = await getDocs(adminQuery);
     
@@ -801,17 +799,26 @@
         userId: adminDoc.id,
         type: 'approval_required',
         title: 'New User Awaiting Approval',
-        message: `${additionalData.fullName} (${user.email}) has registered and requires approval.`,
+        message: `${additionalData.fullName} (${user.email}) has registered.`,
         isRead: false,
-        createdAt: serverTimestamp(),
-        actionUrl: 'dashboard.html#approvals'
+        createdAt: serverTimestamp()
       });
     });
     
-    await logAudit('signup_pending', user.uid, `User registered. Awaiting admin approval.`);
+    await logAudit('signup_pending', user.uid, `User registered. Awaiting approval.`);
   }
 
-  // ========== LOGIN HANDLER (WITH PENDING CHECK) ==========
+  // ========== CHECK IF EMAIL EXISTS ==========
+  async function checkEmailExists(email) {
+    try {
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      return methods.length > 0;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  // ========== LOGIN HANDLER ==========
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = loginEmail.value.trim();
@@ -834,7 +841,6 @@
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
-      // Fetch user profile from Firestore
       const userRef = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
       
@@ -847,7 +853,6 @@
       
       const userData = userSnap.data();
       
-      // CHECK 1: Account Status
       if (userData.status === 'suspended' || userData.status === 'terminated') {
         await signOut(auth);
         showMessage(loginMessage, `Account ${userData.status}. Contact admin.`, 'error');
@@ -855,10 +860,9 @@
         return;
       }
       
-      // CHECK 2: Pending Approval (NEW LOGIC)
       if (userData.status === 'pending_approval' || userData.role === 'pending') {
         await signOut(auth);
-        showMessage(loginMessage, '⏳ Your account is pending admin approval. You will be notified when approved.', 'warning');
+        showMessage(loginMessage, '⏳ Your account is pending admin approval.', 'warning');
         setLoading(loginBtn, false);
         return;
       }
@@ -866,11 +870,6 @@
       await logAudit('login', user.uid, `User logged in. Role: ${userData.role}`);
       
       showMessage(loginMessage, '✓ Login successful! Redirecting...', 'success');
-      
-      // Store pending profile completion flag
-      if (!userData.profileCompleted) {
-        sessionStorage.setItem('profileIncomplete', 'true');
-      }
       
       setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
       
@@ -900,9 +899,11 @@
     }
   });
 
-  // ========== SIGNUP HANDLER (PENDING APPROVAL) ==========
+  // ========== SIGNUP HANDLER (FIXED) ==========
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    console.log('Signup form submitted'); // Debug log
+    
     const name = signupName.value.trim();
     const phone = signupPhone.value.trim();
     const email = signupEmail.value.trim();
@@ -910,12 +911,13 @@
     const confirm = signupConfirm.value;
     clearMessage(signupMessage);
     
+    // Validation
     if (!name || name.length < 3) {
       showMessage(signupMessage, 'Full name required (min 3 characters)', 'error');
       return;
     }
     if (!validatePhone(phone)) {
-      showMessage(signupMessage, 'Valid phone number required', 'error');
+      showMessage(signupMessage, 'Valid phone number required (10-15 digits)', 'error');
       return;
     }
     if (!validateEmail(email)) {
@@ -931,29 +933,50 @@
       return;
     }
     
-    // Check if email already exists in pending users
-    const existingQuery = query(collection(db, 'users'), where('email', '==', email));
-    const existingSnap = await getDocs(existingQuery);
-    if (!existingSnap.empty) {
-      const existingData = existingSnap.docs[0].data();
-      if (existingData.status === 'pending_approval') {
-        showMessage(signupMessage, 'This email is already pending approval.', 'warning');
-      } else {
-        showMessage(signupMessage, 'This email is already registered. Try logging in.', 'error');
-      }
-      return;
-    }
-    
     setLoading(signupBtn, true);
     
     try {
+      // Check if email already exists
+      const emailExists = await checkEmailExists(email);
+      if (emailExists) {
+        showMessage(signupMessage, 'This email is already registered. Please login instead.', 'info');
+        setLoading(signupBtn, false);
+        
+        // Auto-switch to login tab after 2 seconds
+        setTimeout(() => {
+          switchToLoginTab();
+          loginEmail.value = email;
+          clearMessage(signupMessage);
+        }, 2000);
+        return;
+      }
+      
+      // Check Firestore for pending/rejected
+      const existingQuery = query(collection(db, 'users'), where('email', '==', email));
+      const existingSnap = await getDocs(existingQuery);
+      if (!existingSnap.empty) {
+        const existingData = existingSnap.docs[0].data();
+        if (existingData.status === 'pending_approval') {
+          showMessage(signupMessage, 'This email is already pending approval.', 'warning');
+          setLoading(signupBtn, false);
+          return;
+        } else {
+          showMessage(signupMessage, 'This email is already registered. Please login.', 'info');
+          setLoading(signupBtn, false);
+          setTimeout(() => {
+            switchToLoginTab();
+            loginEmail.value = email;
+            clearMessage(signupMessage);
+          }, 2000);
+          return;
+        }
+      }
+      
+      // Create user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
-      await createPendingUserProfile(user, { 
-        fullName: name, 
-        phone: phone 
-      });
+      await createPendingUserProfile(user, { fullName: name, phone: phone });
       
       await signOut(auth);
       
@@ -969,7 +992,11 @@
       
       switch (error.code) {
         case 'auth/email-already-in-use':
-          errorMessage = 'Email already registered. Try logging in.';
+          errorMessage = 'This email is already registered. Please login.';
+          setTimeout(() => {
+            switchToLoginTab();
+            loginEmail.value = email;
+          }, 1500);
           break;
         case 'auth/invalid-email':
           errorMessage = 'Invalid email address.';
@@ -978,7 +1005,7 @@
           errorMessage = 'Password too weak. Use at least 8 characters.';
           break;
         case 'auth/network-request-failed':
-          errorMessage = 'Network error.';
+          errorMessage = 'Network error. Check connection.';
           break;
       }
       showMessage(signupMessage, errorMessage, 'error');
@@ -1033,23 +1060,18 @@
       if (userSnap.exists()) {
         const userData = userSnap.data();
         
-        // If approved and active, redirect to dashboard
         if (userData.status === 'active' && userData.role !== 'pending') {
           if (window.location.pathname.includes('auth.html')) {
             window.location.href = 'dashboard.html';
           }
         } else {
-          // Sign out if pending
           await signOut(auth);
         }
       }
     }
   });
 
-  // ========== INITIALIZATION ==========
-  loadAnnouncement();
-  
-  console.log('%c✅ Auth System Ready — Admin Approval Workflow Active', 'color: #28a745; font-weight: bold;');
+  console.log('%c✅ Auth System Ready — Signup Fixed, Toggle Fixed', 'color: #28a745; font-weight: bold;');
 </script>
 
 </body>
