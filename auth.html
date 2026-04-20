@@ -3,365 +3,152 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>O.M.Ocreation Signup - Debug Mode</title>
+<title>O.M.Ocreation - Sign Up</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px;
+  font-family: Arial;
+  background: linear-gradient(135deg,#111,#222);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
 .card {
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  width: 450px;
-  max-width: 100%;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-}
-
-h2 {
-  margin-top: 0;
-  color: #1e293b;
-  font-weight: 600;
-  text-align: center;
+  background:#fff;
+  padding:30px;
+  border-radius:15px;
+  width:350px;
 }
 
 input {
-  width: 100%;
-  padding: 12px 15px;
-  margin: 8px 0;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
-
-input:focus {
-  outline: none;
-  border-color: #ff4da6;
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border:1px solid #ccc;
+  border-radius:8px;
 }
 
 button {
-  width: 100%;
-  padding: 12px;
-  background: linear-gradient(135deg, #ff4da6, #e6398c);
-  border: none;
-  color: white;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 10px;
-  transition: transform 0.2s;
-}
-
-button:hover {
-  transform: translateY(-2px);
+  width:100%;
+  padding:12px;
+  background:#ff4da6;
+  border:none;
+  color:white;
+  border-radius:8px;
+  cursor:pointer;
 }
 
 button:disabled {
-  opacity: 0.6;
-  transform: none;
-  cursor: not-allowed;
+  opacity:0.5;
 }
 
 .msg {
-  margin-top: 15px;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  display: none;
-}
-
-.msg.success {
-  background: #d4edda;
-  color: #155724;
-  display: block;
-  border: 1px solid #c3e6cb;
-}
-
-.msg.error {
-  background: #f8d7da;
-  color: #721c24;
-  display: block;
-  border: 1px solid #f5c6cb;
-}
-
-.msg.info {
-  background: #d1ecf1;
-  color: #0c5460;
-  display: block;
-  border: 1px solid #bee5eb;
-}
-
-.log {
-  background: #0f172a;
-  color: #00ff88;
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  padding: 12px;
-  margin-top: 15px;
-  border-radius: 10px;
-  height: 200px;
-  overflow: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.log-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 15px;
-}
-
-.clear-log {
-  background: #475569;
-  padding: 5px 12px;
-  font-size: 11px;
-  margin-top: 0;
-  width: auto;
-}
-
-hr {
-  margin: 10px 0;
-  border-color: #334155;
+  margin-top:10px;
+  font-size:14px;
 }
 </style>
 </head>
+
 <body>
 
 <div class="card">
-  <h2>🔐 O.M.Ocreation Signup</h2>
+  <h2>Sign Up</h2>
 
-  <input type="text" id="name" placeholder="Full Name" autocomplete="name">
-  <input type="email" id="email" placeholder="Email Address" autocomplete="email">
-  <input type="password" id="password" placeholder="Password (min 6 characters)" autocomplete="new-password">
+  <input id="name" placeholder="Full Name" />
+  <input id="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password" />
 
-  <button id="btn" onclick="signup()">✨ Create Account</button>
+  <button id="btn" onclick="signup()">Create Account</button>
 
-  <div id="msg" class="msg"></div>
-
-  <div class="log-header">
-    <span style="font-size: 12px; color: #666;">🐛 Debug Console</span>
-    <button class="clear-log" onclick="clearLog()">Clear Log</button>
-  </div>
-  <div class="log" id="log">[Ready] Waiting for signup action...\n</div>
+  <div class="msg" id="msg"></div>
 </div>
 
 <script>
-// ============================================
-// SUPABASE CONFIGURATION
-// ============================================
-const SUPABASE_URL = "https://gogrmiflvfdetvtggzrk.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
+const supabase = window.supabase.createClient(
+  "https://gogrmiflvfdetvtggzrk.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ"
+);
 
-// Initialize Supabase client
-const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// DOM Elements
-const msgDiv = document.getElementById("msg");
-const logDiv = document.getElementById("log");
+const msg = document.getElementById("msg");
 const btn = document.getElementById("btn");
 
-// Helper: Show message
-function showMessage(text, type = "info") {
-  msgDiv.className = "msg " + type;
-  msgDiv.innerHTML = text;
-  msgDiv.style.display = "block";
-  
-  // Auto hide after 5 seconds for success/error
-  if (type !== "info") {
-    setTimeout(() => {
-      msgDiv.style.display = "none";
-    }, 5000);
-  }
-}
+async function signup() {
 
-// Helper: Debug log
-function debugLog(label, data) {
-  const timestamp = new Date().toLocaleTimeString();
-  const divider = "─".repeat(50);
-  let output = `\n[${timestamp}] 📌 ${label}\n${divider}\n`;
-  
-  if (data !== undefined) {
-    try {
-      if (typeof data === 'object') {
-        output += JSON.stringify(data, null, 2);
-      } else {
-        output += String(data);
-      }
-    } catch (e) {
-      output += "[Unable to stringify]";
-    }
-  }
-  
-  output += `\n${divider}\n`;
-  logDiv.innerText += output;
-  logDiv.scrollTop = logDiv.scrollHeight;
-  console.log(`[${label}]`, data);
-}
-
-// Clear log
-window.clearLog = function() {
-  logDiv.innerText = "[Log cleared] Ready for next attempt...\n";
-  showMessage("Log cleared", "info");
-};
-
-// Main signup function
-window.signup = async function() {
-  // Reset UI
-  showMessage("Processing...", "info");
-  btn.disabled = true;
-  btn.innerText = "⏳ Creating account...";
-  
-  // Get form values
   const fullName = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-  
-  debugLog("📝 FORM INPUT", {
-    fullName: fullName || "[EMPTY]",
-    email: email || "[EMPTY]",
-    passwordLength: password ? password.length : 0
-  });
-  
-  // Validation
+
+  console.log("START SIGNUP");
+
   if (!fullName || !email || !password) {
-    debugLog("❌ VALIDATION FAILED", "All fields are required");
-    showMessage("Please fill in all fields", "error");
-    btn.disabled = false;
-    btn.innerText = "✨ Create Account";
+    msg.innerText = "Please fill all fields";
     return;
   }
-  
-  if (password.length < 6) {
-    debugLog("❌ VALIDATION FAILED", "Password must be at least 6 characters");
-    showMessage("Password must be at least 6 characters", "error");
-    btn.disabled = false;
-    btn.innerText = "✨ Create Account";
-    return;
-  }
-  
-  // ============================================
-  // STEP 1: AUTH SIGNUP
-  // ============================================
-  debugLog("🔄 STEP 1", "Calling supabase.auth.signUp()");
-  
-  const { data, error } = await _supabase.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-      data: {
-        full_name: fullName
-      }
+
+  btn.disabled = true;
+  msg.innerText = "Creating account...";
+
+  try {
+
+    // STEP 1: CREATE AUTH USER
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password
+    });
+
+    console.log("AUTH RESULT:", data, error);
+
+    if (error) {
+      msg.innerText = "Auth Error: " + error.message;
+      btn.disabled = false;
+      return;
     }
-  });
-  
-  if (error) {
-    debugLog("❌ AUTH ERROR", error);
-    showMessage("Auth Error: " + error.message, "error");
-    btn.disabled = false;
-    btn.innerText = "✨ Create Account";
-    return;
-  }
-  
-  debugLog("✅ AUTH SUCCESS", {
-    user: data?.user?.id,
-    email: data?.user?.email,
-    createdAt: data?.user?.created_at
-  });
-  
-  const userId = data?.user?.id;
-  
-  if (!userId) {
-    debugLog("❌ CRITICAL ERROR", "User ID is missing from auth response");
-    showMessage("Signup failed: No user ID returned", "error");
-    btn.disabled = false;
-    btn.innerText = "✨ Create Account";
-    return;
-  }
-  
-  // ============================================
-  // STEP 2: INSERT INTO USERS TABLE
-  // ============================================
-  debugLog("🔄 STEP 2", "Inserting into users table");
-  
-  const newUser = {
-    id: userId,
-    full_name: fullName,
-    email: email,
-    role: "pending",
-    status: "pending",
-    created_at: new Date().toISOString()
-  };
-  
-  debugLog("📦 USER DATA TO INSERT", newUser);
-  
-  const { error: insertError, data: insertData } = await _supabase
-    .from("users")
-    .insert([newUser])
-    .select();
-  
-  if (insertError) {
-    debugLog("❌ DATABASE INSERT ERROR", insertError);
-    showMessage("Database Error: " + insertError.message, "error");
-    btn.disabled = false;
-    btn.innerText = "✨ Create Account";
-    return;
-  }
-  
-  debugLog("✅ DATABASE INSERT SUCCESS", insertData);
-  
-  // ============================================
-  // SUCCESS
-  // ============================================
-  debugLog("🎉 SIGNUP COMPLETE", {
-    message: "User created successfully!",
-    userId: userId,
-    email: email,
-    role: "pending",
-    status: "pending"
-  });
-  
-  showMessage("✅ Account created successfully! Redirecting to login...", "success");
-  
-  // Clear form
-  document.getElementById("name").value = "";
-  document.getElementById("email").value = "";
-  document.getElementById("password").value = "";
-  
-  // Redirect to login after 2 seconds
-  setTimeout(() => {
-    debugLog("🔄 REDIRECT", "Redirecting to login page");
-    window.location.href = "login.html";
-  }, 2000);
-  
-  btn.disabled = false;
-  btn.innerText = "✨ Create Account";
-};
 
-// Display ready message
-debugLog("🚀 SYSTEM READY", {
-  supabaseUrl: SUPABASE_URL,
-  timestamp: new Date().toISOString(),
-  status: "Waiting for user input"
-});
+    const user = data?.user;
 
-debugLog("💡 TIP", "Fill in the form and click 'Create Account' to test signup");
+    if (!user) {
+      msg.innerText = "No user returned from auth";
+      btn.disabled = false;
+      return;
+    }
+
+    console.log("USER CREATED:", user.id);
+
+    // STEP 2: INSERT PROFILE (SAFE)
+    const { error: insertError } = await supabase
+      .from("users")
+      .insert([{
+        id: user.id,
+        full_name: fullName,
+        email: email,
+        role: "pending",
+        status: "pending",
+        base_salary: 0
+      }]);
+
+    if (insertError) {
+      console.log("INSERT ERROR:", insertError);
+      msg.innerText = "Profile creation failed: " + insertError.message;
+      btn.disabled = false;
+      return;
+    }
+
+    msg.innerText = "Signup successful! Redirecting...";
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1500);
+
+  } catch (err) {
+    console.log(err);
+    msg.innerText = "Unexpected error: " + err.message;
+    btn.disabled = false;
+  }
+}
 </script>
+
 </body>
 </html>
