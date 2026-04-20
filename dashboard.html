@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Dashboard · O.M.Ocreation ERP</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --pink: #ff4da6;
+      --pink-dark: #e6398c;
+      --pink-light: #ffb3d9;
+      --pink-soft: #fff0f6;
+      --dark: #1a1a2e;
+      --gray: #666;
+      --light-gray: #f5f5f5;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --info: #17a2b8;
+      --sidebar-width: 280px;
+      --sidebar-collapsed: 80px;
+      --header-height: 70px;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--light-gray);
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* ========== SIDEBAR ========== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, var(--dark) 0%, #252540 100%);
+      color: white;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: width 0.3s ease;
+      z-index: 100;
+      box-shadow: 5px 0 30px rgba(0,0,0,0.1);
+    }
+    
+    .sidebar.collapsed {
+      width: var(--sidebar-collapsed);
+    }
+    
+    .sidebar-header {
+      padding: 25px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .sidebar-header .logo {
+      height: 40px;
+      width: 40px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+    
+    .sidebar-header h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    
+    .sidebar-header h3 span { color: var(--pink); }
+    
+    .sidebar.collapsed .sidebar-header h3,
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .user-info-text { display: none; }
+    
+    .sidebar-nav {
+      padding: 20px 12px;
+    }
+    
+    .nav-section { margin-bottom: 25px; }
+    
+    .nav-section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 12px;
+      padding-left: 12px;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    
+    .nav-item i { width: 22px; font-size: 1.2rem; }
+    
+    .nav-item:hover {
+      background: rgba(255,77,166,0.15);
+      color: white;
+    }
+    
+    .nav-item.active {
+      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+      color: white;
+      box-shadow: 0 8px 20px rgba(255,77,166,0.3);
+    }
+    
+    .nav-item.logout {
+      color: rgba(255,100,100,0.8);
+      margin-top: 20px;
+    }
+    
+    .nav-item.logout:hover {
+      background: rgba(220,53,69,0.2);
+      color: #ff6b6b;
+    }
+    
+    .sidebar-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .user-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
+    }
+    
+    .user-info-text h4 { font-size: 0.9rem; font-weight: 600; }
+    .user-info-text p { font-size: 0.75rem; opacity: 0.7; }
+    
+    /* ========== MAIN CONTENT ========== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      transition: margin-left 0.3s ease;
+      min-height: 100vh;
+    }
+    
+    .sidebar.collapsed + .main-content {
+      margin-left: var(--sidebar-collapsed);
+    }
+    
+    /* ========== TOP BAR ========== */
+    .top-bar {
+      height: var(--header-height);
+      background: white;
+      padding: 0 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .menu-toggle {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--gray);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    
+    .menu-toggle:hover {
+      background: var(--pink-soft);
+      color: var(--pink);
+    }
+    
+    .page-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .notification-badge {
+      position: relative;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    
+    .notification-badge:hover { background: var(--pink-soft); }
+    .notification-badge i { font-size: 1.3rem; color: var(--gray); }
+    
+    .badge-count {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: var(--danger);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 20px;
+    }
+    
+    .date-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+    
+    /* ========== DASHBOARD CONTENT ========== */
+    .content-wrapper { padding: 30px; }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+      border: 1px solid rgba(255,77,166,0.08);
+      transition: transform 0.2s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(255,77,166,0.1);
+    }
+    
+    .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    
+    .stat-header span {
+      font-size: 0.85rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--pink-soft), white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--pink);
+      font-size: 1.4rem;
+    }
+    
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--dark);
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .stat-change {
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    
+    .stat-change.positive { color: var(--success); }
+    .stat-change.negative { color: var(--danger); }
+    
+    /* Panels */
+    .panel {
+      background: white;
+      border-radius: 24px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+      border: 1px solid rgba(255,77,166,0.08);
+    }
+    
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .panel-header h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    
+    .panel-header a {
+      color: var(--pink);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    /* Tables */
+    .table-responsive { overflow-x: auto; }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .data-table th {
+      text-align: left;
+      padding: 14px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--pink-soft);
+    }
+    
+    .data-table td {
+      padding: 16px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      font-size: 0.9rem;
+    }
+    
+    .badge {
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    
+    .badge-success { background: rgba(40,167,69,0.1); color: var(--success); }
+    .badge-warning { background: rgba(255,193,7,0.1); color: var(--warning); }
+    .badge-danger { background: rgba(220,53,69,0.1); color: var(--danger); }
+    .badge-info { background: rgba(23,162,184,0.1); color: var(--info); }
+    .badge-pink { background: rgba(255,77,166,0.1); color: var(--pink); }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      color: var(--dark);
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+      color: white;
+      border: none;
+      box-shadow: 0 5px 15px rgba(255,77,166,0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255,77,166,0.4);
+    }
+    
+    .btn-outline-pink {
+      border: 1.5px solid var(--pink);
+      color: var(--pink);
+      background: transparent;
+    }
+    
+    .btn-outline-pink:hover {
+      background: var(--pink);
+      color: white;
+    }
+    
+    .btn-sm { padding: 6px 14px; font-size: 0.75rem; }
+    .btn-success { background: var(--success); color: white; border: none; }
+    .btn-danger { background: var(--danger); color: white; border: none; }
+    .btn-outline { background: transparent; border: 1px solid var(--gray); }
+    
+    /* Attendance Terminal */
+    .attendance-terminal {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .clock-display {
+      font-size: 4rem;
+      font-weight: 800;
+      font-family: 'Playfair Display', serif;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+    
+    .date-display-large {
+      font-size: 1.1rem;
+      color: var(--gray);
+      margin-bottom: 30px;
+    }
+    
+    .webcam-container {
+      background: var(--dark);
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+    
+    .webcam-preview {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 16px;
+      margin: 0 auto;
+      display: block;
+    }
+    
+    .check-in-btn {
+      padding: 18px 40px;
+      font-size: 1.2rem;
+      border-radius: 60px;
+    }
+    
+    /* Announcement Banner */
+    .announcement-banner {
+      background: linear-gradient(135deg, var(--pink-soft), white);
+      border-radius: 20px;
+      padding: 18px 25px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-left: 5px solid var(--pink);
+    }
+    
+    .announcement-banner i { font-size: 1.8rem; color: var(--pink); }
+    .announcement-banner p { flex: 1; color: var(--dark); font-weight: 500; }
+    
+    /* Two Column Layout */
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+    
+    /* Profile Completion Warning */
+    .profile-warning {
+      background: linear-gradient(135deg, rgba(255,193,7,0.15), rgba(255,77,166,0.1));
+      border-radius: 20px;
+      padding: 15px 25px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-left: 5px solid var(--warning);
+    }
+    
+    .profile-warning i { font-size: 1.5rem; color: var(--warning); }
+    .profile-warning p { flex: 1; color: var(--dark); }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal {
+      background: white;
+      border-radius: 30px;
+      padding: 35px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+    
+    .modal-header h3 { font-size: 1.4rem; font-weight: 700; }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    
+    .form-group { margin-bottom: 20px; }
+    
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1.5px solid rgba(255,77,166,0.2);
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+      outline: none;
+    }
+    
+    .form-control:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 4px rgba(255,77,166,0.1);
+    }
+    
+    .form-control-sm {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+    
+    textarea.form-control {
+      border-radius: 20px;
+      resize: vertical;
+    }
+    
+    /* Page Views */
+    .page-view { display: none; }
+    .page-view.active { display: block; }
+    
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: white;
+      padding: 16px 24px;
+      border-radius: 50px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 9999;
+      transform: translateX(400px);
+      transition: transform 0.3s;
+      border-left: 5px solid var(--pink);
+    }
+    
+    .toast.show { transform: translateX(0); }
+    .toast.success { border-left-color: var(--success); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warning { border-left-color: var(--warning); }
+    
+    /* Mobile Responsive */
+    @media (max-width: 992px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .two-column { grid-template-columns: 1fr; }
+      .sidebar { width: var(--sidebar-collapsed); }
+      .sidebar .sidebar-header h3,
+      .sidebar .nav-text,
+      .sidebar .user-info-text { display: none; }
+      .main-content { margin-left: var(--sidebar-collapsed); }
+    }
+    
+    @media (max-width: 576px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .content-wrapper { padding: 20px 15px; }
+      .top-bar { padding: 0 15px; }
+      .page-title { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <img src="assets/log1.jpg" alt="Logo" class="logo" onerror="this.style.display='none'">
+    <h3>💎 <span>O.M.O</span>creation</h3>
+  </div>
+  
+  <nav class="sidebar-nav" id="sidebarNav"></nav>
+  
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar" id="userAvatar">OM</div>
+      <div class="user-info-text">
+        <h4 id="userName">Loading...</h4>
+        <p id="userRole">•••</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+  
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1 class="page-title" id="pageTitle">Dashboard</h1>
+    </div>
+    
+    <div class="top-bar-right">
+      <div class="date-display">
+        <i class="far fa-calendar-alt"></i>
+        <span id="currentDate"></span>
+      </div>
+      
+      <div class="notification-badge" id="notificationBell">
+        <i class="far fa-bell"></i>
+        <span class="badge-count" id="notificationCount">0</span>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    
+    <!-- Profile Incomplete Warning -->
+    <div class="profile-warning" id="profileWarning" style="display: none;">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p><strong>Your profile is incomplete.</strong> Complete it to access all features.</p>
+      <button class="btn btn-sm btn-primary" id="completeProfileBtn">Complete Now</button>
+    </div>
+    
+    <!-- Announcement Banner -->
+    <div class="announcement-banner" id="announcementBanner" style="display: none;">
+      <i class="fas fa-bullhorn"></i>
+      <p id="announcementText">Welcome to O.M.Ocreation ERP</p>
+      <button class="btn btn-sm btn-outline-pink" id="dismissAnnouncement">Dismiss</button>
+    </div>
+    
+    <!-- ========== PAGE VIEWS ========== -->
+    
+    <!-- Master Admin Dashboard View -->
+    <div id="adminDashboardView" class="page-view">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Total Staff</span>
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+          </div>
+          <div class="stat-value" id="totalStaff">0</div>
+          <div class="stat-change positive"><i class="fas fa-arrow-up"></i> +3 this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Pending Approvals</span>
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+          </div>
+          <div class="stat-value" id="pendingApprovalsCount">0</div>
+          <div class="stat-change warning">Requires attention</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Revenue (Monthly)</span>
+            <div class="stat-icon"><i class="fas fa-naira-sign"></i></div>
+          </div>
+          <div class="stat-value" id="monthlyRevenue">₦0</div>
+          <div class="stat-change positive"><i class="fas fa-arrow-up"></i> +12%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Tasks Completed</span>
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+          </div>
+          <div class="stat-value" id="tasksCompleted">0</div>
+          <div class="stat-change">This month</div>
+        </div>
+      </div>
+      
+      <!-- PENDING APPROVALS SECTION (NEW) -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-user-clock" style="margin-right: 10px; color: var(--warning);"></i> Pending User Approvals</h3>
+          <button class="btn btn-outline-pink btn-sm" onclick="loadPendingApprovals()">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Registered</th>
+                <th>Assign Role</th>
+                <th>Base Salary (₦)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pendingApprovalsTable">
+              <tr><td colspan="7" style="text-align:center;">Loading pending approvals...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="two-column">
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-user-check" style="margin-right: 10px; color: var(--pink);"></i> Today's Attendance</h3>
+            <a href="#" data-view="attendance">View All <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr><th>Staff</th><th>Check-in</th><th>Status</th></tr>
+              </thead>
+              <tbody id="todayAttendanceTable">
+                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-tasks" style="margin-right: 10px; color: var(--pink);"></i> Recent Tasks</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr><th>Task</th><th>Assigned To</th><th>Status</th></tr>
+              </thead>
+              <tbody id="recentTasksTable">
+                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-history" style="margin-right: 10px; color: var(--pink);"></i> Recent Audit Logs</h3>
+          <a href="#" data-view="audit">View Full Audit <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Action</th><th>Performed By</th><th>Time</th><th>Details</th></tr>
+            </thead>
+            <tbody id="auditLogsTable">
+              <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Master Attendant Dashboard View -->
+    <div id="attendantDashboardView" class="page-view">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Staff Present Today</span>
+            <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+          </div>
+          <div class="stat-value" id="attendantPresentCount">0</div>
+          <div class="stat-change" id="attendantLateCount">0 late</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Active Tasks</span>
+            <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+          </div>
+          <div class="stat-value" id="attendantActiveTasks">0</div>
+          <div class="stat-change">Assigned today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Low Stock Items</span>
+            <div class="stat-icon"><i class="fas fa-box"></i></div>
+          </div>
+          <div class="stat-value" id="attendantLowStock">0</div>
+          <div class="stat-change warning">Needs restock</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Pending My Approvals</span>
+            <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+          </div>
+          <div class="stat-value" id="attendantPendingCount">0</div>
+          <div class="stat-change">Awaiting action</div>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-clipboard-list" style="margin-right: 10px; color: var(--pink);"></i> Task Assignment</h3>
+          <button class="btn btn-primary btn-sm" id="assignTaskBtn"><i class="fas fa-plus"></i> Assign Task</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Task</th><th>Assigned To</th><th>Deadline</th><th>Status</th><th>Points</th><th>Action</th></tr>
+            </thead>
+            <tbody id="attendantTasksTable">
+              <tr><td colspan="6" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="two-column">
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-warehouse" style="margin-right: 10px; color: var(--pink);"></i> Stock Overview</h3>
+            <button class="btn btn-outline-pink btn-sm" id="addStockItemBtn"><i class="fas fa-plus"></i> Add Item</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr><th>Item</th><th>Available</th><th>Status</th></tr>
+              </thead>
+              <tbody id="stockOverviewTable">
+                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-users" style="margin-right: 10px; color: var(--pink);"></i> Staff Overview</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr><th>Name</th><th>Tasks Done</th><th>Points</th></tr>
+              </thead>
+              <tbody id="staffOverviewTable">
+                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Staff Dashboard View -->
+    <div id="staffDashboardView" class="page-view">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>My Points</span>
+            <div class="stat-icon"><i class="fas fa-coins"></i></div>
+          </div>
+          <div class="stat-value" id="staffPoints">0</div>
+          <div class="stat-change">Value: ₦<span id="pointValue">100</span>/point</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Tasks Completed</span>
+            <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+          </div>
+          <div class="stat-value" id="staffTasksCompleted">0</div>
+          <div class="stat-change">This month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Leave Days Left</span>
+            <div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div>
+          </div>
+          <div class="stat-value" id="staffLeaveDays">2</div>
+          <div class="stat-change">This month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Estimated Salary</span>
+            <div class="stat-icon"><i class="fas fa-naira-sign"></i></div>
+          </div>
+          <div class="stat-value" id="staffEstimatedSalary">₦0</div>
+          <div class="stat-change">This month</div>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-tasks" style="margin-right: 10px; color: var(--pink);"></i> My Assigned Tasks</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Task</th><th>Deadline</th><th>Status</th><th>Points</th><th>Action</th></tr>
+            </thead>
+            <tbody id="staffTasksTable">
+              <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="two-column">
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-calendar-alt" style="margin-right: 10px; color: var(--pink);"></i> My Attendance</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr><th>Date</th><th>Check-in</th><th>Status</th></tr>
+              </thead>
+              <tbody id="staffAttendanceTable">
+                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-history" style="margin-right: 10px; color: var(--pink);"></i> Point History</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr><th>Reason</th><th>Points</th><th>Date</th></tr>
+              </thead>
+              <tbody id="staffPointHistoryTable">
+                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-calendar-check" style="margin-right: 10px; color: var(--pink);"></i> Staff Leave Calendar</h3>
+        </div>
+        <div id="leaveCalendar" style="padding: 15px;">
+          <p style="color: var(--gray);">Loading leave calendar...</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Attendance Terminal View -->
+    <div id="attendanceView" class="page-view">
+      <div class="attendance-terminal">
+        <div class="clock-display" id="liveClock">--:--:--</div>
+        <div class="date-display-large" id="liveDate"></div>
+        
+        <div class="webcam-container">
+          <video id="webcamVideo" class="webcam-preview" autoplay playsinline></video>
+          <canvas id="webcamCanvas" style="display: none;"></canvas>
+        </div>
+        
+        <button class="btn btn-primary check-in-btn" id="checkInBtn">
+          <i class="fas fa-camera"></i> Check In Now
+        </button>
+        
+        <p style="margin-top: 20px; color: var(--gray); font-size: 0.85rem;">
+          <i class="fas fa-info-circle"></i> Your photo will be captured for attendance verification.
+        </p>
+        
+        <div id="attendanceMessage" class="auth-message" style="margin-top: 20px;"></div>
+      </div>
+    </div>
+    
+    <!-- Audit Logs View -->
+    <div id="auditView" class="page-view">
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-history"></i> Full Audit Trail</h3>
+          <button class="btn btn-outline-pink btn-sm" id="exportAuditBtn"><i class="fas fa-download"></i> Export CSV</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Timestamp</th><th>Action</th><th>User</th><th>Collection</th><th>Details</th></tr>
+            </thead>
+            <tbody id="fullAuditTable">
+              <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stock Management View -->
+    <div id="stockView" class="page-view">
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-boxes"></i> Inventory Management</h3>
+          <div>
+            <button class="btn btn-outline-pink btn-sm" id="exportStockBtn"><i class="fas fa-download"></i> Export</button>
+            <button class="btn btn-primary btn-sm" id="newStockItemBtn"><i class="fas fa-plus"></i> New Item</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Item Name</th><th>Category</th><th>Available</th><th>Sold</th><th>Unit Price</th><th>Total Value</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="fullStockTable">
+              <tr><td colspan="8" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i> Low Stock Items (Suggested Purchase)</h3>
+          <button class="btn btn-primary btn-sm" id="createPurchaseRequestBtn"><i class="fas fa-cart-plus"></i> Create Purchase Request</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Item</th><th>Current Stock</th><th>Threshold</th><th>Suggested Order</th><th>Select</th></tr>
+            </thead>
+            <tbody id="lowStockSuggestionsTable">
+              <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Customer Records View -->
+    <div id="customersView" class="page-view">
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-users"></i> Customer Records</h3>
+          <button class="btn btn-primary btn-sm" id="addCustomerBtn"><i class="fas fa-plus"></i> Add Customer</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Name</th><th>Phone</th><th>Birthday</th><th>Total Spent</th><th>Last Purchase</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="customersTable">
+              <tr><td colspan="7" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Finance Dashboard View (Admin Only) -->
+    <div id="financeView" class="page-view">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Total Revenue (MTD)</span>
+            <div class="stat-icon"><i class="fas fa-naira-sign"></i></div>
+          </div>
+          <div class="stat-value" id="financeRevenue">₦0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Total Expenses (MTD)</span>
+            <div class="stat-icon"><i class="fas fa-arrow-down"></i></div>
+          </div>
+          <div class="stat-value" id="financeExpenses">₦0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Net Profit (MTD)</span>
+            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+          </div>
+          <div class="stat-value" id="financeProfit">₦0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span>Salary Payout (This Month)</span>
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+          </div>
+          <div class="stat-value" id="financeSalary">₦0</div>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-chart-bar"></i> Monthly Comparison</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr><th>Month</th><th>Revenue</th><th>Expenses</th><th>Profit</th><th>vs Previous</th></tr>
+            </thead>
+            <tbody id="monthlyComparisonTable">
+              <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-lightbulb" style="color: var(--warning);"></i> AI Suggestions</h3>
+        </div>
+        <div id="financeSuggestions" style="padding: 15px;">
+          <p style="color: var(--gray);">Analyzing spending patterns...</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Profile / Leave Requests View -->
+    <div id="profileView" class="page-view">
+      <div class="two-column">
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+            <button class="btn btn-outline-pink btn-sm" id="editProfileBtn"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+          <div style="padding: 10px;">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" class="form-control" id="profileName" readonly>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-control" id="profileEmail" readonly>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" class="form-control" id="profilePhone" readonly>
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <input type="text" class="form-control" id="profileRole" readonly>
+            </div>
+            <div class="form-group">
+              <label>Base Salary</label>
+              <input type="text" class="form-control" id="profileBaseSalary" readonly>
+            </div>
+            <div class="form-group">
+              <label>Total Points</label>
+              <input type="text" class="form-control" id="profilePoints" readonly>
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" class="form-control" id="profileAddressField" placeholder="Not set" readonly>
+            </div>
+            <div class="form-group">
+              <label>Emergency Contact</label>
+              <input type="tel" class="form-control" id="profileEmergencyContact" placeholder="Not set" readonly>
+            </div>
+            <div class="form-group">
+              <label>Bank Details</label>
+              <input type="text" class="form-control" id="profileBankDetails" placeholder="Not set" readonly>
+            </div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-calendar-plus"></i> Request Leave</h3>
+          </div>
+          <div style="padding: 10px;">
+            <div class="form-group">
+              <label>Select Dates (Max 2 days/month)</label>
+              <input type="date" class="form-control" id="leaveStartDate">
+              <input type="date" class="form-control" id="leaveEndDate" style="margin-top: 10px;">
+            </div>
+            <div class="form-group">
+              <label>Reason</label>
+              <textarea class="form-control" id="leaveReason" rows="3" placeholder="Explain reason for leave..."></textarea>
+            </div>
+            <button class="btn btn-primary" id="submitLeaveRequestBtn">Submit Request</button>
+            
+            <div style="margin-top: 25px;">
+              <h4 style="margin-bottom: 15px; font-size: 1rem;">My Leave History</h4>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr><th>Dates</th><th>Status</th><th>Approved By</th></tr>
+                  </thead>
+                  <tbody id="leaveHistoryTable">
+                    <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Notifications View -->
+    <div id="notificationsView" class="page-view">
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-bell"></i> All Notifications</h3>
+          <button class="btn btn-outline-pink btn-sm" id="markAllReadBtn">Mark All Read</button>
+        </div>
+        <div id="notificationsList">
+          <p style="text-align: center; color: var(--gray); padding: 30px;">Loading notifications...</p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Modal Title</h3>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle" id="toastIcon"></i>
+  <span id="toastMessage">Message</span>
+</div>
+
+<script type="module">
+  // ========== FIREBASE INITIALIZATION ==========
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { 
+    getAuth, 
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { 
+    getFirestore,
+    doc,
+    getDoc,
+    collection,
+    query,
+    where,
+    orderBy,
+    limit,
+    onSnapshot,
+    addDoc,
+    updateDoc,
+    serverTimestamp,
+    getDocs,
+    deleteDoc,
+    setDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD-H3OMXf2Ec6NtN1IxXtA0vZ34PceqQfg",
+    authDomain: "fashion-erp-system.firebaseapp.com",
+    projectId: "fashion-erp-system",
+    storageBucket: "fashion-erp-system.firebasestorage.app",
+    messagingSenderId: "330378955681",
+    appId: "1:330378955681:web:6e9bf16c54a1187f94d9e0",
+    measurementId: "G-Q3HVQXZNW7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  console.log('%c🎯 O.M.Ocreation ERP Dashboard — Active', 'color: #ff4da6; font-weight: bold;');
+
+  // ========== GLOBAL STATE ==========
+  let currentUser = null;
+  let userData = null;
+  let currentView = 'dashboard';
+  let sidebarCollapsed = false;
+  let webcamStream = null;
+
+  // ========== DOM ELEMENTS ==========
+  const sidebar = document.getElementById('sidebar');
+  const sidebarNav = document.getElementById('sidebarNav');
+  const menuToggle = document.getElementById('menuToggle');
+  const pageTitle = document.getElementById('pageTitle');
+  const userName = document.getElementById('userName');
+  const userRole = document.getElementById('userRole');
+  const userAvatar = document.getElementById('userAvatar');
+  const currentDate = document.getElementById('currentDate');
+  const notificationCount = document.getElementById('notificationCount');
+  const announcementBanner = document.getElementById('announcementBanner');
+  const announcementText = document.getElementById('announcementText');
+  const profileWarning = document.getElementById('profileWarning');
+  const completeProfileBtn = document.getElementById('completeProfileBtn');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modal = document.getElementById('modal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalContent = document.getElementById('modalContent');
+  const modalClose = document.getElementById('modalClose');
+  const toast = document.getElementById('toast');
+  const toastMessage = document.getElementById('toastMessage');
+  const toastIcon = document.getElementById('toastIcon');
+
+  // View elements
+  const adminDashboardView = document.getElementById('adminDashboardView');
+  const attendantDashboardView = document.getElementById('attendantDashboardView');
+  const staffDashboardView = document.getElementById('staffDashboardView');
+  const attendanceView = document.getElementById('attendanceView');
+  const auditView = document.getElementById('auditView');
+  const stockView = document.getElementById('stockView');
+  const customersView = document.getElementById('customersView');
+  const financeView = document.getElementById('financeView');
+  const profileView = document.getElementById('profileView');
+  const notificationsView = document.getElementById('notificationsView');
+
+  // ========== HELPER FUNCTIONS ==========
+  function formatDate(date) {
+    if (!date) return '-';
+    return new Date(date).toLocaleDateString('en-GB', { 
+      day: '2-digit', month: 'short', year: 'numeric' 
+    });
+  }
+
+  function formatTime(date) {
+    if (!date) return '-';
+    return new Date(date).toLocaleTimeString('en-GB', { 
+      hour: '2-digit', minute: '2-digit' 
+    });
+  }
+
+  function formatCurrency(amount) {
+    return '₦' + parseFloat(amount || 0).toLocaleString('en-NG');
+  }
+
+  function showToast(message, type = 'success') {
+    toastMessage.textContent = message;
+    toast.className = `toast show ${type}`;
+    toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 
+                         type === 'error' ? 'fas fa-exclamation-circle' : 
+                         type === 'warning' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  function showModal(title, content) {
+    modalTitle.textContent = title;
+    modalContent.innerHTML = content;
+    modalOverlay.style.display = 'flex';
+  }
+
+  function hideModal() {
+    modalOverlay.style.display = 'none';
+  }
+
+  async function logAudit(actionType, userId, note = '') {
+    try {
+      await addDoc(collection(db, 'audit_logs'), {
+        actionType: actionType,
+        collectionName: 'users',
+        documentId: userId || currentUser?.uid || 'system',
+        performedBy: currentUser?.uid || 'system',
+        performedAt: serverTimestamp(),
+        note: note
+      });
+    } catch (e) {
+      console.warn('Audit log failed:', e);
+    }
+  }
+
+  // ========== PROFILE COMPLETION CHECK (NEW) ==========
+  async function checkProfileCompletion() {
+    if (!userData) return;
+    
+    if (!userData.profileCompleted) {
+      profileWarning.style.display = 'flex';
+    } else {
+      profileWarning.style.display = 'none';
+    }
+  }
+
+  function showProfileCompletionModal() {
+    showModal('Complete Your Profile', `
+      <div style="text-align: center; padding: 10px;">
+        <i class="fas fa-user-check" style="font-size: 3rem; color: var(--pink); margin-bottom: 20px;"></i>
+        <h4 style="margin-bottom: 15px;">Welcome to O.M.Ocreation!</h4>
+        <p style="color: var(--gray); margin-bottom: 25px;">Please complete your profile information to get started.</p>
+        
+        <div class="form-group">
+          <label>Profile Picture (Optional)</label>
+          <input type="file" id="profilePicture" accept="image/*" class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" id="profileAddress" class="form-control" placeholder="Your address" value="${userData.address || ''}">
+        </div>
+        
+        <div class="form-group">
+          <label>Emergency Contact</label>
+          <input type="tel" id="emergencyContact" class="form-control" placeholder="Phone number" value="${userData.emergencyContact || ''}">
+        </div>
+        
+        <div class="form-group">
+          <label>Bank Details (for salary)</label>
+          <input type="text" id="bankName" class="form-control" placeholder="Bank Name" style="margin-bottom: 10px;" value="${userData.bankName || ''}">
+          <input type="text" id="accountNumber" class="form-control" placeholder="Account Number" value="${userData.accountNumber || ''}">
+        </div>
+        
+        <button class="btn btn-primary" onclick="window.completeProfile()">Save & Continue</button>
+        <button class="btn btn-outline" onclick="window.skipProfileForNow()" style="margin-top: 10px;">Remind Me Later</button>
+      </div>
+    `);
+  }
+
+  window.completeProfile = async () => {
+    const address = document.getElementById('profileAddress')?.value || '';
+    const emergencyContact = document.getElementById('emergencyContact')?.value || '';
+    const bankName = document.getElementById('bankName')?.value || '';
+    const accountNumber = document.getElementById('accountNumber')?.value || '';
+    
+    try {
+      await updateDoc(doc(db, 'users', currentUser.uid), {
+        profileCompleted: true,
+        completedAt: serverTimestamp(),
+        address: address,
+        emergencyContact: emergencyContact,
+        bankName: bankName,
+        accountNumber: accountNumber
+      });
+      
+      userData.profileCompleted = true;
+      profileWarning.style.display = 'none';
+      hideModal();
+      showToast('Profile completed! Welcome aboard.', 'success');
+      await logAudit('profile_completed', currentUser.uid, 'User completed profile');
+    } catch (error) {
+      showToast('Failed to save profile: ' + error.message, 'error');
+    }
+  };
+
+  window.skipProfileForNow = () => {
+    hideModal();
+    showToast('You can complete your profile later from the Profile page.', 'info');
+  };
+
+  completeProfileBtn?.addEventListener('click', showProfileCompletionModal);
+
+  // ========== PENDING APPROVALS (ADMIN ONLY) ==========
+  async function loadPendingApprovals() {
+    if (!userData || !(userData.role === 'admin' || userData.role === 'super_admin')) return;
+    
+    try {
+      const pendingQuery = query(
+        collection(db, 'users'), 
+        where('status', '==', 'pending_approval'),
+        orderBy('createdAt', 'desc')
+      );
+      
+      const snapshot = await getDocs(pendingQuery);
+      const tableBody = document.getElementById('pendingApprovalsTable');
+      tableBody.innerHTML = '';
+      
+      document.getElementById('pendingApprovalsCount').textContent = snapshot.size;
+      
+      if (snapshot.empty) {
+        tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 30px; color: var(--gray);">No pending approvals</td></tr>';
+        return;
+      }
+      
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${data.fullName || 'N/A'}</strong></td>
+          <td>${data.email || 'N/A'}</td>
+          <td>${data.phone || '-'}</td>
+          <td>${formatDate(data.createdAt?.toDate())}</td>
+          <td>
+            <select id="role-${docSnap.id}" class="form-control form-control-sm" style="width: 140px;">
+              <option value="staff">Staff (Worker)</option>
+              <option value="attendant">Desk Attendant</option>
+              <option value="attendant_chief">Chief Attendant</option>
+            </select>
+          </td>
+          <td>
+            <input type="number" id="salary-${docSnap.id}" placeholder="50000" class="form-control form-control-sm" style="width: 100px;" value="50000">
+          </td>
+          <td>
+            <button class="btn btn-sm btn-success" onclick="window.approveUser('${docSnap.id}')" style="margin-right: 5px;">
+              <i class="fas fa-check"></i> Approve
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="window.rejectUser('${docSnap.id}')">
+              <i class="fas fa-times"></i> Reject
+            </button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      
+    } catch (error) {
+      console.error('Error loading pending approvals:', error);
+      document.getElementById('pendingApprovalsTable').innerHTML = 
+        '<tr><td colspan="7" style="text-align:center; color: var(--danger);">Error loading approvals</td></tr>';
+    }
+  }
+
+  window.approveUser = async (userId) => {
+    const roleSelect = document.getElementById(`role-${userId}`);
+    const salaryInput = document.getElementById(`salary-${userId}`);
+    
+    if (!roleSelect || !salaryInput) {
+      showToast('Form elements not found', 'error');
+      return;
+    }
+    
+    const role = roleSelect.value;
+    const salary = parseFloat(salaryInput.value) || 0;
+    const note = prompt('Add approval note (optional):');
+    
+    if (salary <= 0) {
+      showToast('Please enter a valid salary amount', 'warning');
+      return;
+    }
+    
+    try {
+      await updateDoc(doc(db, 'users', userId), {
+        role: role,
+        baseSalary: salary,
+        status: 'active',
+        approvedBy: currentUser.uid,
+        approvedAt: serverTimestamp(),
+        approvalNote: note || null,
+        profileCompleted: false
+      });
+      
+      await addDoc(collection(db, 'notifications'), {
+        userId: userId,
+        type: 'account_approved',
+        title: 'Account Approved!',
+        message: `Your account has been approved as ${role}. Please login and complete your profile.`,
+        isRead: false,
+        createdAt: serverTimestamp()
+      });
+      
+      await logAudit('user_approved', currentUser.uid, `Approved user ${userId} as ${role} with salary ₦${salary}`);
+      
+      showToast('User approved successfully', 'success');
+      loadPendingApprovals();
+      loadAdminDashboard();
+    } catch (error) {
+      console.error('Approval error:', error);
+      showToast('Approval failed: ' + error.message, 'error');
+    }
+  };
+
+  window.rejectUser = async (userId) => {
+    const reason = prompt('Reason for rejection:');
+    if (!reason) return;
+    
+    try {
+      await updateDoc(doc(db, 'users', userId), {
+        status: 'rejected',
+        rejectedBy: currentUser.uid,
+        rejectedAt: serverTimestamp(),
+        rejectionReason: reason
+      });
+      
+      await addDoc(collection(db, 'notifications'), {
+        userId: userId,
+        type: 'account_rejected',
+        title: 'Account Not Approved',
+        message: `Your registration was not approved. Reason: ${reason}`,
+        isRead: false,
+        createdAt: serverTimestamp()
+      });
+      
+      await logAudit('user_rejected', currentUser.uid, `Rejected user ${userId}. Reason: ${reason}`);
+      
+      showToast('User rejected', 'info');
+      loadPendingApprovals();
+    } catch (error) {
+      showToast('Rejection failed: ' + error.message, 'error');
+    }
+  };
+
+  window.loadPendingApprovals = loadPendingApprovals;
+
+  // ========== SWITCH VIEW ==========
+  function switchView(viewId) {
+    document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId + 'View')?.classList.add('active');
+    currentView = viewId;
+    
+    const titles = {
+      'adminDashboard': 'Admin Dashboard',
+      'attendantDashboard': 'Attendant Dashboard',
+      'staffDashboard': 'Staff Dashboard',
+      'attendance': 'Attendance Terminal',
+      'audit': 'Audit Logs',
+      'stock': 'Stock Management',
+      'customers': 'Customer Records',
+      'finance': 'Finance Dashboard',
+      'profile': 'My Profile',
+      'notifications': 'Notifications'
+    };
+    pageTitle.textContent = titles[viewId] || 'Dashboard';
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.classList.remove('active');
+      if (item.dataset.view === viewId) item.classList.add('active');
+    });
+    
+    loadViewData(viewId);
+  }
+
+  function updateSidebarForRole(role) {
+    const navItems = [];
+    
+    if (role === 'super_admin' || role === 'admin') {
+      navItems.push(
+        { icon: 'fas fa-tachometer-alt', text: 'Dashboard', view: 'adminDashboard' },
+        { icon: 'fas fa-user-check', text: 'Attendance', view: 'attendance' },
+        { icon: 'fas fa-boxes', text: 'Stock', view: 'stock' },
+        { icon: 'fas fa-users', text: 'Customers', view: 'customers' },
+        { icon: 'fas fa-chart-pie', text: 'Finance', view: 'finance' },
+        { icon: 'fas fa-history', text: 'Audit Logs', view: 'audit' },
+        { icon: 'fas fa-user', text: 'Profile', view: 'profile' },
+        { icon: 'fas fa-bell', text: 'Notifications', view: 'notifications' }
+      );
+    } else if (role === 'attendant_chief' || role === 'attendant') {
+      navItems.push(
+        { icon: 'fas fa-tachometer-alt', text: 'Dashboard', view: 'attendantDashboard' },
+        { icon: 'fas fa-user-check', text: 'Attendance', view: 'attendance' },
+        { icon: 'fas fa-boxes', text: 'Stock', view: 'stock' },
+        { icon: 'fas fa-users', text: 'Customers', view: 'customers' },
+        { icon: 'fas fa-user', text: 'Profile', view: 'profile' },
+        { icon: 'fas fa-bell', text: 'Notifications', view: 'notifications' }
+      );
+    } else {
+      navItems.push(
+        { icon: 'fas fa-tachometer-alt', text: 'Dashboard', view: 'staffDashboard' },
+        { icon: 'fas fa-user-check', text: 'Attendance', view: 'attendance' },
+        { icon: 'fas fa-user', text: 'Profile', view: 'profile' },
+        { icon: 'fas fa-bell', text: 'Notifications', view: 'notifications' }
+      );
+    }
+    
+    sidebarNav.innerHTML = '';
+    navItems.forEach(item => {
+      const navItem = document.createElement('button');
+      navItem.className = 'nav-item';
+      if ((item.view === 'adminDashboard' && (role === 'admin' || role === 'super_admin')) ||
+          (item.view === 'attendantDashboard' && (role === 'attendant' || role === 'attendant_chief')) ||
+          (item.view === 'staffDashboard' && role === 'staff')) {
+        navItem.classList.add('active');
+      }
+      navItem.dataset.view = item.view;
+      navItem.innerHTML = `<i class="${item.icon}"></i><span class="nav-text">${item.text}</span>`;
+      navItem.addEventListener('click', () => switchView(item.view));
+      sidebarNav.appendChild(navItem);
+    });
+    
+    const logoutItem = document.createElement('button');
+    logoutItem.className = 'nav-item logout';
+    logoutItem.innerHTML = `<i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span>`;
+    logoutItem.addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = 'auth.html';
+    });
+    sidebarNav.appendChild(logoutItem);
+  }
+
+  async function loadViewData(viewId) {
+    if (!userData) return;
+    
+    switch(viewId) {
+      case 'adminDashboard':
+        await loadAdminDashboard();
+        await loadPendingApprovals();
+        break;
+      case 'attendantDashboard':
+        await loadAttendantDashboard();
+        break;
+      case 'staffDashboard':
+        await loadStaffDashboard();
+        break;
+      case 'attendance':
+        initAttendanceTerminal();
+        break;
+      case 'audit':
+        await loadAuditLogs();
+        break;
+      case 'stock':
+        await loadStockData();
+        break;
+      case 'customers':
+        await loadCustomersData();
+        break;
+      case 'finance':
+        await loadFinanceData();
+        break;
+      case 'profile':
+        await loadProfileData();
+        break;
+      case 'notifications':
+        await loadNotifications();
+        break;
+    }
+  }
+
+  async function loadAdminDashboard() {
+    try {
+      const usersSnap = await getDocs(collection(db, 'users'));
+      const totalStaff = usersSnap.docs.filter(d => {
+        const data = d.data();
+        return data.role === 'staff' && data.status === 'active';
+      }).length;
+      document.getElementById('totalStaff').textContent = totalStaff;
+      
+      const pendingSnap = await getDocs(query(collection(db, 'users'), where('status', '==', 'pending_approval')));
+      document.getElementById('pendingApprovalsCount').textContent = pendingSnap.size;
+      
+      document.getElementById('monthlyRevenue').textContent = formatCurrency(1250000);
+      document.getElementById('tasksCompleted').textContent = '24';
+      
+      const today = new Date().toISOString().split('T')[0];
+      const attendanceSnap = await getDocs(query(collection(db, 'attendance'), where('date', '==', today), limit(5)));
+      const tableBody = document.getElementById('todayAttendanceTable');
+      tableBody.innerHTML = '';
+      attendanceSnap.forEach(doc => {
+        const data = doc.data();
+        tableBody.innerHTML += `<tr><td>${data.userId?.substring(0,8) || 'Staff'}</td><td>${formatTime(data.checkInTime?.toDate())}</td><td><span class="badge ${data.status === 'late' ? 'badge-warning' : 'badge-success'}">${data.status}</span></td></tr>`;
+      });
+      if (tableBody.children.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No attendance today</td></tr>';
+      }
+      
+      const tasksSnap = await getDocs(query(collection(db, 'tasks'), orderBy('createdAt', 'desc'), limit(5)));
+      const tasksTable = document.getElementById('recentTasksTable');
+      tasksTable.innerHTML = '';
+      tasksSnap.forEach(doc => {
+        const data = doc.data();
+        tasksTable.innerHTML += `<tr><td>${data.title}</td><td>${data.assignedTo?.substring(0,8) || 'Unassigned'}</td><td><span class="badge badge-${data.status === 'completed' ? 'success' : 'warning'}">${data.status}</span></td></tr>`;
+      });
+      
+      const auditSnap = await getDocs(query(collection(db, 'audit_logs'), orderBy('performedAt', 'desc'), limit(5)));
+      const auditTable = document.getElementById('auditLogsTable');
+      auditTable.innerHTML = '';
+      auditSnap.forEach(doc => {
+        const data = doc.data();
+        auditTable.innerHTML += `<tr><td>${data.actionType}</td><td>${data.performedBy?.substring(0,8) || 'System'}</td><td>${formatTime(data.performedAt?.toDate())}</td><td>${data.note || '-'}</td></tr>`;
+      });
+      
+    } catch (error) {
+      console.error('Error loading admin dashboard:', error);
+    }
+  }
+
+  async function loadAttendantDashboard() {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const attendanceSnap = await getDocs(query(collection(db, 'attendance'), where('date', '==', today)));
+      const presentCount = attendanceSnap.docs.filter(d => d.data().status !== 'absent').length;
+      const lateCount = attendanceSnap.docs.filter(d => d.data().status === 'late').length;
+      document.getElementById('attendantPresentCount').textContent = presentCount;
+      document.getElementById('attendantLateCount').textContent = `${lateCount} late`;
+      
+      const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('status', 'in', ['pending', 'in_progress'])));
+      document.getElementById('attendantActiveTasks').textContent = tasksSnap.size;
+      
+      const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', '==', 'low')));
+      document.getElementById('attendantLowStock').textContent = stockSnap.size;
+      document.getElementById('attendantPendingCount').textContent = '0';
+      
+      const tasksTable = document.getElementById('attendantTasksTable');
+      tasksTable.innerHTML = '';
+      const allTasksSnap = await getDocs(query(collection(db, 'tasks'), orderBy('createdAt', 'desc'), limit(10)));
+      allTasksSnap.forEach(doc => {
+        const data = doc.data();
+        tasksTable.innerHTML += `<tr>
+          <td>${data.title}</td><td>${data.assignedTo?.substring(0,8) || 'Unassigned'}</td>
+          <td>${formatDate(data.deadline?.toDate())}</td>
+          <td><span class="badge badge-${data.status === 'completed' ? 'success' : data.status === 'in_progress' ? 'info' : 'warning'}">${data.status}</span></td>
+          <td>${data.pointsEarned || 0}</td>
+          <td><button class="btn btn-sm btn-outline-pink" onclick="window.updateTaskStatus('${doc.id}')">Update</button></td>
+        </tr>`;
+      });
+      
+      const stockTable = document.getElementById('stockOverviewTable');
+      stockTable.innerHTML = '';
+      const stockItemsSnap = await getDocs(query(collection(db, 'stock_items'), limit(5)));
+      stockItemsSnap.forEach(doc => {
+        const data = doc.data();
+        stockTable.innerHTML += `<tr><td>${data.name}</td><td>${data.quantityAvailable || 0}</td><td><span class="badge badge-${data.status === 'low' ? 'warning' : 'success'}">${data.status || 'available'}</span></td></tr>`;
+      });
+      
+      const staffTable = document.getElementById('staffOverviewTable');
+      staffTable.innerHTML = '';
+      const staffSnap = await getDocs(query(collection(db, 'users'), where('role', '==', 'staff'), limit(5)));
+      staffSnap.forEach(doc => {
+        const data = doc.data();
+        staffTable.innerHTML += `<tr><td>${data.fullName || 'Staff'}</td><td>${data.tasksCompleted || 0}</td><td>${data.totalPoints || 0}</td></tr>`;
+      });
+      
+    } catch (error) {
+      console.error('Error loading attendant dashboard:', error);
+    }
+  }
+
+  async function loadStaffDashboard() {
+    if (!currentUser) return;
+    
+    try {
+      const userRef = doc(db, 'users', currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      const userDataLocal = userSnap.data();
+      
+      document.getElementById('staffPoints').textContent = userDataLocal.totalPoints || 0;
+      document.getElementById('pointValue').textContent = userDataLocal.pointValueNaira || 100;
+      document.getElementById('staffLeaveDays').textContent = userDataLocal.leaveDaysRemaining || 2;
+      
+      const baseSalary = userDataLocal.baseSalary || 0;
+      const points = userDataLocal.totalPoints || 0;
+      const pointValue = userDataLocal.pointValueNaira || 100;
+      const estimated = baseSalary + (points * pointValue);
+      document.getElementById('staffEstimatedSalary').textContent = formatCurrency(estimated);
+      
+      const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('assignedTo', '==', currentUser.uid)));
+      const tasksTable = document.getElementById('staffTasksTable');
+      tasksTable.innerHTML = '';
+      let completed = 0;
+      tasksSnap.forEach(doc => {
+        const data = doc.data();
+        if (data.status === 'completed') completed++;
+        tasksTable.innerHTML += `<tr>
+          <td>${data.title}</td><td>${formatDate(data.deadline?.toDate())}</td>
+          <td><span class="badge badge-${data.status === 'completed' ? 'success' : data.status === 'in_progress' ? 'info' : 'warning'}">${data.status}</span></td>
+          <td>${data.pointsEarned || 0}</td>
+          <td>${data.status !== 'completed' ? `<button class="btn btn-sm btn-primary" onclick="window.submitTask('${doc.id}')">Submit</button>` : '-'}</td>
+        </tr>`;
+      });
+      document.getElementById('staffTasksCompleted').textContent = completed;
+      
+      const attendanceSnap = await getDocs(query(collection(db, 'attendance'), where('userId', '==', currentUser.uid), orderBy('date', 'desc'), limit(5)));
+      const attendanceTable = document.getElementById('staffAttendanceTable');
+      attendanceTable.innerHTML = '';
+      attendanceSnap.forEach(doc => {
+        const data = doc.data();
+        attendanceTable.innerHTML += `<tr><td>${data.date}</td><td>${formatTime(data.checkInTime?.toDate())}</td><td><span class="badge badge-${data.status === 'late' ? 'warning' : 'success'}">${data.status}</span></td></tr>`;
+      });
+      
+    } catch (error) {
+      console.error('Error loading staff dashboard:', error);
+    }
+  }
+
+  function initAttendanceTerminal() {
+    const video = document.getElementById('webcamVideo');
+    const checkInBtn = document.getElementById('checkInBtn');
+    
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          webcamStream = stream;
+          video.srcObject = stream;
+        })
+        .catch(err => console.warn('Webcam access denied:', err));
+    }
+    
+    checkInBtn.onclick = async () => {
+      if (!currentUser) return;
+      
+      try {
+        const canvas = document.getElementById('webcamCanvas');
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const now = new Date();
+        const scheduledTime = new Date();
+        scheduledTime.setHours(8, 0, 0, 0);
+        const lateMinutes = Math.max(0, (now - scheduledTime) / 60000);
+        const status = lateMinutes > 0 ? 'late' : 'on_time';
+        const pointsDeducted = lateMinutes > 0 ? 5 : 0;
+        
+        await addDoc(collection(db, 'attendance'), {
+          userId: currentUser.uid,
+          checkInTime: serverTimestamp(),
+          date: now.toISOString().split('T')[0],
+          status: status,
+          lateMinutes: lateMinutes,
+          pointsDeducted: pointsDeducted
+        });
+        
+        if (pointsDeducted > 0) {
+          await updateDoc(doc(db, 'users', currentUser.uid), {
+            totalPoints: (userData.totalPoints || 0) - pointsDeducted
+          });
+        }
+        
+        await logAudit('attendance_checkin', currentUser.uid, `Checked in. Status: ${status}. Points: -${pointsDeducted}`);
+        
+        showToast(`Checked in successfully! ${status === 'late' ? 'Late arrival noted.' : 'On time!'}`, status === 'late' ? 'warning' : 'success');
+        
+        if (webcamStream) {
+          webcamStream.getTracks().forEach(track => track.stop());
+        }
+        video.srcObject = null;
+        
+      } catch (error) {
+        showToast('Check-in failed: ' + error.message, 'error');
+      }
+    };
+    
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const clockEl = document.getElementById('liveClock');
+    const dateEl = document.getElementById('liveDate');
+    if (clockEl) clockEl.textContent = now.toLocaleTimeString('en-GB');
+    if (dateEl) dateEl.textContent = now.toLocaleDateString('en-GB', { 
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' 
+    });
+  }
+
+  async function loadAuditLogs() {
+    const auditSnap = await getDocs(query(collection(db, 'audit_logs'), orderBy('performedAt', 'desc'), limit(50)));
+    const table = document.getElementById('fullAuditTable');
+    if (table) {
+      table.innerHTML = '';
+      auditSnap.forEach(doc => {
+        const data = doc.data();
+        table.innerHTML += `<tr>
+          <td>${formatTime(data.performedAt?.toDate())}</td>
+          <td>${data.actionType}</td>
+          <td>${data.performedBy?.substring(0,8) || 'System'}</td>
+          <td>${data.collectionName || '-'}</td>
+          <td>${data.note || '-'}</td>
+        </tr>`;
+      });
+    }
+  }
+
+  async function loadStockData() {
+    const stockSnap = await getDocs(collection(db, 'stock_items'));
+    const table = document.getElementById('fullStockTable');
+    if (table) {
+      table.innerHTML = '';
+      stockSnap.forEach(doc => {
+        const data = doc.data();
+        table.innerHTML += `<tr>
+          <td>${data.name}</td><td>${data.category || '-'}</td><td>${data.quantityAvailable || 0}</td>
+          <td>${data.quantitySold || 0}</td><td>${formatCurrency(data.unitPrice)}</td>
+          <td>${formatCurrency((data.quantityAvailable || 0) * (data.unitPrice || 0))}</td>
+          <td><span class="badge badge-${data.status === 'low' ? 'warning' : data.status === 'out_of_stock' ? 'danger' : 'success'}">${data.status || 'available'}</span></td>
+          <td><button class="btn btn-sm btn-outline-pink" onclick="window.editStock('${doc.id}')">Edit</button></td>
+        </tr>`;
+      });
+    }
+  }
+
+  async function loadCustomersData() {
+    const customersSnap = await getDocs(collection(db, 'customers'));
+    const table = document.getElementById('customersTable');
+    if (table) {
+      table.innerHTML = '';
+      customersSnap.forEach(doc => {
+        const data = doc.data();
+        table.innerHTML += `<tr>
+          <td>${data.fullName}</td><td>${data.phone}</td><td>${data.birthday || '-'}</td>
+          <td>${formatCurrency(data.totalSpent || 0)}</td><td>${data.lastPurchase ? formatDate(data.lastPurchase.toDate()) : '-'}</td>
+          <td><span class="badge badge-${data.status === 'approved' ? 'success' : 'warning'}">${data.status || 'pending'}</span></td>
+          <td><button class="btn btn-sm btn-outline-pink" onclick="window.viewCustomer('${doc.id}')">View</button></td>
+        </tr>`;
+      });
+    }
+  }
+
+  async function loadFinanceData() {
+    document.getElementById('financeRevenue').textContent = formatCurrency(1250000);
+    document.getElementById('financeExpenses').textContent = formatCurrency(450000);
+    document.getElementById('financeProfit').textContent = formatCurrency(800000);
+    document.getElementById('financeSalary').textContent = formatCurrency(320000);
+    
+    const table = document.getElementById('monthlyComparisonTable');
+    if (table) {
+      table.innerHTML = `
+        <tr><td>March 2026</td><td>₦1,250,000</td><td>₦450,000</td><td>₦800,000</td><td><span class="badge badge-success">+12%</span></td></tr>
+        <tr><td>February 2026</td><td>₦1,115,000</td><td>₦420,000</td><td>₦695,000</td><td><span class="badge badge-success">+8%</span></td></tr>
+        <tr><td>January 2026</td><td>₦1,030,000</td><td>₦390,000</td><td>₦640,000</td><td><span class="badge badge-info">--</span></td></tr>
+      `;
+    }
+    
+    const suggestions = document.getElementById('financeSuggestions');
+    if (suggestions) {
+      suggestions.innerHTML = `
+        <div style="background: rgba(255,193,7,0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
+          <i class="fas fa-lightbulb" style="color: var(--warning); margin-right: 10px;"></i>
+          <strong>Spending Alert:</strong> Stock purchases increased by 23% this month. Consider reviewing supplier pricing.
+        </div>
+        <div style="background: rgba(40,167,69,0.1); padding: 15px; border-radius: 15px;">
+          <i class="fas fa-chart-line" style="color: var(--success); margin-right: 10px;"></i>
+          <strong>Revenue Insight:</strong> Rhinestone sales are up 18%. Consider increasing inventory.
+        </div>
+      `;
+    }
+  }
+
+  async function loadProfileData() {
+    if (!userData) return;
+    
+    document.getElementById('profileName').value = userData.fullName || '';
+    document.getElementById('profileEmail').value = userData.email || '';
+    document.getElementById('profilePhone').value = userData.phone || '';
+    document.getElementById('profileRole').value = userData.role || '';
+    document.getElementById('profileBaseSalary').value = formatCurrency(userData.baseSalary || 0);
+    document.getElementById('profilePoints').value = userData.totalPoints || 0;
+    document.getElementById('profileAddressField').value = userData.address || 'Not set';
+    document.getElementById('profileEmergencyContact').value = userData.emergencyContact || 'Not set';
+    
+    const bankDetails = userData.bankName && userData.accountNumber 
+      ? `${userData.bankName} - ${userData.accountNumber}` 
+      : 'Not set';
+    document.getElementById('profileBankDetails').value = bankDetails;
+    
+    const leaveSnap = await getDocs(query(collection(db, 'leave_requests'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')));
+    const table = document.getElementById('leaveHistoryTable');
+    if (table) {
+      table.innerHTML = '';
+      leaveSnap.forEach(doc => {
+        const data = doc.data();
+        table.innerHTML += `<tr>
+          <td>${data.requestedDates?.join(', ') || '-'}</td>
+          <td><span class="badge badge-${data.status === 'approved' ? 'success' : data.status === 'rejected' ? 'danger' : 'warning'}">${data.status}</span></td>
+          <td>${data.approvedBy || '-'}</td>
+        </tr>`;
+      });
+    }
+  }
+
+  async function loadNotifications() {
+    if (!currentUser) return;
+    
+    const notifSnap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')));
+    const container = document.getElementById('notificationsList');
+    if (container) {
+      container.innerHTML = '';
+      notifSnap.forEach(doc => {
+        const data = doc.data();
+        const div = document.createElement('div');
+        div.style.cssText = 'padding: 18px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px;';
+        div.innerHTML = `
+          <i class="fas fa-${data.type === 'account_approved' ? 'check-circle' : 'bell'}" style="color: var(--pink); font-size: 1.2rem;"></i>
+          <div style="flex:1;"><strong>${data.title}</strong><br><small style="color: var(--gray);">${data.message}</small></div>
+          <small style="color: var(--gray);">${formatTime(data.createdAt?.toDate())}</small>
+        `;
+        container.appendChild(div);
+      });
+      
+      if (container.children.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px;">No notifications</p>';
+      }
+    }
+  }
+
+  // ========== EVENT LISTENERS ==========
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    sidebarCollapsed = !sidebarCollapsed;
+  });
+
+  modalClose.addEventListener('click', hideModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) hideModal();
+  });
+
+  document.getElementById('notificationBell').addEventListener('click', () => switchView('notifications'));
+  document.getElementById('dismissAnnouncement')?.addEventListener('click', () => announcementBanner.style.display = 'none');
+
+  document.getElementById('submitLeaveRequestBtn')?.addEventListener('click', async () => {
+    const startDate = document.getElementById('leaveStartDate')?.value;
+    const endDate = document.getElementById('leaveEndDate')?.value;
+    const reason = document.getElementById('leaveReason')?.value;
+    
+    if (!startDate || !endDate) {
+      showToast('Please select dates', 'warning');
+      return;
+    }
+    
+    try {
+      await addDoc(collection(db, 'leave_requests'), {
+        userId: currentUser.uid,
+        requestedDates: [startDate, endDate],
+        reason: reason,
+        status: 'pending',
+        createdAt: serverTimestamp()
+      });
+      
+      showToast('Leave request submitted', 'success');
+      await logAudit('leave_request', currentUser.uid, `Leave requested: ${startDate} to ${endDate}`);
+    } catch (error) {
+      showToast('Failed to submit request', 'error');
+    }
+  });
+
+  // Global function exports
+  window.updateTaskStatus = (taskId) => showToast('Task status update', 'info');
+  window.submitTask = (taskId) => showToast('Task submission', 'info');
+  window.editStock = (itemId) => showToast('Edit stock', 'info');
+  window.viewCustomer = (customerId) => showToast('Customer details', 'info');
+  window.switchView = switchView;
+
+  // ========== INITIALIZATION ==========
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'auth.html';
+      return;
+    }
+    
+    currentUser = user;
+    
+    const userRef = doc(db, 'users', user.uid);
+    const userSnap = await getDoc(userRef);
+    
+    if (!userSnap.exists()) {
+      await signOut(auth);
+      window.location.href = 'auth.html';
+      return;
+    }
+    
+    userData = userSnap.data();
+    
+    if (userData.status === 'suspended' || userData.status === 'terminated') {
+      await signOut(auth);
+      window.location.href = 'auth.html?error=account_' + userData.status;
+      return;
+    }
+    
+    if (userData.status === 'pending_approval') {
+      await signOut(auth);
+      window.location.href = 'auth.html';
+      return;
+    }
+    
+    userName.textContent = userData.fullName || 'User';
+    userRole.textContent = userData.role?.replace('_', ' ') || 'Staff';
+    userAvatar.textContent = (userData.fullName || 'U').charAt(0).toUpperCase();
+    
+    updateSidebarForRole(userData.role);
+    
+    if (userData.role === 'admin' || userData.role === 'super_admin') {
+      switchView('adminDashboard');
+    } else if (userData.role === 'attendant_chief' || userData.role === 'attendant') {
+      switchView('attendantDashboard');
+    } else {
+      switchView('staffDashboard');
+    }
+    
+    currentDate.textContent = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    
+    checkProfileCompletion();
+    
+    if (!userData.profileCompleted) {
+      setTimeout(() => showProfileCompletionModal(), 500);
+    }
+    
+    const notifSnap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', user.uid), where('isRead', '==', false)));
+    const count = notifSnap.size;
+    notificationCount.textContent = count;
+    notificationCount.style.display = count > 0 ? 'block' : 'none';
+  });
+
+  console.log('%c✅ Dashboard Ready — Admin Approval + Profile Completion Active', 'color: #28a745; font-weight: bold;');
+</script>
+
+</body>
+</html>
