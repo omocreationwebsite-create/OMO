@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-  <title>Staff Management · FashionStone ERP</title>
+  <meta name="theme-color" content="#ff4da6">
+  <title>Staff Management · FashionStone</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +18,6 @@
       --primary-light: #ffb3d9;
       --primary-soft: #fff0f6;
       --dark: #0f0f1a;
-      --dark-light: #1a1a2e;
       --gray: #6b7280;
       --gray-light: #f3f4f6;
       --success: #10b981;
@@ -25,50 +25,115 @@
       --danger: #ef4444;
       --info: #3b82f6;
       --sidebar-width: 280px;
-      --sidebar-collapsed: 0px;
-      --header-height: 60px;
+      --header-height: 64px;
     }
     
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f9fafb;
       display: flex;
       min-height: 100vh;
-      -webkit-tap-highlight-color: transparent;
-      width: 100%;
-      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
     
     .sidebar {
       width: var(--sidebar-width);
-      background: var(--dark);
+      background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
       color: white;
       position: fixed;
       height: 100vh;
       overflow-y: auto;
-      transition: transform 0.25s ease;
+      transition: transform 0.3s;
       z-index: 100;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.08);
       transform: translateX(0);
     }
-    
     .sidebar.collapsed { transform: translateX(-100%); }
+    
+    .sidebar-header {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    
+    .logo-text { font-size: 1.2rem; font-weight: 700; }
+    .logo-text span { color: var(--primary); }
+    
+    .sidebar-nav { padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      color: rgba(255,255,255,0.65);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    
+    .nav-item i { width: 22px; font-size: 1.1rem; }
+    .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
+    .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 20px; }
+    
+    .sidebar-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .user-profile { display: flex; align-items: center; gap: 12px; }
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+    }
+    .user-details h4 { font-size: 0.9rem; font-weight: 600; }
+    .user-details p { font-size: 0.7rem; opacity: 0.6; }
     
     .main-content {
       flex: 1;
       margin-left: var(--sidebar-width);
-      transition: margin-left 0.25s ease;
+      transition: margin-left 0.3s;
       min-height: 100vh;
       width: calc(100% - var(--sidebar-width));
-      max-width: 100%;
     }
-    
     .sidebar.collapsed + .main-content { margin-left: 0; width: 100%; }
     
     .top-bar {
       height: var(--header-height);
-      background: white;
-      padding: 0 16px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -76,45 +141,23 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      backdrop-filter: blur(8px);
-      background: rgba(255,255,255,0.95);
-      width: 100%;
     }
     
-    .menu-toggle {
-      background: none;
-      border: none;
-      font-size: 1.3rem;
-      color: var(--gray);
-      cursor: pointer;
-      padding: 10px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .top-bar-left { display: flex; align-items: center; gap: 16px; }
+    .menu-toggle { background: none; border: none; font-size: 1.3rem; color: var(--gray); cursor: pointer; padding: 8px; border-radius: 10px; }
+    .page-title { font-size: 1.4rem; font-weight: 700; color: var(--dark); }
     
-    .page-title { font-size: 1.2rem; font-weight: 700; color: var(--dark); }
+    .content-wrapper { padding: 24px; max-width: 1400px; margin: 0 auto; }
     
-    .content-wrapper { padding: 16px; width: 100%; max-width: 100%; }
-    
-    @media (min-width: 768px) {
-      .content-wrapper { padding: 24px; }
-      .page-title { font-size: 1.4rem; }
-      .top-bar { padding: 0 24px; }
-    }
-    
-    /* Tabs */
     .tabs-container {
       background: white;
       border-radius: 20px;
       padding: 6px;
       margin-bottom: 20px;
       display: flex;
-      flex-wrap: wrap;
       gap: 6px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      border: 1px solid rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.04);
     }
     
     .tab {
@@ -129,22 +172,12 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.15s;
       flex: 1;
       justify-content: center;
     }
-    
-    .tab:hover { background: var(--gray-light); color: var(--dark); }
+    .tab:hover { background: var(--gray-light); }
     .tab.active { background: var(--primary); color: white; }
-    .tab .badge-count {
-      background: rgba(255,255,255,0.2);
-      padding: 2px 8px;
-      border-radius: 30px;
-      font-size: 0.7rem;
-    }
-    .tab.active .badge-count { background: rgba(255,255,255,0.3); }
     
-    /* Search & Filter */
     .filter-bar {
       display: flex;
       gap: 12px;
@@ -157,15 +190,7 @@
       min-width: 200px;
       position: relative;
     }
-    
-    .search-wrapper i {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-    }
-    
+    .search-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
     .search-input {
       width: 100%;
       padding: 12px 16px 12px 42px;
@@ -173,10 +198,8 @@
       border-radius: 40px;
       font-size: 0.85rem;
       outline: none;
-      background: white;
     }
-    
-    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,77,166,0.1); }
+    .search-input:focus { border-color: var(--primary); }
     
     .filter-select {
       padding: 12px 20px;
@@ -184,165 +207,99 @@
       border-radius: 40px;
       font-size: 0.85rem;
       background: white;
-      cursor: pointer;
     }
     
-    /* Panel */
     .panel {
       background: white;
-      border-radius: 20px;
-      padding: 16px;
-      margin-bottom: 20px;
+      border-radius: 24px;
+      padding: 24px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      border: 1px solid rgba(0,0,0,0.03);
-      width: 100%;
+      border: 1px solid rgba(0,0,0,0.04);
       overflow-x: auto;
     }
-    
-    @media (min-width: 768px) { .panel { padding: 20px; } }
     
     .panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
+    .panel-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--dark); }
     
-    .panel-header h3 { font-size: 1rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 8px; }
-    
-    .action-bar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    
-    .table-wrapper {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 0 -16px;
-      padding: 0 16px;
-      width: calc(100% + 32px);
-    }
-    
-    @media (min-width: 768px) { .table-wrapper { margin: 0; padding: 0; width: 100%; } }
+    .table-wrapper { overflow-x: auto; }
     
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 900px;
-      font-size: 0.8rem;
+      min-width: 1000px;
+      font-size: 0.85rem;
     }
-    
     .data-table th {
       text-align: left;
-      padding: 12px 8px;
-      font-size: 0.65rem;
+      padding: 14px 12px;
+      font-size: 0.7rem;
       font-weight: 600;
       color: var(--gray);
       text-transform: uppercase;
       border-bottom: 1.5px solid var(--primary-soft);
       white-space: nowrap;
     }
-    
-    .data-table td { padding: 12px 8px; border-bottom: 1px solid rgba(0,0,0,0.04); white-space: nowrap; }
+    .data-table td { padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); white-space: nowrap; }
     .data-table tr:hover td { background: rgba(255,77,166,0.02); }
     
     .badge {
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 40px;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
     }
-    
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
     .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
-    .badge-pending { background: rgba(107,114,128,0.1); color: var(--gray); }
     .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
     
     .btn {
-      padding: 8px 14px;
+      padding: 10px 18px;
       border-radius: 40px;
       font-weight: 600;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       border: none;
       cursor: pointer;
-      transition: all 0.15s;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       background: white;
-      color: var(--dark);
       border: 1px solid rgba(0,0,0,0.08);
       white-space: nowrap;
     }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      border: none;
-    }
-    
-    .btn-sm { padding: 5px 10px; font-size: 0.65rem; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; }
+    .btn-sm { padding: 6px 14px; font-size: 0.75rem; }
     .btn-success { background: var(--success); color: white; border: none; }
     .btn-danger { background: var(--danger); color: white; border: none; }
-    .btn-warning { background: var(--warning); color: white; border: none; }
     
-    .action-menu {
-      position: relative;
-      display: inline-block;
-    }
+    .empty-state { text-align: center; padding: 40px; color: var(--gray); }
     
-    .action-btn {
-      padding: 6px 10px;
-      border-radius: 30px;
-      background: var(--gray-light);
-      border: none;
-      cursor: pointer;
-    }
-    
-    .action-dropdown {
-      position: absolute;
-      right: 0;
-      top: 100%;
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
+    .toast {
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      min-width: 160px;
-      z-index: 10;
-      display: none;
-      border: 1px solid rgba(0,0,0,0.05);
+      padding: 14px 20px;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(400px);
+      transition: transform 0.25s;
+      border-left: 4px solid var(--primary);
+      margin-top: 10px;
     }
-    
-    .action-dropdown.show { display: block; }
-    
-    .action-dropdown button {
-      display: block;
-      width: 100%;
-      padding: 10px 16px;
-      text-align: left;
-      background: none;
-      border: none;
-      font-size: 0.75rem;
-      cursor: pointer;
-      color: var(--dark);
-    }
-    
-    .action-dropdown button:hover { background: var(--primary-soft); }
-    .action-dropdown button.danger { color: var(--danger); }
-    .action-dropdown button.danger:hover { background: rgba(239,68,68,0.1); }
+    .toast.show { transform: translateX(0); }
     
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.5);
       backdrop-filter: blur(4px);
       display: none;
@@ -354,158 +311,41 @@
     
     .modal {
       background: white;
-      border-radius: 24px;
-      padding: 24px 20px;
-      max-width: 480px;
+      border-radius: 28px;
+      padding: 28px;
+      max-width: 460px;
       width: 100%;
       max-height: 85vh;
       overflow-y: auto;
     }
     
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    
-    .modal-header h3 { font-size: 1.1rem; font-weight: 700; }
-    
     .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
-    
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
     .form-control {
       width: 100%;
-      padding: 10px 14px;
-      border: 1.5px solid rgba(0,0,0,0.08);
-      border-radius: 12px;
-      font-size: 0.85rem;
-      outline: none;
-      background: white;
-    }
-    
-    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,77,166,0.1); }
-    
-    .toast-container { position: fixed; bottom: 16px; right: 16px; left: 16px; z-index: 9999; }
-    @media (min-width: 480px) { .toast-container { left: auto; } }
-    
-    .toast {
-      background: white;
       padding: 12px 16px;
-      border-radius: 50px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transform: translateY(100px);
-      transition: transform 0.25s;
-      border-left: 4px solid var(--primary);
-      margin-top: 8px;
-    }
-    
-    .toast.show { transform: translateY(0); }
-    
-    .empty-state { text-align: center; padding: 40px 16px; color: var(--gray); font-size: 0.85rem; }
-    
-    .loading-spinner { display: flex; align-items: center; justify-content: center; padding: 40px; }
-    
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid var(--primary-soft);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-    
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    .sidebar-header {
-      padding: 20px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-    
-    .logo-text { font-size: 1.1rem; font-weight: 700; }
-    .logo-text span { color: var(--primary); }
-    
-    .sidebar-nav { padding: 16px 12px; }
-    
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      color: rgba(255,255,255,0.65);
-      cursor: pointer;
-      border: none;
-      background: none;
-      width: 100%;
+      border: 1.5px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
       font-size: 0.9rem;
-      font-weight: 500;
-      text-align: left;
-      margin-bottom: 4px;
+      outline: none;
     }
+    .form-control:focus { border-color: var(--primary); }
     
-    .nav-item i { width: 22px; font-size: 1rem; }
-    .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
-    .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
-    .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 16px; }
-    
-    .sidebar-footer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 16px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      background: var(--dark);
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar:not(.collapsed) { transform: translateX(0); }
+      .main-content { margin-left: 0 !important; width: 100% !important; }
+      .content-wrapper { padding: 16px; }
+      .top-bar { padding: 0 16px; }
+      .page-title { font-size: 1.2rem; }
+      .tabs-container { flex-wrap: wrap; }
+      .tab { flex: 0 0 auto; }
     }
-    
-    .user-profile { display: flex; align-items: center; gap: 10px; }
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      color: white;
-    }
-    
-    .user-details h4 { font-size: 0.85rem; font-weight: 600; }
-    .user-details p { font-size: 0.7rem; opacity: 0.6; }
-    
-    .inline-edit { cursor: pointer; }
-    .inline-edit:hover { background: var(--primary-soft); border-radius: 4px; }
-    
-    .bulk-actions { display: none; }
-    .bulk-actions.show { display: flex; }
-    
-    .checkbox-cell { width: 30px; }
-    .select-all-checkbox { accent-color: var(--primary); }
   </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
+<aside class="sidebar collapsed" id="sidebar">
   <div class="sidebar-header">
     <div class="logo-icon">💎</div>
     <div class="logo-text"><span>Fashion</span>Stone</div>
@@ -513,7 +353,7 @@
   <nav class="sidebar-nav" id="sidebarNav"></nav>
   <div class="sidebar-footer">
     <div class="user-profile">
-      <div class="user-avatar" id="userAvatar">FS</div>
+      <div class="user-avatar" id="userAvatar">U</div>
       <div class="user-details">
         <h4 id="userName">Loading...</h4>
         <p id="userRole">•••</p>
@@ -522,29 +362,24 @@
   </div>
 </aside>
 
-<!-- Main Content -->
 <main class="main-content">
   <header class="top-bar">
     <div class="top-bar-left">
       <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
       <h1 class="page-title">Staff Management</h1>
     </div>
-    <div class="top-bar-right">
-      <button class="btn btn-outline" id="backToDashboard"><i class="fas fa-arrow-left"></i> Dashboard</button>
-    </div>
+    <button class="btn btn-outline" onclick="window.location.href='dashboard.html'"><i class="fas fa-arrow-left"></i> Dashboard</button>
   </header>
   
   <div class="content-wrapper">
     
-    <!-- Tabs -->
     <div class="tabs-container">
-      <button class="tab active" data-tab="all"><i class="fas fa-users"></i> All Staff <span class="badge-count" id="allCount">0</span></button>
-      <button class="tab" data-tab="pending"><i class="fas fa-clock"></i> Pending <span class="badge-count" id="pendingCount">0</span></button>
-      <button class="tab" data-tab="suspended"><i class="fas fa-pause-circle"></i> Suspended <span class="badge-count" id="suspendedCount">0</span></button>
-      <button class="tab" data-tab="terminated"><i class="fas fa-ban"></i> Terminated <span class="badge-count" id="terminatedCount">0</span></button>
+      <button class="tab active" data-tab="all"><i class="fas fa-users"></i> All Staff <span id="allCount">0</span></button>
+      <button class="tab" data-tab="pending"><i class="fas fa-clock"></i> Pending <span id="pendingCount">0</span></button>
+      <button class="tab" data-tab="suspended"><i class="fas fa-pause-circle"></i> Suspended <span id="suspendedCount">0</span></button>
+      <button class="tab" data-tab="terminated"><i class="fas fa-ban"></i> Terminated <span id="terminatedCount">0</span></button>
     </div>
     
-    <!-- Filter Bar -->
     <div class="filter-bar">
       <div class="search-wrapper">
         <i class="fas fa-search"></i>
@@ -552,31 +387,17 @@
       </div>
       <select class="filter-select" id="roleFilter">
         <option value="all">All Roles</option>
-        <option value="super_admin">Super Admin</option>
-        <option value="admin">Admin</option>
-        <option value="attendant_chief">Chief Attendant</option>
-        <option value="attendant">Attendant</option>
         <option value="staff">Staff</option>
+        <option value="attendant">Attendant</option>
+        <option value="attendant_chief">Chief Attendant</option>
       </select>
-      <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export CSV</button>
+      <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export</button>
     </div>
     
-    <!-- Bulk Actions (hidden by default) -->
-    <div class="bulk-actions panel" id="bulkActions">
-      <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-        <span id="selectedCount">0 staff selected</span>
-        <button class="btn btn-sm btn-outline" id="bulkRoleBtn"><i class="fas fa-tag"></i> Change Role</button>
-        <button class="btn btn-sm btn-outline" id="bulkSalaryBtn"><i class="fas fa-naira-sign"></i> Update Salary</button>
-        <button class="btn btn-sm btn-warning" id="bulkSuspendBtn"><i class="fas fa-pause"></i> Suspend</button>
-        <button class="btn btn-sm btn-outline" id="cancelBulkBtn">Cancel</button>
-      </div>
-    </div>
-    
-    <!-- Staff Table -->
     <div class="panel">
       <div class="panel-header">
         <h3><i class="fas fa-list"></i> <span id="tableTitle">All Staff</span></h3>
-        <div class="action-bar">
+        <div>
           <button class="btn btn-primary btn-sm" id="addStaffBtn"><i class="fas fa-plus"></i> Add Staff</button>
           <button class="btn btn-outline btn-sm" id="refreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
         </div>
@@ -585,23 +406,9 @@
       <div class="table-wrapper">
         <table class="data-table">
           <thead>
-            <tr>
-              <th class="checkbox-cell"><input type="checkbox" class="select-all-checkbox" id="selectAllCheckbox"></th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Base Salary</th>
-              <th>Points</th>
-              <th>Tasks</th>
-              <th>Leave</th>
-              <th>Actions</th>
-            </tr>
+            <tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Base Salary</th><th>Points</th><th>Tasks</th><th>Leave</th><th>Actions</th></tr>
           </thead>
-          <tbody id="staffTableBody">
-            <tr><td colspan="11"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
-          </tbody>
+          <tbody id="staffTableBody"></tbody>
         </table>
       </div>
     </div>
@@ -609,24 +416,22 @@
   </div>
 </main>
 
-<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
-    <div class="modal-header">
+    <div class="modal-header" style="display:flex;justify-content:space-between;margin-bottom:20px;">
       <h3 id="modalTitle">Modal</h3>
-      <button class="modal-close" id="modalClose" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+      <button class="modal-close" id="modalClose">&times;</button>
     </div>
     <div id="modalContent"></div>
   </div>
 </div>
 
-<!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, serverTimestamp, addDoc, setDoc, increment, writeBatch, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, updateDoc, serverTimestamp, addDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
@@ -645,18 +450,15 @@
   let userData = null;
   let currentTab = 'all';
   let allUsers = [];
-  let filteredUsers = [];
-  let selectedUsers = new Set();
+  let unsubscribe = null;
 
-  // ========== UTILITIES ==========
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
-  function formatDate(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); }
   
   function showToast(msg, type = 'success') {
     const c = document.getElementById('toastContainer');
     const t = document.createElement('div');
     t.className = `toast ${type}`;
-    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'exclamation-triangle'}"></i><span>${msg}</span>`;
+    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`;
     c.appendChild(t);
     setTimeout(() => t.classList.add('show'), 10);
     setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 4000);
@@ -670,475 +472,197 @@
 
   function hideModal() { document.getElementById('modalOverlay').style.display = 'none'; }
 
-  async function logAudit(action, note, targetId = null) {
-    try {
-      await addDoc(collection(db, 'audit_logs'), {
-        actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName,
-        performedAt: serverTimestamp(), note, targetId
-      });
-    } catch(e) {}
-  }
-
-  // ========== LOAD USERS ==========
-  async function loadUsers() {
-    const snap = await getDocs(query(collection(db, 'users'), orderBy('createdAt', 'desc')));
-    allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    
-    // Update tab counts
-    document.getElementById('allCount').textContent = allUsers.filter(u => u.role !== 'pending' && u.status !== 'pending_approval' && u.status !== 'rejected').length;
-    document.getElementById('pendingCount').textContent = allUsers.filter(u => u.status === 'pending_approval').length;
-    document.getElementById('suspendedCount').textContent = allUsers.filter(u => u.status === 'suspended').length;
-    document.getElementById('terminatedCount').textContent = allUsers.filter(u => u.status === 'terminated').length;
-    
-    filterAndRender();
+  async function logAudit(action, note) {
+    try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } catch(e) {}
   }
 
   function filterAndRender() {
-    let filtered = [...allUsers];
+    let filtered = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin');
     
-    // Tab filter
-    if (currentTab === 'all') {
-      filtered = filtered.filter(u => u.role !== 'pending' && u.status !== 'pending_approval' && u.status !== 'rejected');
-    } else if (currentTab === 'pending') {
-      filtered = filtered.filter(u => u.status === 'pending_approval');
-    } else if (currentTab === 'suspended') {
-      filtered = filtered.filter(u => u.status === 'suspended');
-    } else if (currentTab === 'terminated') {
-      filtered = filtered.filter(u => u.status === 'terminated');
-    }
+    if (currentTab === 'pending') filtered = filtered.filter(u => u.status === 'pending_approval');
+    else if (currentTab === 'suspended') filtered = filtered.filter(u => u.status === 'suspended');
+    else if (currentTab === 'terminated') filtered = filtered.filter(u => u.status === 'terminated');
+    else filtered = filtered.filter(u => u.status === 'active');
     
-    // Role filter
     const roleFilter = document.getElementById('roleFilter').value;
-    if (roleFilter !== 'all') {
-      filtered = filtered.filter(u => u.role === roleFilter);
-    }
+    if (roleFilter !== 'all') filtered = filtered.filter(u => u.role === roleFilter);
     
-    // Search filter
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    if (searchTerm) {
-      filtered = filtered.filter(u => 
-        (u.fullName || '').toLowerCase().includes(searchTerm) || 
-        (u.email || '').toLowerCase().includes(searchTerm)
-      );
-    }
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    if (search) filtered = filtered.filter(u => (u.fullName||'').toLowerCase().includes(search) || (u.email||'').toLowerCase().includes(search));
     
-    filteredUsers = filtered;
-    renderTable();
-  }
-
-  function renderTable() {
     const tbody = document.getElementById('staffTableBody');
-    const tableTitle = document.getElementById('tableTitle');
+    tbody.innerHTML = '';
     
-    if (currentTab === 'all') tableTitle.textContent = 'All Staff';
-    else if (currentTab === 'pending') tableTitle.textContent = 'Pending Approvals';
-    else if (currentTab === 'suspended') tableTitle.textContent = 'Suspended Staff';
-    else tableTitle.textContent = 'Terminated Staff';
-    
-    if (filteredUsers.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="11"><div class="empty-state"><i class="fas fa-users"></i><p>No staff found</p></div></td></tr>`;
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><i class="fas fa-users"></i><p>No staff found</p></div></td></tr>';
       return;
     }
     
-    tbody.innerHTML = '';
-    selectedUsers.clear();
-    document.getElementById('selectAllCheckbox').checked = false;
-    
-    filteredUsers.forEach(user => {
-      const row = document.createElement('tr');
+    filtered.forEach(u => {
       const isPending = currentTab === 'pending';
-      
-      row.innerHTML = `
-        <td class="checkbox-cell">
-          <input type="checkbox" class="staff-checkbox" data-id="${user.id}" ${isPending ? 'disabled' : ''}>
+      tbody.innerHTML += `<tr>
+        <td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td>
+        <td>${isPending ? `<select id="role-${u.id}" class="form-control" style="padding:4px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select>` : `<span class="badge badge-${u.role?.includes('attendant')?'info':'success'}">${u.role}</span>`}</td>
+        <td><span class="badge badge-${u.status==='active'?'success':u.status==='pending_approval'?'warning':u.status==='suspended'?'warning':'danger'}">${u.status}</span></td>
+        <td>${isPending ? `<input type="number" id="salary-${u.id}" value="50000" style="width:90px;padding:4px;">` : formatCurrency(u.baseSalary)}</td>
+        <td>${u.totalPoints||0}</td><td>${u.tasksCompleted||0}</td><td>${u.leaveDaysRemaining||2}</td>
+        <td style="display:flex;gap:6px;">
+          ${isPending ? `<button class="btn btn-sm btn-success" onclick="window.approveUser('${u.id}')"><i class="fas fa-check"></i></button><button class="btn btn-sm btn-danger" onclick="window.rejectUser('${u.id}')"><i class="fas fa-times"></i></button>` : 
+            `<button class="btn btn-sm btn-outline" onclick="window.editStaff('${u.id}')"><i class="fas fa-edit"></i></button>
+             ${u.status==='active'?`<button class="btn btn-sm btn-warning" onclick="window.suspendStaff('${u.id}')"><i class="fas fa-pause"></i></button>`:''}
+             ${u.status==='suspended'?`<button class="btn btn-sm btn-success" onclick="window.reinstateStaff('${u.id}')"><i class="fas fa-play"></i></button>`:''}`}
         </td>
-        <td><span class="inline-edit" data-field="fullName" data-id="${user.id}">${user.fullName || '-'}</span></td>
-        <td>${user.email || '-'}</td>
-        <td><span class="inline-edit" data-field="phone" data-id="${user.id}">${user.phone || '-'}</span></td>
-        <td>
-          ${isPending ? `
-            <select class="form-control" id="role-${user.id}" style="padding:4px;font-size:0.7rem;">
-              <option value="staff">Staff</option>
-              <option value="attendant">Attendant</option>
-              <option value="attendant_chief">Chief Attendant</option>
-            </select>
-          ` : `
-            <span class="badge badge-${user.role === 'super_admin' ? 'danger' : user.role === 'admin' ? 'warning' : user.role?.includes('attendant') ? 'info' : 'success'}">${user.role || 'pending'}</span>
-          `}
-        </td>
-        <td><span class="badge badge-${user.status === 'active' ? 'success' : user.status === 'pending_approval' ? 'pending' : user.status === 'suspended' ? 'warning' : 'danger'}">${user.status || 'pending'}</span></td>
-        <td>
-          ${isPending ? `
-            <input type="number" id="salary-${user.id}" value="50000" style="width:80px;padding:4px;border-radius:6px;border:1px solid #ddd;">
-          ` : `
-            <span class="inline-edit" data-field="baseSalary" data-id="${user.id}">${formatCurrency(user.baseSalary || 0)}</span>
-          `}
-        </td>
-        <td>${user.totalPoints || 0}</td>
-        <td>${user.tasksCompleted || 0}</td>
-        <td>${user.leaveDaysRemaining || 2}</td>
-        <td>
-          ${isPending ? `
-            <button class="btn btn-sm btn-success" onclick="window.approveUser('${user.id}')"><i class="fas fa-check"></i></button>
-            <button class="btn btn-sm btn-danger" onclick="window.rejectUser('${user.id}')"><i class="fas fa-times"></i></button>
-          ` : `
-            <div class="action-menu">
-              <button class="action-btn" onclick="window.toggleDropdown(this)"><i class="fas fa-ellipsis-v"></i></button>
-              <div class="action-dropdown">
-                <button onclick="window.editStaff('${user.id}')"><i class="fas fa-edit"></i> Edit</button>
-                <button onclick="window.resetPin('${user.id}')"><i class="fas fa-key"></i> Reset PIN</button>
-                ${user.status === 'active' ? `<button onclick="window.suspendStaff('${user.id}')"><i class="fas fa-pause"></i> Suspend</button>` : ''}
-                ${user.status === 'suspended' ? `<button onclick="window.reinstateStaff('${user.id}')"><i class="fas fa-play"></i> Reinstate</button>` : ''}
-                <button class="danger" onclick="window.requestTermination('${user.id}')"><i class="fas fa-ban"></i> Terminate</button>
-              </div>
-            </div>
-          `}
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
-    
-    // Add checkbox listeners
-    document.querySelectorAll('.staff-checkbox:not(:disabled)').forEach(cb => {
-      cb.addEventListener('change', (e) => {
-        if (e.target.checked) selectedUsers.add(e.target.dataset.id);
-        else selectedUsers.delete(e.target.dataset.id);
-        updateBulkActions();
-      });
-    });
-    
-    // Add inline edit listeners
-    document.querySelectorAll('.inline-edit').forEach(el => {
-      el.addEventListener('dblclick', async (e) => {
-        const field = el.dataset.field;
-        const userId = el.dataset.id;
-        const currentValue = el.textContent.replace('₦', '').replace(/,/g, '');
-        const newValue = prompt(`Enter new ${field}:`, field === 'baseSalary' ? currentValue : el.textContent);
-        if (newValue !== null) {
-          await updateDoc(doc(db, 'users', userId), { [field]: field === 'baseSalary' ? parseFloat(newValue) : newValue });
-          await logAudit('update_staff', `Updated ${field} to ${newValue}`, userId);
-          showToast('Updated successfully', 'success');
-          loadUsers();
-        }
-      });
+      </tr>`;
     });
   }
 
-  function updateBulkActions() {
-    const bulkDiv = document.getElementById('bulkActions');
-    const countSpan = document.getElementById('selectedCount');
-    
-    if (selectedUsers.size > 0) {
-      bulkDiv.classList.add('show');
-      countSpan.textContent = `${selectedUsers.size} staff selected`;
-    } else {
-      bulkDiv.classList.remove('show');
-    }
+  function loadUsers() {
+    if (unsubscribe) unsubscribe();
+    const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+    unsubscribe = onSnapshot(q, (snap) => {
+      allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const staffUsers = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin');
+      document.getElementById('allCount').textContent = staffUsers.filter(u => u.status === 'active').length;
+      document.getElementById('pendingCount').textContent = staffUsers.filter(u => u.status === 'pending_approval').length;
+      document.getElementById('suspendedCount').textContent = staffUsers.filter(u => u.status === 'suspended').length;
+      document.getElementById('terminatedCount').textContent = staffUsers.filter(u => u.status === 'terminated').length;
+      filterAndRender();
+    });
   }
 
-  window.toggleDropdown = (btn) => {
-    const dropdown = btn.nextElementSibling;
-    document.querySelectorAll('.action-dropdown.show').forEach(d => { if (d !== dropdown) d.classList.remove('show'); });
-    dropdown.classList.toggle('show');
-  };
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.action-menu')) {
-      document.querySelectorAll('.action-dropdown.show').forEach(d => d.classList.remove('show'));
-    }
-  });
-
-  // ========== USER ACTIONS ==========
   window.approveUser = async (userId) => {
     const role = document.getElementById(`role-${userId}`).value;
     const salary = parseFloat(document.getElementById(`salary-${userId}`).value) || 0;
-    
-    await updateDoc(doc(db, 'users', userId), { 
-      role, baseSalary: salary, status: 'active', approvedBy: currentUser.uid, approvedByName: userData.fullName, approvedAt: serverTimestamp() 
-    });
-    
-    await setDoc(doc(db, 'users', userId, 'stats', 'current'), {
-      tasksCompletedMTD: 0, tasksCompletedTotal: 0, pointsEarnedMTD: 0, pointsDeductedMTD: 0,
-      attendanceStreak: 0, lastCheckIn: null, updatedAt: serverTimestamp()
-    });
-    
-    await addDoc(collection(db, 'notifications'), {
-      userId, type: 'account_approved', title: 'Account Approved!',
-      message: `Your account has been approved as ${role}. Welcome!`, isRead: false, createdAt: serverTimestamp()
-    });
-    
-    await logAudit('approve_user', `Approved as ${role} with salary ₦${salary}`, userId);
+    await updateDoc(doc(db, 'users', userId), { role, baseSalary: salary, status: 'active', approvedBy: currentUser.uid, approvedByName: userData.fullName, approvedAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', userId, 'stats', 'current'), { tasksCompletedMTD: 0, tasksCompletedTotal: 0, pointsEarnedMTD: 0, pointsDeductedMTD: 0, updatedAt: serverTimestamp() });
+    await addDoc(collection(db, 'notifications'), { userId, type: 'approved', title: 'Account Approved', message: `Welcome! You are now a ${role}.`, isRead: false, createdAt: serverTimestamp() });
+    await logAudit('approve_user', `Approved as ${role}`);
     showToast('User approved', 'success');
-    loadUsers();
   };
 
   window.rejectUser = async (userId) => {
-    const reason = prompt('Reason for rejection (optional):') || 'No reason provided';
-    await updateDoc(doc(db, 'users', userId), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp(), rejectionReason: reason });
-    await logAudit('reject_user', `Rejected. Reason: ${reason}`, userId);
+    await updateDoc(doc(db, 'users', userId), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp() });
+    await logAudit('reject_user', 'User rejected');
     showToast('User rejected', 'info');
-    loadUsers();
-  };
-
-  window.editStaff = (userId) => {
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) return;
-    
-    showModal('Edit Staff', `
-      <div class="form-group"><label>Full Name</label><input class="form-control" id="editName" value="${user.fullName || ''}"></div>
-      <div class="form-group"><label>Email</label><input class="form-control" id="editEmail" value="${user.email || ''}"></div>
-      <div class="form-group"><label>Phone</label><input class="form-control" id="editPhone" value="${user.phone || ''}"></div>
-      <div class="form-group"><label>Role</label><select class="form-control" id="editRole">
-        <option value="staff" ${user.role === 'staff' ? 'selected' : ''}>Staff</option>
-        <option value="attendant" ${user.role === 'attendant' ? 'selected' : ''}>Attendant</option>
-        <option value="attendant_chief" ${user.role === 'attendant_chief' ? 'selected' : ''}>Chief Attendant</option>
-        ${userData?.role === 'super_admin' ? '<option value="admin" ' + (user.role === 'admin' ? 'selected' : '') + '>Admin</option>' : ''}
-      </select></div>
-      <div class="form-group"><label>Base Salary (₦)</label><input type="number" class="form-control" id="editSalary" value="${user.baseSalary || 0}"></div>
-      <div class="form-group"><label>Leave Days</label><input type="number" class="form-control" id="editLeave" value="${user.leaveDaysRemaining || 2}"></div>
-      <button class="btn btn-primary" onclick="window.saveEdit('${userId}')">Save Changes</button>
-    `);
-  };
-
-  window.saveEdit = async (userId) => {
-    const updates = {
-      fullName: document.getElementById('editName').value,
-      email: document.getElementById('editEmail').value,
-      phone: document.getElementById('editPhone').value,
-      role: document.getElementById('editRole').value,
-      baseSalary: parseFloat(document.getElementById('editSalary').value) || 0,
-      leaveDaysRemaining: parseInt(document.getElementById('editLeave').value) || 2
-    };
-    
-    await updateDoc(doc(db, 'users', userId), updates);
-    await logAudit('edit_staff', `Updated profile`, userId);
-    showToast('Staff updated', 'success');
-    hideModal();
-    loadUsers();
-  };
-
-  window.resetPin = async (userId) => {
-    if (!confirm('Reset PIN for this attendant? They will set a new PIN on next login.')) return;
-    await updateDoc(doc(db, 'users', userId), { attendantPin: null, pinResetRequired: true });
-    await logAudit('reset_pin', 'PIN reset requested', userId);
-    showToast('PIN reset successful', 'success');
   };
 
   window.suspendStaff = async (userId) => {
-    const reason = prompt('Reason for suspension:') || 'No reason provided';
+    const reason = prompt('Reason for suspension:') || 'No reason';
     await updateDoc(doc(db, 'users', userId), { status: 'suspended', suspendedBy: currentUser.uid, suspendedAt: serverTimestamp(), suspensionReason: reason });
-    await addDoc(collection(db, 'notifications'), { userId, type: 'suspended', title: 'Account Suspended', message: `Your account has been suspended. Reason: ${reason}`, isRead: false, createdAt: serverTimestamp() });
-    await logAudit('suspend_staff', `Suspended. Reason: ${reason}`, userId);
+    await logAudit('suspend_staff', reason);
     showToast('Staff suspended', 'warning');
-    loadUsers();
   };
 
   window.reinstateStaff = async (userId) => {
     await updateDoc(doc(db, 'users', userId), { status: 'active', reinstatedBy: currentUser.uid, reinstatedAt: serverTimestamp() });
-    await addDoc(collection(db, 'notifications'), { userId, type: 'reinstated', title: 'Account Reinstated', message: 'Your account has been reinstated.', isRead: false, createdAt: serverTimestamp() });
-    await logAudit('reinstate_staff', 'Reinstated', userId);
+    await logAudit('reinstate_staff', 'Reinstated');
     showToast('Staff reinstated', 'success');
-    loadUsers();
   };
 
-  window.requestTermination = async (userId) => {
+  window.editStaff = (userId) => {
     const user = allUsers.find(u => u.id === userId);
-    const reason = prompt('Reason for termination:');
-    if (!reason) return;
-    
-    showModal('⚠️ Termination Request', `
-      <p>You are requesting termination for:</p>
-      <p><strong>${user.fullName}</strong></p>
-      <p>Reason: ${reason}</p>
-      <p style="color: var(--warning); margin-top: 15px;"><i class="fas fa-exclamation-triangle"></i> This requires approval from another admin.</p>
-      <button class="btn btn-primary" onclick="window.submitTerminationRequest('${userId}', '${reason.replace(/'/g, "\\'")}')">Request Approval</button>
+    showModal('Edit Staff', `
+      <div class="form-group"><label>Name</label><input class="form-control" id="editName" value="${user.fullName||''}"></div>
+      <div class="form-group"><label>Email</label><input class="form-control" id="editEmail" value="${user.email||''}"></div>
+      <div class="form-group"><label>Phone</label><input class="form-control" id="editPhone" value="${user.phone||''}"></div>
+      <div class="form-group"><label>Salary</label><input type="number" class="form-control" id="editSalary" value="${user.baseSalary||0}"></div>
+      <button class="btn btn-primary" onclick="window.saveEdit('${userId}')">Save</button>
     `);
   };
 
-  window.submitTerminationRequest = async (userId, reason) => {
-    const requestRef = await addDoc(collection(db, 'termination_requests'), {
-      userId, requestedBy: currentUser.uid, requestedByName: userData.fullName,
-      reason, status: 'pending_approval', createdAt: serverTimestamp(), approvedBy: []
+  window.saveEdit = async (userId) => {
+    await updateDoc(doc(db, 'users', userId), {
+      fullName: document.getElementById('editName').value,
+      email: document.getElementById('editEmail').value,
+      phone: document.getElementById('editPhone').value,
+      baseSalary: parseFloat(document.getElementById('editSalary').value) || 0
     });
-    
-    const adminsSnap = await getDocs(query(collection(db, 'users'), where('role', 'in', ['admin', 'super_admin'])));
-    adminsSnap.forEach(async (d) => {
-      if (d.id !== currentUser.uid) {
-        await addDoc(collection(db, 'notifications'), {
-          userId: d.id, type: 'termination_approval', title: 'Termination Approval Required',
-          message: `${userData.fullName} requested termination of staff. Reason: ${reason}`,
-          isRead: false, createdAt: serverTimestamp(), requestId: requestRef.id
-        });
-      }
-    });
-    
-    await logAudit('termination_requested', `Reason: ${reason}`, userId);
-    showToast('Termination request sent for approval', 'info');
     hideModal();
+    showToast('Staff updated', 'success');
   };
 
-  // ========== ADD STAFF ==========
   window.addStaff = () => {
-    showModal('Add New Staff', `
-      <div class="form-group"><label>Full Name *</label><input class="form-control" id="newName" placeholder="Oluwaseun Adeyemi"></div>
-      <div class="form-group"><label>Email *</label><input type="email" class="form-control" id="newEmail" placeholder="staff@omocreation.com"></div>
-      <div class="form-group"><label>Phone *</label><input class="form-control" id="newPhone" placeholder="08012345678"></div>
-      <div class="form-group"><label>Role *</label><select class="form-control" id="newRole"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></div>
-      <div class="form-group"><label>Base Salary (₦) *</label><input type="number" class="form-control" id="newSalary" value="50000"></div>
+    showModal('Add Staff', `
+      <div class="form-group"><label>Name</label><input class="form-control" id="newName"></div>
+      <div class="form-group"><label>Email</label><input type="email" class="form-control" id="newEmail"></div>
+      <div class="form-group"><label>Phone</label><input class="form-control" id="newPhone"></div>
+      <div class="form-group"><label>Role</label><select class="form-control" id="newRole"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></div>
+      <div class="form-group"><label>Salary</label><input type="number" class="form-control" id="newSalary" value="50000"></div>
       <button class="btn btn-primary" onclick="window.createStaff()">Add Staff</button>
     `);
   };
 
   window.createStaff = async () => {
-    const name = document.getElementById('newName').value;
-    const email = document.getElementById('newEmail').value;
-    const phone = document.getElementById('newPhone').value;
-    const role = document.getElementById('newRole').value;
-    const salary = parseFloat(document.getElementById('newSalary').value) || 0;
-    
-    if (!name || !email || !phone) { showToast('Fill all required fields', 'error'); return; }
-    
-    const userRef = doc(collection(db, 'users'));
-    await setDoc(userRef, {
-      uid: userRef.id, fullName: name, email, phone, role, baseSalary: salary,
-      status: 'active', pointValueNaira: 100, totalPoints: 0, tasksCompleted: 0,
-      leaveDaysRemaining: 2, profileCompleted: true, createdAt: serverTimestamp(),
-      addedBy: currentUser.uid, addedByName: userData.fullName
+    const ref = doc(collection(db, 'users'));
+    await setDoc(ref, {
+      uid: ref.id, fullName: document.getElementById('newName').value, email: document.getElementById('newEmail').value,
+      phone: document.getElementById('newPhone').value, role: document.getElementById('newRole').value,
+      baseSalary: parseFloat(document.getElementById('newSalary').value) || 0, status: 'active',
+      pointValueNaira: 100, totalPoints: 0, tasksCompleted: 0, leaveDaysRemaining: 2,
+      createdAt: serverTimestamp(), addedBy: currentUser.uid
     });
-    
-    await setDoc(doc(db, 'users', userRef.id, 'stats', 'current'), {
-      tasksCompletedMTD: 0, tasksCompletedTotal: 0, pointsEarnedMTD: 0, pointsDeductedMTD: 0,
-      attendanceStreak: 0, lastCheckIn: null, updatedAt: serverTimestamp()
-    });
-    
-    await logAudit('add_staff', `Added ${name} as ${role}`, userRef.id);
-    showToast('Staff added successfully', 'success');
+    await setDoc(doc(db, 'users', ref.id, 'stats', 'current'), { tasksCompletedMTD: 0, tasksCompletedTotal: 0, updatedAt: serverTimestamp() });
     hideModal();
-    loadUsers();
+    showToast('Staff added', 'success');
   };
 
-  // ========== BULK ACTIONS ==========
-  document.getElementById('bulkRoleBtn').addEventListener('click', () => {
-    showModal('Bulk Role Change', `
-      <div class="form-group"><label>New Role</label><select class="form-control" id="bulkRole"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></div>
-      <button class="btn btn-primary" onclick="window.applyBulkRole()">Apply to ${selectedUsers.size} staff</button>
-    `);
-  });
-
-  window.applyBulkRole = async () => {
-    const role = document.getElementById('bulkRole').value;
-    const batch = writeBatch(db);
-    selectedUsers.forEach(id => batch.update(doc(db, 'users', id), { role }));
-    await batch.commit();
-    await logAudit('bulk_role_change', `Changed ${selectedUsers.size} staff to ${role}`);
-    showToast(`Updated ${selectedUsers.size} staff`, 'success');
-    hideModal();
-    loadUsers();
-  };
-
-  document.getElementById('bulkSuspendBtn').addEventListener('click', async () => {
-    if (!confirm(`Suspend ${selectedUsers.size} staff?`)) return;
-    const batch = writeBatch(db);
-    selectedUsers.forEach(id => batch.update(doc(db, 'users', id), { status: 'suspended', suspendedBy: currentUser.uid, suspendedAt: serverTimestamp() }));
-    await batch.commit();
-    await logAudit('bulk_suspend', `Suspended ${selectedUsers.size} staff`);
-    showToast(`Suspended ${selectedUsers.size} staff`, 'warning');
-    loadUsers();
-  });
-
-  document.getElementById('cancelBulkBtn').addEventListener('click', () => {
-    selectedUsers.clear();
-    updateBulkActions();
-    document.querySelectorAll('.staff-checkbox').forEach(cb => cb.checked = false);
-    document.getElementById('selectAllCheckbox').checked = false;
-  });
-
-  document.getElementById('selectAllCheckbox').addEventListener('change', (e) => {
-    document.querySelectorAll('.staff-checkbox:not(:disabled)').forEach(cb => {
-      cb.checked = e.target.checked;
-      if (e.target.checked) selectedUsers.add(cb.dataset.id);
-      else selectedUsers.delete(cb.dataset.id);
-    });
-    updateBulkActions();
-  });
-
-  // ========== EXPORT CSV ==========
   document.getElementById('exportBtn').addEventListener('click', () => {
-    const headers = ['Name', 'Email', 'Phone', 'Role', 'Status', 'Base Salary', 'Points', 'Tasks', 'Leave Days'];
-    const rows = filteredUsers.map(u => [u.fullName, u.email, u.phone, u.role, u.status, u.baseSalary, u.totalPoints, u.tasksCompleted, u.leaveDaysRemaining]);
-    const csv = [headers, ...rows].map(r => r.map(c => `"${c || ''}"`).join(',')).join('\n');
+    let filtered = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin');
+    if (currentTab === 'pending') filtered = filtered.filter(u => u.status === 'pending_approval');
+    else if (currentTab === 'suspended') filtered = filtered.filter(u => u.status === 'suspended');
+    else if (currentTab === 'terminated') filtered = filtered.filter(u => u.status === 'terminated');
+    else filtered = filtered.filter(u => u.status === 'active');
     
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
+    const csv = [['Name','Email','Phone','Role','Status','Salary','Points','Tasks'].join(',')];
+    filtered.forEach(u => csv.push([u.fullName,u.email,u.phone,u.role,u.status,u.baseSalary,u.totalPoints,u.tasksCompleted].map(c => `"${c||''}"`).join(',')));
+    
+    const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `staff_export_${new Date().toISOString().split('T')[0]}.csv`;
+    a.href = URL.createObjectURL(blob);
+    a.download = `staff_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
-    URL.revokeObjectURL(url);
+    showToast('Exported', 'success');
+  });
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'auth.html'; return; }
+    currentUser = user;
+    const userSnap = await getDoc(doc(db, 'users', user.uid));
+    if (!userSnap.exists() || (userSnap.data().role !== 'admin' && userSnap.data().role !== 'super_admin')) { window.location.href = 'dashboard.html'; return; }
+    userData = userSnap.data();
     
-    showToast('CSV exported', 'success');
-  });
-
-  // ========== EVENT LISTENERS ==========
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentTab = tab.dataset.tab;
-      filterAndRender();
-    });
-  });
-
-  document.getElementById('searchInput').addEventListener('input', filterAndRender);
-  document.getElementById('roleFilter').addEventListener('change', filterAndRender);
-  document.getElementById('refreshBtn').addEventListener('click', loadUsers);
-  document.getElementById('addStaffBtn').addEventListener('click', () => window.addStaff());
-  document.getElementById('backToDashboard').addEventListener('click', () => window.location.href = 'dashboard.html');
-
-  document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('collapsed'));
-  document.getElementById('modalClose').addEventListener('click', hideModal);
-  document.getElementById('modalOverlay').addEventListener('click', (e) => { if (e.target === document.getElementById('modalOverlay')) hideModal(); });
-
-  // ========== SIDEBAR ==========
-  function setupSidebar() {
-    const nav = document.getElementById('sidebarNav');
-    nav.innerHTML = `
+    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin';
+    document.getElementById('userRole').textContent = userData.role;
+    document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0);
+    
+    document.getElementById('sidebarNav').innerHTML = `
       <button class="nav-item" onclick="window.location.href='dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
       <button class="nav-item active"><i class="fas fa-users-cog"></i><span>Staff Management</span></button>
       <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
     `;
     document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
-  }
-
-  // ========== INIT ==========
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = 'auth.html'; return; }
     
-    currentUser = user;
-    const userRef = doc(db, 'users', user.uid);
-    const userSnap = await getDoc(userRef);
-    
-    if (!userSnap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; }
-    
-    userData = userSnap.data();
-    if (userData.role !== 'admin' && userData.role !== 'super_admin') {
-      showToast('Access denied. Admin only.', 'error');
-      setTimeout(() => window.location.href = 'dashboard.html', 2000);
-      return;
-    }
-    
-    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin';
-    document.getElementById('userRole').textContent = userData.role?.replace('_', ' ') || 'Admin';
-    document.getElementById('userAvatar').textContent = (userData.fullName || 'A').charAt(0).toUpperCase();
-    
-    setupSidebar();
-    await loadUsers();
+    loadUsers();
   });
 
-  // Global functions
+  document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('collapsed'));
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', function() {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    currentTab = this.dataset.tab;
+    document.getElementById('tableTitle').textContent = this.textContent.trim();
+    filterAndRender();
+  }));
+  
+  document.getElementById('searchInput').addEventListener('input', filterAndRender);
+  document.getElementById('roleFilter').addEventListener('change', filterAndRender);
+  document.getElementById('refreshBtn').addEventListener('click', loadUsers);
+  document.getElementById('addStaffBtn').addEventListener('click', () => window.addStaff());
+  document.getElementById('modalClose').addEventListener('click', hideModal);
+  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) hideModal(); });
+
   window.addStaff = addStaff;
   window.createStaff = createStaff;
-  window.applyBulkRole = applyBulkRole;
 </script>
 </body>
 </html>
