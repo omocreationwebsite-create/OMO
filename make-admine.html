@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Make Admin · O.M.Ocreation</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #252540 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      max-width: 500px;
+      width: 100%;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 30px;
+      padding: 30px 25px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header i {
+      font-size: 3rem;
+      color: #ff4da6;
+      margin-bottom: 15px;
+    }
+    
+    .header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+    
+    .warning {
+      background: rgba(255, 193, 7, 0.15);
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+    
+    .warning i {
+      color: #ffc107;
+      margin-right: 8px;
+    }
+    
+    .warning p {
+      color: #856404;
+      font-size: 0.8rem;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .input-wrapper {
+      position: relative;
+    }
+    
+    .input-wrapper i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ff4da6;
+      font-size: 1rem;
+    }
+    
+    .input-wrapper input,
+    .input-wrapper select {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      border: 1.5px solid rgba(255, 77, 166, 0.2);
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      outline: none;
+    }
+    
+    .input-wrapper input:focus,
+    .input-wrapper select:focus {
+      border-color: #ff4da6;
+      box-shadow: 0 0 0 4px rgba(255, 77, 166, 0.1);
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px 28px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #ff4da6, #e6398c);
+      color: white;
+      box-shadow: 0 8px 20px rgba(255, 77, 166, 0.3);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: #1a1a2e;
+      color: white;
+      margin-top: 10px;
+    }
+    
+    .result-panel {
+      margin-top: 25px;
+      padding: 18px;
+      border-radius: 15px;
+      display: none;
+    }
+    
+    .result-panel.success {
+      background: rgba(40, 167, 69, 0.1);
+      border: 1px solid rgba(40, 167, 69, 0.3);
+      display: block;
+    }
+    
+    .result-panel.error {
+      background: rgba(220, 53, 69, 0.1);
+      border: 1px solid rgba(220, 53, 69, 0.3);
+      display: block;
+    }
+    
+    .result-panel.info {
+      background: rgba(23, 162, 184, 0.1);
+      border: 1px solid rgba(23, 162, 184, 0.3);
+      display: block;
+    }
+    
+    .result-panel i {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .result-panel.success i { color: #28a745; }
+    .result-panel.error i { color: #dc3545; }
+    .result-panel.info i { color: #17a2b8; }
+    
+    .result-panel h4 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    
+    .result-panel p {
+      font-size: 0.85rem;
+      color: #333;
+      word-break: break-all;
+    }
+    
+    .user-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 15px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 15px;
+    }
+    
+    .user-item {
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .user-item:hover {
+      background: rgba(255, 77, 166, 0.05);
+    }
+    
+    .user-item:last-child {
+      border-bottom: none;
+    }
+    
+    .user-info {
+      flex: 1;
+    }
+    
+    .user-email {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .user-role {
+      font-size: 0.7rem;
+      color: #666;
+    }
+    
+    .user-status {
+      font-size: 0.65rem;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: #eee;
+    }
+    
+    .user-status.active {
+      background: rgba(40, 167, 69, 0.15);
+      color: #28a745;
+    }
+    
+    .user-status.pending {
+      background: rgba(255, 193, 7, 0.15);
+      color: #856404;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.75rem;
+    }
+    
+    .footer a {
+      color: #ff4da6;
+      text-decoration: none;
+    }
+    
+    .debug-log {
+      margin-top: 20px;
+      padding: 12px;
+      background: #1a1a2e;
+      border-radius: 12px;
+      color: #00ff00;
+      font-family: monospace;
+      font-size: 0.7rem;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .debug-log p {
+      margin-bottom: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    
+    <div class="header">
+      <i class="fas fa-crown"></i>
+      <h2>Make Admin</h2>
+      <p>Promote any user to Super Admin or Admin</p>
+    </div>
+    
+    <div class="warning">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p><strong>Security Warning:</strong> This page grants admin privileges. Delete this file after use or keep it secured.</p>
+    </div>
+    
+    <!-- STEP 1: Login as Existing Admin -->
+    <div id="step1Panel">
+      <div class="form-group">
+        <label>Step 1: Login as Admin</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="adminEmail" placeholder="admin@omocreation.com" value="">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="adminPassword" placeholder="Admin Password">
+        </div>
+      </div>
+      
+      <button class="btn btn-primary" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i> Login as Admin
+      </button>
+      
+      <p style="text-align: center; margin-top: 15px; font-size: 0.8rem; color: #666;">
+        Or if already logged in, click below:
+      </p>
+      
+      <button class="btn btn-secondary" id="useCurrentSessionBtn">
+        <i class="fas fa-user-check"></i> Use Current Session
+      </button>
+    </div>
+    
+    <!-- STEP 2: Select User to Promote -->
+    <div id="step2Panel" style="display: none;">
+      <div class="form-group">
+        <label>Step 2: Select User to Promote</label>
+        <div class="input-wrapper">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchUser" placeholder="Search by email...">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Or Enter Email Manually</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="targetEmail" placeholder="user@example.com">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Assign Role</label>
+        <div class="input-wrapper">
+          <i class="fas fa-tag"></i>
+          <select id="targetRole">
+            <option value="super_admin">Super Admin (Full Access)</option>
+            <option value="admin">Admin (Management)</option>
+            <option value="attendant_chief">Chief Attendant</option>
+            <option value="attendant">Desk Attendant</option>
+          </select>
+        </div>
+      </div>
+      
+      <button class="btn btn-primary" id="promoteBtn">
+        <i class="fas fa-crown"></i> Promote to <span id="selectedRoleText">Super Admin</span>
+      </button>
+      
+      <button class="btn btn-secondary" id="backToLoginBtn">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+      
+      <div class="user-list" id="userList" style="display: none;">
+        <!-- Users will be loaded here -->
+      </div>
+    </div>
+    
+    <!-- Result Panel -->
+    <div class="result-panel" id="resultPanel">
+      <i class="fas fa-check-circle"></i>
+      <h4 id="resultTitle">Success</h4>
+      <p id="resultMessage"></p>
+    </div>
+    
+    <!-- Debug Log -->
+    <div class="debug-log" id="debugLog">
+      <p style="color: #888;">🔍 Ready. Login to begin.</p>
+    </div>
+    
+  </div>
+  
+  <div class="footer">
+    <a href="auth.html">← Back to Login</a> · O.M.Ocreation Admin Tool
+  </div>
+</div>
+
+<script type="module">
+  // ========== FIREBASE CONFIG ==========
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { 
+    getAuth, 
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { 
+    getFirestore,
+    doc,
+    updateDoc,
+    serverTimestamp,
+    collection,
+    getDocs,
+    query,
+    where,
+    getDoc,
+    setDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+    apiKey: "AIzaSyD-H3OMXf2Ec6NtN1IxXtA0vZ34PceqQfg",
+    authDomain: "fashion-erp-system.firebaseapp.com",
+    projectId: "fashion-erp-system",
+    storageBucket: "fashion-erp-system.firebasestorage.app",
+    messagingSenderId: "330378955681",
+    appId: "1:330378955681:web:e48c08806bba7f2394d9e0",
+    measurementId: "G-RVBMRSFGQ8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ========== DOM ELEMENTS ==========
+  const step1Panel = document.getElementById('step1Panel');
+  const step2Panel = document.getElementById('step2Panel');
+  const adminEmail = document.getElementById('adminEmail');
+  const adminPassword = document.getElementById('adminPassword');
+  const loginBtn = document.getElementById('loginBtn');
+  const useCurrentSessionBtn = document.getElementById('useCurrentSessionBtn');
+  const targetEmail = document.getElementById('targetEmail');
+  const targetRole = document.getElementById('targetRole');
+  const promoteBtn = document.getElementById('promoteBtn');
+  const backToLoginBtn = document.getElementById('backToLoginBtn');
+  const searchUser = document.getElementById('searchUser');
+  const userList = document.getElementById('userList');
+  const selectedRoleText = document.getElementById('selectedRoleText');
+  const resultPanel = document.getElementById('resultPanel');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMessage = document.getElementById('resultMessage');
+  const debugLog = document.getElementById('debugLog');
+
+  let currentAdminUser = null;
+  let allUsers = [];
+
+  // ========== DEBUG LOGGER ==========
+  function log(message, type = 'info') {
+    const line = document.createElement('p');
+    const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#888';
+    line.style.color = color;
+    line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+    debugLog.appendChild(line);
+    debugLog.scrollTop = debugLog.scrollHeight;
+    console.log(message);
+  }
+
+  function showResult(success, title, message) {
+    resultPanel.className = `result-panel ${success ? 'success' : 'error'}`;
+    resultPanel.querySelector('i').className = success ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+    resultTitle.textContent = title;
+    resultMessage.textContent = message;
+  }
+
+  // ========== UPDATE ROLE DISPLAY ==========
+  targetRole.addEventListener('change', () => {
+    const roleText = targetRole.options[targetRole.selectedIndex].text;
+    selectedRoleText.textContent = roleText;
+  });
+
+  // ========== CHECK CURRENT SESSION ==========
+  async function checkCurrentSession() {
+    const user = auth.currentUser;
+    if (user) {
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        if (userData.role === 'super_admin' || userData.role === 'admin') {
+          currentAdminUser = user;
+          log(`✅ Logged in as: ${user.email} (${userData.role})`, 'success');
+          showStep2();
+          return true;
+        } else {
+          log(`❌ Current user is not admin (role: ${userData.role})`, 'error');
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
+  // ========== SHOW STEP 2 ==========
+  function showStep2() {
+    step1Panel.style.display = 'none';
+    step2Panel.style.display = 'block';
+    loadAllUsers();
+  }
+
+  function showStep1() {
+    step1Panel.style.display = 'block';
+    step2Panel.style.display = 'none';
+  }
+
+  // ========== LOAD ALL USERS ==========
+  async function loadAllUsers() {
+    try {
+      log('Loading users from Firestore...');
+      const usersSnap = await getDocs(collection(db, 'users'));
+      allUsers = [];
+      
+      usersSnap.forEach(doc => {
+        allUsers.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+      
+      log(`Loaded ${allUsers.length} users`, 'success');
+      displayUserList(allUsers);
+    } catch (error) {
+      log(`Error loading users: ${error.message}`, 'error');
+    }
+  }
+
+  function displayUserList(users) {
+    if (users.length === 0) {
+      userList.innerHTML = '<p style="padding: 15px; text-align: center; color: #666;">No users found</p>';
+      userList.style.display = 'block';
+      return;
+    }
+    
+    userList.innerHTML = '';
+    users.slice(0, 20).forEach(user => {
+      const div = document.createElement('div');
+      div.className = 'user-item';
+      div.innerHTML = `
+        <div class="user-info">
+          <div class="user-email">${user.email || 'No email'}</div>
+          <div class="user-role">${user.fullName || 'No name'} · ${user.role || 'pending'}</div>
+        </div>
+        <span class="user-status ${user.status || 'pending'}">${user.status || 'pending'}</span>
+      `;
+      div.addEventListener('click', () => {
+        targetEmail.value = user.email;
+        userList.style.display = 'none';
+        searchUser.value = '';
+      });
+      userList.appendChild(div);
+    });
+    
+    userList.style.display = 'block';
+  }
+
+  searchUser.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    if (term.length < 2) {
+      displayUserList(allUsers);
+    } else {
+      const filtered = allUsers.filter(u => 
+        u.email?.toLowerCase().includes(term) || 
+        u.fullName?.toLowerCase().includes(term)
+      );
+      displayUserList(filtered);
+    }
+  });
+
+  targetEmail.addEventListener('focus', () => {
+    userList.style.display = 'block';
+  });
+
+  // ========== LOGIN HANDLER ==========
+  loginBtn.addEventListener('click', async () => {
+    const email = adminEmail.value.trim();
+    const password = adminPassword.value;
+    
+    if (!email || !password) {
+      log('Please enter email and password', 'error');
+      showResult(false, 'Error', 'Email and password required');
+      return;
+    }
+    
+    log(`Attempting login: ${email}`);
+    loginBtn.disabled = true;
+    
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (!userSnap.exists()) {
+        log('User document not found in Firestore', 'error');
+        showResult(false, 'Error', 'User profile not found');
+        await signOut(auth);
+        loginBtn.disabled = false;
+        return;
+      }
+      
+      const userData = userSnap.data();
+      
+      if (userData.role !== 'super_admin' && userData.role !== 'admin') {
+        log(`User is not admin (role: ${userData.role})`, 'error');
+        showResult(false, 'Access Denied', 'You must be an admin to use this tool');
+        await signOut(auth);
+        loginBtn.disabled = false;
+        return;
+      }
+      
+      currentAdminUser = user;
+      log(`✅ Logged in as admin: ${user.email}`, 'success');
+      showResult(true, 'Success', 'Logged in successfully');
+      showStep2();
+      
+    } catch (error) {
+      log(`Login failed: ${error.message}`, 'error');
+      showResult(false, 'Login Failed', error.message);
+    } finally {
+      loginBtn.disabled = false;
+    }
+  });
+
+  // ========== USE CURRENT SESSION ==========
+  useCurrentSessionBtn.addEventListener('click', async () => {
+    const isAdmin = await checkCurrentSession();
+    if (isAdmin) {
+      showResult(true, 'Success', 'Using current admin session');
+    } else {
+      showResult(false, 'Not Admin', 'Please login with an admin account first');
+    }
+  });
+
+  // ========== PROMOTE USER ==========
+  promoteBtn.addEventListener('click', async () => {
+    const email = targetEmail.value.trim();
+    const role = targetRole.value;
+    
+    if (!email) {
+      log('Please enter target email', 'error');
+      showResult(false, 'Error', 'Please enter an email address');
+      return;
+    }
+    
+    if (!currentAdminUser) {
+      log('No admin logged in', 'error');
+      showResult(false, 'Error', 'Please login as admin first');
+      return;
+    }
+    
+    log(`Promoting ${email} to ${role}...`);
+    promoteBtn.disabled = true;
+    
+    try {
+      // Find user by email in Firestore
+      const usersQuery = query(collection(db, 'users'), where('email', '==', email));
+      const snapshot = await getDocs(usersQuery);
+      
+      if (snapshot.empty) {
+        log(`User not found: ${email}`, 'error');
+        showResult(false, 'Not Found', `No user found with email: ${email}`);
+        promoteBtn.disabled = false;
+        return;
+      }
+      
+      const userDoc = snapshot.docs[0];
+      const userData = userDoc.data();
+      const userId = userDoc.id;
+      
+      log(`Found user: ${userData.fullName || email} (UID: ${userId})`);
+      
+      // Update user role
+      await updateDoc(doc(db, 'users', userId), {
+        role: role,
+        status: 'active',
+        approvedBy: currentAdminUser.uid,
+        approvedAt: serverTimestamp(),
+        approvalNote: `Promoted to ${role} via admin tool`,
+        profileCompleted: userData.profileCompleted || false
+      });
+      
+      log(`✅ Successfully promoted ${email} to ${role}!`, 'success');
+      showResult(true, 'Success!', `${email} is now a ${role.replace('_', ' ')}`);
+      
+      // Clear input
+      targetEmail.value = '';
+      
+      // Refresh user list
+      setTimeout(() => loadAllUsers(), 1000);
+      
+    } catch (error) {
+      log(`Promotion failed: ${error.message}`, 'error');
+      showResult(false, 'Failed', error.message);
+    } finally {
+      promoteBtn.disabled = false;
+    }
+  });
+
+  // ========== BACK BUTTON ==========
+  backToLoginBtn.addEventListener('click', () => {
+    showStep1();
+    userList.style.display = 'none';
+  });
+
+  // ========== AUTO-CHECK SESSION ON LOAD ==========
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      log(`Detected session: ${user.email}`);
+      const isAdmin = await checkCurrentSession();
+      if (isAdmin) {
+        showResult(true, 'Ready', 'You are logged in as admin');
+      }
+    } else {
+      log('No active session');
+    }
+  });
+
+  // ========== CLICK OUTSIDE TO HIDE USER LIST ==========
+  document.addEventListener('click', (e) => {
+    if (!targetEmail.contains(e.target) && !searchUser.contains(e.target) && !userList.contains(e.target)) {
+      userList.style.display = 'none';
+    }
+  });
+
+  log('🔧 Admin tool loaded. Login to begin.');
+</script>
+
+</body>
+</html>
