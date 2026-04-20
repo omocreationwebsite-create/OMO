@@ -5,57 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ff4da6">
   <title>Approvals · FashionStone</title>
+  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --header-height: 64px; }
-    body { font-family: 'Inter', sans-serif; background: #f9fafb; min-height: 100vh; display: flex; }
-    .sidebar { width: 280px; background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; }
-    .sidebar-header { padding: 24px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; }
-    .logo-text { font-size: 1.2rem; font-weight: 700; } .logo-text span { color: var(--primary); }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --header-height: 70px; --sidebar-width: 280px; }
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
+    
+    .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+    .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; }
+    .logo-text { font-size: 1.25rem; font-weight: 700; } .logo-text span { color: var(--primary); }
     .sidebar-nav { padding: 20px 12px; }
-    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 14px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; margin-bottom: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; margin-bottom: 3px; }
     .nav-item i { width: 22px; }
     .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
     .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
     .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 20px; }
-    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); position: absolute; bottom: 0; width: 100%; background: inherit; }
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); position: absolute; bottom: 0; width: 100%; }
     .user-profile { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
-    .main-content { flex: 1; margin-left: 280px; }
-    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; }
-    .page-title { font-size: 1.4rem; font-weight: 700; color: var(--dark); }
-    .content-wrapper { padding: 24px; }
-    .tabs-container { background: white; border-radius: 20px; padding: 6px; margin-bottom: 24px; display: flex; gap: 6px; }
-    .tab { padding: 12px 20px; border-radius: 16px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; background: none; color: var(--gray); flex: 1; }
+    .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .user-details h4 { font-size: 0.85rem; } .user-details p { font-size: 0.7rem; opacity: 0.6; }
+    
+    .main-content { flex: 1; margin-left: var(--sidebar-width); }
+    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+    .content-wrapper { padding: 28px; max-width: 1600px; }
+    
+    .tabs-container { background: white; border-radius: 20px; padding: 6px; margin-bottom: 24px; display: flex; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .tab { padding: 14px 24px; border-radius: 16px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; background: none; color: var(--gray); flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .tab.active { background: var(--primary); color: white; }
-    .panel { background: white; border-radius: 20px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
-    .panel-header { display: flex; justify-content: space-between; margin-bottom: 18px; }
-    .panel-header h3 { font-size: 1rem; font-weight: 700; }
+    .tab .count { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 30px; font-size: 0.7rem; }
+    
+    .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.03); }
+    .panel-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .panel-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    
     .table-wrapper { overflow-x: auto; }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    .data-table th { text-align: left; padding: 12px 8px; font-size: 0.65rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
-    .data-table td { padding: 12px 8px; border-bottom: 1px solid rgba(0,0,0,0.04); }
-    .badge { padding: 4px 10px; border-radius: 40px; font-size: 0.65rem; font-weight: 600; }
+    .data-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+    .data-table th { text-align: left; padding: 14px 12px; font-size: 0.7rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
+    .data-table td { padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 0.85rem; }
+    
+    .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
+    .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     .badge-pending { background: rgba(107,114,128,0.1); color: var(--gray); }
-    .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; background: white; border: 1px solid rgba(0,0,0,0.08); }
+    
+    .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
     .btn-success { background: var(--success); color: white; }
     .btn-danger { background: var(--danger); color: white; }
-    .btn-sm { padding: 5px 12px; }
+    .btn-sm { padding: 6px 14px; }
+    
     .form-control { padding: 10px 14px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px; font-size: 0.8rem; width: 100%; }
-    .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
-    .toast { background: white; padding: 12px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 10px; transform: translateX(400px); transition: transform 0.25s; }
+    .form-control:focus { border-color: var(--primary); outline: none; }
+    
+    .empty-state { text-align: center; padding: 40px; color: var(--gray); }
+    .empty-state i { font-size: 2.5rem; color: var(--primary-light); margin-bottom: 16px; }
+    
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
+    .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
     .toast.show { transform: translateX(0); }
+    .toast.success { border-left-color: var(--success); }
+    
+    .page-view { display: none; }
+    .page-view.active { display: block; }
+    
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; }
+      .content-wrapper { padding: 16px; }
+      .tabs-container { flex-wrap: wrap; }
+      .tab { flex: 1 0 auto; }
+    }
   </style>
 </head>
 <body>
+
 <aside class="sidebar">
   <div class="sidebar-header"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div>
   <nav class="sidebar-nav">
     <button class="nav-item" onclick="window.location.href='admin-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
-    <button class="nav-item active" onclick="window.location.href='approvals.html'"><i class="fas fa-check-circle"></i><span>Approvals</span></button>
+    <button class="nav-item active"><i class="fas fa-check-circle"></i><span>Approvals</span></button>
     <button class="nav-item" onclick="window.location.href='staff-management.html'"><i class="fas fa-users-cog"></i><span>Staff Management</span></button>
     <button class="nav-item" onclick="window.location.href='finance.html'"><i class="fas fa-chart-line"></i><span>Finance</span></button>
     <button class="nav-item" onclick="window.location.href='audit.html'"><i class="fas fa-history"></i><span>Audit Logs</span></button>
@@ -63,124 +95,170 @@
   </nav>
   <div class="sidebar-footer"><div class="user-profile"><div class="user-avatar" id="userAvatar">A</div><div class="user-details"><h4 id="userName">Admin</h4><p id="userRole">Admin</p></div></div></div>
 </aside>
+
 <main class="main-content">
   <header class="top-bar"><h1 class="page-title">Approval Center</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
+  
   <div class="content-wrapper">
+    
     <div class="tabs-container">
-      <button class="tab active" data-tab="users">Users <span id="userCount">0</span></button>
-      <button class="tab" data-tab="items">Stock Items <span id="itemCount">0</span></button>
-      <button class="tab" data-tab="purchases">Purchases <span id="purchaseCount">0</span></button>
-      <button class="tab" data-tab="customers">Customers <span id="customerCount">0</span></button>
+      <button class="tab active" data-tab="users"><i class="fas fa-user"></i> Users <span class="count" id="userCount">0</span></button>
+      <button class="tab" data-tab="items"><i class="fas fa-box"></i> Stock Items <span class="count" id="itemCount">0</span></button>
+      <button class="tab" data-tab="purchases"><i class="fas fa-shopping-cart"></i> Purchases <span class="count" id="purchaseCount">0</span></button>
+      <button class="tab" data-tab="customers"><i class="fas fa-users"></i> Customers <span class="count" id="customerCount">0</span></button>
     </div>
     
-    <div id="usersPanel" class="panel">
-      <div class="panel-header"><h3><i class="fas fa-user-clock"></i> Pending User Approvals</h3></div>
-      <div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th><th>Assign Role</th><th>Salary (₦)</th><th>Actions</th></tr></thead><tbody id="usersTable"></tbody></table></div>
+    <!-- USERS TAB -->
+    <div id="usersPanel" class="page-view active">
+      <div class="panel">
+        <div class="panel-header"><h3><i class="fas fa-user-clock"></i> Pending User Approvals</h3><button class="btn btn-outline btn-sm" onclick="refreshUsers()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th><th>Assign Role</th><th>Salary (₦)</th><th>Actions</th></tr></thead><tbody id="usersTable"></tbody></table></div>
+      </div>
     </div>
     
-    <div id="itemsPanel" class="panel" style="display:none;">
-      <div class="panel-header"><h3><i class="fas fa-box"></i> Pending Stock Items</h3></div>
-      <div class="table-wrapper"><table class="data-table"><thead><tr><th>Item</th><th>Category</th><th>Quantity</th><th>Price</th><th>Added By</th><th>Actions</th></tr></thead><tbody id="itemsTable"></tbody></table></div>
+    <!-- ITEMS TAB -->
+    <div id="itemsPanel" class="page-view">
+      <div class="panel">
+        <div class="panel-header"><h3><i class="fas fa-box"></i> Pending Stock Items</h3><button class="btn btn-outline btn-sm" onclick="refreshItems()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Item</th><th>Category</th><th>Quantity</th><th>Unit Price</th><th>Added By</th><th>Date</th><th>Actions</th></tr></thead><tbody id="itemsTable"></tbody></table></div>
+      </div>
     </div>
     
-    <div id="purchasesPanel" class="panel" style="display:none;">
-      <div class="panel-header"><h3><i class="fas fa-shopping-cart"></i> Pending Purchase Requests</h3></div>
-      <div class="table-wrapper"><table class="data-table"><thead><tr><th>Requested By</th><th>Items</th><th>Est. Total</th><th>Date</th><th>Actions</th></tr></thead><tbody id="purchasesTable"></tbody></table></div>
+    <!-- PURCHASES TAB -->
+    <div id="purchasesPanel" class="page-view">
+      <div class="panel">
+        <div class="panel-header"><h3><i class="fas fa-shopping-cart"></i> Pending Purchase Requests</h3><button class="btn btn-outline btn-sm" onclick="refreshPurchases()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Requested By</th><th>Items</th><th>Est. Total</th><th>Date</th><th>Note</th><th>Actions</th></tr></thead><tbody id="purchasesTable"></tbody></table></div>
+      </div>
     </div>
     
-    <div id="customersPanel" class="panel" style="display:none;">
-      <div class="panel-header"><h3><i class="fas fa-users"></i> Pending Customer Approvals</h3></div>
-      <div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Added By</th><th>Actions</th></tr></thead><tbody id="customersTable"></tbody></table></div>
+    <!-- CUSTOMERS TAB -->
+    <div id="customersPanel" class="page-view">
+      <div class="panel">
+        <div class="panel-header"><h3><i class="fas fa-users"></i> Pending Customer Approvals</h3><button class="btn btn-outline btn-sm" onclick="refreshCustomers()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Birthday</th><th>Added By</th><th>Date</th><th>Actions</th></tr></thead><tbody id="customersTable"></tbody></table></div>
+      </div>
     </div>
+    
   </div>
 </main>
+
 <div class="toast-container" id="toastContainer"></div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, updateDoc, serverTimestamp, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, updateDoc, serverTimestamp, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-  let currentUser = null, currentTab = 'users';
+  let currentUser = null, userData = null, unsubscribes = [];
 
-  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
   function formatDate(d) { if (!d) return '-'; return d.toDate().toLocaleDateString('en-GB', {day:'2-digit',month:'short'}); }
+  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
   function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  async function logAudit(action, note) { try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } catch(e) {} }
 
+  function cleanup() { unsubscribes.forEach(u => u()); unsubscribes = []; }
+
+  // Load Users
   function loadUsers() {
     const q = query(collection(db, 'users'), where('status', '==', 'pending_approval'), orderBy('createdAt', 'desc'));
-    onSnapshot(q, (snap) => {
+    unsubscribes.push(onSnapshot(q, (snap) => {
       document.getElementById('userCount').textContent = snap.size;
       const tbody = document.getElementById('usersTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;">No pending users</td></tr>'; return; }
-      snap.forEach(d => { const u = d.data(); tbody.innerHTML += `<tr><td>${u.fullName}</td><td>${u.email}</td><td>${u.phone}</td><td>${formatDate(u.createdAt)}</td><td><select id="role-${d.id}" class="form-control" style="width:120px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></td><td><input type="number" id="salary-${d.id}" class="form-control" style="width:100px;" value="50000"></td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approveUser('${d.id}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectUser('${d.id}')">Reject</button></td></tr>`; });
-    });
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-check-circle"></i><p>No pending users</p></div></td></tr>'; return; }
+      snap.forEach(d => { const u = d.data(); tbody.innerHTML += `<tr><td>${u.fullName}</td><td>${u.email}</td><td>${u.phone}</td><td>${formatDate(u.createdAt)}</td><td><select id="role-${d.id}" class="form-control" style="width:130px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></td><td><input type="number" id="salary-${d.id}" class="form-control" style="width:100px;" value="50000"></td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approveUser('${d.id}')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-sm btn-danger" onclick="rejectUser('${d.id}')"><i class="fas fa-times"></i> Reject</button></td></tr>`; });
+    }));
   }
 
   window.approveUser = async (userId) => {
     const role = document.getElementById(`role-${userId}`).value;
     const salary = parseFloat(document.getElementById(`salary-${userId}`).value) || 0;
-    await updateDoc(doc(db, 'users', userId), { role, baseSalary: salary, status: 'active', approvedBy: currentUser.uid, approvedAt: serverTimestamp() });
-    await addDoc(collection(db, 'notifications'), { userId, type: 'approved', title: 'Account Approved', message: `You are now a ${role}.`, isRead: false, createdAt: serverTimestamp() });
+    const note = prompt('Add approval note (optional):') || 'Approved';
+    await updateDoc(doc(db, 'users', userId), { role, baseSalary: salary, status: 'active', approvedBy: currentUser.uid, approvedByName: userData.fullName, approvedAt: serverTimestamp(), approvalNote: note });
+    await addDoc(collection(db, 'notifications'), { userId, type: 'approved', title: 'Account Approved', message: `You are now a ${role}. Welcome!`, isRead: false, createdAt: serverTimestamp() });
+    await logAudit('approve_user', `Approved as ${role} with salary ₦${salary}. Note: ${note}`);
     showToast('User approved', 'success');
   };
 
   window.rejectUser = async (userId) => {
-    await updateDoc(doc(db, 'users', userId), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp() });
+    const reason = prompt('Rejection reason:') || 'No reason provided';
+    await updateDoc(doc(db, 'users', userId), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp(), rejectionReason: reason });
+    await logAudit('reject_user', `Rejected. Reason: ${reason}`);
     showToast('User rejected', 'info');
   };
 
+  // Load Items
   function loadItems() {
     const q = query(collection(db, 'stock_items'), where('status', '==', 'pending_approval'), orderBy('createdAt', 'desc'));
-    onSnapshot(q, (snap) => {
+    unsubscribes.push(onSnapshot(q, (snap) => {
       document.getElementById('itemCount').textContent = snap.size;
       const tbody = document.getElementById('itemsTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">No pending items</td></tr>'; return; }
-      snap.forEach(d => { const i = d.data(); tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.category}</td><td>${i.quantityAvailable}</td><td>${formatCurrency(i.unitPrice)}</td><td>${i.createdByName}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approveItem('${d.id}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectItem('${d.id}')">Reject</button></td></tr>`; });
-    });
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-box"></i><p>No pending items</p></div></td></tr>'; return; }
+      snap.forEach(d => { const i = d.data(); tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.category||'-'}</td><td>${i.quantityAvailable||0}</td><td>${formatCurrency(i.unitPrice)}</td><td>${i.createdByName||'-'}</td><td>${formatDate(i.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approveItem('${d.id}')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-sm btn-danger" onclick="rejectItem('${d.id}')"><i class="fas fa-times"></i> Reject</button></td></tr>`; });
+    }));
   }
 
-  window.approveItem = async (id) => { await updateDoc(doc(db, 'stock_items', id), { status: 'available', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); showToast('Item approved', 'success'); };
-  window.rejectItem = async (id) => { await updateDoc(doc(db, 'stock_items', id), { status: 'rejected' }); showToast('Item rejected', 'info'); };
+  window.approveItem = async (id) => { await updateDoc(doc(db, 'stock_items', id), { status: 'available', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_item', `Approved stock item`); showToast('Item approved', 'success'); };
+  window.rejectItem = async (id) => { await updateDoc(doc(db, 'stock_items', id), { status: 'rejected' }); await logAudit('reject_item', `Rejected stock item`); showToast('Item rejected', 'info'); };
 
+  // Load Purchases
   function loadPurchases() {
     const q = query(collection(db, 'purchase_requests'), where('status', '==', 'pending_approval'), orderBy('createdAt', 'desc'));
-    onSnapshot(q, (snap) => {
+    unsubscribes.push(onSnapshot(q, (snap) => {
       document.getElementById('purchaseCount').textContent = snap.size;
       const tbody = document.getElementById('purchasesTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">No pending requests</td></tr>'; return; }
-      snap.forEach(d => { const p = d.data(); const total = p.items?.reduce((s,i)=>s+(i.suggested*i.price),0)||0; tbody.innerHTML += `<tr><td>${p.requestedByName}</td><td>${p.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${formatDate(p.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approvePurchase('${d.id}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectPurchase('${d.id}')">Reject</button></td></tr>`; });
-    });
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-shopping-cart"></i><p>No pending requests</p></div></td></tr>'; return; }
+      snap.forEach(d => { const p = d.data(); const total = p.items?.reduce((s,i)=>s+(i.suggested*i.price),0)||0; tbody.innerHTML += `<tr><td>${p.requestedByName}</td><td>${p.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${formatDate(p.createdAt)}</td><td>${p.note||'-'}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approvePurchase('${d.id}')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-sm btn-danger" onclick="rejectPurchase('${d.id}')"><i class="fas fa-times"></i> Reject</button></td></tr>`; });
+    }));
   }
 
-  window.approvePurchase = async (id) => { await updateDoc(doc(db, 'purchase_requests', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); showToast('Request approved', 'success'); };
-  window.rejectPurchase = async (id) => { await updateDoc(doc(db, 'purchase_requests', id), { status: 'rejected' }); showToast('Request rejected', 'info'); };
+  window.approvePurchase = async (id) => { await updateDoc(doc(db, 'purchase_requests', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_purchase', `Approved purchase request`); showToast('Request approved', 'success'); };
+  window.rejectPurchase = async (id) => { const reason = prompt('Rejection reason:') || 'No reason'; await updateDoc(doc(db, 'purchase_requests', id), { status: 'rejected', rejectionReason: reason }); await logAudit('reject_purchase', `Rejected. Reason: ${reason}`); showToast('Request rejected', 'info'); };
 
+  // Load Customers
   function loadCustomers() {
     const q = query(collection(db, 'customers'), where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
-    onSnapshot(q, (snap) => {
+    unsubscribes.push(onSnapshot(q, (snap) => {
       document.getElementById('customerCount').textContent = snap.size;
       const tbody = document.getElementById('customersTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">No pending customers</td></tr>'; return; }
-      snap.forEach(d => { const c = d.data(); tbody.innerHTML += `<tr><td>${c.fullName}</td><td>${c.phone}</td><td>${c.email||'-'}</td><td>${c.createdBy||'-'}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approveCustomer('${d.id}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectCustomer('${d.id}')">Reject</button></td></tr>`; });
-    });
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i><p>No pending customers</p></div></td></tr>'; return; }
+      snap.forEach(d => { const c = d.data(); tbody.innerHTML += `<tr><td>${c.fullName}</td><td>${c.phone}</td><td>${c.email||'-'}</td><td>${c.birthday||'-'}</td><td>${c.createdBy||'-'}</td><td>${formatDate(c.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approveCustomer('${d.id}')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-sm btn-danger" onclick="rejectCustomer('${d.id}')"><i class="fas fa-times"></i> Reject</button></td></tr>`; });
+    }));
   }
 
-  window.approveCustomer = async (id) => { await updateDoc(doc(db, 'customers', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); showToast('Customer approved', 'success'); };
-  window.rejectCustomer = async (id) => { await updateDoc(doc(db, 'customers', id), { status: 'rejected' }); showToast('Customer rejected', 'info'); };
+  window.approveCustomer = async (id) => { await updateDoc(doc(db, 'customers', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_customer', `Approved customer`); showToast('Customer approved', 'success'); };
+  window.rejectCustomer = async (id) => { await updateDoc(doc(db, 'customers', id), { status: 'rejected' }); await logAudit('reject_customer', `Rejected customer`); showToast('Customer rejected', 'info'); };
 
+  // Refresh functions
+  window.refreshUsers = () => { cleanup(); loadUsers(); showToast('Refreshed', 'success'); };
+  window.refreshItems = () => { cleanup(); loadItems(); showToast('Refreshed', 'success'); };
+  window.refreshPurchases = () => { cleanup(); loadPurchases(); showToast('Refreshed', 'success'); };
+  window.refreshCustomers = () => { cleanup(); loadCustomers(); showToast('Refreshed', 'success'); };
+
+  // Tab switching
   document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', function() {
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('active')); this.classList.add('active');
-    currentTab = this.dataset.tab;
-    document.getElementById('usersPanel').style.display = currentTab==='users'?'block':'none';
-    document.getElementById('itemsPanel').style.display = currentTab==='items'?'block':'none';
-    document.getElementById('purchasesPanel').style.display = currentTab==='purchases'?'block':'none';
-    document.getElementById('customersPanel').style.display = currentTab==='customers'?'block':'none';
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+    document.getElementById(this.dataset.tab + 'Panel').classList.add('active');
   }));
 
-  onAuthStateChanged(auth, async (u) => { if (!u || !(await getDoc(doc(db, 'users', u.uid))).data()?.role?.includes('admin')) { window.location.href = 'auth.html'; return; } currentUser = u; const data = (await getDoc(doc(db, 'users', u.uid))).data(); document.getElementById('userName').textContent = data.fullName?.split(' ')[0]; document.getElementById('userAvatar').textContent = data.fullName?.charAt(0); document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadUsers(); loadItems(); loadPurchases(); loadCustomers(); });
-  document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => window.location.href='auth.html'));
+  onAuthStateChanged(auth, async (u) => {
+    if (!u) { window.location.href = 'auth.html'; return; }
+    currentUser = u;
+    const snap = await getDoc(doc(db, 'users', u.uid));
+    if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; }
+    userData = snap.data();
+    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin';
+    document.getElementById('userRole').textContent = userData.role;
+    document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0);
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+    loadUsers(); loadItems(); loadPurchases(); loadCustomers();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+  window.addEventListener('beforeunload', cleanup);
 </script>
 </body>
 </html>
