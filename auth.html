@@ -1,327 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>O.M.Ocreation Auth System</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-body {
-  font-family: Arial;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  color:white;
-}
-
-.card {
-  width: 380px;
-  background: white;
-  color: black;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-}
-
-h2 {
-  text-align:center;
-  margin-bottom: 15px;
-}
-
-input {
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border:1px solid #ddd;
-  border-radius:10px;
-  box-sizing:border-box;
-}
-
-button {
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:10px;
-  background:#ff4da6;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-button:disabled {
-  opacity:0.5;
-}
-
-.switch {
-  text-align:center;
-  margin-top:10px;
-  font-size:13px;
-  color:#555;
-  cursor:pointer;
-}
-
-.debug {
-  margin-top:10px;
-  background:#111;
-  color:#0f0;
-  font-size:11px;
-  padding:10px;
-  height:140px;
-  overflow:auto;
-  border-radius:10px;
-}
-
-.mode {
-  text-align:center;
-  font-size:12px;
-  margin-bottom:10px;
-  color:#666;
-}
-</style>
-</head>
-
-<body>
-
-<div class="card">
-
-  <h2>O.M.Ocreation</h2>
-  <div class="mode" id="modeText">Signup Mode</div>
-
-  <input id="name" placeholder="Full Name" />
-  <input id="email" placeholder="Email" />
-  <input id="password" type="password" placeholder="Password" />
-
-  <button id="authBtn">Create Account</button>
-
-  <div class="switch" id="toggleMode">Switch to Login</div>
-
-  <div class="debug" id="debug"></div>
-
-</div>
-
-<script>
-// ============================================
-// SUPABASE CONFIGURATION (ANON KEY ADDED)
-// ============================================
-const supabase = window.supabase.createClient(
-  "https://gogrmiflvfdetvtggzrk.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ"
-);
-
-// STATE
-let mode = "signup";
-
-// UI
-const btn = document.getElementById("authBtn");
-const debugBox = document.getElementById("debug");
-const modeText = document.getElementById("modeText");
-const toggle = document.getElementById("toggleMode");
-
-function log(title, data) {
-  const timestamp = new Date().toLocaleTimeString();
-  debugBox.innerText += `\n[${timestamp}] 📌 ${title}\n` + JSON.stringify(data, null, 2) + "\n----------------\n";
-  debugBox.scrollTop = debugBox.scrollHeight;
-  console.log(title, data);
-}
-
-function clearDebug() {
-  debugBox.innerText = "";
-}
-
-function setMode(newMode) {
-  mode = newMode;
-  modeText.innerText = newMode === "signup" ? "Signup Mode" : "Login Mode";
-  btn.innerText = newMode === "signup" ? "Create Account" : "Login";
-  
-  // Show/hide name field based on mode
-  const nameField = document.getElementById("name");
-  if (newMode === "login") {
-    nameField.style.display = "none";
-  } else {
-    nameField.style.display = "block";
-  }
-}
-
-// BUTTON CLICK
-btn.addEventListener("click", async () => {
-
-  clearDebug();
-
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-
-  log("INPUT", { name, email, passwordLength: password.length, mode: mode });
-
-  // Validation
-  if (!email || !password) {
-    log("ERROR", "Email and password are required");
-    alert("Email and password are required");
-    return;
-  }
-
-  if (mode === "signup" && !name) {
-    log("ERROR", "Full name is required for signup");
-    alert("Full name is required for signup");
-    return;
-  }
-
-  if (password.length < 6) {
-    log("ERROR", "Password must be at least 6 characters");
-    alert("Password must be at least 6 characters");
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerText = mode === "signup" ? "Creating..." : "Logging in...";
-
-  try {
-
-    if (mode === "signup") {
-
-      log("STEP 1", "SIGNUP STARTED - Calling auth.signUp()");
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password
-      });
-
-      log("AUTH RESPONSE", { data: data || null, error: error || null });
-
-      if (error) {
-        log("AUTH ERROR", error.message);
-        alert("Auth Error: " + error.message);
-        btn.disabled = false;
-        btn.innerText = "Create Account";
-        return;
-      }
-
-      const user = data?.user;
-
-      log("USER OBJECT", user || null);
-
-      if (!user || !user.id) {
-        log("ERROR", "No user ID returned from auth");
-        alert("Signup failed: No user ID returned");
-        btn.disabled = false;
-        btn.innerText = "Create Account";
-        return;
-      }
-
-      log("USER CREATED", { userId: user.id, email: user.email });
-
-      // Insert into users table
-      log("STEP 2", "Inserting into users table");
-
-      const insertRes = await supabase.from("users").insert([{
-        id: user.id,
-        full_name: name,
-        email: email,
-        role: "pending",
-        status: "pending",
-        base_salary: 0,
-        created_at: new Date().toISOString()
-      }]);
-
-      log("DB INSERT RESPONSE", insertRes);
-
-      if (insertRes.error) {
-        log("DB INSERT ERROR", insertRes.error.message);
-        alert("Database Error: " + insertRes.error.message);
-      } else {
-        log("SUCCESS", "Account created successfully!");
-        alert("Signup successful! Please wait for admin approval.");
-        // Clear form
-        document.getElementById("name").value = "";
-        document.getElementById("email").value = "";
-        document.getElementById("password").value = "";
-      }
-
-    } else {
-
-      // LOGIN MODE
-      log("STEP 1", "LOGIN STARTED - Calling auth.signInWithPassword()");
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      log("LOGIN RESPONSE", { data: data || null, error: error || null });
-
-      if (error) {
-        log("LOGIN ERROR", error.message);
-        alert("Login Error: " + error.message);
-        btn.disabled = false;
-        btn.innerText = "Login";
-        return;
-      }
-
-      const user = data?.user;
-      log("USER LOGGED IN", { userId: user?.id, email: user?.email });
-
-      // Check user status from users table
-      const { data: profile, error: profileError } = await supabase
-        .from("users")
-        .select("status, role")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError) {
-        log("PROFILE ERROR", profileError.message);
-        alert("User profile not found");
-        btn.disabled = false;
-        btn.innerText = "Login";
-        return;
-      }
-
-      log("USER PROFILE", profile);
-
-      if (profile.status !== "active") {
-        log("ACCESS DENIED", `Account status: ${profile.status}`);
-        alert(`Your account is ${profile.status}. Please wait for admin approval.`);
-        await supabase.auth.signOut();
-        btn.disabled = false;
-        btn.innerText = "Login";
-        return;
-      }
-
-      log("SUCCESS", "Login successful! Redirecting to dashboard...");
-      alert("Login successful! Redirecting to dashboard...");
-      
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 1500);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Authentication</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --bg: #F3F4F6;
+      --surface: #FFFFFF;
+      --text: #1F2937;
+      --text-light: #6B7280;
+      --error: #EF4444;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
 
-  } catch (err) {
-    log("UNEXPECTED ERROR", { message: err.message, stack: err.stack });
-    alert("Unexpected error: " + err.message);
-  }
+    .auth-container {
+      background: var(--surface);
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
 
-  btn.disabled = false;
-  btn.innerText = mode === "signup" ? "Create Account" : "Login";
-});
+    h2 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
 
-// MODE TOGGLE
-toggle.addEventListener("click", () => {
-  setMode(mode === "signup" ? "login" : "signup");
-});
+    .form-group {
+      margin-bottom: 1rem;
+    }
 
-// Initialize
-setMode("signup");
-log("SYSTEM READY", { 
-  supabaseUrl: "https://gogrmiflvfdetvtggzrk.supabase.co",
-  timestamp: new Date().toISOString(),
-  mode: "signup",
-  instructions: "Fill in the form and click the button"
-});
-</script>
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
 
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #D1D5DB;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .toggle-text {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    .toggle-text span {
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    #error-message {
+      color: var(--error);
+      font-size: 0.875rem;
+      text-align: center;
+      margin-top: 1rem;
+      min-height: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2 id="form-title">Login</h2>
+    
+    <form id="auth-form" onsubmit="event.preventDefault(); handleAuth();">
+      
+      <div id="name-group" class="form-group hidden">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="John Doe">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required placeholder="you@example.com">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required placeholder="••••••••">
+      </div>
+
+      <button id="submit-btn" type="submit">Sign In</button>
+      
+      <div id="error-message"></div>
+    </form>
+
+    <div class="toggle-text">
+      <span id="toggle-mode" onclick="toggleAuthMode()">Need an account? Sign up</span>
+    </div>
+  </div>
+
+  <script>
+    // --- 🧱 DATA LAYER (SUPABASE INIT) ---
+    const supabaseUrl = "https://gogrmiflvfdetvtggzrk.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvZ3JtaWZsdmZkZXR2dGdnenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NTg1NzgsImV4cCI6MjA5MjEzNDU3OH0.x3eD41bw8KKBed4IOT18FBon9YtM7MCyF2wkE7fd0TQ";
+    
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // --- 🧠 UI LOGIC LAYER ---
+    let isSignup = false;
+
+    function toggleAuthMode() {
+      isSignup = !isSignup;
+      const title = document.getElementById("form-title");
+      const btn = document.getElementById("submit-btn");
+      const toggleText = document.getElementById("toggle-mode");
+      const nameGroup = document.getElementById("name-group");
+      const errorDiv = document.getElementById("error-message");
+
+      errorDiv.textContent = ""; // Clear errors
+
+      if (isSignup) {
+        title.textContent = "Create an Account";
+        btn.textContent = "Sign Up";
+        toggleText.textContent = "Already have an account? Log in";
+        nameGroup.classList.remove("hidden");
+        document.getElementById("name").required = true;
+      } else {
+        title.textContent = "Login";
+        btn.textContent = "Sign In";
+        toggleText.textContent = "Need an account? Sign up";
+        nameGroup.classList.add("hidden");
+        document.getElementById("name").required = false;
+      }
+    }
+
+    function showError(message) {
+      document.getElementById("error-message").textContent = message;
+    }
+
+    async function handleAuth() {
+      const btn = document.getElementById("submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Processing...";
+      document.getElementById("error-message").textContent = "";
+
+      if (isSignup) {
+        await signup();
+      } else {
+        await login();
+      }
+
+      btn.disabled = false;
+      btn.textContent = isSignup ? "Sign Up" : "Sign In";
+    }
+
+    // --- 🔥 SIGNUP FLOW (YOUR EXACT CODE) ---
+    async function signup() {
+      const fullName = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      console.log("START SIGNUP");
+
+      try {
+        // STEP 1: CREATE AUTH USER
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password
+        });
+
+        console.log("AUTH RESULT:", data, error);
+
+        if (error) {
+          showError("Auth Error: " + error.message);
+          return;
+        }
+
+        const user = data?.user;
+
+        if (!user) {
+          showError("No user returned from auth");
+          return;
+        }
+
+        console.log("USER CREATED:", user.id);
+
+        // STEP 2: INSERT PROFILE (SAFE)
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert([{
+            id: user.id,
+            full_name: fullName,
+            email: email,
+            role: "pending",
+            status: "pending",
+            base_salary: 0
+          }]);
+
+        if (insertError) {
+          console.log("INSERT ERROR:", insertError);
+          showError("Profile creation failed: " + insertError.message);
+          return;
+        }
+
+        alert("Signup successful! You can now log in.");
+        toggleAuthMode(); // Switch to login view
+        document.getElementById("auth-form").reset();
+
+      } catch (err) {
+        console.log(err);
+        showError("Unexpected error occurred.");
+      }
+    }
+
+    // --- 🔐 LOGIN FLOW ---
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      console.log("START LOGIN");
+
+      try {
+        // STEP 1: VERIFY IDENTITY
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (authError) {
+          showError("Login Error: " + authError.message);
+          return;
+        }
+
+        const user = authData?.user;
+        
+        if (!user) {
+          showError("No user returned during login.");
+          return;
+        }
+
+        console.log("LOGIN SUCCESS:", user.id);
+
+        // STEP 2: FETCH ROLE & STATUS FROM DB
+        const { data: profile, error: profileError } = await supabase
+          .from("users")
+          .select("role, status")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError) {
+          showError("Could not fetch user profile: " + profileError.message);
+          return;
+        }
+
+        // Check if account is approved before redirecting
+        if (profile.status === "pending") {
+          showError("Your account is pending admin approval.");
+          // Optional: Sign them back out so they don't linger in an unauthorized state
+          await supabase.auth.signOut(); 
+          return;
+        }
+
+        // STEP 3: ROLE-BASED REDIRECT
+        alert(`Welcome back! Role: ${profile.role}`);
+        
+        if (profile.role === "admin") {
+          window.location.href = "admin-dashboard.html";
+        } else if (profile.role === "staff") {
+          window.location.href = "staff-dashboard.html";
+        } else if (profile.role === "attendant") {
+          window.location.href = "attendant-dashboard.html";
+        } else {
+          showError("Unknown user role.");
+        }
+
+      } catch (err) {
+        console.log(err);
+        showError("Unexpected error during login.");
+      }
+    }
+  </script>
 </body>
 </html>
