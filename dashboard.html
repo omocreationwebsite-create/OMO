@@ -2,50 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Dashboard · O.M.Ocreation ERP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>FashionStone ERP · O.M.Ocreation</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
     :root {
-      --pink: #ff4da6;
-      --pink-dark: #e6398c;
-      --pink-light: #ffb3d9;
-      --pink-soft: #fff0f6;
-      --dark: #1a1a2e;
-      --gray: #666;
-      --light-gray: #f5f5f5;
-      --success: #28a745;
-      --warning: #ffc107;
-      --danger: #dc3545;
-      --info: #17a2b8;
+      --primary: #ff4da6;
+      --primary-dark: #e6398c;
+      --primary-light: #ffb3d9;
+      --primary-soft: #fff0f6;
+      --dark: #0f0f1a;
+      --dark-light: #1a1a2e;
+      --gray: #6b7280;
+      --gray-light: #f3f4f6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
       --sidebar-width: 280px;
       --sidebar-collapsed: 80px;
       --header-height: 70px;
     }
     
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--light-gray);
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
       display: flex;
       min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
     }
     
     /* ========== SIDEBAR ========== */
     .sidebar {
       width: var(--sidebar-width);
-      background: linear-gradient(180deg, var(--dark) 0%, #252540 100%);
+      background: var(--dark);
       color: white;
       position: fixed;
       height: 100vh;
       overflow-y: auto;
-      transition: width 0.3s ease;
+      transition: width 0.25s ease;
       z-index: 100;
-      box-shadow: 5px 0 30px rgba(0,0,0,0.1);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.08);
     }
     
     .sidebar.collapsed {
@@ -53,86 +55,109 @@
     }
     
     .sidebar-header {
-      padding: 25px 20px;
+      padding: 24px 18px;
       display: flex;
       align-items: center;
       gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     
-    .sidebar-header .logo {
-      height: 40px;
+    .sidebar-header .logo-icon {
       width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       border-radius: 12px;
-      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      flex-shrink: 0;
     }
     
-    .sidebar-header h3 {
-      font-size: 1.2rem;
+    .sidebar-header .logo-text {
+      font-size: 1.25rem;
       font-weight: 700;
       white-space: nowrap;
+      letter-spacing: -0.3px;
     }
     
-    .sidebar-header h3 span { color: var(--pink); }
+    .sidebar-header .logo-text span {
+      color: var(--primary);
+    }
     
-    .sidebar.collapsed .sidebar-header h3,
+    .sidebar.collapsed .logo-text,
     .sidebar.collapsed .nav-text,
-    .sidebar.collapsed .user-info-text { display: none; }
+    .sidebar.collapsed .user-details {
+      display: none;
+    }
     
     .sidebar-nav {
       padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 180px);
+      overflow-y: auto;
     }
     
-    .nav-section { margin-bottom: 25px; }
+    .nav-section {
+      margin-bottom: 24px;
+    }
     
     .nav-section-title {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 12px;
-      padding-left: 12px;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 10px;
+      padding-left: 14px;
+      font-weight: 600;
     }
     
     .nav-item {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 12px 16px;
-      border-radius: 14px;
-      color: rgba(255,255,255,0.7);
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: rgba(255,255,255,0.65);
       text-decoration: none;
-      transition: all 0.2s;
-      margin-bottom: 4px;
+      transition: all 0.15s;
+      margin-bottom: 3px;
       cursor: pointer;
       border: none;
       background: none;
       width: 100%;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
+      text-align: left;
     }
     
-    .nav-item i { width: 22px; font-size: 1.2rem; }
+    .nav-item i {
+      width: 22px;
+      font-size: 1.1rem;
+      text-align: center;
+    }
     
     .nav-item:hover {
-      background: rgba(255,77,166,0.15);
+      background: rgba(255,77,166,0.12);
       color: white;
     }
     
     .nav-item.active {
-      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
-      box-shadow: 0 8px 20px rgba(255,77,166,0.3);
+      box-shadow: 0 6px 14px rgba(255,77,166,0.25);
     }
     
     .nav-item.logout {
-      color: rgba(255,100,100,0.8);
-      margin-top: 20px;
+      color: rgba(239,68,68,0.7);
+      margin-top: auto;
     }
     
     .nav-item.logout:hover {
-      background: rgba(220,53,69,0.2);
-      color: #ff6b6b;
+      background: rgba(239,68,68,0.12);
+      color: #f87171;
     }
     
     .sidebar-footer {
@@ -140,195 +165,241 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 20px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 20px 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: var(--dark);
     }
     
-    .user-info {
+    .user-profile {
       display: flex;
       align-items: center;
       gap: 12px;
     }
     
     .user-avatar {
-      width: 45px;
-      height: 45px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: white;
+      flex-shrink: 0;
     }
     
-    .user-info-text h4 { font-size: 0.9rem; font-weight: 600; }
-    .user-info-text p { font-size: 0.75rem; opacity: 0.7; }
+    .user-details {
+      overflow: hidden;
+    }
+    
+    .user-details h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .user-details p {
+      font-size: 0.7rem;
+      opacity: 0.6;
+      text-transform: capitalize;
+    }
     
     /* ========== MAIN CONTENT ========== */
     .main-content {
       flex: 1;
       margin-left: var(--sidebar-width);
-      transition: margin-left 0.3s ease;
+      transition: margin-left 0.25s ease;
       min-height: 100vh;
+      width: calc(100% - var(--sidebar-width));
     }
     
     .sidebar.collapsed + .main-content {
       margin-left: var(--sidebar-collapsed);
+      width: calc(100% - var(--sidebar-collapsed));
     }
     
     /* ========== TOP BAR ========== */
     .top-bar {
       height: var(--header-height);
       background: white;
-      padding: 0 30px;
+      padding: 0 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
       position: sticky;
       top: 0;
       z-index: 50;
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.95);
     }
     
     .top-bar-left {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
     }
     
     .menu-toggle {
       background: none;
       border: none;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       color: var(--gray);
       cursor: pointer;
-      padding: 8px;
+      padding: 10px;
       border-radius: 10px;
-      transition: all 0.2s;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
     .menu-toggle:hover {
-      background: var(--pink-soft);
-      color: var(--pink);
+      background: var(--primary-soft);
+      color: var(--primary);
     }
     
     .page-title {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 700;
       color: var(--dark);
+      letter-spacing: -0.3px;
     }
     
     .top-bar-right {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
     }
     
-    .notification-badge {
-      position: relative;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 10px;
-      transition: all 0.2s;
-    }
-    
-    .notification-badge:hover { background: var(--pink-soft); }
-    .notification-badge i { font-size: 1.3rem; color: var(--gray); }
-    
-    .badge-count {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      background: var(--danger);
-      color: white;
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 2px 5px;
-      border-radius: 20px;
-    }
-    
-    .date-display {
+    .date-badge {
       display: flex;
       align-items: center;
       gap: 8px;
       color: var(--gray);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: var(--gray-light);
+      padding: 8px 14px;
+      border-radius: 30px;
     }
     
-    /* ========== DASHBOARD CONTENT ========== */
-    .content-wrapper { padding: 30px; }
+    .notification-btn {
+      position: relative;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 10px;
+      transition: all 0.15s;
+      background: none;
+      border: none;
+    }
     
+    .notification-btn:hover {
+      background: var(--primary-soft);
+    }
+    
+    .notification-btn i {
+      font-size: 1.2rem;
+      color: var(--gray);
+    }
+    
+    .notification-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--danger);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 30px;
+      min-width: 18px;
+      text-align: center;
+    }
+    
+    /* ========== CONTENT WRAPPER ========== */
+    .content-wrapper {
+      padding: 28px;
+    }
+    
+    /* ========== STATS GRID ========== */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 25px;
-      margin-bottom: 30px;
+      gap: 22px;
+      margin-bottom: 28px;
     }
     
     .stat-card {
       background: white;
-      padding: 25px;
+      padding: 22px 20px;
       border-radius: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.03);
-      border: 1px solid rgba(255,77,166,0.08);
-      transition: transform 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid rgba(0,0,0,0.03);
+      transition: all 0.2s;
     }
     
     .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(255,77,166,0.1);
+      box-shadow: 0 8px 24px rgba(255,77,166,0.06);
+      border-color: rgba(255,77,166,0.1);
     }
     
     .stat-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
     
     .stat-header span {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--gray);
       font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
     
     .stat-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--pink-soft), white);
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--primary-soft);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--pink);
-      font-size: 1.4rem;
+      color: var(--primary);
+      font-size: 1.2rem;
     }
     
     .stat-value {
-      font-size: 2.2rem;
-      font-weight: 800;
+      font-size: 2rem;
+      font-weight: 700;
       color: var(--dark);
-      font-family: 'Playfair Display', serif;
+      letter-spacing: -0.5px;
     }
     
     .stat-change {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       margin-top: 8px;
+      font-weight: 500;
     }
     
     .stat-change.positive { color: var(--success); }
     .stat-change.negative { color: var(--danger); }
+    .stat-change.warning { color: var(--warning); }
     
-    /* Panels */
+    /* ========== PANELS ========== */
     .panel {
       background: white;
       border-radius: 24px;
-      padding: 25px;
-      margin-bottom: 30px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.03);
-      border: 1px solid rgba(255,77,166,0.08);
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid rgba(0,0,0,0.03);
     }
     
     .panel-header {
@@ -336,184 +407,224 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
     
     .panel-header h3 {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     
-    .panel-header a {
-      color: var(--pink);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
+    .panel-header h3 i {
+      color: var(--primary);
     }
     
-    /* Tables */
-    .table-responsive { overflow-x: auto; }
+    .panel-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    /* ========== TABLES ========== */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
     
     .data-table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 600px;
     }
     
     .data-table th {
       text-align: left;
       padding: 14px 12px;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: 600;
       color: var(--gray);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 2px solid var(--pink-soft);
+      border-bottom: 1.5px solid var(--primary-soft);
+      white-space: nowrap;
     }
     
     .data-table td {
       padding: 16px 12px;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      font-size: 0.85rem;
+      white-space: nowrap;
     }
     
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .data-table tr:hover td {
+      background: rgba(255,77,166,0.02);
+    }
+    
+    /* ========== BADGES ========== */
     .badge {
       padding: 5px 12px;
-      border-radius: 30px;
-      font-size: 0.75rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
       font-weight: 600;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
     }
     
-    .badge-success { background: rgba(40,167,69,0.1); color: var(--success); }
-    .badge-warning { background: rgba(255,193,7,0.1); color: var(--warning); }
-    .badge-danger { background: rgba(220,53,69,0.1); color: var(--danger); }
-    .badge-info { background: rgba(23,162,184,0.1); color: var(--info); }
-    .badge-pink { background: rgba(255,77,166,0.1); color: var(--pink); }
+    .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
+    .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
+    .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
+    .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
+    .badge-primary { background: rgba(255,77,166,0.1); color: var(--primary); }
+    .badge-pending { background: rgba(107,114,128,0.1); color: var(--gray); }
     
+    /* ========== BUTTONS ========== */
     .btn {
-      padding: 10px 20px;
+      padding: 10px 18px;
       border-radius: 40px;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s;
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: white;
       color: var(--dark);
-      border: 1px solid rgba(0,0,0,0.1);
+      border: 1px solid rgba(0,0,0,0.08);
+      white-space: nowrap;
     }
     
     .btn-primary {
-      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
       border: none;
-      box-shadow: 0 5px 15px rgba(255,77,166,0.3);
+      box-shadow: 0 4px 12px rgba(255,77,166,0.25);
     }
     
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(255,77,166,0.4);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(255,77,166,0.3);
     }
     
-    .btn-outline-pink {
-      border: 1.5px solid var(--pink);
-      color: var(--pink);
+    .btn-outline {
+      border: 1.5px solid rgba(255,77,166,0.3);
+      color: var(--primary);
       background: transparent;
     }
     
-    .btn-outline-pink:hover {
-      background: var(--pink);
-      color: white;
+    .btn-outline:hover {
+      background: var(--primary-soft);
+      border-color: var(--primary);
     }
     
-    .btn-sm { padding: 6px 14px; font-size: 0.75rem; }
-    .btn-success { background: var(--success); color: white; border: none; }
-    .btn-danger { background: var(--danger); color: white; border: none; }
-    .btn-outline { background: transparent; border: 1px solid var(--gray); }
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.7rem;
+    }
     
-    /* Attendance Terminal */
+    .btn-icon {
+      padding: 8px;
+      border-radius: 10px;
+    }
+    
+    .btn-success {
+      background: var(--success);
+      color: white;
+      border: none;
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+      border: none;
+    }
+    
+    /* ========== TWO COLUMN LAYOUT ========== */
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+    
+    /* ========== ANNOUNCEMENT BANNER ========== */
+    .announcement-banner {
+      background: linear-gradient(135deg, var(--primary-soft), white);
+      border-radius: 18px;
+      padding: 16px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .announcement-banner i {
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+    
+    .announcement-banner p {
+      flex: 1;
+      color: var(--dark);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    
+    /* ========== ATTENDANCE TERMINAL ========== */
     .attendance-terminal {
-      max-width: 600px;
+      max-width: 500px;
       margin: 0 auto;
       text-align: center;
     }
     
     .clock-display {
-      font-size: 4rem;
+      font-size: 3.5rem;
       font-weight: 800;
-      font-family: 'Playfair Display', serif;
       color: var(--dark);
-      margin-bottom: 10px;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
     }
     
     .date-display-large {
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--gray);
       margin-bottom: 30px;
     }
     
-    .webcam-container {
+    .webcam-wrapper {
       background: var(--dark);
       border-radius: 24px;
       padding: 20px;
-      margin-bottom: 25px;
+      margin-bottom: 24px;
     }
     
     .webcam-preview {
       width: 100%;
-      max-width: 400px;
+      max-width: 350px;
       border-radius: 16px;
       margin: 0 auto;
       display: block;
+      background: #2a2a3e;
     }
     
     .check-in-btn {
-      padding: 18px 40px;
-      font-size: 1.2rem;
+      padding: 18px 36px;
+      font-size: 1.1rem;
       border-radius: 60px;
     }
     
-    /* Announcement Banner */
-    .announcement-banner {
-      background: linear-gradient(135deg, var(--pink-soft), white);
-      border-radius: 20px;
-      padding: 18px 25px;
-      margin-bottom: 25px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      border-left: 5px solid var(--pink);
-    }
-    
-    .announcement-banner i { font-size: 1.8rem; color: var(--pink); }
-    .announcement-banner p { flex: 1; color: var(--dark); font-weight: 500; }
-    
-    /* Two Column Layout */
-    .two-column {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-    }
-    
-    /* Profile Completion Warning */
-    .profile-warning {
-      background: linear-gradient(135deg, rgba(255,193,7,0.15), rgba(255,77,166,0.1));
-      border-radius: 20px;
-      padding: 15px 25px;
-      margin-bottom: 25px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      border-left: 5px solid var(--warning);
-    }
-    
-    .profile-warning i { font-size: 1.5rem; color: var(--warning); }
-    .profile-warning p { flex: 1; color: var(--dark); }
-    
-    /* Modal */
+    /* ========== MODAL ========== */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -521,20 +632,21 @@
       right: 0;
       bottom: 0;
       background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(4px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      padding: 16px;
     }
     
     .modal {
       background: white;
-      border-radius: 30px;
-      padding: 35px;
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
+      border-radius: 28px;
+      padding: 28px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 85vh;
       overflow-y: auto;
     }
     
@@ -542,24 +654,30 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 25px;
+      margin-bottom: 22px;
     }
     
-    .modal-header h3 { font-size: 1.4rem; font-weight: 700; }
+    .modal-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
     
     .modal-close {
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       cursor: pointer;
       color: var(--gray);
+      padding: 6px;
     }
     
-    .form-group { margin-bottom: 20px; }
+    .form-group {
+      margin-bottom: 20px;
+    }
     
     .form-group label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--dark);
       margin-bottom: 8px;
@@ -567,73 +685,165 @@
     
     .form-control {
       width: 100%;
-      padding: 14px 18px;
-      border: 1.5px solid rgba(255,77,166,0.2);
-      border-radius: 50px;
-      font-size: 0.95rem;
-      font-family: 'Poppins', sans-serif;
-      transition: all 0.2s;
+      padding: 12px 16px;
+      border: 1.5px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
       outline: none;
+      background: white;
     }
     
     .form-control:focus {
-      border-color: var(--pink);
-      box-shadow: 0 0 0 4px rgba(255,77,166,0.1);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255,77,166,0.1);
     }
     
-    .form-control-sm {
-      padding: 8px 12px;
-      font-size: 0.85rem;
+    select.form-control {
+      cursor: pointer;
     }
     
     textarea.form-control {
-      border-radius: 20px;
+      border-radius: 16px;
       resize: vertical;
+      min-height: 80px;
     }
     
-    /* Page Views */
-    .page-view { display: none; }
-    .page-view.active { display: block; }
+    /* ========== PAGE VIEWS ========== */
+    .page-view {
+      display: none;
+    }
     
-    /* Toast Notification */
-    .toast {
+    .page-view.active {
+      display: block;
+    }
+    
+    /* ========== TOAST ========== */
+    .toast-container {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+    }
+    
+    .toast {
       background: white;
-      padding: 16px 24px;
+      padding: 14px 20px;
       border-radius: 50px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
       display: flex;
       align-items: center;
       gap: 12px;
-      z-index: 9999;
       transform: translateX(400px);
-      transition: transform 0.3s;
-      border-left: 5px solid var(--pink);
+      transition: transform 0.25s;
+      border-left: 4px solid var(--primary);
+      margin-top: 10px;
     }
     
-    .toast.show { transform: translateX(0); }
+    .toast.show {
+      transform: translateX(0);
+    }
+    
     .toast.success { border-left-color: var(--success); }
     .toast.error { border-left-color: var(--danger); }
     .toast.warning { border-left-color: var(--warning); }
     
-    /* Mobile Responsive */
+    /* ========== EMPTY STATE ========== */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
+    }
+    
+    .empty-state i {
+      font-size: 2.5rem;
+      color: var(--primary-light);
+      margin-bottom: 16px;
+    }
+    
+    /* ========== LOADING ========== */
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--primary-soft);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* ========== MOBILE RESPONSIVE ========== */
     @media (max-width: 992px) {
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .two-column { grid-template-columns: 1fr; }
-      .sidebar { width: var(--sidebar-collapsed); }
-      .sidebar .sidebar-header h3,
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        width: var(--sidebar-collapsed);
+      }
+      .sidebar .logo-text,
       .sidebar .nav-text,
-      .sidebar .user-info-text { display: none; }
-      .main-content { margin-left: var(--sidebar-collapsed); }
+      .sidebar .user-details {
+        display: none;
+      }
+      .main-content {
+        margin-left: var(--sidebar-collapsed);
+        width: calc(100% - var(--sidebar-collapsed));
+      }
     }
     
     @media (max-width: 576px) {
-      .stats-grid { grid-template-columns: 1fr; }
-      .content-wrapper { padding: 20px 15px; }
-      .top-bar { padding: 0 15px; }
-      .page-title { font-size: 1.1rem; }
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .content-wrapper {
+        padding: 18px 14px;
+      }
+      .top-bar {
+        padding: 0 16px;
+      }
+      .page-title {
+        font-size: 1.1rem;
+      }
+      .date-badge {
+        display: none;
+      }
+      .panel {
+        padding: 18px 14px;
+      }
+      .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+    
+    /* ========== SCROLLBAR ========== */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.15);
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -642,16 +852,16 @@
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <img src="assets/log1.jpg" alt="Logo" class="logo" onerror="this.style.display='none'">
-    <h3>💎 <span>O.M.O</span>creation</h3>
+    <div class="logo-icon">💎</div>
+    <div class="logo-text"><span>Fashion</span>Stone</div>
   </div>
   
   <nav class="sidebar-nav" id="sidebarNav"></nav>
   
   <div class="sidebar-footer">
-    <div class="user-info">
-      <div class="user-avatar" id="userAvatar">OM</div>
-      <div class="user-info-text">
+    <div class="user-profile">
+      <div class="user-avatar" id="userAvatar">FS</div>
+      <div class="user-details">
         <h4 id="userName">Loading...</h4>
         <p id="userRole">•••</p>
       </div>
@@ -672,97 +882,67 @@
     </div>
     
     <div class="top-bar-right">
-      <div class="date-display">
+      <div class="date-badge">
         <i class="far fa-calendar-alt"></i>
         <span id="currentDate"></span>
       </div>
       
-      <div class="notification-badge" id="notificationBell">
+      <button class="notification-btn" id="notificationBell">
         <i class="far fa-bell"></i>
-        <span class="badge-count" id="notificationCount">0</span>
-      </div>
+        <span class="notification-badge" id="notificationCount" style="display: none;">0</span>
+      </button>
     </div>
   </header>
   
   <!-- Content Wrapper -->
   <div class="content-wrapper">
     
-    <!-- Profile Incomplete Warning -->
-    <div class="profile-warning" id="profileWarning" style="display: none;">
-      <i class="fas fa-exclamation-triangle"></i>
-      <p><strong>Your profile is incomplete.</strong> Complete it to access all features.</p>
-      <button class="btn btn-sm btn-primary" id="completeProfileBtn">Complete Now</button>
-    </div>
-    
     <!-- Announcement Banner -->
     <div class="announcement-banner" id="announcementBanner" style="display: none;">
       <i class="fas fa-bullhorn"></i>
-      <p id="announcementText">Welcome to O.M.Ocreation ERP</p>
-      <button class="btn btn-sm btn-outline-pink" id="dismissAnnouncement">Dismiss</button>
+      <p id="announcementText"></p>
+      <button class="btn btn-sm btn-outline" id="dismissAnnouncement">Dismiss</button>
     </div>
     
-    <!-- ========== PAGE VIEWS ========== -->
-    
-    <!-- Master Admin Dashboard View -->
-    <div id="adminDashboardView" class="page-view">
+    <!-- ========== ADMIN DASHBOARD ========== -->
+    <div id="adminView" class="page-view">
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Total Staff</span>
-            <div class="stat-icon"><i class="fas fa-users"></i></div>
-          </div>
-          <div class="stat-value" id="totalStaff">0</div>
-          <div class="stat-change positive"><i class="fas fa-arrow-up"></i> +3 this month</div>
+          <div class="stat-header"><span>Total Staff</span><div class="stat-icon"><i class="fas fa-users"></i></div></div>
+          <div class="stat-value" id="adminTotalStaff">0</div>
+          <div class="stat-change" id="adminActiveStaff">0 active</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Pending Approvals</span>
-            <div class="stat-icon"><i class="fas fa-clock"></i></div>
-          </div>
-          <div class="stat-value" id="pendingApprovalsCount">0</div>
-          <div class="stat-change warning">Requires attention</div>
+          <div class="stat-header"><span>Pending Approvals</span><div class="stat-icon"><i class="fas fa-clock"></i></div></div>
+          <div class="stat-value" id="adminPendingCount">0</div>
+          <div class="stat-change warning">Requires action</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Revenue (Monthly)</span>
-            <div class="stat-icon"><i class="fas fa-naira-sign"></i></div>
-          </div>
-          <div class="stat-value" id="monthlyRevenue">₦0</div>
-          <div class="stat-change positive"><i class="fas fa-arrow-up"></i> +12%</div>
+          <div class="stat-header"><span>Revenue (MTD)</span><div class="stat-icon"><i class="fas fa-naira-sign"></i></div></div>
+          <div class="stat-value" id="adminRevenue">₦0</div>
+          <div class="stat-change" id="adminRevenueChange">vs last month</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Tasks Completed</span>
-            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-          </div>
-          <div class="stat-value" id="tasksCompleted">0</div>
+          <div class="stat-header"><span>Tasks Completed</span><div class="stat-icon"><i class="fas fa-check-circle"></i></div></div>
+          <div class="stat-value" id="adminTasksCompleted">0</div>
           <div class="stat-change">This month</div>
         </div>
       </div>
       
-      <!-- PENDING APPROVALS SECTION (NEW) -->
       <div class="panel">
         <div class="panel-header">
-          <h3><i class="fas fa-user-clock" style="margin-right: 10px; color: var(--warning);"></i> Pending User Approvals</h3>
-          <button class="btn btn-outline-pink btn-sm" onclick="loadPendingApprovals()">
+          <h3><i class="fas fa-user-clock"></i> Pending User Approvals</h3>
+          <button class="btn btn-outline btn-sm" onclick="window.refreshPendingApprovals()">
             <i class="fas fa-sync-alt"></i> Refresh
           </button>
         </div>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table class="data-table">
             <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Registered</th>
-                <th>Assign Role</th>
-                <th>Base Salary (₦)</th>
-                <th>Actions</th>
-              </tr>
+              <tr><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th><th>Assign Role</th><th>Salary (₦)</th><th>Actions</th></tr>
             </thead>
             <tbody id="pendingApprovalsTable">
-              <tr><td colspan="7" style="text-align:center;">Loading pending approvals...</td></tr>
+              <tr><td colspan="7"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -771,106 +951,76 @@
       <div class="two-column">
         <div class="panel">
           <div class="panel-header">
-            <h3><i class="fas fa-user-check" style="margin-right: 10px; color: var(--pink);"></i> Today's Attendance</h3>
-            <a href="#" data-view="attendance">View All <i class="fas fa-arrow-right"></i></a>
+            <h3><i class="fas fa-calendar-check"></i> Today's Attendance</h3>
+            <button class="btn btn-outline btn-sm" onclick="window.switchView('attendance')">View All</button>
           </div>
-          <div class="table-responsive">
+          <div class="table-wrapper">
             <table class="data-table">
-              <thead>
-                <tr><th>Staff</th><th>Check-in</th><th>Status</th></tr>
-              </thead>
-              <tbody id="todayAttendanceTable">
-                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
-              </tbody>
+              <thead><tr><th>Staff</th><th>Check-in</th><th>Status</th></tr></thead>
+              <tbody id="adminTodayAttendance"></tbody>
             </table>
           </div>
         </div>
         
         <div class="panel">
           <div class="panel-header">
-            <h3><i class="fas fa-tasks" style="margin-right: 10px; color: var(--pink);"></i> Recent Tasks</h3>
+            <h3><i class="fas fa-exclamation-triangle"></i> Recent Alerts</h3>
           </div>
-          <div class="table-responsive">
-            <table class="data-table">
-              <thead>
-                <tr><th>Task</th><th>Assigned To</th><th>Status</th></tr>
-              </thead>
-              <tbody id="recentTasksTable">
-                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
-              </tbody>
-            </table>
+          <div id="adminAlerts" class="empty-state">
+            <i class="fas fa-bell-slash"></i>
+            <p>No alerts</p>
           </div>
         </div>
       </div>
       
       <div class="panel">
         <div class="panel-header">
-          <h3><i class="fas fa-history" style="margin-right: 10px; color: var(--pink);"></i> Recent Audit Logs</h3>
-          <a href="#" data-view="audit">View Full Audit <i class="fas fa-arrow-right"></i></a>
+          <h3><i class="fas fa-history"></i> Recent Audit Logs</h3>
+          <button class="btn btn-outline btn-sm" onclick="window.switchView('audit')">Full Audit</button>
         </div>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table class="data-table">
-            <thead>
-              <tr><th>Action</th><th>Performed By</th><th>Time</th><th>Details</th></tr>
-            </thead>
-            <tbody id="auditLogsTable">
-              <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
-            </tbody>
+            <thead><tr><th>Time</th><th>Action</th><th>User</th><th>Details</th></tr></thead>
+            <tbody id="adminAuditLogs"></tbody>
           </table>
         </div>
       </div>
     </div>
     
-    <!-- Master Attendant Dashboard View -->
-    <div id="attendantDashboardView" class="page-view">
+    <!-- ========== ATTENDANT DASHBOARD ========== -->
+    <div id="attendantView" class="page-view">
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Staff Present Today</span>
-            <div class="stat-icon"><i class="fas fa-user-check"></i></div>
-          </div>
-          <div class="stat-value" id="attendantPresentCount">0</div>
-          <div class="stat-change" id="attendantLateCount">0 late</div>
+          <div class="stat-header"><span>Present Today</span><div class="stat-icon"><i class="fas fa-user-check"></i></div></div>
+          <div class="stat-value" id="attPresentCount">0</div>
+          <div class="stat-change" id="attLateCount">0 late</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Active Tasks</span>
-            <div class="stat-icon"><i class="fas fa-tasks"></i></div>
-          </div>
-          <div class="stat-value" id="attendantActiveTasks">0</div>
-          <div class="stat-change">Assigned today</div>
+          <div class="stat-header"><span>Active Tasks</span><div class="stat-icon"><i class="fas fa-tasks"></i></div></div>
+          <div class="stat-value" id="attActiveTasks">0</div>
+          <div class="stat-change">Assigned</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Low Stock Items</span>
-            <div class="stat-icon"><i class="fas fa-box"></i></div>
-          </div>
-          <div class="stat-value" id="attendantLowStock">0</div>
+          <div class="stat-header"><span>Low Stock</span><div class="stat-icon"><i class="fas fa-box"></i></div></div>
+          <div class="stat-value" id="attLowStock">0</div>
           <div class="stat-change warning">Needs restock</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Pending My Approvals</span>
-            <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
-          </div>
-          <div class="stat-value" id="attendantPendingCount">0</div>
-          <div class="stat-change">Awaiting action</div>
+          <div class="stat-header"><span>Pending Approval</span><div class="stat-icon"><i class="fas fa-hourglass"></i></div></div>
+          <div class="stat-value" id="attPendingItems">0</div>
+          <div class="stat-change">Awaiting</div>
         </div>
       </div>
       
       <div class="panel">
         <div class="panel-header">
-          <h3><i class="fas fa-clipboard-list" style="margin-right: 10px; color: var(--pink);"></i> Task Assignment</h3>
+          <h3><i class="fas fa-clipboard-list"></i> Task Assignment</h3>
           <button class="btn btn-primary btn-sm" id="assignTaskBtn"><i class="fas fa-plus"></i> Assign Task</button>
         </div>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table class="data-table">
-            <thead>
-              <tr><th>Task</th><th>Assigned To</th><th>Deadline</th><th>Status</th><th>Points</th><th>Action</th></tr>
-            </thead>
-            <tbody id="attendantTasksTable">
-              <tr><td colspan="6" style="text-align:center;">Loading...</td></tr>
-            </tbody>
+            <thead><tr><th>Task</th><th>Assigned To</th><th>Deadline</th><th>Status</th><th>Points</th><th>Action</th></tr></thead>
+            <tbody id="attendantTasksTable"></tbody>
           </table>
         </div>
       </div>
@@ -878,88 +1028,82 @@
       <div class="two-column">
         <div class="panel">
           <div class="panel-header">
-            <h3><i class="fas fa-warehouse" style="margin-right: 10px; color: var(--pink);"></i> Stock Overview</h3>
-            <button class="btn btn-outline-pink btn-sm" id="addStockItemBtn"><i class="fas fa-plus"></i> Add Item</button>
+            <h3><i class="fas fa-warehouse"></i> Stock Overview</h3>
+            <button class="btn btn-outline btn-sm" id="addStockItemBtn"><i class="fas fa-plus"></i> Add Item</button>
           </div>
-          <div class="table-responsive">
+          <div class="table-wrapper">
             <table class="data-table">
-              <thead>
-                <tr><th>Item</th><th>Available</th><th>Status</th></tr>
-              </thead>
-              <tbody id="stockOverviewTable">
-                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
-              </tbody>
+              <thead><tr><th>Item</th><th>Available</th><th>Sold</th><th>Status</th></tr></thead>
+              <tbody id="attendantStockTable"></tbody>
             </table>
           </div>
         </div>
         
         <div class="panel">
           <div class="panel-header">
-            <h3><i class="fas fa-users" style="margin-right: 10px; color: var(--pink);"></i> Staff Overview</h3>
+            <h3><i class="fas fa-users"></i> Staff Performance</h3>
           </div>
-          <div class="table-responsive">
+          <div class="table-wrapper">
             <table class="data-table">
-              <thead>
-                <tr><th>Name</th><th>Tasks Done</th><th>Points</th></tr>
-              </thead>
-              <tbody id="staffOverviewTable">
-                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
-              </tbody>
+              <thead><tr><th>Name</th><th>Tasks Done</th><th>Points</th></tr></thead>
+              <tbody id="attendantStaffTable"></tbody>
             </table>
           </div>
         </div>
       </div>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-shopping-cart"></i> Purchase Requests</h3>
+          <button class="btn btn-primary btn-sm" id="createPurchaseBtn"><i class="fas fa-plus"></i> New Request</button>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="attendantPurchaseTable"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
     
-    <!-- Staff Dashboard View -->
-    <div id="staffDashboardView" class="page-view">
+    <!-- ========== STAFF DASHBOARD ========== -->
+    <div id="staffView" class="page-view">
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-header">
-            <span>My Points</span>
-            <div class="stat-icon"><i class="fas fa-coins"></i></div>
-          </div>
+          <div class="stat-header"><span>My Points</span><div class="stat-icon"><i class="fas fa-coins"></i></div></div>
           <div class="stat-value" id="staffPoints">0</div>
-          <div class="stat-change">Value: ₦<span id="pointValue">100</span>/point</div>
+          <div class="stat-change">₦<span id="pointValue">100</span>/point</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Tasks Completed</span>
-            <div class="stat-icon"><i class="fas fa-check-double"></i></div>
-          </div>
-          <div class="stat-value" id="staffTasksCompleted">0</div>
+          <div class="stat-header"><span>Tasks Done</span><div class="stat-icon"><i class="fas fa-check-double"></i></div></div>
+          <div class="stat-value" id="staffTasksDone">0</div>
           <div class="stat-change">This month</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Leave Days Left</span>
-            <div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div>
-          </div>
+          <div class="stat-header"><span>Leave Days</span><div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div></div>
           <div class="stat-value" id="staffLeaveDays">2</div>
-          <div class="stat-change">This month</div>
+          <div class="stat-change">Remaining</div>
         </div>
         <div class="stat-card">
-          <div class="stat-header">
-            <span>Estimated Salary</span>
-            <div class="stat-icon"><i class="fas fa-naira-sign"></i></div>
-          </div>
-          <div class="stat-value" id="staffEstimatedSalary">₦0</div>
+          <div class="stat-header"><span>Est. Salary</span><div class="stat-icon"><i class="fas fa-naira-sign"></i></div></div>
+          <div class="stat-value" id="staffEstSalary">₦0</div>
           <div class="stat-change">This month</div>
         </div>
       </div>
       
+      <div class="announcement-banner" id="staffAnnouncement" style="display: none;">
+        <i class="fas fa-bullhorn"></i>
+        <p id="staffAnnouncementText"></p>
+      </div>
+      
       <div class="panel">
         <div class="panel-header">
-          <h3><i class="fas fa-tasks" style="margin-right: 10px; color: var(--pink);"></i> My Assigned Tasks</h3>
+          <h3><i class="fas fa-tasks"></i> My Tasks</h3>
         </div>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table class="data-table">
-            <thead>
-              <tr><th>Task</th><th>Deadline</th><th>Status</th><th>Points</th><th>Action</th></tr>
-            </thead>
-            <tbody id="staffTasksTable">
-              <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
-            </tbody>
+            <thead><tr><th>Task</th><th>Deadline</th><th>Status</th><th>Points</th><th>Action</th></tr></thead>
+            <tbody id="staffTasksTable"></tbody>
           </table>
         </div>
       </div>
@@ -967,32 +1111,24 @@
       <div class="two-column">
         <div class="panel">
           <div class="panel-header">
-            <h3><i class="fas fa-calendar-alt" style="margin-right: 10px; color: var(--pink);"></i> My Attendance</h3>
+            <h3><i class="fas fa-calendar"></i> My Attendance</h3>
           </div>
-          <div class="table-responsive">
+          <div class="table-wrapper">
             <table class="data-table">
-              <thead>
-                <tr><th>Date</th><th>Check-in</th><th>Status</th></tr>
-              </thead>
-              <tbody id="staffAttendanceTable">
-                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
-              </tbody>
+              <thead><tr><th>Date</th><th>Check-in</th><th>Status</th></tr></thead>
+              <tbody id="staffAttendanceTable"></tbody>
             </table>
           </div>
         </div>
         
         <div class="panel">
           <div class="panel-header">
-            <h3><i class="fas fa-history" style="margin-right: 10px; color: var(--pink);"></i> Point History</h3>
+            <h3><i class="fas fa-history"></i> Point History</h3>
           </div>
-          <div class="table-responsive">
+          <div class="table-wrapper">
             <table class="data-table">
-              <thead>
-                <tr><th>Reason</th><th>Points</th><th>Date</th></tr>
-              </thead>
-              <tbody id="staffPointHistoryTable">
-                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
-              </tbody>
+              <thead><tr><th>Reason</th><th>Points</th><th>Date</th></tr></thead>
+              <tbody id="staffPointHistory"></tbody>
             </table>
           </div>
         </div>
@@ -1000,21 +1136,26 @@
       
       <div class="panel">
         <div class="panel-header">
-          <h3><i class="fas fa-calendar-check" style="margin-right: 10px; color: var(--pink);"></i> Staff Leave Calendar</h3>
+          <h3><i class="fas fa-calendar-plus"></i> Request Leave</h3>
         </div>
-        <div id="leaveCalendar" style="padding: 15px;">
-          <p style="color: var(--gray);">Loading leave calendar...</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <input type="date" id="leaveStartDate" class="form-control" style="flex:1; min-width:140px;">
+          <input type="date" id="leaveEndDate" class="form-control" style="flex:1; min-width:140px;">
+          <button class="btn btn-primary" id="requestLeaveBtn">Request</button>
         </div>
+        <p style="font-size:0.75rem; color:var(--gray); margin-top:12px;">
+          <i class="fas fa-info-circle"></i> Max 2 days per month. Admin approval required.
+        </p>
       </div>
     </div>
     
-    <!-- Attendance Terminal View -->
+    <!-- ========== ATTENDANCE TERMINAL ========== -->
     <div id="attendanceView" class="page-view">
       <div class="attendance-terminal">
         <div class="clock-display" id="liveClock">--:--:--</div>
         <div class="date-display-large" id="liveDate"></div>
         
-        <div class="webcam-container">
+        <div class="webcam-wrapper">
           <video id="webcamVideo" class="webcam-preview" autoplay playsinline></video>
           <canvas id="webcamCanvas" style="display: none;"></canvas>
         </div>
@@ -1023,245 +1164,99 @@
           <i class="fas fa-camera"></i> Check In Now
         </button>
         
-        <p style="margin-top: 20px; color: var(--gray); font-size: 0.85rem;">
-          <i class="fas fa-info-circle"></i> Your photo will be captured for attendance verification.
+        <p style="margin-top: 18px; color: var(--gray); font-size: 0.8rem;">
+          <i class="fas fa-shield-alt"></i> Photo captured for verification
         </p>
         
-        <div id="attendanceMessage" class="auth-message" style="margin-top: 20px;"></div>
+        <div id="attendanceMessage" style="margin-top: 18px;"></div>
       </div>
     </div>
     
-    <!-- Audit Logs View -->
+    <!-- ========== AUDIT LOGS ========== -->
     <div id="auditView" class="page-view">
       <div class="panel">
         <div class="panel-header">
           <h3><i class="fas fa-history"></i> Full Audit Trail</h3>
-          <button class="btn btn-outline-pink btn-sm" id="exportAuditBtn"><i class="fas fa-download"></i> Export CSV</button>
+          <button class="btn btn-outline btn-sm" id="exportAuditBtn"><i class="fas fa-download"></i> Export</button>
         </div>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table class="data-table">
-            <thead>
-              <tr><th>Timestamp</th><th>Action</th><th>User</th><th>Collection</th><th>Details</th></tr>
-            </thead>
-            <tbody id="fullAuditTable">
-              <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
-            </tbody>
+            <thead><tr><th>Timestamp</th><th>Action</th><th>User</th><th>Collection</th><th>Details</th></tr></thead>
+            <tbody id="fullAuditTable"></tbody>
           </table>
         </div>
       </div>
     </div>
     
-    <!-- Stock Management View -->
+    <!-- ========== STOCK MANAGEMENT ========== -->
     <div id="stockView" class="page-view">
       <div class="panel">
         <div class="panel-header">
           <h3><i class="fas fa-boxes"></i> Inventory Management</h3>
-          <div>
-            <button class="btn btn-outline-pink btn-sm" id="exportStockBtn"><i class="fas fa-download"></i> Export</button>
+          <div class="panel-actions">
+            <button class="btn btn-outline btn-sm" id="exportStockBtn"><i class="fas fa-download"></i> Export</button>
             <button class="btn btn-primary btn-sm" id="newStockItemBtn"><i class="fas fa-plus"></i> New Item</button>
           </div>
         </div>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table class="data-table">
-            <thead>
-              <tr><th>Item Name</th><th>Category</th><th>Available</th><th>Sold</th><th>Unit Price</th><th>Total Value</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody id="fullStockTable">
-              <tr><td colspan="8" style="text-align:center;">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
-      <div class="panel">
-        <div class="panel-header">
-          <h3><i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i> Low Stock Items (Suggested Purchase)</h3>
-          <button class="btn btn-primary btn-sm" id="createPurchaseRequestBtn"><i class="fas fa-cart-plus"></i> Create Purchase Request</button>
-        </div>
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-              <tr><th>Item</th><th>Current Stock</th><th>Threshold</th><th>Suggested Order</th><th>Select</th></tr>
-            </thead>
-            <tbody id="lowStockSuggestionsTable">
-              <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
-            </tbody>
+            <thead><tr><th>Item</th><th>Category</th><th>Available</th><th>Sold</th><th>Unit Price</th><th>Total Value</th><th>Status</th></tr></thead>
+            <tbody id="fullStockTable"></tbody>
           </table>
         </div>
       </div>
     </div>
     
-    <!-- Customer Records View -->
+    <!-- ========== CUSTOMERS ========== -->
     <div id="customersView" class="page-view">
       <div class="panel">
         <div class="panel-header">
           <h3><i class="fas fa-users"></i> Customer Records</h3>
           <button class="btn btn-primary btn-sm" id="addCustomerBtn"><i class="fas fa-plus"></i> Add Customer</button>
         </div>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table class="data-table">
-            <thead>
-              <tr><th>Name</th><th>Phone</th><th>Birthday</th><th>Total Spent</th><th>Last Purchase</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody id="customersTable">
-              <tr><td colspan="7" style="text-align:center;">Loading...</td></tr>
-            </tbody>
+            <thead><tr><th>Name</th><th>Phone</th><th>Total Spent</th><th>Last Purchase</th><th>Status</th></tr></thead>
+            <tbody id="customersTable"></tbody>
           </table>
         </div>
       </div>
     </div>
     
-    <!-- Finance Dashboard View (Admin Only) -->
-    <div id="financeView" class="page-view">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-header">
-            <span>Total Revenue (MTD)</span>
-            <div class="stat-icon"><i class="fas fa-naira-sign"></i></div>
-          </div>
-          <div class="stat-value" id="financeRevenue">₦0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-header">
-            <span>Total Expenses (MTD)</span>
-            <div class="stat-icon"><i class="fas fa-arrow-down"></i></div>
-          </div>
-          <div class="stat-value" id="financeExpenses">₦0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-header">
-            <span>Net Profit (MTD)</span>
-            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-          </div>
-          <div class="stat-value" id="financeProfit">₦0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-header">
-            <span>Salary Payout (This Month)</span>
-            <div class="stat-icon"><i class="fas fa-users"></i></div>
-          </div>
-          <div class="stat-value" id="financeSalary">₦0</div>
-        </div>
-      </div>
-      
-      <div class="panel">
-        <div class="panel-header">
-          <h3><i class="fas fa-chart-bar"></i> Monthly Comparison</h3>
-        </div>
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-              <tr><th>Month</th><th>Revenue</th><th>Expenses</th><th>Profit</th><th>vs Previous</th></tr>
-            </thead>
-            <tbody id="monthlyComparisonTable">
-              <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
-      <div class="panel">
-        <div class="panel-header">
-          <h3><i class="fas fa-lightbulb" style="color: var(--warning);"></i> AI Suggestions</h3>
-        </div>
-        <div id="financeSuggestions" style="padding: 15px;">
-          <p style="color: var(--gray);">Analyzing spending patterns...</p>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Profile / Leave Requests View -->
+    <!-- ========== PROFILE ========== -->
     <div id="profileView" class="page-view">
       <div class="two-column">
         <div class="panel">
           <div class="panel-header">
             <h3><i class="fas fa-user-circle"></i> My Profile</h3>
-            <button class="btn btn-outline-pink btn-sm" id="editProfileBtn"><i class="fas fa-edit"></i> Edit</button>
           </div>
-          <div style="padding: 10px;">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" class="form-control" id="profileName" readonly>
-            </div>
-            <div class="form-group">
-              <label>Email</label>
-              <input type="email" class="form-control" id="profileEmail" readonly>
-            </div>
-            <div class="form-group">
-              <label>Phone</label>
-              <input type="tel" class="form-control" id="profilePhone" readonly>
-            </div>
-            <div class="form-group">
-              <label>Role</label>
-              <input type="text" class="form-control" id="profileRole" readonly>
-            </div>
-            <div class="form-group">
-              <label>Base Salary</label>
-              <input type="text" class="form-control" id="profileBaseSalary" readonly>
-            </div>
-            <div class="form-group">
-              <label>Total Points</label>
-              <input type="text" class="form-control" id="profilePoints" readonly>
-            </div>
-            <div class="form-group">
-              <label>Address</label>
-              <input type="text" class="form-control" id="profileAddressField" placeholder="Not set" readonly>
-            </div>
-            <div class="form-group">
-              <label>Emergency Contact</label>
-              <input type="tel" class="form-control" id="profileEmergencyContact" placeholder="Not set" readonly>
-            </div>
-            <div class="form-group">
-              <label>Bank Details</label>
-              <input type="text" class="form-control" id="profileBankDetails" placeholder="Not set" readonly>
-            </div>
+          <div id="profileContent">
+            <div class="loading-spinner"><div class="spinner"></div></div>
           </div>
         </div>
         
         <div class="panel">
           <div class="panel-header">
-            <h3><i class="fas fa-calendar-plus"></i> Request Leave</h3>
+            <h3><i class="fas fa-calendar-check"></i> Leave History</h3>
           </div>
-          <div style="padding: 10px;">
-            <div class="form-group">
-              <label>Select Dates (Max 2 days/month)</label>
-              <input type="date" class="form-control" id="leaveStartDate">
-              <input type="date" class="form-control" id="leaveEndDate" style="margin-top: 10px;">
-            </div>
-            <div class="form-group">
-              <label>Reason</label>
-              <textarea class="form-control" id="leaveReason" rows="3" placeholder="Explain reason for leave..."></textarea>
-            </div>
-            <button class="btn btn-primary" id="submitLeaveRequestBtn">Submit Request</button>
-            
-            <div style="margin-top: 25px;">
-              <h4 style="margin-bottom: 15px; font-size: 1rem;">My Leave History</h4>
-              <div class="table-responsive">
-                <table class="data-table">
-                  <thead>
-                    <tr><th>Dates</th><th>Status</th><th>Approved By</th></tr>
-                  </thead>
-                  <tbody id="leaveHistoryTable">
-                    <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Dates</th><th>Status</th></tr></thead>
+              <tbody id="leaveHistoryTable"></tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
     
-    <!-- Notifications View -->
+    <!-- ========== NOTIFICATIONS ========== -->
     <div id="notificationsView" class="page-view">
       <div class="panel">
         <div class="panel-header">
-          <h3><i class="fas fa-bell"></i> All Notifications</h3>
-          <button class="btn btn-outline-pink btn-sm" id="markAllReadBtn">Mark All Read</button>
+          <h3><i class="fas fa-bell"></i> Notifications</h3>
+          <button class="btn btn-outline btn-sm" id="markAllReadBtn">Mark All Read</button>
         </div>
-        <div id="notificationsList">
-          <p style="text-align: center; color: var(--gray); padding: 30px;">Loading notifications...</p>
-        </div>
+        <div id="notificationsList"></div>
       </div>
     </div>
     
@@ -1270,9 +1265,9 @@
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
-  <div class="modal" id="modal">
+  <div class="modal">
     <div class="modal-header">
-      <h3 id="modalTitle">Modal Title</h3>
+      <h3 id="modalTitle">Modal</h3>
       <button class="modal-close" id="modalClose">&times;</button>
     </div>
     <div id="modalContent"></div>
@@ -1280,958 +1275,467 @@
 </div>
 
 <!-- Toast Container -->
-<div class="toast" id="toast">
-  <i class="fas fa-check-circle" id="toastIcon"></i>
-  <span id="toastMessage">Message</span>
-</div>
+<div class="toast-container" id="toastContainer"></div>
 
 <script type="module">
-  // ========== FIREBASE INITIALIZATION ==========
+  // ========== FIREBASE CONFIG ==========
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { 
-    getAuth, 
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { 
-    getFirestore,
-    doc,
-    getDoc,
-    collection,
-    query,
-    where,
-    orderBy,
-    limit,
-    onSnapshot,
-    addDoc,
-    updateDoc,
-    serverTimestamp,
-    getDocs,
-    deleteDoc,
-    setDoc
+    getFirestore, doc, getDoc, collection, query, where, orderBy, limit, onSnapshot, 
+    addDoc, updateDoc, serverTimestamp, getDocs, deleteDoc, setDoc, Timestamp 
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
-  authDomain: "fashion-46e5d.firebaseapp.com",
-  projectId: "fashion-46e5d",
-  storageBucket: "fashion-46e5d.firebasestorage.app",
-  messagingSenderId: "408062284317",
-  appId: "1:408062284317:web:eb905bce68926c10a0ecf4",
-  measurementId: "G-2B7LMCWS3R"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
+    authDomain: "fashion-46e5d.firebaseapp.com",
+    projectId: "fashion-46e5d",
+    storageBucket: "fashion-46e5d.firebasestorage.app",
+    messagingSenderId: "408062284317",
+    appId: "1:408062284317:web:eb905bce68926c10a0ecf4",
+    measurementId: "G-2B7LMCWS3R"
+  };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  console.log('%c🎯 O.M.Ocreation ERP Dashboard — Active', 'color: #ff4da6; font-weight: bold;');
-
   // ========== GLOBAL STATE ==========
   let currentUser = null;
   let userData = null;
   let currentView = 'dashboard';
-  let sidebarCollapsed = false;
   let webcamStream = null;
+  let sidebarCollapsed = false;
 
-  // ========== DOM ELEMENTS ==========
-  const sidebar = document.getElementById('sidebar');
-  const sidebarNav = document.getElementById('sidebarNav');
-  const menuToggle = document.getElementById('menuToggle');
-  const pageTitle = document.getElementById('pageTitle');
-  const userName = document.getElementById('userName');
-  const userRole = document.getElementById('userRole');
-  const userAvatar = document.getElementById('userAvatar');
-  const currentDate = document.getElementById('currentDate');
-  const notificationCount = document.getElementById('notificationCount');
-  const announcementBanner = document.getElementById('announcementBanner');
-  const announcementText = document.getElementById('announcementText');
-  const profileWarning = document.getElementById('profileWarning');
-  const completeProfileBtn = document.getElementById('completeProfileBtn');
-  const modalOverlay = document.getElementById('modalOverlay');
-  const modal = document.getElementById('modal');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalContent = document.getElementById('modalContent');
-  const modalClose = document.getElementById('modalClose');
-  const toast = document.getElementById('toast');
-  const toastMessage = document.getElementById('toastMessage');
-  const toastIcon = document.getElementById('toastIcon');
-
-  // View elements
-  const adminDashboardView = document.getElementById('adminDashboardView');
-  const attendantDashboardView = document.getElementById('attendantDashboardView');
-  const staffDashboardView = document.getElementById('staffDashboardView');
-  const attendanceView = document.getElementById('attendanceView');
-  const auditView = document.getElementById('auditView');
-  const stockView = document.getElementById('stockView');
-  const customersView = document.getElementById('customersView');
-  const financeView = document.getElementById('financeView');
-  const profileView = document.getElementById('profileView');
-  const notificationsView = document.getElementById('notificationsView');
-
-  // ========== HELPER FUNCTIONS ==========
+  // ========== UTILITY FUNCTIONS ==========
   function formatDate(date) {
     if (!date) return '-';
-    return new Date(date).toLocaleDateString('en-GB', { 
-      day: '2-digit', month: 'short', year: 'numeric' 
-    });
+    const d = date.toDate ? date.toDate() : new Date(date);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   function formatTime(date) {
     if (!date) return '-';
-    return new Date(date).toLocaleTimeString('en-GB', { 
-      hour: '2-digit', minute: '2-digit' 
-    });
+    const d = date.toDate ? date.toDate() : new Date(date);
+    return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   }
 
   function formatCurrency(amount) {
-    return '₦' + parseFloat(amount || 0).toLocaleString('en-NG');
+    return '₦' + (amount || 0).toLocaleString('en-NG');
   }
 
   function showToast(message, type = 'success') {
-    toastMessage.textContent = message;
-    toast.className = `toast show ${type}`;
-    toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 
-                         type === 'error' ? 'fas fa-exclamation-circle' : 
-                         type === 'warning' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
-    setTimeout(() => toast.classList.remove('show'), 4000);
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
   }
 
   function showModal(title, content) {
-    modalTitle.textContent = title;
-    modalContent.innerHTML = content;
-    modalOverlay.style.display = 'flex';
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalContent').innerHTML = content;
+    document.getElementById('modalOverlay').style.display = 'flex';
   }
 
   function hideModal() {
-    modalOverlay.style.display = 'none';
+    document.getElementById('modalOverlay').style.display = 'none';
   }
 
-  async function logAudit(actionType, userId, note = '') {
+  async function logAudit(action, collectionName, docId, note = '') {
     try {
       await addDoc(collection(db, 'audit_logs'), {
-        actionType: actionType,
-        collectionName: 'users',
-        documentId: userId || currentUser?.uid || 'system',
-        performedBy: currentUser?.uid || 'system',
-        performedAt: serverTimestamp(),
-        note: note
+        actionType: action, collectionName, documentId: docId || 'system',
+        performedBy: currentUser?.uid || 'system', performedAt: serverTimestamp(), note
       });
-    } catch (e) {
-      console.warn('Audit log failed:', e);
-    }
+    } catch (e) { console.warn('Audit log failed:', e); }
   }
-
-  // ========== PROFILE COMPLETION CHECK (NEW) ==========
-  async function checkProfileCompletion() {
-    if (!userData) return;
-    
-    if (!userData.profileCompleted) {
-      profileWarning.style.display = 'flex';
-    } else {
-      profileWarning.style.display = 'none';
-    }
-  }
-
-  function showProfileCompletionModal() {
-    showModal('Complete Your Profile', `
-      <div style="text-align: center; padding: 10px;">
-        <i class="fas fa-user-check" style="font-size: 3rem; color: var(--pink); margin-bottom: 20px;"></i>
-        <h4 style="margin-bottom: 15px;">Welcome to O.M.Ocreation!</h4>
-        <p style="color: var(--gray); margin-bottom: 25px;">Please complete your profile information to get started.</p>
-        
-        <div class="form-group">
-          <label>Profile Picture (Optional)</label>
-          <input type="file" id="profilePicture" accept="image/*" class="form-control">
-        </div>
-        
-        <div class="form-group">
-          <label>Address</label>
-          <input type="text" id="profileAddress" class="form-control" placeholder="Your address" value="${userData.address || ''}">
-        </div>
-        
-        <div class="form-group">
-          <label>Emergency Contact</label>
-          <input type="tel" id="emergencyContact" class="form-control" placeholder="Phone number" value="${userData.emergencyContact || ''}">
-        </div>
-        
-        <div class="form-group">
-          <label>Bank Details (for salary)</label>
-          <input type="text" id="bankName" class="form-control" placeholder="Bank Name" style="margin-bottom: 10px;" value="${userData.bankName || ''}">
-          <input type="text" id="accountNumber" class="form-control" placeholder="Account Number" value="${userData.accountNumber || ''}">
-        </div>
-        
-        <button class="btn btn-primary" onclick="window.completeProfile()">Save & Continue</button>
-        <button class="btn btn-outline" onclick="window.skipProfileForNow()" style="margin-top: 10px;">Remind Me Later</button>
-      </div>
-    `);
-  }
-
-  window.completeProfile = async () => {
-    const address = document.getElementById('profileAddress')?.value || '';
-    const emergencyContact = document.getElementById('emergencyContact')?.value || '';
-    const bankName = document.getElementById('bankName')?.value || '';
-    const accountNumber = document.getElementById('accountNumber')?.value || '';
-    
-    try {
-      await updateDoc(doc(db, 'users', currentUser.uid), {
-        profileCompleted: true,
-        completedAt: serverTimestamp(),
-        address: address,
-        emergencyContact: emergencyContact,
-        bankName: bankName,
-        accountNumber: accountNumber
-      });
-      
-      userData.profileCompleted = true;
-      profileWarning.style.display = 'none';
-      hideModal();
-      showToast('Profile completed! Welcome aboard.', 'success');
-      await logAudit('profile_completed', currentUser.uid, 'User completed profile');
-    } catch (error) {
-      showToast('Failed to save profile: ' + error.message, 'error');
-    }
-  };
-
-  window.skipProfileForNow = () => {
-    hideModal();
-    showToast('You can complete your profile later from the Profile page.', 'info');
-  };
-
-  completeProfileBtn?.addEventListener('click', showProfileCompletionModal);
-
-  // ========== PENDING APPROVALS (ADMIN ONLY) ==========
-  async function loadPendingApprovals() {
-    if (!userData || !(userData.role === 'admin' || userData.role === 'super_admin')) return;
-    
-    try {
-      const pendingQuery = query(
-        collection(db, 'users'), 
-        where('status', '==', 'pending_approval'),
-        orderBy('createdAt', 'desc')
-      );
-      
-      const snapshot = await getDocs(pendingQuery);
-      const tableBody = document.getElementById('pendingApprovalsTable');
-      tableBody.innerHTML = '';
-      
-      document.getElementById('pendingApprovalsCount').textContent = snapshot.size;
-      
-      if (snapshot.empty) {
-        tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 30px; color: var(--gray);">No pending approvals</td></tr>';
-        return;
-      }
-      
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><strong>${data.fullName || 'N/A'}</strong></td>
-          <td>${data.email || 'N/A'}</td>
-          <td>${data.phone || '-'}</td>
-          <td>${formatDate(data.createdAt?.toDate())}</td>
-          <td>
-            <select id="role-${docSnap.id}" class="form-control form-control-sm" style="width: 140px;">
-              <option value="staff">Staff (Worker)</option>
-              <option value="attendant">Desk Attendant</option>
-              <option value="attendant_chief">Chief Attendant</option>
-            </select>
-          </td>
-          <td>
-            <input type="number" id="salary-${docSnap.id}" placeholder="50000" class="form-control form-control-sm" style="width: 100px;" value="50000">
-          </td>
-          <td>
-            <button class="btn btn-sm btn-success" onclick="window.approveUser('${docSnap.id}')" style="margin-right: 5px;">
-              <i class="fas fa-check"></i> Approve
-            </button>
-            <button class="btn btn-sm btn-danger" onclick="window.rejectUser('${docSnap.id}')">
-              <i class="fas fa-times"></i> Reject
-            </button>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
-      
-    } catch (error) {
-      console.error('Error loading pending approvals:', error);
-      document.getElementById('pendingApprovalsTable').innerHTML = 
-        '<tr><td colspan="7" style="text-align:center; color: var(--danger);">Error loading approvals</td></tr>';
-    }
-  }
-
-  window.approveUser = async (userId) => {
-    const roleSelect = document.getElementById(`role-${userId}`);
-    const salaryInput = document.getElementById(`salary-${userId}`);
-    
-    if (!roleSelect || !salaryInput) {
-      showToast('Form elements not found', 'error');
-      return;
-    }
-    
-    const role = roleSelect.value;
-    const salary = parseFloat(salaryInput.value) || 0;
-    const note = prompt('Add approval note (optional):');
-    
-    if (salary <= 0) {
-      showToast('Please enter a valid salary amount', 'warning');
-      return;
-    }
-    
-    try {
-      await updateDoc(doc(db, 'users', userId), {
-        role: role,
-        baseSalary: salary,
-        status: 'active',
-        approvedBy: currentUser.uid,
-        approvedAt: serverTimestamp(),
-        approvalNote: note || null,
-        profileCompleted: false
-      });
-      
-      await addDoc(collection(db, 'notifications'), {
-        userId: userId,
-        type: 'account_approved',
-        title: 'Account Approved!',
-        message: `Your account has been approved as ${role}. Please login and complete your profile.`,
-        isRead: false,
-        createdAt: serverTimestamp()
-      });
-      
-      await logAudit('user_approved', currentUser.uid, `Approved user ${userId} as ${role} with salary ₦${salary}`);
-      
-      showToast('User approved successfully', 'success');
-      loadPendingApprovals();
-      loadAdminDashboard();
-    } catch (error) {
-      console.error('Approval error:', error);
-      showToast('Approval failed: ' + error.message, 'error');
-    }
-  };
-
-  window.rejectUser = async (userId) => {
-    const reason = prompt('Reason for rejection:');
-    if (!reason) return;
-    
-    try {
-      await updateDoc(doc(db, 'users', userId), {
-        status: 'rejected',
-        rejectedBy: currentUser.uid,
-        rejectedAt: serverTimestamp(),
-        rejectionReason: reason
-      });
-      
-      await addDoc(collection(db, 'notifications'), {
-        userId: userId,
-        type: 'account_rejected',
-        title: 'Account Not Approved',
-        message: `Your registration was not approved. Reason: ${reason}`,
-        isRead: false,
-        createdAt: serverTimestamp()
-      });
-      
-      await logAudit('user_rejected', currentUser.uid, `Rejected user ${userId}. Reason: ${reason}`);
-      
-      showToast('User rejected', 'info');
-      loadPendingApprovals();
-    } catch (error) {
-      showToast('Rejection failed: ' + error.message, 'error');
-    }
-  };
-
-  window.loadPendingApprovals = loadPendingApprovals;
 
   // ========== SWITCH VIEW ==========
-  function switchView(viewId) {
+  window.switchView = function(viewId) {
     document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
-    document.getElementById(viewId + 'View')?.classList.add('active');
+    const viewElement = document.getElementById(viewId + 'View');
+    if (viewElement) viewElement.classList.add('active');
     currentView = viewId;
     
     const titles = {
-      'adminDashboard': 'Admin Dashboard',
-      'attendantDashboard': 'Attendant Dashboard',
-      'staffDashboard': 'Staff Dashboard',
-      'attendance': 'Attendance Terminal',
-      'audit': 'Audit Logs',
-      'stock': 'Stock Management',
-      'customers': 'Customer Records',
-      'finance': 'Finance Dashboard',
-      'profile': 'My Profile',
-      'notifications': 'Notifications'
+      admin: 'Admin Dashboard', attendant: 'Attendant Dashboard', staff: 'Staff Dashboard',
+      attendance: 'Attendance Terminal', audit: 'Audit Logs', stock: 'Stock Management',
+      customers: 'Customer Records', profile: 'My Profile', notifications: 'Notifications'
     };
-    pageTitle.textContent = titles[viewId] || 'Dashboard';
+    document.getElementById('pageTitle').textContent = titles[viewId] || 'Dashboard';
     
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.classList.remove('active');
-      if (item.dataset.view === viewId) item.classList.add('active');
-    });
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector(`.nav-item[data-view="${viewId}"]`)?.classList.add('active');
     
     loadViewData(viewId);
-  }
+  };
 
-  function updateSidebarForRole(role) {
-    const navItems = [];
+  // ========== SIDEBAR SETUP ==========
+  function setupSidebar(role) {
+    const nav = document.getElementById('sidebarNav');
+    const items = [];
     
     if (role === 'super_admin' || role === 'admin') {
-      navItems.push(
-        { icon: 'fas fa-tachometer-alt', text: 'Dashboard', view: 'adminDashboard' },
-        { icon: 'fas fa-user-check', text: 'Attendance', view: 'attendance' },
-        { icon: 'fas fa-boxes', text: 'Stock', view: 'stock' },
-        { icon: 'fas fa-users', text: 'Customers', view: 'customers' },
-        { icon: 'fas fa-chart-pie', text: 'Finance', view: 'finance' },
-        { icon: 'fas fa-history', text: 'Audit Logs', view: 'audit' },
-        { icon: 'fas fa-user', text: 'Profile', view: 'profile' },
-        { icon: 'fas fa-bell', text: 'Notifications', view: 'notifications' }
-      );
+      items.push({ icon: 'fa-chart-pie', text: 'Dashboard', view: 'admin' });
+      items.push({ icon: 'fa-user-check', text: 'Attendance', view: 'attendance' });
+      items.push({ icon: 'fa-box', text: 'Stock', view: 'stock' });
+      items.push({ icon: 'fa-users', text: 'Customers', view: 'customers' });
+      items.push({ icon: 'fa-history', text: 'Audit', view: 'audit' });
     } else if (role === 'attendant_chief' || role === 'attendant') {
-      navItems.push(
-        { icon: 'fas fa-tachometer-alt', text: 'Dashboard', view: 'attendantDashboard' },
-        { icon: 'fas fa-user-check', text: 'Attendance', view: 'attendance' },
-        { icon: 'fas fa-boxes', text: 'Stock', view: 'stock' },
-        { icon: 'fas fa-users', text: 'Customers', view: 'customers' },
-        { icon: 'fas fa-user', text: 'Profile', view: 'profile' },
-        { icon: 'fas fa-bell', text: 'Notifications', view: 'notifications' }
-      );
+      items.push({ icon: 'fa-chart-pie', text: 'Dashboard', view: 'attendant' });
+      items.push({ icon: 'fa-user-check', text: 'Attendance', view: 'attendance' });
+      items.push({ icon: 'fa-box', text: 'Stock', view: 'stock' });
+      items.push({ icon: 'fa-users', text: 'Customers', view: 'customers' });
     } else {
-      navItems.push(
-        { icon: 'fas fa-tachometer-alt', text: 'Dashboard', view: 'staffDashboard' },
-        { icon: 'fas fa-user-check', text: 'Attendance', view: 'attendance' },
-        { icon: 'fas fa-user', text: 'Profile', view: 'profile' },
-        { icon: 'fas fa-bell', text: 'Notifications', view: 'notifications' }
-      );
+      items.push({ icon: 'fa-chart-pie', text: 'Dashboard', view: 'staff' });
+      items.push({ icon: 'fa-user-check', text: 'Attendance', view: 'attendance' });
     }
     
-    sidebarNav.innerHTML = '';
-    navItems.forEach(item => {
-      const navItem = document.createElement('button');
-      navItem.className = 'nav-item';
-      if ((item.view === 'adminDashboard' && (role === 'admin' || role === 'super_admin')) ||
-          (item.view === 'attendantDashboard' && (role === 'attendant' || role === 'attendant_chief')) ||
-          (item.view === 'staffDashboard' && role === 'staff')) {
-        navItem.classList.add('active');
-      }
-      navItem.dataset.view = item.view;
-      navItem.innerHTML = `<i class="${item.icon}"></i><span class="nav-text">${item.text}</span>`;
-      navItem.addEventListener('click', () => switchView(item.view));
-      sidebarNav.appendChild(navItem);
-    });
+    items.push({ icon: 'fa-user', text: 'Profile', view: 'profile' });
+    items.push({ icon: 'fa-bell', text: 'Notifications', view: 'notifications' });
     
-    const logoutItem = document.createElement('button');
-    logoutItem.className = 'nav-item logout';
-    logoutItem.innerHTML = `<i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span>`;
-    logoutItem.addEventListener('click', async () => {
-      await signOut(auth);
-      window.location.href = 'auth.html';
-    });
-    sidebarNav.appendChild(logoutItem);
+    nav.innerHTML = '';
+    
+    const mainSection = document.createElement('div'); mainSection.className = 'nav-section';
+    mainSection.innerHTML = '<div class="nav-section-title">MAIN</div>';
+    items.slice(0, -2).forEach(item => mainSection.appendChild(createNavItem(item)));
+    nav.appendChild(mainSection);
+    
+    const accountSection = document.createElement('div'); accountSection.className = 'nav-section';
+    accountSection.innerHTML = '<div class="nav-section-title">ACCOUNT</div>';
+    items.slice(-2).forEach(item => accountSection.appendChild(createNavItem(item)));
+    nav.appendChild(accountSection);
+    
+    const logoutItem = createNavItem({ icon: 'fa-sign-out-alt', text: 'Logout', view: 'logout' });
+    logoutItem.classList.add('logout');
+    logoutItem.addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+    nav.appendChild(logoutItem);
   }
 
+  function createNavItem(item) {
+    const el = document.createElement('button');
+    el.className = 'nav-item';
+    el.dataset.view = item.view;
+    el.innerHTML = `<i class="fas ${item.icon}"></i><span class="nav-text">${item.text}</span>`;
+    el.addEventListener('click', () => item.view === 'logout' ? null : window.switchView(item.view));
+    return el;
+  }
+
+  // ========== LOAD VIEW DATA ==========
   async function loadViewData(viewId) {
     if (!userData) return;
     
-    switch(viewId) {
-      case 'adminDashboard':
-        await loadAdminDashboard();
-        await loadPendingApprovals();
-        break;
-      case 'attendantDashboard':
-        await loadAttendantDashboard();
-        break;
-      case 'staffDashboard':
-        await loadStaffDashboard();
-        break;
-      case 'attendance':
-        initAttendanceTerminal();
-        break;
-      case 'audit':
-        await loadAuditLogs();
-        break;
-      case 'stock':
-        await loadStockData();
-        break;
-      case 'customers':
-        await loadCustomersData();
-        break;
-      case 'finance':
-        await loadFinanceData();
-        break;
-      case 'profile':
-        await loadProfileData();
-        break;
-      case 'notifications':
-        await loadNotifications();
-        break;
-    }
+    if (viewId === 'admin') await loadAdminData();
+    else if (viewId === 'attendant') await loadAttendantData();
+    else if (viewId === 'staff') await loadStaffData();
+    else if (viewId === 'attendance') initAttendance();
+    else if (viewId === 'audit') await loadAuditData();
+    else if (viewId === 'stock') await loadStockData();
+    else if (viewId === 'customers') await loadCustomersData();
+    else if (viewId === 'profile') await loadProfileData();
+    else if (viewId === 'notifications') await loadNotificationsData();
   }
 
-  async function loadAdminDashboard() {
+  // ========== ADMIN DATA ==========
+  async function loadAdminData() {
     try {
       const usersSnap = await getDocs(collection(db, 'users'));
-      const totalStaff = usersSnap.docs.filter(d => {
-        const data = d.data();
-        return data.role === 'staff' && data.status === 'active';
-      }).length;
-      document.getElementById('totalStaff').textContent = totalStaff;
+      const users = usersSnap.docs.map(d => d.data());
+      const activeStaff = users.filter(u => u.role === 'staff' && u.status === 'active').length;
+      const pendingUsers = users.filter(u => u.status === 'pending_approval').length;
       
-      const pendingSnap = await getDocs(query(collection(db, 'users'), where('status', '==', 'pending_approval')));
-      document.getElementById('pendingApprovalsCount').textContent = pendingSnap.size;
+      document.getElementById('adminTotalStaff').textContent = users.filter(u => u.role === 'staff').length;
+      document.getElementById('adminActiveStaff').textContent = `${activeStaff} active`;
+      document.getElementById('adminPendingCount').textContent = pendingUsers;
       
-      document.getElementById('monthlyRevenue').textContent = formatCurrency(1250000);
-      document.getElementById('tasksCompleted').textContent = '24';
-      
-      const today = new Date().toISOString().split('T')[0];
-      const attendanceSnap = await getDocs(query(collection(db, 'attendance'), where('date', '==', today), limit(5)));
-      const tableBody = document.getElementById('todayAttendanceTable');
-      tableBody.innerHTML = '';
-      attendanceSnap.forEach(doc => {
-        const data = doc.data();
-        tableBody.innerHTML += `<tr><td>${data.userId?.substring(0,8) || 'Staff'}</td><td>${formatTime(data.checkInTime?.toDate())}</td><td><span class="badge ${data.status === 'late' ? 'badge-warning' : 'badge-success'}">${data.status}</span></td></tr>`;
-      });
-      if (tableBody.children.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No attendance today</td></tr>';
-      }
-      
-      const tasksSnap = await getDocs(query(collection(db, 'tasks'), orderBy('createdAt', 'desc'), limit(5)));
-      const tasksTable = document.getElementById('recentTasksTable');
-      tasksTable.innerHTML = '';
-      tasksSnap.forEach(doc => {
-        const data = doc.data();
-        tasksTable.innerHTML += `<tr><td>${data.title}</td><td>${data.assignedTo?.substring(0,8) || 'Unassigned'}</td><td><span class="badge badge-${data.status === 'completed' ? 'success' : 'warning'}">${data.status}</span></td></tr>`;
-      });
-      
-      const auditSnap = await getDocs(query(collection(db, 'audit_logs'), orderBy('performedAt', 'desc'), limit(5)));
-      const auditTable = document.getElementById('auditLogsTable');
-      auditTable.innerHTML = '';
-      auditSnap.forEach(doc => {
-        const data = doc.data();
-        auditTable.innerHTML += `<tr><td>${data.actionType}</td><td>${data.performedBy?.substring(0,8) || 'System'}</td><td>${formatTime(data.performedAt?.toDate())}</td><td>${data.note || '-'}</td></tr>`;
-      });
-      
-    } catch (error) {
-      console.error('Error loading admin dashboard:', error);
-    }
+      await loadPendingApprovalsTable();
+      await loadAdminAttendance();
+      await loadAdminAudit();
+    } catch (e) { console.error(e); }
   }
 
-  async function loadAttendantDashboard() {
+  async function loadPendingApprovalsTable() {
+    const q = query(collection(db, 'users'), where('status', '==', 'pending_approval'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    const tbody = document.getElementById('pendingApprovalsTable');
+    tbody.innerHTML = '';
+    
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-check-circle"></i><p>No pending approvals</p></div></td></tr>';
+      return;
+    }
+    
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${d.fullName || '-'}</td><td>${d.email || '-'}</td><td>${d.phone || '-'}</td>
+        <td>${formatDate(d.createdAt)}</td>
+        <td><select id="role-${docSnap.id}" class="form-control" style="padding:6px 10px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></td>
+        <td><input type="number" id="salary-${docSnap.id}" class="form-control" style="padding:6px 10px; width:100px;" value="50000"></td>
+        <td style="display:flex; gap:6px;">
+          <button class="btn btn-sm btn-success" onclick="window.approveUser('${docSnap.id}')">Approve</button>
+          <button class="btn btn-sm btn-danger" onclick="window.rejectUser('${docSnap.id}')">Reject</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  window.approveUser = async (userId) => {
+    const role = document.getElementById(`role-${userId}`).value;
+    const salary = parseFloat(document.getElementById(`salary-${userId}`).value) || 0;
     try {
-      const today = new Date().toISOString().split('T')[0];
-      const attendanceSnap = await getDocs(query(collection(db, 'attendance'), where('date', '==', today)));
-      const presentCount = attendanceSnap.docs.filter(d => d.data().status !== 'absent').length;
-      const lateCount = attendanceSnap.docs.filter(d => d.data().status === 'late').length;
-      document.getElementById('attendantPresentCount').textContent = presentCount;
-      document.getElementById('attendantLateCount').textContent = `${lateCount} late`;
-      
-      const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('status', 'in', ['pending', 'in_progress'])));
-      document.getElementById('attendantActiveTasks').textContent = tasksSnap.size;
-      
-      const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', '==', 'low')));
-      document.getElementById('attendantLowStock').textContent = stockSnap.size;
-      document.getElementById('attendantPendingCount').textContent = '0';
-      
-      const tasksTable = document.getElementById('attendantTasksTable');
-      tasksTable.innerHTML = '';
-      const allTasksSnap = await getDocs(query(collection(db, 'tasks'), orderBy('createdAt', 'desc'), limit(10)));
-      allTasksSnap.forEach(doc => {
-        const data = doc.data();
-        tasksTable.innerHTML += `<tr>
-          <td>${data.title}</td><td>${data.assignedTo?.substring(0,8) || 'Unassigned'}</td>
-          <td>${formatDate(data.deadline?.toDate())}</td>
-          <td><span class="badge badge-${data.status === 'completed' ? 'success' : data.status === 'in_progress' ? 'info' : 'warning'}">${data.status}</span></td>
-          <td>${data.pointsEarned || 0}</td>
-          <td><button class="btn btn-sm btn-outline-pink" onclick="window.updateTaskStatus('${doc.id}')">Update</button></td>
-        </tr>`;
-      });
-      
-      const stockTable = document.getElementById('stockOverviewTable');
-      stockTable.innerHTML = '';
-      const stockItemsSnap = await getDocs(query(collection(db, 'stock_items'), limit(5)));
-      stockItemsSnap.forEach(doc => {
-        const data = doc.data();
-        stockTable.innerHTML += `<tr><td>${data.name}</td><td>${data.quantityAvailable || 0}</td><td><span class="badge badge-${data.status === 'low' ? 'warning' : 'success'}">${data.status || 'available'}</span></td></tr>`;
-      });
-      
-      const staffTable = document.getElementById('staffOverviewTable');
-      staffTable.innerHTML = '';
-      const staffSnap = await getDocs(query(collection(db, 'users'), where('role', '==', 'staff'), limit(5)));
-      staffSnap.forEach(doc => {
-        const data = doc.data();
-        staffTable.innerHTML += `<tr><td>${data.fullName || 'Staff'}</td><td>${data.tasksCompleted || 0}</td><td>${data.totalPoints || 0}</td></tr>`;
-      });
-      
-    } catch (error) {
-      console.error('Error loading attendant dashboard:', error);
-    }
+      await updateDoc(doc(db, 'users', userId), { role, baseSalary: salary, status: 'active', approvedBy: currentUser.uid, approvedAt: serverTimestamp() });
+      await logAudit('approve_user', 'users', userId, `Approved as ${role}`);
+      showToast('User approved', 'success');
+      loadAdminData();
+    } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+  };
+
+  window.rejectUser = async (userId) => {
+    try {
+      await updateDoc(doc(db, 'users', userId), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp() });
+      await logAudit('reject_user', 'users', userId);
+      showToast('User rejected', 'info');
+      loadAdminData();
+    } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+  };
+
+  window.refreshPendingApprovals = () => loadPendingApprovalsTable();
+
+  async function loadAdminAttendance() {
+    const today = new Date().toISOString().split('T')[0];
+    const q = query(collection(db, 'attendance'), where('date', '==', today), limit(5));
+    const snap = await getDocs(q);
+    const tbody = document.getElementById('adminTodayAttendance');
+    tbody.innerHTML = '';
+    snap.forEach(d => { const data = d.data(); tbody.innerHTML += `<tr><td>${data.userId?.slice(0,8)}</td><td>${formatTime(data.checkInTime)}</td><td><span class="badge ${data.status==='late'?'badge-warning':'badge-success'}">${data.status}</span></td></tr>`; });
+    if (snap.empty) tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><p>No attendance today</p></div></td></tr>';
   }
 
-  async function loadStaffDashboard() {
+  async function loadAdminAudit() {
+    const q = query(collection(db, 'audit_logs'), orderBy('performedAt', 'desc'), limit(5));
+    const snap = await getDocs(q);
+    const tbody = document.getElementById('adminAuditLogs');
+    tbody.innerHTML = '';
+    snap.forEach(d => { const data = d.data(); tbody.innerHTML += `<tr><td>${formatTime(data.performedAt)}</td><td>${data.actionType}</td><td>${data.performedBy?.slice(0,8)}</td><td>${data.note}</td></tr>`; });
+  }
+
+  // ========== ATTENDANT DATA ==========
+  async function loadAttendantData() {
+    const today = new Date().toISOString().split('T')[0];
+    const attSnap = await getDocs(query(collection(db, 'attendance'), where('date', '==', today)));
+    const present = attSnap.docs.filter(d => d.data().status !== 'absent').length;
+    const late = attSnap.docs.filter(d => d.data().status === 'late').length;
+    document.getElementById('attPresentCount').textContent = present;
+    document.getElementById('attLateCount').textContent = `${late} late`;
+    
+    const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('status', 'in', ['pending', 'in_progress'])));
+    document.getElementById('attActiveTasks').textContent = tasksSnap.size;
+    
+    const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', '==', 'low')));
+    document.getElementById('attLowStock').textContent = stockSnap.size;
+    
+    await loadAttendantTasks();
+    await loadAttendantStock();
+    await loadAttendantStaff();
+  }
+
+  async function loadAttendantTasks() {
+    const q = query(collection(db, 'tasks'), orderBy('createdAt', 'desc'), limit(10));
+    const snap = await getDocs(q);
+    const tbody = document.getElementById('attendantTasksTable');
+    tbody.innerHTML = '';
+    snap.forEach(d => {
+      const data = d.data();
+      tbody.innerHTML += `<tr><td>${data.title}</td><td>${data.assignedTo?.slice(0,8)}</td><td>${formatDate(data.deadline)}</td><td><span class="badge badge-${data.status==='completed'?'success':'warning'}">${data.status}</span></td><td>${data.pointsEarned||0}</td><td><button class="btn btn-sm btn-outline" onclick="window.updateTaskStatus('${d.id}')">Update</button></td></tr>`;
+    });
+  }
+
+  async function loadAttendantStock() {
+    const snap = await getDocs(query(collection(db, 'stock_items'), limit(5)));
+    const tbody = document.getElementById('attendantStockTable');
+    tbody.innerHTML = '';
+    snap.forEach(d => {
+      const data = d.data();
+      tbody.innerHTML += `<tr><td>${data.name}</td><td>${data.quantityAvailable||0}</td><td>${data.quantitySold||0}</td><td><span class="badge badge-${data.status==='low'?'warning':'success'}">${data.status||'available'}</span></td></tr>`;
+    });
+  }
+
+  async function loadAttendantStaff() {
+    const snap = await getDocs(query(collection(db, 'users'), where('role', '==', 'staff'), limit(5)));
+    const tbody = document.getElementById('attendantStaffTable');
+    tbody.innerHTML = '';
+    snap.forEach(d => { const data = d.data(); tbody.innerHTML += `<tr><td>${data.fullName}</td><td>${data.tasksCompleted||0}</td><td>${data.totalPoints||0}</td></tr>`; });
+  }
+
+  window.updateTaskStatus = (taskId) => showToast('Task update feature coming soon', 'info');
+
+  // ========== STAFF DATA ==========
+  async function loadStaffData() {
     if (!currentUser) return;
+    const userRef = doc(db, 'users', currentUser.uid);
+    const userSnap = await getDoc(userRef);
+    const data = userSnap.data();
     
-    try {
-      const userRef = doc(db, 'users', currentUser.uid);
-      const userSnap = await getDoc(userRef);
-      const userDataLocal = userSnap.data();
-      
-      document.getElementById('staffPoints').textContent = userDataLocal.totalPoints || 0;
-      document.getElementById('pointValue').textContent = userDataLocal.pointValueNaira || 100;
-      document.getElementById('staffLeaveDays').textContent = userDataLocal.leaveDaysRemaining || 2;
-      
-      const baseSalary = userDataLocal.baseSalary || 0;
-      const points = userDataLocal.totalPoints || 0;
-      const pointValue = userDataLocal.pointValueNaira || 100;
-      const estimated = baseSalary + (points * pointValue);
-      document.getElementById('staffEstimatedSalary').textContent = formatCurrency(estimated);
-      
-      const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('assignedTo', '==', currentUser.uid)));
-      const tasksTable = document.getElementById('staffTasksTable');
-      tasksTable.innerHTML = '';
-      let completed = 0;
-      tasksSnap.forEach(doc => {
-        const data = doc.data();
-        if (data.status === 'completed') completed++;
-        tasksTable.innerHTML += `<tr>
-          <td>${data.title}</td><td>${formatDate(data.deadline?.toDate())}</td>
-          <td><span class="badge badge-${data.status === 'completed' ? 'success' : data.status === 'in_progress' ? 'info' : 'warning'}">${data.status}</span></td>
-          <td>${data.pointsEarned || 0}</td>
-          <td>${data.status !== 'completed' ? `<button class="btn btn-sm btn-primary" onclick="window.submitTask('${doc.id}')">Submit</button>` : '-'}</td>
-        </tr>`;
-      });
-      document.getElementById('staffTasksCompleted').textContent = completed;
-      
-      const attendanceSnap = await getDocs(query(collection(db, 'attendance'), where('userId', '==', currentUser.uid), orderBy('date', 'desc'), limit(5)));
-      const attendanceTable = document.getElementById('staffAttendanceTable');
-      attendanceTable.innerHTML = '';
-      attendanceSnap.forEach(doc => {
-        const data = doc.data();
-        attendanceTable.innerHTML += `<tr><td>${data.date}</td><td>${formatTime(data.checkInTime?.toDate())}</td><td><span class="badge badge-${data.status === 'late' ? 'warning' : 'success'}">${data.status}</span></td></tr>`;
-      });
-      
-    } catch (error) {
-      console.error('Error loading staff dashboard:', error);
-    }
+    document.getElementById('staffPoints').textContent = data.totalPoints || 0;
+    document.getElementById('pointValue').textContent = data.pointValueNaira || 100;
+    document.getElementById('staffLeaveDays').textContent = data.leaveDaysRemaining || 2;
+    document.getElementById('staffEstSalary').textContent = formatCurrency((data.baseSalary||0) + (data.totalPoints||0)*(data.pointValueNaira||100));
+    
+    const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('assignedTo', '==', currentUser.uid)));
+    const tbody = document.getElementById('staffTasksTable');
+    tbody.innerHTML = '';
+    let completed = 0;
+    tasksSnap.forEach(d => {
+      const t = d.data();
+      if (t.status === 'completed') completed++;
+      tbody.innerHTML += `<tr><td>${t.title}</td><td>${formatDate(t.deadline)}</td><td><span class="badge badge-${t.status==='completed'?'success':'warning'}">${t.status}</span></td><td>${t.pointsEarned||0}</td><td>${t.status!=='completed'?`<button class="btn btn-sm btn-primary" onclick="window.submitTask('${d.id}')">Submit</button>`:'-'}</td></tr>`;
+    });
+    document.getElementById('staffTasksDone').textContent = completed;
+    
+    const attSnap = await getDocs(query(collection(db, 'attendance'), where('userId', '==', currentUser.uid), orderBy('date', 'desc'), limit(5)));
+    const attBody = document.getElementById('staffAttendanceTable');
+    attBody.innerHTML = '';
+    attSnap.forEach(d => { const a = d.data(); attBody.innerHTML += `<tr><td>${a.date}</td><td>${formatTime(a.checkInTime)}</td><td><span class="badge badge-${a.status==='late'?'warning':'success'}">${a.status}</span></td></tr>`; });
   }
 
-  function initAttendanceTerminal() {
+  window.submitTask = (taskId) => showModal('Submit Task', '<p>Upload work proof image (coming soon)</p><button class="btn btn-primary" onclick="hideModal()">Submit</button>');
+
+  // ========== ATTENDANCE ==========
+  function initAttendance() {
     const video = document.getElementById('webcamVideo');
-    const checkInBtn = document.getElementById('checkInBtn');
-    
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          webcamStream = stream;
-          video.srcObject = stream;
-        })
-        .catch(err => console.warn('Webcam access denied:', err));
+    if (navigator.mediaDevices?.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true }).then(s => { webcamStream = s; video.srcObject = s; }).catch(() => {});
     }
-    
-    checkInBtn.onclick = async () => {
+    document.getElementById('checkInBtn').onclick = async () => {
       if (!currentUser) return;
+      const now = new Date();
+      const late = now.getHours() >= 8 && now.getMinutes() > 0;
+      const status = late ? 'late' : 'on_time';
+      const points = late ? -5 : 0;
       
-      try {
-        const canvas = document.getElementById('webcamCanvas');
-        const context = canvas.getContext('2d');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        const now = new Date();
-        const scheduledTime = new Date();
-        scheduledTime.setHours(8, 0, 0, 0);
-        const lateMinutes = Math.max(0, (now - scheduledTime) / 60000);
-        const status = lateMinutes > 0 ? 'late' : 'on_time';
-        const pointsDeducted = lateMinutes > 0 ? 5 : 0;
-        
-        await addDoc(collection(db, 'attendance'), {
-          userId: currentUser.uid,
-          checkInTime: serverTimestamp(),
-          date: now.toISOString().split('T')[0],
-          status: status,
-          lateMinutes: lateMinutes,
-          pointsDeducted: pointsDeducted
-        });
-        
-        if (pointsDeducted > 0) {
-          await updateDoc(doc(db, 'users', currentUser.uid), {
-            totalPoints: (userData.totalPoints || 0) - pointsDeducted
-          });
-        }
-        
-        await logAudit('attendance_checkin', currentUser.uid, `Checked in. Status: ${status}. Points: -${pointsDeducted}`);
-        
-        showToast(`Checked in successfully! ${status === 'late' ? 'Late arrival noted.' : 'On time!'}`, status === 'late' ? 'warning' : 'success');
-        
-        if (webcamStream) {
-          webcamStream.getTracks().forEach(track => track.stop());
-        }
-        video.srcObject = null;
-        
-      } catch (error) {
-        showToast('Check-in failed: ' + error.message, 'error');
-      }
+      await addDoc(collection(db, 'attendance'), { userId: currentUser.uid, checkInTime: serverTimestamp(), date: now.toISOString().split('T')[0], status, pointsDeducted: points });
+      if (points < 0) await updateDoc(doc(db, 'users', currentUser.uid), { totalPoints: (userData.totalPoints||0) + points });
+      await logAudit('attendance', 'attendance', currentUser.uid, `Checked in: ${status}`);
+      showToast(`Checked in! ${status === 'late' ? 'Late arrival recorded.' : 'On time!'}`, status === 'late' ? 'warning' : 'success');
+      if (webcamStream) { webcamStream.getTracks().forEach(t => t.stop()); video.srcObject = null; }
     };
-    
-    updateClock();
-    setInterval(updateClock, 1000);
+    updateClock(); setInterval(updateClock, 1000);
   }
 
   function updateClock() {
     const now = new Date();
-    const clockEl = document.getElementById('liveClock');
-    const dateEl = document.getElementById('liveDate');
-    if (clockEl) clockEl.textContent = now.toLocaleTimeString('en-GB');
-    if (dateEl) dateEl.textContent = now.toLocaleDateString('en-GB', { 
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' 
+    document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-GB');
+    document.getElementById('liveDate').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  }
+
+  // ========== AUDIT ==========
+  async function loadAuditData() {
+    const q = query(collection(db, 'audit_logs'), orderBy('performedAt', 'desc'), limit(50));
+    const snap = await getDocs(q);
+    const tbody = document.getElementById('fullAuditTable');
+    tbody.innerHTML = '';
+    snap.forEach(d => { const data = d.data(); tbody.innerHTML += `<tr><td>${formatTime(data.performedAt)}</td><td>${data.actionType}</td><td>${data.performedBy?.slice(0,8)}</td><td>${data.collectionName}</td><td>${data.note}</td></tr>`; });
+  }
+
+  // ========== STOCK ==========
+  async function loadStockData() {
+    const snap = await getDocs(collection(db, 'stock_items'));
+    const tbody = document.getElementById('fullStockTable');
+    tbody.innerHTML = '';
+    snap.forEach(d => {
+      const data = d.data();
+      tbody.innerHTML += `<tr><td>${data.name}</td><td>${data.category||'-'}</td><td>${data.quantityAvailable||0}</td><td>${data.quantitySold||0}</td><td>${formatCurrency(data.unitPrice)}</td><td>${formatCurrency((data.quantityAvailable||0)*(data.unitPrice||0))}</td><td><span class="badge badge-${data.status==='low'?'warning':'success'}">${data.status||'available'}</span></td></tr>`;
     });
   }
 
-  async function loadAuditLogs() {
-    const auditSnap = await getDocs(query(collection(db, 'audit_logs'), orderBy('performedAt', 'desc'), limit(50)));
-    const table = document.getElementById('fullAuditTable');
-    if (table) {
-      table.innerHTML = '';
-      auditSnap.forEach(doc => {
-        const data = doc.data();
-        table.innerHTML += `<tr>
-          <td>${formatTime(data.performedAt?.toDate())}</td>
-          <td>${data.actionType}</td>
-          <td>${data.performedBy?.substring(0,8) || 'System'}</td>
-          <td>${data.collectionName || '-'}</td>
-          <td>${data.note || '-'}</td>
-        </tr>`;
-      });
-    }
-  }
-
-  async function loadStockData() {
-    const stockSnap = await getDocs(collection(db, 'stock_items'));
-    const table = document.getElementById('fullStockTable');
-    if (table) {
-      table.innerHTML = '';
-      stockSnap.forEach(doc => {
-        const data = doc.data();
-        table.innerHTML += `<tr>
-          <td>${data.name}</td><td>${data.category || '-'}</td><td>${data.quantityAvailable || 0}</td>
-          <td>${data.quantitySold || 0}</td><td>${formatCurrency(data.unitPrice)}</td>
-          <td>${formatCurrency((data.quantityAvailable || 0) * (data.unitPrice || 0))}</td>
-          <td><span class="badge badge-${data.status === 'low' ? 'warning' : data.status === 'out_of_stock' ? 'danger' : 'success'}">${data.status || 'available'}</span></td>
-          <td><button class="btn btn-sm btn-outline-pink" onclick="window.editStock('${doc.id}')">Edit</button></td>
-        </tr>`;
-      });
-    }
-  }
-
+  // ========== CUSTOMERS ==========
   async function loadCustomersData() {
-    const customersSnap = await getDocs(collection(db, 'customers'));
-    const table = document.getElementById('customersTable');
-    if (table) {
-      table.innerHTML = '';
-      customersSnap.forEach(doc => {
-        const data = doc.data();
-        table.innerHTML += `<tr>
-          <td>${data.fullName}</td><td>${data.phone}</td><td>${data.birthday || '-'}</td>
-          <td>${formatCurrency(data.totalSpent || 0)}</td><td>${data.lastPurchase ? formatDate(data.lastPurchase.toDate()) : '-'}</td>
-          <td><span class="badge badge-${data.status === 'approved' ? 'success' : 'warning'}">${data.status || 'pending'}</span></td>
-          <td><button class="btn btn-sm btn-outline-pink" onclick="window.viewCustomer('${doc.id}')">View</button></td>
-        </tr>`;
-      });
-    }
+    const snap = await getDocs(collection(db, 'customers'));
+    const tbody = document.getElementById('customersTable');
+    tbody.innerHTML = '';
+    snap.forEach(d => { const data = d.data(); tbody.innerHTML += `<tr><td>${data.fullName}</td><td>${data.phone}</td><td>${formatCurrency(data.totalSpent)}</td><td>${formatDate(data.lastPurchase)}</td><td><span class="badge badge-${data.status==='approved'?'success':'warning'}">${data.status||'pending'}</span></td></tr>`; });
   }
 
-  async function loadFinanceData() {
-    document.getElementById('financeRevenue').textContent = formatCurrency(1250000);
-    document.getElementById('financeExpenses').textContent = formatCurrency(450000);
-    document.getElementById('financeProfit').textContent = formatCurrency(800000);
-    document.getElementById('financeSalary').textContent = formatCurrency(320000);
-    
-    const table = document.getElementById('monthlyComparisonTable');
-    if (table) {
-      table.innerHTML = `
-        <tr><td>March 2026</td><td>₦1,250,000</td><td>₦450,000</td><td>₦800,000</td><td><span class="badge badge-success">+12%</span></td></tr>
-        <tr><td>February 2026</td><td>₦1,115,000</td><td>₦420,000</td><td>₦695,000</td><td><span class="badge badge-success">+8%</span></td></tr>
-        <tr><td>January 2026</td><td>₦1,030,000</td><td>₦390,000</td><td>₦640,000</td><td><span class="badge badge-info">--</span></td></tr>
-      `;
-    }
-    
-    const suggestions = document.getElementById('financeSuggestions');
-    if (suggestions) {
-      suggestions.innerHTML = `
-        <div style="background: rgba(255,193,7,0.1); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
-          <i class="fas fa-lightbulb" style="color: var(--warning); margin-right: 10px;"></i>
-          <strong>Spending Alert:</strong> Stock purchases increased by 23% this month. Consider reviewing supplier pricing.
-        </div>
-        <div style="background: rgba(40,167,69,0.1); padding: 15px; border-radius: 15px;">
-          <i class="fas fa-chart-line" style="color: var(--success); margin-right: 10px;"></i>
-          <strong>Revenue Insight:</strong> Rhinestone sales are up 18%. Consider increasing inventory.
-        </div>
-      `;
-    }
-  }
-
+  // ========== PROFILE ==========
   async function loadProfileData() {
-    if (!userData) return;
+    const container = document.getElementById('profileContent');
+    container.innerHTML = `
+      <div class="form-group"><label>Full Name</label><input class="form-control" value="${userData.fullName||''}" readonly></div>
+      <div class="form-group"><label>Email</label><input class="form-control" value="${userData.email||''}" readonly></div>
+      <div class="form-group"><label>Role</label><input class="form-control" value="${userData.role||''}" readonly></div>
+      <div class="form-group"><label>Base Salary</label><input class="form-control" value="${formatCurrency(userData.baseSalary||0)}" readonly></div>
+      <div class="form-group"><label>Total Points</label><input class="form-control" value="${userData.totalPoints||0}" readonly></div>
+    `;
     
-    document.getElementById('profileName').value = userData.fullName || '';
-    document.getElementById('profileEmail').value = userData.email || '';
-    document.getElementById('profilePhone').value = userData.phone || '';
-    document.getElementById('profileRole').value = userData.role || '';
-    document.getElementById('profileBaseSalary').value = formatCurrency(userData.baseSalary || 0);
-    document.getElementById('profilePoints').value = userData.totalPoints || 0;
-    document.getElementById('profileAddressField').value = userData.address || 'Not set';
-    document.getElementById('profileEmergencyContact').value = userData.emergencyContact || 'Not set';
-    
-    const bankDetails = userData.bankName && userData.accountNumber 
-      ? `${userData.bankName} - ${userData.accountNumber}` 
-      : 'Not set';
-    document.getElementById('profileBankDetails').value = bankDetails;
-    
-    const leaveSnap = await getDocs(query(collection(db, 'leave_requests'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')));
-    const table = document.getElementById('leaveHistoryTable');
-    if (table) {
-      table.innerHTML = '';
-      leaveSnap.forEach(doc => {
-        const data = doc.data();
-        table.innerHTML += `<tr>
-          <td>${data.requestedDates?.join(', ') || '-'}</td>
-          <td><span class="badge badge-${data.status === 'approved' ? 'success' : data.status === 'rejected' ? 'danger' : 'warning'}">${data.status}</span></td>
-          <td>${data.approvedBy || '-'}</td>
-        </tr>`;
-      });
-    }
+    const leaveSnap = await getDocs(query(collection(db, 'leave_requests'), where('userId', '==', currentUser.uid)));
+    const tbody = document.getElementById('leaveHistoryTable');
+    tbody.innerHTML = '';
+    leaveSnap.forEach(d => { const data = d.data(); tbody.innerHTML += `<tr><td>${data.requestedDates?.join(', ')}</td><td><span class="badge badge-${data.status==='approved'?'success':'warning'}">${data.status}</span></td></tr>`; });
   }
 
-  async function loadNotifications() {
-    if (!currentUser) return;
-    
-    const notifSnap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')));
+  // ========== NOTIFICATIONS ==========
+  async function loadNotificationsData() {
+    const snap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', currentUser?.uid), orderBy('createdAt', 'desc')));
     const container = document.getElementById('notificationsList');
-    if (container) {
-      container.innerHTML = '';
-      notifSnap.forEach(doc => {
-        const data = doc.data();
-        const div = document.createElement('div');
-        div.style.cssText = 'padding: 18px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px;';
-        div.innerHTML = `
-          <i class="fas fa-${data.type === 'account_approved' ? 'check-circle' : 'bell'}" style="color: var(--pink); font-size: 1.2rem;"></i>
-          <div style="flex:1;"><strong>${data.title}</strong><br><small style="color: var(--gray);">${data.message}</small></div>
-          <small style="color: var(--gray);">${formatTime(data.createdAt?.toDate())}</small>
-        `;
-        container.appendChild(div);
-      });
-      
-      if (container.children.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 30px;">No notifications</p>';
-      }
-    }
+    container.innerHTML = '';
+    snap.forEach(d => { const data = d.data(); container.innerHTML += `<div style="padding:16px;border-bottom:1px solid #eee;"><strong>${data.title}</strong><p style="color:var(--gray);font-size:0.8rem;">${data.message}</p><small>${formatTime(data.createdAt)}</small></div>`; });
   }
-
-  // ========== EVENT LISTENERS ==========
-  menuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    sidebarCollapsed = !sidebarCollapsed;
-  });
-
-  modalClose.addEventListener('click', hideModal);
-  modalOverlay.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) hideModal();
-  });
-
-  document.getElementById('notificationBell').addEventListener('click', () => switchView('notifications'));
-  document.getElementById('dismissAnnouncement')?.addEventListener('click', () => announcementBanner.style.display = 'none');
-
-  document.getElementById('submitLeaveRequestBtn')?.addEventListener('click', async () => {
-    const startDate = document.getElementById('leaveStartDate')?.value;
-    const endDate = document.getElementById('leaveEndDate')?.value;
-    const reason = document.getElementById('leaveReason')?.value;
-    
-    if (!startDate || !endDate) {
-      showToast('Please select dates', 'warning');
-      return;
-    }
-    
-    try {
-      await addDoc(collection(db, 'leave_requests'), {
-        userId: currentUser.uid,
-        requestedDates: [startDate, endDate],
-        reason: reason,
-        status: 'pending',
-        createdAt: serverTimestamp()
-      });
-      
-      showToast('Leave request submitted', 'success');
-      await logAudit('leave_request', currentUser.uid, `Leave requested: ${startDate} to ${endDate}`);
-    } catch (error) {
-      showToast('Failed to submit request', 'error');
-    }
-  });
-
-  // Global function exports
-  window.updateTaskStatus = (taskId) => showToast('Task status update', 'info');
-  window.submitTask = (taskId) => showToast('Task submission', 'info');
-  window.editStock = (itemId) => showToast('Edit stock', 'info');
-  window.viewCustomer = (customerId) => showToast('Customer details', 'info');
-  window.switchView = switchView;
 
   // ========== INITIALIZATION ==========
   onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = 'auth.html';
-      return;
-    }
-    
+    if (!user) { window.location.href = 'auth.html'; return; }
     currentUser = user;
-    
     const userRef = doc(db, 'users', user.uid);
     const userSnap = await getDoc(userRef);
-    
-    if (!userSnap.exists()) {
-      await signOut(auth);
-      window.location.href = 'auth.html';
-      return;
-    }
+    if (!userSnap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; }
     
     userData = userSnap.data();
+    if (userData.status !== 'active') { await signOut(auth); window.location.href = 'auth.html'; return; }
     
-    if (userData.status === 'suspended' || userData.status === 'terminated') {
-      await signOut(auth);
-      window.location.href = 'auth.html?error=account_' + userData.status;
-      return;
-    }
+    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'User';
+    document.getElementById('userRole').textContent = userData.role?.replace('_', ' ') || 'Staff';
+    document.getElementById('userAvatar').textContent = (userData.fullName || 'U').charAt(0).toUpperCase();
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     
-    if (userData.status === 'pending_approval') {
-      await signOut(auth);
-      window.location.href = 'auth.html';
-      return;
-    }
+    setupSidebar(userData.role);
     
-    userName.textContent = userData.fullName || 'User';
-    userRole.textContent = userData.role?.replace('_', ' ') || 'Staff';
-    userAvatar.textContent = (userData.fullName || 'U').charAt(0).toUpperCase();
-    
-    updateSidebarForRole(userData.role);
-    
-    if (userData.role === 'admin' || userData.role === 'super_admin') {
-      switchView('adminDashboard');
-    } else if (userData.role === 'attendant_chief' || userData.role === 'attendant') {
-      switchView('attendantDashboard');
-    } else {
-      switchView('staffDashboard');
-    }
-    
-    currentDate.textContent = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    
-    checkProfileCompletion();
-    
-    if (!userData.profileCompleted) {
-      setTimeout(() => showProfileCompletionModal(), 500);
-    }
-    
-    const notifSnap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', user.uid), where('isRead', '==', false)));
-    const count = notifSnap.size;
-    notificationCount.textContent = count;
-    notificationCount.style.display = count > 0 ? 'block' : 'none';
+    if (userData.role === 'super_admin' || userData.role === 'admin') window.switchView('admin');
+    else if (userData.role === 'attendant_chief' || userData.role === 'attendant') window.switchView('attendant');
+    else window.switchView('staff');
   });
 
-  console.log('%c✅ Dashboard Ready — Admin Approval + Profile Completion Active', 'color: #28a745; font-weight: bold;');
-</script>
+  // ========== EVENT LISTENERS ==========
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+  });
+  
+  document.getElementById('modalClose').addEventListener('click', hideModal);
+  document.getElementById('modalOverlay').addEventListener('click', (e) => { if (e.target === document.getElementById('modalOverlay')) hideModal(); });
+  document.getElementById('notificationBell').addEventListener('click', () => window.switchView('notifications'));
+  
+  document.getElementById('assignTaskBtn')?.addEventListener('click', () => showModal('Assign Task', `
+    <div class="form-group"><label>Task Title</label><input class="form-control" id="taskTitle" placeholder="e.g., Stone setting"></div>
+    <div class="form-group"><label>Assign To</label><select class="form-control" id="taskAssignee"></select></div>
+    <div class="form-group"><label>Deadline</label><input type="datetime-local" class="form-control" id="taskDeadline"></div>
+    <button class="btn btn-primary" onclick="window.createTask()">Assign</button>
+  `));
+  
+  document.getElementById('requestLeaveBtn')?.addEventListener('click', async () => {
+    const start = document.getElementById('leaveStartDate').value;
+    const end = document.getElementById('leaveEndDate').value;
+    if (!start || !end) { showToast('Select dates', 'warning'); return; }
+    await addDoc(collection(db, 'leave_requests'), { userId: currentUser.uid, requestedDates: [start, end], status: 'pending', createdAt: serverTimestamp() });
+    showToast('Leave requested', 'success');
+    await logAudit('leave_request', 'leave_requests', currentUser.uid);
+  });
 
+  console.log('✅ FashionStone ERP — Real Data System Active');
+</script>
 </body>
 </html>
