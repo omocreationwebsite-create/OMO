@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ff4da6">
+  <title>Catalog · FashionStone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --header-height: 64px; }
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; min-height: 100vh; width: 100%; }
+    .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 99; display: none; }
+    .sidebar-overlay.active { display: block; }
+    .sidebar { width: 280px; background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .sidebar-brand { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; }
+    .logo-text { font-size: 1.2rem; font-weight: 700; }
+    .logo-text span { color: var(--primary); }
+    .sidebar-close { background: none; border: none; color: rgba(255,255,255,0.6); font-size: 1.3rem; cursor: pointer; padding: 8px; }
+    .sidebar-nav { padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 14px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; text-align: left; }
+    .nav-item i { width: 22px; font-size: 1.1rem; }
+    .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
+    .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 16px; }
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: auto; }
+    .user-profile { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; }
+    .user-details h4 { font-size: 0.9rem; font-weight: 600; }
+    .user-details p { font-size: 0.7rem; opacity: 0.6; }
+    .main-content { min-height: 100vh; width: 100%; }
+    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
+    .top-bar-left { display: flex; align-items: center; gap: 16px; }
+    .menu-toggle { background: none; border: none; font-size: 1.3rem; color: var(--gray); cursor: pointer; padding: 8px; }
+    .page-title { font-size: 1.2rem; font-weight: 700; color: var(--dark); }
+    .back-btn { display: flex; align-items: center; gap: 6px; color: var(--primary); font-size: 0.8rem; font-weight: 600; background: var(--primary-soft); padding: 8px 14px; border-radius: 30px; border: none; cursor: pointer; }
+    .content-wrapper { padding: 16px; max-width: 1400px; margin: 0 auto; }
+    @media (min-width: 768px) { .content-wrapper { padding: 24px; } .page-title { font-size: 1.4rem; } }
+    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    @media (min-width: 480px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
+    .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); transition: transform 0.15s; }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,77,166,0.1); }
+    .product-image { width: 100%; aspect-ratio: 1; background: var(--gray-light); display: flex; align-items: center; justify-content: center; color: var(--gray); }
+    .product-info { padding: 16px; }
+    .product-name { font-weight: 700; margin-bottom: 4px; }
+    .product-price { color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+    .product-stock { font-size: 0.7rem; color: var(--gray); }
+    .product-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .btn { padding: 8px 14px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; }
+    .btn-sm { padding: 5px 12px; font-size: 0.65rem; }
+    .badge { padding: 4px 10px; border-radius: 40px; font-size: 0.65rem; font-weight: 600; }
+    .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
+    .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+    .modal { background: white; border-radius: 24px; padding: 24px; max-width: 460px; width: 100%; }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--gray); }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 11px 14px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px; font-size: 0.85rem; outline: none; }
+    textarea.form-control { min-height: 80px; resize: vertical; }
+    .toast-container { position: fixed; bottom: 16px; right: 16px; left: 16px; z-index: 9999; }
+    @media (min-width: 480px) { .toast-container { left: auto; } }
+    .toast { background: white; padding: 12px 16px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 10px; transform: translateY(100px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 8px; }
+    .toast.show { transform: translateY(0); }
+  </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header"><div class="sidebar-brand"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+  <nav class="sidebar-nav" id="sidebarNav"></nav>
+  <div class="sidebar-footer"><div class="user-profile"><div class="user-avatar" id="userAvatar">U</div><div class="user-details"><h4 id="userName">Loading...</h4><p id="userRole">•••</p></div></div></div>
+</aside>
+<main class="main-content">
+  <header class="top-bar"><div class="top-bar-left"><button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button><h1 class="page-title">Product Catalog</h1></div><div class="top-bar-right"><button class="back-btn" onclick="window.location.href='dashboard.html'"><i class="fas fa-arrow-left"></i> Dashboard</button></div></header>
+  <div class="content-wrapper">
+    <div style="margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;">
+      <select class="filter-select" id="categoryFilter" style="padding:10px 16px;border-radius:40px;border:1px solid #ddd;"><option value="all">All Categories</option><option value="rhinestones">Rhinestones</option><option value="beads">Beads</option><option value="bridal">Bridal</option><option value="paperstones">Paperstones</option></select>
+      <button class="btn btn-outline" id="refreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <button class="btn btn-primary" id="syncInventoryBtn"><i class="fas fa-sync"></i> Sync from Inventory</button>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+</main>
+<div class="modal-overlay" id="modalOverlay"><div class="modal"><div class="modal-header"><h3 id="modalTitle">Modal</h3><button class="modal-close" id="modalClose">&times;</button></div><div id="modalContent"></div></div></div>
+<div class="toast-container" id="toastContainer"></div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let currentUser = null, userData = null, unsubscribe = null, allProducts = [], currentCategory = 'all';
+  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
+  function showToast(msg, type = 'success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => { t.classList.remove('show'); t.remove(); }, 4000); }
+  function showModal(title, content) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content; document.getElementById('modalOverlay').style.display = 'flex'; }
+  function hideModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+  function renderProducts() {
+    let filtered = [...allProducts];
+    if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
+    const grid = document.getElementById('productGrid'); grid.innerHTML = '';
+    if (filtered.length === 0) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray);">No products in catalog</div>'; return; }
+    filtered.forEach(p => { grid.innerHTML += `<div class="product-card"><div class="product-image"><i class="fas fa-image" style="font-size:2rem;"></i></div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-price">${formatCurrency(p.price)}</div><div class="product-stock">${p.inStock} in stock</div><div class="product-actions"><button class="btn btn-sm btn-outline" onclick="window.editProduct('${p.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline" onclick="window.togglePublish('${p.id}')"><i class="fas fa-${p.published?'eye-slash':'eye'}"></i></button></div></div></div>`; });
+  }
+  function loadProducts() { if (unsubscribe) unsubscribe(); const q = query(collection(db, 'catalog')); unsubscribe = onSnapshot(q, (snap) => { allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderProducts(); }); }
+  window.editProduct = (id) => { const p = allProducts.find(x => x.id === id); if (!p) return; showModal('Edit Product', `<div class="form-group"><label>Name</label><input class="form-control" id="editName" value="${p.name||''}"></div><div class="form-group"><label>Description</label><textarea class="form-control" id="editDesc">${p.description||''}</textarea></div><div class="form-group"><label>Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${p.price||0}"></div><button class="btn btn-primary" onclick="window.saveProduct('${id}')">Save</button>`); };
+  window.saveProduct = async (id) => { await updateDoc(doc(db, 'catalog', id), { name: document.getElementById('editName').value, description: document.getElementById('editDesc').value, price: parseFloat(document.getElementById('editPrice').value)||0 }); showToast('Product updated', 'success'); hideModal(); };
+  window.togglePublish = async (id) => { const p = allProducts.find(x => x.id === id); await updateDoc(doc(db, 'catalog', id), { published: !p.published }); showToast(p.published ? 'Unpublished' : 'Published', 'success'); };
+  window.syncInventory = async () => { const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', '!=', 'out_of_stock'))); let count = 0; for (const d of stockSnap.docs) { const item = d.data(); const existing = allProducts.find(p => p.stockId === d.id); if (!existing) { await addDoc(collection(db, 'catalog'), { stockId: d.id, name: item.name, category: item.category, price: item.unitPrice, inStock: item.quantityAvailable, description: '', published: true, createdAt: serverTimestamp() }); count++; } else { await updateDoc(doc(db, 'catalog', existing.id), { inStock: item.quantityAvailable, price: item.unitPrice }); } } showToast(`Synced ${count} new products`, 'success'); };
+  function setupSidebar(role) { const nav = document.getElementById('sidebarNav'); nav.innerHTML = `<button class="nav-item" onclick="window.location.href='dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>${role==='admin'||role==='super_admin'?'<button class="nav-item" onclick="window.location.href=\'staff-management.html\'"><i class="fas fa-users-cog"></i><span>Staff</span></button>':''}<button class="nav-item active"><i class="fas fa-tags"></i><span>Catalog</span></button><button class="nav-item" onclick="window.location.href='orders.html'"><i class="fas fa-truck"></i><span>Orders</span></button><button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>`; document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; }); }
+  onAuthStateChanged(auth, async (user) => { if (!user) { window.location.href = 'auth.html'; return; } currentUser = user; const userSnap = await getDoc(doc(db, 'users', user.uid)); if (!userSnap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; } userData = userSnap.data(); document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'User'; document.getElementById('userRole').textContent = userData.role?.replace('_', ' ') || 'Staff'; document.getElementById('userAvatar').textContent = (userData.fullName || 'U').charAt(0).toUpperCase(); setupSidebar(userData.role); loadProducts(); });
+  const sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay');
+  document.getElementById('menuToggle').addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('active'); });
+  document.getElementById('sidebarClose').addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); });
+  overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); });
+  document.getElementById('modalClose').addEventListener('click', hideModal);
+  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) hideModal(); });
+  document.getElementById('categoryFilter').addEventListener('change', e => { currentCategory = e.target.value; renderProducts(); });
+  document.getElementById('refreshBtn').addEventListener('click', loadProducts);
+  document.getElementById('syncInventoryBtn').addEventListener('click', () => window.syncInventory());
+  window.editProduct = editProduct; window.saveProduct = saveProduct; window.togglePublish = togglePublish; window.syncInventory = syncInventory;
+</script>
+</body>
+</html>
