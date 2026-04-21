@@ -52,7 +52,6 @@
     .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
     .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .panel-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 10px; }
-    .panel-header h3 i { color: var(--primary); }
     
     .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .info-item label { font-size: 0.7rem; color: var(--gray); text-transform: uppercase; display: block; margin-bottom: 5px; }
@@ -69,7 +68,7 @@
     .data-table th { text-align: left; padding: 14px 10px; font-size: 0.7rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
     .data-table td { padding: 14px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 0.85rem; }
     
-    .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
+    .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
     .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
@@ -96,6 +95,9 @@
     .loading-state { display: flex; justify-content: center; align-items: center; min-height: 300px; }
     .spinner { width: 40px; height: 40px; border: 3px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .error-state { text-align: center; padding: 40px; color: var(--danger); }
+    .error-state i { font-size: 3rem; margin-bottom: 15px; }
     
     .session-lock-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); background: rgba(0,0,0,0.3); z-index: 9999; display: none; align-items: center; justify-content: center; }
     .session-lock-modal { background: white; border-radius: 24px; padding: 28px; max-width: 350px; text-align: center; }
@@ -130,8 +132,8 @@
     <h1 class="page-title">My Profile</h1>
     <div style="display: flex; align-items: center; gap: 16px;">
       <div class="notification-indicator">
-        <i class="far fa-bell" style="font-size: 1.2rem; color: var(--gray); cursor: pointer;" onclick="toggleNotifications()"></i>
-        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+        <i class="far fa-bell" style="font-size: 1.2rem; color: var(--gray); cursor: pointer;" onclick="window.location.href='notifications.html'"></i>
+        <span class="notification-badge" id="notificationBadge" style="display: none; position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 30px;">0</span>
       </div>
       <span id="currentDate" style="color: var(--gray); font-size: 0.85rem;"></span>
     </div>
@@ -141,13 +143,20 @@
     
     <div id="loadingState" class="loading-state"><div class="spinner"></div></div>
     
+    <div id="errorState" class="error-state" style="display: none;">
+      <i class="fas fa-exclamation-circle"></i>
+      <h3>Error Loading Profile</h3>
+      <p id="errorMessage">Unable to load your profile data.</p>
+      <button class="btn btn-primary" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i> Retry</button>
+    </div>
+    
     <div id="mainContent" style="display: none;">
       
       <div class="announcement-banner" id="announcementBanner" style="display: none;">
         <i class="fas fa-bullhorn"></i>
         <div class="content"><h4 id="announcementTitle">Announcement</h4><p id="announcementMessage">Loading...</p></div>
         <span class="badge">NEW</span>
-        <button onclick="dismissAnnouncement()"><i class="fas fa-times"></i></button>
+        <button onclick="this.parentElement.style.display='none'"><i class="fas fa-times"></i></button>
       </div>
       
       <div class="profile-header">
@@ -160,7 +169,7 @@
       
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-header"><span>Current Points</span><div class="stat-icon"><i class="fas fa-coins"></i></div></div><div class="stat-value" id="currentPoints">0</div><div class="stat-sub">Value: ₦<span id="pointValue">100</span>/pt</div></div>
-        <div class="stat-card"><div class="stat-header"><span>Tasks Assigned</span><div class="stat-icon"><i class="fas fa-tasks"></i></div></div><div class="stat-value" id="tasksAssigned">0</div><div class="stat-sub">This month</div></div>
+        <div class="stat-card"><div class="stat-header"><span>Tasks Assigned</span><div class="stat-icon"><i class="fas fa-tasks"></i></div></div><div class="stat-value" id="tasksAssigned">0</div><div class="stat-sub">Total: <span id="tasksTotal">0</span></div></div>
         <div class="stat-card"><div class="stat-header"><span>Leave Days</span><div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div></div><div class="stat-value" id="leaveDays">2</div><div class="stat-sub">Remaining</div></div>
         <div class="stat-card"><div class="stat-header"><span>Attendance</span><div class="stat-icon"><i class="fas fa-calendar-check"></i></div></div><div class="stat-value" id="attendanceStreak">0</div><div class="stat-sub">Day streak</div></div>
       </div>
@@ -224,7 +233,7 @@
       
       <div class="panel">
         <div class="panel-header"><h3><i class="fas fa-clock"></i> Leave History</h3></div>
-        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Dates</th><th>Reason</th><th>Status</th><th>Approved By</th></tr></thead><tbody id="leaveHistoryTable"></tbody></table></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Dates</th><th>Reason</th><th>Status</th><th>Approved/Rejected By</th></tr></thead><tbody id="leaveHistoryTable"></tbody></table></div>
       </div>
       
     </div>
@@ -241,7 +250,7 @@
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-  let currentUser = null, userData = null, globalPointValue = 500, unsubscribes = [], inactivityTimer = null, sessionLocked = false;
+  let currentUser = null, userData = null, globalPointValue = 100, unsubscribes = [], inactivityTimer = null, sessionLocked = false;
 
   function formatDate(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); }
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
@@ -252,19 +261,16 @@
   function resetInactivityTimer() { if (inactivityTimer) clearTimeout(inactivityTimer); inactivityTimer = setTimeout(() => { if (!sessionLocked) { sessionLocked = true; document.getElementById('sessionLockOverlay').style.display = 'flex'; document.getElementById('lockPin1').focus(); } }, 600000); }
   document.addEventListener('mousemove', resetInactivityTimer); document.addEventListener('keypress', resetInactivityTimer); document.addEventListener('click', resetInactivityTimer);
   document.getElementById('unlockBtn').addEventListener('click', () => { const pin = ['lockPin1','lockPin2','lockPin3','lockPin4'].map(id => document.getElementById(id).value).join(''); if (pin === (userData?.attendantPin || '1234')) { sessionLocked = false; document.getElementById('sessionLockOverlay').style.display = 'none'; ['lockPin1','lockPin2','lockPin3','lockPin4'].forEach(id => document.getElementById(id).value = ''); resetInactivityTimer(); showToast('Unlocked', 'success'); } else { showToast('Invalid PIN', 'error'); } });
-  document.querySelectorAll('.pin-input').forEach((inp,i,arr)=>inp.addEventListener('input',e=>{if(e.target.value&&i<arr.length-1)arr[i+1].focus();}));
 
   async function loadProfile() {
     try {
       const settingsSnap = await getDoc(doc(db, 'system_settings', 'points'));
-      if (settingsSnap.exists()) globalPointValue = settingsSnap.data().value || 500;
+      if (settingsSnap.exists()) globalPointValue = settingsSnap.data().value || 100;
       
       unsubscribes.push(onSnapshot(doc(db, 'users', currentUser.uid), (snap) => {
-        if (!snap.exists()) { showToast('User data not found', 'error'); return; }
+        if (!snap.exists()) { document.getElementById('loadingState').style.display = 'none'; document.getElementById('errorState').style.display = 'block'; return; }
         userData = snap.data();
-        const ppv = globalPointValue / 5;
-        const bonus = (userData.totalPoints || 0) * ppv;
-        const final = (userData.baseSalary || 0) + bonus;
+        const ppv = globalPointValue / 5; const bonus = (userData.totalPoints || 0) * ppv; const final = (userData.baseSalary || 0) + bonus;
         
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
@@ -281,6 +287,7 @@
         document.getElementById('currentPoints').textContent = userData.totalPoints || 0;
         document.getElementById('pointValue').textContent = ppv;
         document.getElementById('leaveDays').textContent = userData.leaveDaysRemaining || 2;
+        document.getElementById('tasksTotal').textContent = userData.tasksCompleted || 0;
         
         document.getElementById('displayName').textContent = userData.fullName || '-';
         document.getElementById('displayEmail').textContent = userData.email || '-';
@@ -301,26 +308,14 @@
         document.getElementById('finalSalary').textContent = formatCurrency(final);
       }));
       
-      unsubscribes.push(onSnapshot(query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(20)), (snap) => {
-        const tbody = document.getElementById('pointHistoryTable'); tbody.innerHTML = '';
-        if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-coins"></i><p>No point history</p></div></td></tr>'; return; }
-        snap.forEach(d => { const p = d.data(); tbody.innerHTML += `<tr><td>${formatDate(p.createdAt)}</td><td>${p.reason}</td><td class="${p.points>=0?'positive':'negative'}">${p.points>0?'+':''}${p.points}</td><td>${formatCurrency(p.points * (globalPointValue/5))}</td></tr>`; });
-      }));
-      
-      unsubscribes.push(onSnapshot(query(collection(db, 'leave_requests'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')), (snap) => {
-        const tbody = document.getElementById('leaveHistoryTable'); tbody.innerHTML = '';
-        if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No leave requests</div></td></tr>'; return; }
-        snap.forEach(d => { const l = d.data(); tbody.innerHTML += `<tr><td>${l.requestedDates?.join(' to ')}</td><td>${l.reason||'-'}</td><td><span class="badge badge-${l.status==='approved'?'success':l.status==='rejected'?'danger':'warning'}">${l.status}</span></td><td>${l.approvedByName||'-'}</td></tr>`; });
-      }));
+      unsubscribes.push(onSnapshot(query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(20)), (snap) => { const tbody = document.getElementById('pointHistoryTable'); tbody.innerHTML = ''; if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No point history</div></td></tr>'; return; } snap.forEach(d => { const p = d.data(); tbody.innerHTML += `<tr><td>${formatDate(p.createdAt)}</td><td>${p.reason}</td><td class="${p.points>=0?'positive':'negative'}">${p.points>0?'+':''}${p.points}</td><td>${formatCurrency(p.points * (globalPointValue/5))}</td></tr>`; }); }));
+      unsubscribes.push(onSnapshot(query(collection(db, 'leave_requests'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')), (snap) => { const tbody = document.getElementById('leaveHistoryTable'); tbody.innerHTML = ''; if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No leave requests</div></td></tr>'; return; } snap.forEach(d => { const l = d.data(); tbody.innerHTML += `<tr><td>${l.requestedDates?.join(' to ')}</td><td>${l.reason||'-'}</td><td><span class="badge badge-${l.status==='approved'?'success':l.status==='rejected'?'danger':'warning'}">${l.status}</span></td><td>${l.approvedByName||l.rejectedByName||'-'}</td></tr>`; }); }));
       
       const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('assignedBy', '==', currentUser.uid)));
-      const now = new Date(); let assigned = 0;
-      tasksSnap.forEach(d => { if (d.data().createdAt?.toDate().getMonth() === now.getMonth()) assigned++; });
-      document.getElementById('tasksAssigned').textContent = assigned;
+      document.getElementById('tasksAssigned').textContent = tasksSnap.size;
       
       const attSnap = await getDocs(query(collection(db, 'attendance'), where('userId', '==', currentUser.uid), orderBy('date', 'desc'), limit(30)));
-      let streak = 0; const dates = attSnap.docs.map(d => d.data().date).sort().reverse();
-      const today = new Date().toISOString().split('T')[0];
+      let streak = 0; const dates = attSnap.docs.map(d => d.data().date).sort().reverse(); const today = new Date().toISOString().split('T')[0];
       if (dates.length > 0 && dates[0] === today) streak = 1;
       for (let i = 1; i < dates.length; i++) { if ((new Date(dates[i-1]) - new Date(dates[i])) / 86400000 === 1) streak++; else break; }
       document.getElementById('attendanceStreak').textContent = streak;
@@ -331,10 +326,9 @@
       const notifSnap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', currentUser.uid), where('isRead', '==', false)));
       if (notifSnap.size > 0) { document.getElementById('notificationBadge').style.display = 'block'; document.getElementById('notificationBadge').textContent = notifSnap.size; }
       
-    } catch (error) { console.error(error); showToast('Error loading profile', 'error'); }
+    } catch (error) { console.error(error); document.getElementById('loadingState').style.display = 'none'; document.getElementById('errorState').style.display = 'block'; }
   }
 
-  window.dismissAnnouncement = () => document.getElementById('announcementBanner').style.display = 'none';
   window.openEditProfile = () => { showModal('Edit Profile', `<div class="form-group"><label>Full Name</label><input class="form-control" id="editName" value="${userData.fullName||''}"></div><div class="form-group"><label>Phone</label><input class="form-control" id="editPhone" value="${userData.phone||''}"></div><div class="form-group"><label>Address</label><input class="form-control" id="editAddress" value="${userData.address||''}"></div><div class="form-group"><label>Emergency Contact</label><input class="form-control" id="editEmergency" value="${userData.emergencyContact||''}"></div><button class="btn btn-primary" onclick="saveProfile()">Save</button>`); };
   window.saveProfile = async () => { await updateDoc(doc(db, 'users', currentUser.uid), { fullName: document.getElementById('editName').value, phone: document.getElementById('editPhone').value, address: document.getElementById('editAddress').value, emergencyContact: document.getElementById('editEmergency').value }); showToast('Profile updated', 'success'); hideModal(); };
   window.openEditBank = () => { showModal('Edit Bank Details', `<div class="form-group"><label>Bank Name</label><input class="form-control" id="editBankName" value="${userData.bankName||''}"></div><div class="form-group"><label>Account Number</label><input class="form-control" id="editAccountNumber" value="${userData.accountNumber||''}"></div><div class="form-group"><label>Account Name</label><input class="form-control" id="editAccountName" value="${userData.accountName||userData.fullName||''}"></div><button class="btn btn-primary" onclick="saveBank()">Save</button>`); };
@@ -343,7 +337,6 @@
   window.submitLeave = async () => { const start = document.getElementById('modalStart').value; const end = document.getElementById('modalEnd').value; if (!start || !end) { showToast('Select dates', 'error'); return; } const days = (new Date(end) - new Date(start)) / 86400000 + 1; if (days > 2) { showToast('Max 2 days', 'error'); return; } if (userData.leaveDaysRemaining < days) { showToast(`Only ${userData.leaveDaysRemaining} days left`, 'error'); return; } await addDoc(collection(db, 'leave_requests'), { userId: currentUser.uid, requestedDates: [start, end], reason: document.getElementById('modalReason').value, status: 'pending', createdAt: serverTimestamp() }); showToast('Leave requested', 'success'); hideModal(); document.getElementById('leaveStartDate').value = document.getElementById('leaveEndDate').value = ''; };
   window.openSetPinModal = () => { showModal('Set Security PIN', `<div class="pin-input-container"><input type="password" maxlength="1" class="pin-input" id="newPin1"><input type="password" maxlength="1" class="pin-input" id="newPin2"><input type="password" maxlength="1" class="pin-input" id="newPin3"><input type="password" maxlength="1" class="pin-input" id="newPin4"></div><button class="btn btn-primary" onclick="savePin()">Save PIN</button>`); document.querySelectorAll('.pin-input').forEach((inp,i,arr)=>inp.addEventListener('input',e=>{if(e.target.value&&i<arr.length-1)arr[i+1].focus();})); };
   window.savePin = async () => { const pin = ['newPin1','newPin2','newPin3','newPin4'].map(id => document.getElementById(id).value).join(''); if (pin.length !== 4) { showToast('Enter 4-digit PIN', 'error'); return; } await updateDoc(doc(db, 'users', currentUser.uid), { attendantPin: pin }); showToast('PIN saved', 'success'); hideModal(); };
-  window.toggleNotifications = () => { window.location.href = 'notifications.html'; };
 
   onAuthStateChanged(auth, async (user) => { if (!user) { window.location.href = 'auth.html'; return; } currentUser = user; const snap = await getDoc(doc(db, 'users', user.uid)); if (!snap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; } const data = snap.data(); if (!data.role?.includes('attendant')) { window.location.href = data.role === 'staff' ? 'staff-profile.html' : 'admin-dashboard.html'; return; } document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadProfile(); resetInactivityTimer(); });
   document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
