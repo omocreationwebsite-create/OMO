@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ff4da6">
+  <title>Kiosk Settings · FashionStone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --header-height: 70px; --sidebar-width: 280px; }
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+    .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; }
+    .logo-text { font-size: 1.25rem; font-weight: 700; } .logo-text span { color: var(--primary); }
+    .sidebar-nav { padding: 20px 12px; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; margin-bottom: 3px; }
+    .nav-item i { width: 22px; } .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
+    .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 20px; }
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); position: absolute; bottom: 0; width: 100%; background: inherit; }
+    .user-profile { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .user-details h4 { font-size: 0.85rem; } .user-details p { font-size: 0.7rem; opacity: 0.6; }
+    .main-content { flex: 1; margin-left: var(--sidebar-width); }
+    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+    .content-wrapper { padding: 28px; max-width: 800px; margin: 0 auto; }
+    
+    .settings-card { background: white; border-radius: 24px; padding: 30px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
+    .settings-header { margin-bottom: 25px; }
+    .settings-header h2 { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--dark); }
+    .settings-header p { color: var(--gray); font-size: 0.85rem; margin-top: 5px; }
+    
+    .form-group { margin-bottom: 24px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 8px; }
+    .form-group .hint { font-size: 0.75rem; color: var(--gray); margin-top: 5px; }
+    
+    .time-input-group { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .time-input { display: flex; align-items: center; gap: 5px; background: var(--gray-light); padding: 8px 15px; border-radius: 40px; }
+    .time-input input { width: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 1rem; font-weight: 600; }
+    .time-input span { font-size: 1.2rem; font-weight: 600; color: var(--gray); }
+    
+    .penalty-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .penalty-item { flex: 1; min-width: 150px; }
+    .penalty-item label { font-size: 0.75rem; margin-bottom: 5px; }
+    .penalty-item input { width: 100%; padding: 12px 15px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px; font-size: 1rem; font-weight: 600; }
+    
+    .divider { height: 1px; background: rgba(0,0,0,0.08); margin: 25px 0; }
+    
+    .btn { padding: 12px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; width: 100%; justify-content: center; }
+    .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
+    
+    .info-box { background: var(--primary-soft); border-radius: 16px; padding: 20px; margin-top: 20px; }
+    .info-box h4 { font-size: 0.9rem; margin-bottom: 10px; color: var(--dark); }
+    .info-box ul { list-style: none; }
+    .info-box li { font-size: 0.8rem; color: var(--gray); padding: 5px 0; display: flex; align-items: center; gap: 8px; }
+    .info-box li i { color: var(--primary); width: 18px; }
+    
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
+    .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
+    .toast.show { transform: translateX(0); }
+    
+    @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div>
+  <nav class="sidebar-nav">
+    <button class="nav-item" onclick="window.location.href='admin-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
+    <button class="nav-item" onclick="window.location.href='approvals.html'"><i class="fas fa-check-circle"></i><span>Approvals</span></button>
+    <button class="nav-item" onclick="window.location.href='staff-management.html'"><i class="fas fa-users-cog"></i><span>Staff Management</span></button>
+    <button class="nav-item" onclick="window.location.href='finance.html'"><i class="fas fa-chart-line"></i><span>Finance</span></button>
+    <button class="nav-item" onclick="window.location.href='audit.html'"><i class="fas fa-history"></i><span>Audit Logs</span></button>
+    <button class="nav-item active"><i class="fas fa-cog"></i><span>Kiosk Settings</span></button>
+    <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+  </nav>
+  <div class="sidebar-footer"><div class="user-profile"><div class="user-avatar" id="userAvatar">A</div><div class="user-details"><h4 id="userName">Admin</h4><p id="userRole">Admin</p></div></div></div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar"><h1 class="page-title">Kiosk Settings</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
+  <div class="content-wrapper">
+    
+    <div class="settings-card">
+      <div class="settings-header"><h2><i class="fas fa-clock"></i> Attendance Time Settings</h2><p>Configure check-in and check-out times. Staff checking in late or checking out early will receive penalties.</p></div>
+      
+      <div class="form-group">
+        <label><i class="fas fa-sign-in-alt"></i> Check-In Time (Latest arrival)</label>
+        <div class="time-input-group">
+          <div class="time-input"><input type="number" id="checkInHour" min="0" max="23" value="9"> <span>:</span> <input type="number" id="checkInMinute" min="0" max="59" value="0"></div>
+          <span style="color:var(--gray);">AM</span>
+        </div>
+        <p class="hint"><i class="fas fa-info-circle"></i> Staff checking in after this time are marked LATE and lose points.</p>
+      </div>
+      
+      <div class="form-group">
+        <label><i class="fas fa-sign-out-alt"></i> Check-Out Time (Earliest departure)</label>
+        <div class="time-input-group">
+          <div class="time-input"><input type="number" id="checkOutHour" min="0" max="23" value="18"> <span>:</span> <input type="number" id="checkOutMinute" min="0" max="59" value="0"></div>
+          <span style="color:var(--gray);">PM</span>
+        </div>
+        <p class="hint"><i class="fas fa-info-circle"></i> Staff checking out before this time are marked EARLY DEPARTURE and lose points.</p>
+      </div>
+      
+      <div class="divider"></div>
+      
+      <div class="settings-header"><h2><i class="fas fa-coins"></i> Penalty Settings</h2><p>Points deducted for attendance violations.</p></div>
+      
+      <div class="penalty-group">
+        <div class="penalty-item"><label>Late Check-In Penalty</label><input type="number" id="latePenalty" value="5" min="1" max="50"></div>
+        <div class="penalty-item"><label>Early Check-Out Penalty</label><input type="number" id="earlyPenalty" value="5" min="1" max="50"></div>
+        <div class="penalty-item"><label>Absent Penalty</label><input type="number" id="absentPenalty" value="10" min="1" max="50"></div>
+      </div>
+      
+      <div class="divider"></div>
+      
+      <div class="settings-header"><h2><i class="fas fa-shield-alt"></i> Security Settings</h2></div>
+      
+      <div class="form-group">
+        <label>Admin Exit PIN</label>
+        <input type="password" id="adminPin" class="form-control" placeholder="4-digit PIN" maxlength="4" value="1234" style="width:150px;padding:12px;border-radius:12px;border:1px solid #ddd;">
+        <p class="hint">PIN required to exit kiosk mode and return to admin dashboard.</p>
+      </div>
+      
+      <div class="info-box">
+        <h4><i class="fas fa-ruler"></i> Kiosk Rules for Staff</h4>
+        <ul>
+          <li><i class="fas fa-check-circle" style="color:var(--success);"></i> Check-in before check-in time = ON TIME (+0 points)</li>
+          <li><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> Check-in after check-in time = LATE (-<span id="displayLatePenalty">5</span> points)</li>
+          <li><i class="fas fa-check-circle" style="color:var(--success);"></i> Check-out after check-out time = ON TIME (+0 points)</li>
+          <li><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> Check-out before check-out time = EARLY DEPARTURE (-<span id="displayEarlyPenalty">5</span> points)</li>
+          <li><i class="fas fa-times-circle" style="color:var(--danger);"></i> No check-in for the day = ABSENT (-<span id="displayAbsentPenalty">10</span> points)</li>
+        </ul>
+      </div>
+      
+      <button class="btn btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Save Kiosk Settings</button>
+      <button class="btn btn-outline" onclick="window.open('kiosk.html', '_blank')" style="margin-top:15px;width:100%;justify-content:center;"><i class="fas fa-desktop"></i> Open Kiosk Terminal</button>
+    </div>
+    
+  </div>
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let currentUser = null;
+
+  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+
+  async function loadSettings() {
+    const snap = await getDoc(doc(db, 'system_settings', 'kiosk'));
+    if (snap.exists()) {
+      const s = snap.data();
+      document.getElementById('checkInHour').value = s.checkInHour || 9;
+      document.getElementById('checkInMinute').value = s.checkInMinute || 0;
+      document.getElementById('checkOutHour').value = s.checkOutHour || 18;
+      document.getElementById('checkOutMinute').value = s.checkOutMinute || 0;
+      document.getElementById('latePenalty').value = s.latePenalty || 5;
+      document.getElementById('earlyPenalty').value = s.earlyPenalty || 5;
+      document.getElementById('absentPenalty').value = s.absentPenalty || 10;
+      document.getElementById('adminPin').value = s.adminPin || '1234';
+      updateDisplayPenalties();
+    }
+    updateDisplayPenalties();
+  }
+
+  function updateDisplayPenalties() {
+    document.getElementById('displayLatePenalty').textContent = document.getElementById('latePenalty').value;
+    document.getElementById('displayEarlyPenalty').textContent = document.getElementById('earlyPenalty').value;
+    document.getElementById('displayAbsentPenalty').textContent = document.getElementById('absentPenalty').value;
+  }
+
+  document.getElementById('latePenalty').addEventListener('input', updateDisplayPenalties);
+  document.getElementById('earlyPenalty').addEventListener('input', updateDisplayPenalties);
+  document.getElementById('absentPenalty').addEventListener('input', updateDisplayPenalties);
+
+  window.saveSettings = async () => {
+    const settings = {
+      checkInHour: parseInt(document.getElementById('checkInHour').value) || 9,
+      checkInMinute: parseInt(document.getElementById('checkInMinute').value) || 0,
+      checkOutHour: parseInt(document.getElementById('checkOutHour').value) || 18,
+      checkOutMinute: parseInt(document.getElementById('checkOutMinute').value) || 0,
+      latePenalty: parseInt(document.getElementById('latePenalty').value) || 5,
+      earlyPenalty: parseInt(document.getElementById('earlyPenalty').value) || 5,
+      absentPenalty: parseInt(document.getElementById('absentPenalty').value) || 10,
+      adminPin: document.getElementById('adminPin').value || '1234',
+      updatedAt: serverTimestamp(),
+      updatedBy: currentUser?.uid
+    };
+    
+    await setDoc(doc(db, 'system_settings', 'kiosk'), settings);
+    showToast('Kiosk settings saved successfully!', 'success');
+  };
+
+  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } const data = snap.data(); document.getElementById('userName').textContent = data.fullName?.split(' ')[0] || 'Admin'; document.getElementById('userRole').textContent = data.role; document.getElementById('userAvatar').textContent = (data.fullName||'A').charAt(0); document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadSettings(); });
+  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+</script>
+</body>
+</html>
