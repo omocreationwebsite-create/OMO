@@ -28,6 +28,10 @@
     .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; }
     .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
     .content-wrapper { padding: 28px; max-width: 1600px; }
+    .settings-card { background: linear-gradient(135deg, var(--primary-soft), white); border-radius: 20px; padding: 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+    .settings-card h3 { font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+    .point-value-input { display: flex; align-items: center; gap: 15px; }
+    .point-value-input input { width: 150px; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; font-size: 1rem; font-weight: 600; text-align: center; }
     .tabs-container { background: white; border-radius: 20px; padding: 6px; margin-bottom: 24px; display: flex; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-wrap: wrap; }
     .tab { padding: 12px 20px; border-radius: 16px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; background: none; color: var(--gray); display: flex; align-items: center; gap: 6px; }
     .tab.active { background: var(--primary); color: white; }
@@ -49,6 +53,7 @@
     .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
     .badge-pending { background: rgba(107,114,128,0.1); color: var(--gray); }
+    .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
     .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
     .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
     .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
@@ -69,8 +74,6 @@
     .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
     .toast.show { transform: translateX(0); }
     .page-view { display: none; } .page-view.active { display: block; }
-    .bulk-actions { background: var(--primary-soft); padding: 12px 20px; border-radius: 40px; margin-bottom: 20px; display: none; align-items: center; gap: 15px; }
-    .bulk-actions.show { display: flex; }
     @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } }
   </style>
 </head>
@@ -84,6 +87,7 @@
     <button class="nav-item active"><i class="fas fa-users-cog"></i><span>Staff Management</span></button>
     <button class="nav-item" onclick="window.location.href='finance.html'"><i class="fas fa-chart-line"></i><span>Finance</span></button>
     <button class="nav-item" onclick="window.location.href='audit.html'"><i class="fas fa-history"></i><span>Audit Logs</span></button>
+    <button class="nav-item" onclick="window.location.href='announcements.html'"><i class="fas fa-bullhorn"></i><span>Announcements</span></button>
     <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
   </nav>
   <div class="sidebar-footer"><div class="user-profile"><div class="user-avatar" id="userAvatar">A</div><div class="user-details"><h4 id="userName">Admin</h4><p id="userRole">Admin</p></div></div></div>
@@ -93,6 +97,16 @@
   <header class="top-bar"><h1 class="page-title">Staff Management</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
     
+    <div class="settings-card">
+      <h3><i class="fas fa-coins" style="color:var(--primary);"></i> Point Value Configuration</h3>
+      <div class="point-value-input">
+        <label style="font-weight:600;">₦ per 5 points:</label>
+        <input type="number" id="pointValueInput" min="100" step="100" value="500">
+        <button class="btn btn-primary" onclick="updatePointValue()"><i class="fas fa-save"></i> Save</button>
+      </div>
+      <p style="font-size:0.75rem;color:var(--gray);">Staff earn +5 for early, -5 for late. This sets ₦ value per 5 points.</p>
+    </div>
+    
     <div class="tabs-container">
       <button class="tab active" data-tab="all"><i class="fas fa-users"></i> All Staff <span class="count" id="allCount">0</span></button>
       <button class="tab" data-tab="pending"><i class="fas fa-clock"></i> Pending <span class="count" id="pendingCount">0</span></button>
@@ -100,19 +114,17 @@
       <button class="tab" data-tab="terminated"><i class="fas fa-ban"></i> Terminated <span class="count" id="terminatedCount">0</span></button>
     </div>
     
-    <div class="bulk-actions" id="bulkActions"><span id="selectedCount">0 selected</span><button class="btn btn-sm btn-outline" onclick="bulkChangeRole()"><i class="fas fa-tag"></i> Change Role</button><button class="btn btn-sm btn-warning" onclick="bulkSuspend()"><i class="fas fa-pause"></i> Suspend</button><button class="btn btn-sm btn-outline" onclick="clearSelection()">Cancel</button></div>
-    
     <div class="filter-bar">
       <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" class="search-input" id="searchInput" placeholder="Search by name or email..."></div>
-      <select class="filter-select" id="roleFilter"><option value="all">All Roles</option><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option><option value="admin">Admin</option></select>
+      <select class="filter-select" id="roleFilter"><option value="all">All Roles</option><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select>
       <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Export</button>
       <button class="btn btn-primary" onclick="openAddStaffModal()"><i class="fas fa-plus"></i> Add Staff</button>
     </div>
     
     <div id="allPanel" class="page-view active">
       <div class="panel">
-        <div class="panel-header"><h3><i class="fas fa-list"></i> <span id="tableTitle">All Staff</span></h3><button class="btn btn-outline btn-sm" onclick="refreshData()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
-        <div class="table-wrapper"><table class="data-table"><thead><tr><th style="width:30px;"><input type="checkbox" id="selectAll"></th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Base Salary</th><th>Points</th><th>Tasks</th><th>Leave</th><th>Actions</th></tr></thead><tbody id="staffTable"></tbody></table></div>
+        <div class="panel-header"><h3><i class="fas fa-list"></i> All Staff</h3><button class="btn btn-outline btn-sm" onclick="refreshData()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Base Salary</th><th>Points</th><th>Tasks</th><th>Leave</th><th>Actions</th></tr></thead><tbody id="staffTable"></tbody></table></div>
       </div>
     </div>
     
@@ -129,23 +141,21 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, updateDoc, serverTimestamp, addDoc, getDocs, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, updateDoc, serverTimestamp, addDoc, getDocs, where, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-  let currentUser = null, userData = null, unsubscribes = [], allUsers = [], currentTab = 'all', selectedUsers = new Set();
+  let currentUser = null, userData = null, unsubscribes = [], allUsers = [], currentTab = 'all', globalPointValue = 500;
 
   function formatDate(d) { if (!d) return '-'; return d.toDate().toLocaleDateString('en-GB', {day:'2-digit',month:'short'}); }
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
   function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
   async function logAudit(action, note) { try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } catch(e) {} }
   window.hideModal = () => document.getElementById('modalOverlay').style.display = 'none';
+  function showModal(title, content) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content; document.getElementById('modalOverlay').style.display = 'flex'; }
 
-  function updateBulkUI() { const d = document.getElementById('bulkActions'); const s = document.getElementById('selectedCount'); if (selectedUsers.size > 0) { d.classList.add('show'); s.textContent = `${selectedUsers.size} selected`; } else { d.classList.remove('show'); } }
-  window.clearSelection = () => { selectedUsers.clear(); document.querySelectorAll('.staff-checkbox').forEach(cb => cb.checked = false); document.getElementById('selectAll').checked = false; updateBulkUI(); };
-  window.bulkChangeRole = () => { let opts = ''; ['staff','attendant','attendant_chief'].forEach(r => opts += `<option value="${r}">${r}</option>`); showModal('Bulk Role Change', `<select class="form-control" id="bulkRole">${opts}</select><button class="btn btn-primary" style="margin-top:15px;" onclick="applyBulkRole()">Apply to ${selectedUsers.size} staff</button>`); };
-  window.applyBulkRole = async () => { const role = document.getElementById('bulkRole').value; const batch = writeBatch(db); selectedUsers.forEach(id => batch.update(doc(db, 'users', id), { role })); await batch.commit(); await logAudit('bulk_role_change', `Changed ${selectedUsers.size} to ${role}`); showToast(`Updated ${selectedUsers.size} staff`, 'success'); hideModal(); clearSelection(); };
-  window.bulkSuspend = async () => { const reason = prompt('Suspension reason:') || 'No reason'; const batch = writeBatch(db); selectedUsers.forEach(id => batch.update(doc(db, 'users', id), { status: 'suspended', suspendedBy: currentUser.uid, suspendedAt: serverTimestamp(), suspensionReason: reason })); await batch.commit(); await logAudit('bulk_suspend', `Suspended ${selectedUsers.size} staff`); showToast(`Suspended ${selectedUsers.size} staff`, 'warning'); clearSelection(); };
+  async function loadPointValue() { const snap = await getDoc(doc(db, 'system_settings', 'points')); if (snap.exists()) { globalPointValue = snap.data().value || 500; document.getElementById('pointValueInput').value = globalPointValue; } else { await setDoc(doc(db, 'system_settings', 'points'), { value: 500 }); } }
+  window.updatePointValue = async () => { const val = parseInt(document.getElementById('pointValueInput').value) || 500; await setDoc(doc(db, 'system_settings', 'points'), { value: val, updatedBy: currentUser.uid, updatedAt: serverTimestamp() }); const users = await getDocs(query(collection(db, 'users'), where('role', 'in', ['staff','attendant','attendant_chief']))); const batch = writeBatch(db); users.forEach(d => batch.update(d.ref, { pointValueNaira: val })); await batch.commit(); globalPointValue = val; showToast(`Point value set to ₦${val}`, 'success'); };
 
   function renderTables() {
     const staffUsers = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin');
@@ -163,11 +173,9 @@
     const suspendedFiltered = filtered.filter(u => u.status === 'suspended');
     const terminatedFiltered = filtered.filter(u => u.status === 'terminated');
     
-    document.getElementById('tableTitle').textContent = currentTab === 'all' ? 'All Staff' : currentTab === 'pending' ? 'Pending Approvals' : currentTab === 'suspended' ? 'Suspended Staff' : 'Terminated Staff';
-    
     const tbody = document.getElementById('staffTable'); tbody.innerHTML = '';
-    activeFiltered.forEach(u => { tbody.innerHTML += `<tr><td><input type="checkbox" class="staff-checkbox" data-id="${u.uid}" ${currentTab!=='all'?'disabled':''}></td><td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td><td><span class="badge badge-${u.role==='attendant_chief'?'info':u.role==='attendant'?'info':'success'}">${u.role}</span></td><td><span class="badge badge-success">Active</span></td><td>${formatCurrency(u.baseSalary)}</td><td>${u.totalPoints||0}</td><td>${u.tasksCompleted||0}</td><td>${u.leaveDaysRemaining||2}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-outline" onclick="openEditStaff('${u.uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-warning" onclick="suspendStaff('${u.uid}')"><i class="fas fa-pause"></i></button><button class="btn btn-sm btn-danger" onclick="requestTermination('${u.uid}')"><i class="fas fa-ban"></i></button></td></tr>`; });
-    if (activeFiltered.length === 0) tbody.innerHTML = '<tr><td colspan="11"><div class="empty-state">No staff found</div></td></tr>';
+    activeFiltered.forEach(u => { tbody.innerHTML += `<tr><td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td><td><span class="badge badge-${u.role==='attendant_chief'?'info':u.role==='attendant'?'info':'success'}">${u.role}</span></td><td><span class="badge badge-success">Active</span></td><td>${formatCurrency(u.baseSalary)}</td><td>${u.totalPoints||0}</td><td>${u.tasksCompleted||0}</td><td>${u.leaveDaysRemaining||2}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-outline" onclick="openEditStaff('${u.uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-warning" onclick="suspendStaff('${u.uid}')"><i class="fas fa-pause"></i></button><button class="btn btn-sm btn-danger" onclick="requestTermination('${u.uid}')"><i class="fas fa-ban"></i></button></td></tr>`; });
+    if (activeFiltered.length === 0) tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">No staff found</div></td></tr>';
     
     const pendingTbody = document.getElementById('pendingTable'); pendingTbody.innerHTML = '';
     pendingFiltered.forEach(u => { pendingTbody.innerHTML += `<tr><td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td><td>${formatDate(u.createdAt)}</td><td><select id="role-${u.uid}" class="form-control" style="padding:5px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></td><td><input type="number" id="salary-${u.uid}" style="width:90px;padding:5px;" value="50000"></td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="approveUser('${u.uid}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectUser('${u.uid}')">Reject</button></td></tr>`; });
@@ -180,23 +188,23 @@
     const terminatedTbody = document.getElementById('terminatedTable'); terminatedTbody.innerHTML = '';
     terminatedFiltered.forEach(u => { terminatedTbody.innerHTML += `<tr><td>${u.fullName||'-'}</td><td>${u.role}</td><td>${formatDate(u.terminatedAt)}</td><td>${u.terminationReason||'-'}</td></tr>`; });
     if (terminatedFiltered.length === 0) terminatedTbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No terminated staff</div></td></tr>';
-    
-    document.querySelectorAll('.staff-checkbox').forEach(cb => { cb.checked = selectedUsers.has(cb.dataset.id); cb.addEventListener('change', e => { if (e.target.checked) selectedUsers.add(e.target.dataset.id); else selectedUsers.delete(e.target.dataset.id); updateBulkUI(); }); });
-    document.getElementById('selectAll').addEventListener('change', e => { document.querySelectorAll('.staff-checkbox:not(:disabled)').forEach(cb => { cb.checked = e.target.checked; if (e.target.checked) selectedUsers.add(cb.dataset.id); else selectedUsers.delete(cb.dataset.id); }); updateBulkUI(); });
   }
 
-  function loadUsers() { unsubscribes.forEach(u => u()); unsubscribes = []; unsubscribes.push(onSnapshot(query(collection(db, 'users'), orderBy('createdAt', 'desc')), snap => { allUsers = snap.docs.map(d => ({uid:d.id, ...d.data()})); renderTables(); })); }
+  function loadUsers() { unsubscribes.forEach(u => u()); unsubscribes = []; unsubscribes.push(onSnapshot(query(collection(db, 'users'), orderBy('createdAt', 'desc')), async snap => { allUsers = snap.docs.map(d => ({uid:d.id, ...d.data()})); await loadPointValue(); renderTables(); })); }
 
   window.approveUser = async (uid) => { const role = document.getElementById(`role-${uid}`).value; const salary = parseFloat(document.getElementById(`salary-${uid}`).value) || 0; await updateDoc(doc(db, 'users', uid), { role, baseSalary: salary, status: 'active', approvedBy: currentUser.uid, approvedByName: userData.fullName, approvedAt: serverTimestamp() }); await addDoc(collection(db, 'notifications'), { userId: uid, type: 'approved', title: 'Account Approved', message: `You are now a ${role}.`, isRead: false, createdAt: serverTimestamp() }); await logAudit('approve_user', `Approved as ${role} with salary ₦${salary}`); showToast('User approved', 'success'); };
   window.rejectUser = async (uid) => { const reason = prompt('Rejection reason:') || 'No reason'; await updateDoc(doc(db, 'users', uid), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp(), rejectionReason: reason }); await logAudit('reject_user', `Rejected. Reason: ${reason}`); showToast('User rejected', 'info'); };
   window.suspendStaff = async (uid) => { const reason = prompt('Suspension reason:') || 'No reason'; await updateDoc(doc(db, 'users', uid), { status: 'suspended', suspendedBy: currentUser.uid, suspendedAt: serverTimestamp(), suspensionReason: reason }); await logAudit('suspend_staff', `Suspended. Reason: ${reason}`); showToast('Staff suspended', 'warning'); };
   window.reinstateStaff = async (uid) => { await updateDoc(doc(db, 'users', uid), { status: 'active', reinstatedBy: currentUser.uid, reinstatedAt: serverTimestamp() }); await logAudit('reinstate_staff', 'Reinstated'); showToast('Staff reinstated', 'success'); };
-  window.requestTermination = (uid) => { const u = allUsers.find(x => x.uid === uid); const reason = prompt(`Termination reason for ${u?.fullName}:`); if (!reason) return; showModal('Termination Request', `<p>Request termination for <strong>${u.fullName}</strong></p><p>Reason: ${reason}</p><p style="color:var(--warning);">This requires another admin's approval.</p><button class="btn btn-danger" onclick="submitTermination('${uid}','${reason.replace(/'/g,"\\'")}')">Request Approval</button>`); };
+  window.requestTermination = (uid) => { const u = allUsers.find(x => x.uid === uid); const reason = prompt(`Termination reason for ${u?.fullName}:`); if (!reason) return; showModal('Termination Request', `<p>Request termination for <strong>${u.fullName}</strong></p><p>Reason: ${reason}</p><p style="color:var(--warning);">Requires another admin's approval.</p><button class="btn btn-danger" onclick="submitTermination('${uid}','${reason.replace(/'/g,"\\'")}')">Request Approval</button>`); };
   window.submitTermination = async (uid, reason) => { const reqRef = await addDoc(collection(db, 'termination_requests'), { userId: uid, requestedBy: currentUser.uid, requestedByName: userData.fullName, reason, status: 'pending_approval', createdAt: serverTimestamp(), approvedBy: [] }); const admins = await getDocs(query(collection(db, 'users'), where('role', 'in', ['admin','super_admin']))); admins.forEach(async d => { if (d.id !== currentUser.uid) await addDoc(collection(db, 'notifications'), { userId: d.id, type: 'termination_approval', title: 'Termination Approval', message: `${userData.fullName} requested termination.`, isRead: false, requestId: reqRef.id, createdAt: serverTimestamp() }); }); await logAudit('termination_request', `Requested termination. Reason: ${reason}`); showToast('Termination request sent', 'info'); hideModal(); };
-  window.openEditStaff = (uid) => { const u = allUsers.find(x => x.uid === uid); showModal('Edit Staff', `<div class="form-group"><label>Name</label><input class="form-control" id="editName" value="${u.fullName||''}"></div><div class="form-group"><label>Email</label><input class="form-control" id="editEmail" value="${u.email||''}"></div><div class="form-group"><label>Phone</label><input class="form-control" id="editPhone" value="${u.phone||''}"></div><div class="form-group"><label>Role</label><select class="form-control" id="editRole"><option value="staff" ${u.role==='staff'?'selected':''}>Staff</option><option value="attendant" ${u.role==='attendant'?'selected':''}>Attendant</option><option value="attendant_chief" ${u.role==='attendant_chief'?'selected':''}>Chief Attendant</option></select></div><div class="form-group"><label>Base Salary (₦)</label><input type="number" class="form-control" id="editSalary" value="${u.baseSalary||0}"></div><div class="form-group"><label>Leave Days</label><input type="number" class="form-control" id="editLeave" value="${u.leaveDaysRemaining||2}"></div><button class="btn btn-primary" onclick="saveEdit('${uid}')">Save</button>`); };
-  window.saveEdit = async (uid) => { await updateDoc(doc(db, 'users', uid), { fullName: document.getElementById('editName').value, email: document.getElementById('editEmail').value, phone: document.getElementById('editPhone').value, role: document.getElementById('editRole').value, baseSalary: parseFloat(document.getElementById('editSalary').value)||0, leaveDaysRemaining: parseInt(document.getElementById('editLeave').value)||2 }); await logAudit('edit_staff', `Updated profile`); showToast('Saved', 'success'); hideModal(); };
+  
+  window.openEditStaff = (uid) => { const u = allUsers.find(x => x.uid === uid); if (!u) { showToast('User not found', 'error'); return; } showModal('Edit Staff', `<div class="form-group"><label>Full Name</label><input class="form-control" id="editName" value="${u.fullName||''}"></div><div class="form-group"><label>Email</label><input class="form-control" id="editEmail" value="${u.email||''}"></div><div class="form-group"><label>Phone</label><input class="form-control" id="editPhone" value="${u.phone||''}"></div><div class="form-group"><label>Role</label><select class="form-control" id="editRole"><option value="staff" ${u.role==='staff'?'selected':''}>Staff</option><option value="attendant" ${u.role==='attendant'?'selected':''}>Attendant</option><option value="attendant_chief" ${u.role==='attendant_chief'?'selected':''}>Chief Attendant</option></select></div><div class="form-group"><label>Base Salary (₦)</label><input type="number" class="form-control" id="editSalary" value="${u.baseSalary||0}"></div><div class="form-group"><label>Leave Days</label><input type="number" class="form-control" id="editLeave" value="${u.leaveDaysRemaining||2}"></div><div class="form-group"><label>Reset PIN</label><button class="btn btn-warning btn-sm" onclick="resetAttendantPin('${uid}')"><i class="fas fa-key"></i> Reset PIN (Attendant Only)</button></div><button class="btn btn-primary" onclick="saveEdit('${uid}')">Save Changes</button>`); };
+  window.saveEdit = async (uid) => { await updateDoc(doc(db, 'users', uid), { fullName: document.getElementById('editName').value, email: document.getElementById('editEmail').value, phone: document.getElementById('editPhone').value, role: document.getElementById('editRole').value, baseSalary: parseFloat(document.getElementById('editSalary').value)||0, leaveDaysRemaining: parseInt(document.getElementById('editLeave').value)||2 }); await logAudit('edit_staff', `Updated profile`); showToast('Saved', 'success'); hideModal(); loadUsers(); };
+  window.resetAttendantPin = async (uid) => { await updateDoc(doc(db, 'users', uid), { attendantPin: null, pinResetRequired: true }); showToast('PIN reset. User will set new PIN on next login.', 'success'); };
+  
   window.openAddStaffModal = () => { showModal('Add Staff', `<div class="form-group"><label>Full Name</label><input class="form-control" id="newName"></div><div class="form-group"><label>Email</label><input type="email" class="form-control" id="newEmail"></div><div class="form-group"><label>Phone</label><input class="form-control" id="newPhone"></div><div class="form-group"><label>Role</label><select class="form-control" id="newRole"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></div><div class="form-group"><label>Base Salary (₦)</label><input type="number" class="form-control" id="newSalary" value="50000"></div><button class="btn btn-primary" onclick="addStaff()">Add Staff</button>`); };
-  window.addStaff = async () => { const ref = doc(collection(db, 'users')); await setDoc(ref, { uid: ref.id, fullName: document.getElementById('newName').value, email: document.getElementById('newEmail').value, phone: document.getElementById('newPhone').value, role: document.getElementById('newRole').value, baseSalary: parseFloat(document.getElementById('newSalary').value)||0, status: 'active', pointValueNaira: 100, totalPoints: 0, tasksCompleted: 0, leaveDaysRemaining: 2, createdAt: serverTimestamp(), addedBy: currentUser.uid }); await logAudit('add_staff', `Added new staff`); showToast('Staff added', 'success'); hideModal(); };
+  window.addStaff = async () => { const ref = doc(collection(db, 'users')); await setDoc(ref, { uid: ref.id, fullName: document.getElementById('newName').value, email: document.getElementById('newEmail').value, phone: document.getElementById('newPhone').value, role: document.getElementById('newRole').value, baseSalary: parseFloat(document.getElementById('newSalary').value)||0, status: 'active', pointValueNaira: globalPointValue, totalPoints: 0, tasksCompleted: 0, leaveDaysRemaining: 2, createdAt: serverTimestamp(), addedBy: currentUser.uid }); await logAudit('add_staff', `Added new staff`); showToast('Staff added', 'success'); hideModal(); loadUsers(); };
 
   window.refreshData = () => loadUsers();
   document.getElementById('exportBtn').addEventListener('click', () => { const staff = allUsers.filter(u => u.role !== 'admin' && u.role !== 'super_admin'); const csv = ['Name,Email,Phone,Role,Status,Base Salary,Points,Tasks,Leave'].concat(staff.map(u => `"${u.fullName||''}","${u.email||''}","${u.phone||''}",${u.role},${u.status},${u.baseSalary||0},${u.totalPoints||0},${u.tasksCompleted||0},${u.leaveDaysRemaining||2}`)).join('\n'); const b = new Blob([csv], {type:'text/csv'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `staff_${new Date().toISOString().split('T')[0]}.csv`; a.click(); showToast('Exported', 'success'); });
