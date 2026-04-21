@@ -145,6 +145,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, collection, query, where, addDoc, serverTimestamp, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -157,6 +158,7 @@
   };
 
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getFirestore(app);
   
   let webcamStream = null;
@@ -165,6 +167,29 @@
   let kioskSettings = { checkInHour: 9, checkInMinute: 0, checkOutHour: 18, checkOutMinute: 0, latePenalty: 5, earlyPenalty: 5, adminPin: '1234' };
   let currentMode = 'checkin';
   let currentFacingMode = 'user';
+
+  // ========== AUTO ANONYMOUS LOGIN ==========
+  async function loginAnonymously() {
+    try {
+      await signInAnonymously(auth);
+      console.log('✅ Signed in anonymously for kiosk');
+    } catch (e) {
+      console.error('Anonymous login failed:', e);
+    }
+  }
+
+  // ========== CHECK AUTH STATE ==========
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      console.log('Kiosk authenticated:', user.uid);
+      await loadSettings();
+      await initCamera();
+      await loadStaffList();
+    } else {
+      // Not logged in - try anonymous login
+      await loginAnonymously();
+    }
+  });
 
   // ========== CLOCK ==========
   function updateClock() {
@@ -204,15 +229,12 @@
   // ========== LOAD STAFF ==========
   async function loadStaffList() {
     try {
-      console.log('Loading staff...');
-      const staffQuery = query(
-        collection(db, 'users'), 
-        where('role', 'in', ['staff', 'attendant', 'attendant_chief']), 
-        where('status', '==', 'active')
-      );
-      const staffSnap = await getDocs(staffQuery);
-      allStaff = staffSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-      console.log('Staff loaded:', allStaff.length);
+      const usersQuery = query(collection(db, 'users'), where('status', '==', 'active'));
+      const usersSnap = await getDocs(usersQuery);
+      
+      allStaff = usersSnap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(u => u.role === 'staff' || u.role === 'attendant' || u.role === 'attendant_chief');
       
       const today = new Date().toISOString().split('T')[0];
       const attSnap = await getDocs(query(collection(db, 'attendance'), where('date', '==', today)));
@@ -289,7 +311,6 @@
     html += '</table>';
     container.innerHTML = html;
     
-    // Make handleAction globally available
     window.handleAction = async (staffId) => {
       const staff = allStaff.find(s => s.id === staffId);
       if (!staff) return;
@@ -403,13 +424,6 @@
   
   document.querySelectorAll('.pin-input').forEach((inp, i, arr) => inp.addEventListener('input', e => { if (e.target.value && i < arr.length - 1) arr[i + 1].focus(); }));
 
-  // ========== INIT ==========
-  (async () => {
-    await loadSettings();
-    await initCamera();
-    await loadStaffList();
-  })();
-  
   window.loadStaffList = loadStaffList;
 </script>
 </body>
