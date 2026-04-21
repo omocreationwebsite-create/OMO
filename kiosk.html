@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ff4da6">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
   <title>Kiosk · FashionStone Attendance</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,75 +13,75 @@
     :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
     body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
     
-    .kiosk-container { width: 100%; max-width: 1200px; }
-    
-    .kiosk-header { text-align: center; margin-bottom: 30px; }
-    .kiosk-header h1 { font-size: 2.5rem; font-weight: 700; color: white; display: flex; align-items: center; justify-content: center; gap: 15px; }
-    .kiosk-header h1 i { color: var(--primary); }
-    .kiosk-header h1 span { color: var(--primary); }
-    .kiosk-header p { color: var(--gray); font-size: 1rem; margin-top: 8px; }
+    .kiosk-container { width: 100%; max-width: 1300px; }
+    .kiosk-header { text-align: center; margin-bottom: 25px; }
+    .kiosk-header h1 { font-size: 2.5rem; font-weight: 700; color: white; }
+    .kiosk-header h1 i { color: var(--primary); } .kiosk-header h1 span { color: var(--primary); }
+    .kiosk-header p { color: var(--gray); font-size: 1rem; margin-top: 5px; }
     
     .clock-display { text-align: center; margin-bottom: 20px; }
-    .clock-time { font-size: 4rem; font-weight: 800; color: white; letter-spacing: 2px; }
+    .clock-time { font-size: 4rem; font-weight: 800; color: white; letter-spacing: 3px; }
     .clock-date { font-size: 1.2rem; color: var(--gray); margin-top: 5px; }
     
-    .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; margin-bottom: 30px; max-height: 400px; overflow-y: auto; padding: 5px; }
+    .stats-bar { display: flex; justify-content: center; gap: 40px; margin-bottom: 25px; }
+    .stat-item { text-align: center; } .stat-value { font-size: 2rem; font-weight: 700; color: white; } .stat-label { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; }
     
-    .staff-card { background: white; border-radius: 20px; padding: 20px 12px; text-align: center; cursor: pointer; transition: all 0.2s; border: 3px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-    .staff-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(255,77,166,0.3); border-color: var(--primary); }
-    .staff-card.checked-in { opacity: 0.5; background: var(--gray-light); border-color: var(--success); cursor: not-allowed; }
-    .staff-card.checked-in:hover { transform: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .action-toggle { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+    .action-btn { padding: 15px 40px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; border: none; cursor: pointer; background: rgba(255,255,255,0.1); color: white; transition: all 0.2s; }
+    .action-btn.active { background: var(--primary); color: white; box-shadow: 0 0 20px rgba(255,77,166,0.4); }
+    .action-btn.checkin.active { background: var(--success); }
+    .action-btn.checkout.active { background: var(--warning); }
+    
+    .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; margin-bottom: 30px; max-height: 400px; overflow-y: auto; padding: 5px; }
+    
+    .staff-card { background: white; border-radius: 20px; padding: 20px 12px; text-align: center; cursor: pointer; transition: all 0.2s; border: 3px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; }
+    .staff-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(255,77,166,0.3); }
+    .staff-card.checked-in { border-color: var(--success); }
+    .staff-card.checked-out { border-color: var(--warning); opacity: 0.7; }
     
     .staff-avatar { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.8rem; font-weight: 700; color: white; }
     .staff-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 5px; color: var(--dark); }
     .staff-role { font-size: 0.7rem; color: var(--gray); text-transform: capitalize; margin-bottom: 8px; }
     .checkin-status { font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 30px; display: inline-block; }
-    .checkin-status.not-checked { background: rgba(245,158,11,0.15); color: var(--warning); }
-    .checkin-status.checked { background: rgba(16,185,129,0.15); color: var(--success); }
+    .checkin-status.not-checked { background: rgba(107,114,128,0.15); color: var(--gray); }
+    .checkin-status.checked-in-status { background: rgba(16,185,129,0.15); color: var(--success); }
+    .checkin-status.checked-out-status { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .checkin-status.late { background: rgba(239,68,68,0.15); color: var(--danger); }
     
     .webcam-section { background: rgba(255,255,255,0.05); border-radius: 24px; padding: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
     .webcam-container { position: relative; border-radius: 16px; overflow: hidden; background: #000; }
-    .webcam-container video { width: 100%; max-height: 300px; object-fit: cover; display: block; }
-    .webcam-container canvas { display: none; }
+    .webcam-container video { width: 100%; max-height: 250px; object-fit: cover; display: block; }
     
-    .checkin-message { text-align: center; margin-top: 15px; padding: 12px; border-radius: 40px; font-weight: 500; display: none; }
-    .checkin-message.success { background: rgba(16,185,129,0.2); color: var(--success); display: block; }
-    .checkin-message.error { background: rgba(239,68,68,0.2); color: var(--danger); display: block; }
-    .checkin-message.warning { background: rgba(245,158,11,0.2); color: var(--warning); display: block; }
+    .message-banner { text-align: center; margin-top: 15px; padding: 15px; border-radius: 50px; font-weight: 600; display: none; }
+    .message-banner.success { background: rgba(16,185,129,0.2); color: var(--success); display: block; }
+    .message-banner.warning { background: rgba(245,158,11,0.2); color: var(--warning); display: block; }
+    .message-banner.error { background: rgba(239,68,68,0.2); color: var(--danger); display: block; }
     
-    .kiosk-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; }
-    .exit-btn { background: rgba(255,255,255,0.1); border: 1px dashed var(--gray); color: var(--gray); padding: 12px 24px; border-radius: 40px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+    .kiosk-footer { display: flex; justify-content: space-between; margin-top: 25px; }
+    .refresh-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px 20px; border-radius: 30px; cursor: pointer; }
+    .exit-btn { background: rgba(0,0,0,0.3); border: 1px dashed var(--gray); color: var(--gray); padding: 10px 20px; border-radius: 30px; cursor: pointer; }
     .exit-btn:hover { background: rgba(239,68,68,0.2); border-color: var(--danger); color: var(--danger); }
     
     .pin-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .pin-modal.active { display: flex; }
-    .pin-box { background: white; border-radius: 28px; padding: 35px; max-width: 400px; width: 90%; text-align: center; }
-    .pin-box i { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
-    .pin-box h3 { font-size: 1.3rem; margin-bottom: 10px; }
-    .pin-box p { color: var(--gray); margin-bottom: 25px; }
+    .pin-box { background: white; border-radius: 28px; padding: 35px; max-width: 380px; width: 90%; text-align: center; }
+    .pin-box i { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
+    .pin-box h3 { font-size: 1.3rem; margin-bottom: 8px; }
+    .pin-box p { color: var(--gray); margin-bottom: 20px; }
     .pin-inputs { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
     .pin-input { width: 60px; height: 70px; text-align: center; font-size: 2rem; font-weight: 700; border: 2px solid rgba(255,77,166,0.2); border-radius: 14px; outline: none; }
-    .pin-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,77,166,0.1); }
-    .pin-actions { display: flex; gap: 10px; }
-    .pin-actions button { flex: 1; }
+    .pin-input:focus { border-color: var(--primary); }
+    .pin-actions { display: flex; gap: 10px; } .pin-actions button { flex: 1; }
     
-    .btn { padding: 12px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .btn { padding: 12px 24px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; }
+    .btn-primary { background: var(--primary); color: white; }
     .btn-outline { background: transparent; border: 1px solid var(--gray); color: var(--dark); }
     
-    .stats-bar { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; }
-    .stat-item { text-align: center; }
-    .stat-value { font-size: 2rem; font-weight: 700; color: white; }
-    .stat-label { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; }
+    .rules-banner { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; }
+    .rule-item { display: flex; align-items: center; gap: 8px; color: white; font-size: 0.8rem; }
+    .rule-item i { width: 20px; } .rule-item i.fa-check-circle { color: var(--success); } .rule-item i.fa-exclamation-triangle { color: var(--warning); }
     
-    .refresh-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 16px; border-radius: 30px; font-size: 0.8rem; cursor: pointer; margin-left: 10px; }
-    
-    @media (max-width: 768px) {
-      .kiosk-header h1 { font-size: 1.8rem; }
-      .clock-time { font-size: 2.5rem; }
-      .staff-grid { grid-template-columns: repeat(2, 1fr); }
-      .stats-bar { gap: 15px; }
-    }
+    @media (max-width: 768px) { .kiosk-header h1 { font-size: 1.8rem; } .clock-time { font-size: 2.5rem; } .staff-grid { grid-template-columns: repeat(2, 1fr); } .action-btn { padding: 12px 25px; font-size: 1rem; } .rules-banner { gap: 15px; } }
   </style>
 </head>
 <body>
@@ -91,7 +90,7 @@
   
   <div class="kiosk-header">
     <h1><i class="fas fa-camera"></i> Fashion<span>Stone</span> Kiosk</h1>
-    <p>Tap your name to check in · Photo captured automatically</p>
+    <p>Tap your name · Photo captured automatically</p>
   </div>
   
   <div class="clock-display">
@@ -105,19 +104,31 @@
     <div class="stat-item"><div class="stat-value" id="absentCount">0</div><div class="stat-label">Absent</div></div>
   </div>
   
+  <div class="rules-banner" id="rulesBanner">
+    <div class="rule-item"><i class="fas fa-check-circle"></i> On Time: 0 pts</div>
+    <div class="rule-item"><i class="fas fa-exclamation-triangle"></i> Late: -<span id="ruleLatePenalty">5</span> pts</div>
+    <div class="rule-item"><i class="fas fa-exclamation-triangle"></i> Early Departure: -<span id="ruleEarlyPenalty">5</span> pts</div>
+    <div class="rule-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i> Absent: -<span id="ruleAbsentPenalty">10</span> pts</div>
+  </div>
+  
+  <div class="action-toggle">
+    <button class="action-btn checkin active" id="checkinModeBtn"><i class="fas fa-sign-in-alt"></i> CHECK-IN</button>
+    <button class="action-btn checkout" id="checkoutModeBtn"><i class="fas fa-sign-out-alt"></i> CHECK-OUT</button>
+  </div>
+  
   <div class="staff-grid" id="staffGrid"></div>
   
   <div class="webcam-section">
     <div class="webcam-container">
       <video id="webcamVideo" autoplay playsinline></video>
-      <canvas id="webcamCanvas"></canvas>
+      <canvas id="webcamCanvas" style="display:none;"></canvas>
     </div>
-    <div id="checkinMessage" class="checkin-message"></div>
+    <div id="messageBanner" class="message-banner"></div>
   </div>
   
   <div class="kiosk-footer">
     <button class="refresh-btn" onclick="loadStaffList()"><i class="fas fa-sync-alt"></i> Refresh</button>
-    <button class="exit-btn" onclick="showExitModal()"><i class="fas fa-lock"></i> Exit Kiosk (Admin PIN)</button>
+    <button class="exit-btn" onclick="showExitModal()"><i class="fas fa-lock"></i> Exit Kiosk</button>
   </div>
 </div>
 
@@ -125,7 +136,7 @@
   <div class="pin-box">
     <i class="fas fa-lock"></i>
     <h3>Admin Verification</h3>
-    <p>Enter admin PIN to exit kiosk mode</p>
+    <p>Enter admin PIN to exit</p>
     <div class="pin-inputs">
       <input type="password" maxlength="1" class="pin-input" id="pin1">
       <input type="password" maxlength="1" class="pin-input" id="pin2">
@@ -134,27 +145,35 @@
     </div>
     <div class="pin-actions">
       <button class="btn btn-outline" onclick="hidePinModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="verifyExitPin()">Exit Kiosk</button>
+      <button class="btn btn-primary" onclick="verifyExitPin()">Exit</button>
     </div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs, updateDoc, increment, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
-  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig); const db = getFirestore(app);
   
-  let currentUser = null, webcamStream = null, allStaff = [], checkedInToday = new Set(), adminPin = null;
+  let webcamStream = null, allStaff = [], todayAttendance = new Map(), kioskSettings = { checkInHour: 9, checkInMinute: 0, checkOutHour: 18, checkOutMinute: 0, latePenalty: 5, earlyPenalty: 5, absentPenalty: 10, adminPin: '1234' };
+  let currentMode = 'checkin'; // 'checkin' or 'checkout'
 
   function updateClock() { const now = new Date(); document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-GB'); document.getElementById('liveDate').textContent = now.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'}); }
   setInterval(updateClock, 1000); updateClock();
 
+  async function loadKioskSettings() {
+    const snap = await getDoc(doc(db, 'system_settings', 'kiosk'));
+    if (snap.exists()) { kioskSettings = { ...kioskSettings, ...snap.data() }; }
+    document.getElementById('ruleLatePenalty').textContent = kioskSettings.latePenalty;
+    document.getElementById('ruleEarlyPenalty').textContent = kioskSettings.earlyPenalty;
+    document.getElementById('ruleAbsentPenalty').textContent = kioskSettings.absentPenalty;
+  }
+
   async function initWebcam() {
     try { webcamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } }); document.getElementById('webcamVideo').srcObject = webcamStream; }
-    catch (e) { console.warn('Webcam error:', e); document.getElementById('checkinMessage').className = 'checkin-message error'; document.getElementById('checkinMessage').textContent = 'Camera access denied'; }
+    catch (e) { showMessage('Camera access denied. Please enable camera permissions.', 'error'); }
   }
 
   async function loadStaffList() {
@@ -164,7 +183,8 @@
     
     const today = new Date().toISOString().split('T')[0];
     const attSnap = await getDocs(query(collection(db, 'attendance'), where('date', '==', today)));
-    checkedInToday = new Set(attSnap.docs.map(d => d.data().userId));
+    todayAttendance.clear();
+    attSnap.docs.forEach(d => { const a = d.data(); todayAttendance.set(a.userId, { ...a, docId: d.id }); });
     
     const present = attSnap.size;
     const late = attSnap.docs.filter(d => d.data().status === 'late').length;
@@ -178,79 +198,91 @@
   function renderStaffGrid() {
     const grid = document.getElementById('staffGrid');
     grid.innerHTML = '';
-    
     allStaff.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
     
     allStaff.forEach(staff => {
-      const isCheckedIn = checkedInToday.has(staff.id);
-      const card = document.createElement('div');
-      card.className = `staff-card ${isCheckedIn ? 'checked-in' : ''}`;
-      card.innerHTML = `
-        <div class="staff-avatar">${(staff.fullName || 'S').charAt(0).toUpperCase()}</div>
-        <h3>${staff.fullName?.split(' ')[0] || 'Staff'}</h3>
-        <div class="staff-role">${staff.role || 'staff'}</div>
-        <span class="checkin-status ${isCheckedIn ? 'checked' : 'not-checked'}">${isCheckedIn ? '✓ Checked In' : '⏱ Not Checked In'}</span>
-      `;
+      const att = todayAttendance.get(staff.id);
+      const hasCheckedIn = att && att.checkInTime;
+      const hasCheckedOut = att && att.checkOutTime;
       
-      if (!isCheckedIn) card.addEventListener('click', () => checkIn(staff));
+      let statusText = 'Not Checked In';
+      let statusClass = 'not-checked';
+      if (hasCheckedIn && !hasCheckedOut) { statusText = att.status === 'late' ? 'LATE' : 'Checked In'; statusClass = att.status === 'late' ? 'late' : 'checked-in-status'; }
+      else if (hasCheckedIn && hasCheckedOut) { statusText = att.checkOutStatus === 'early' ? 'EARLY DEPARTURE' : 'Completed'; statusClass = att.checkOutStatus === 'early' ? 'late' : 'checked-out-status'; }
+      
+      const card = document.createElement('div');
+      card.className = `staff-card ${hasCheckedIn ? 'checked-in' : ''} ${hasCheckedOut ? 'checked-out' : ''}`;
+      card.innerHTML = `<div class="staff-avatar">${(staff.fullName || 'S').charAt(0).toUpperCase()}</div><h3>${staff.fullName?.split(' ')[0] || 'Staff'}</h3><div class="staff-role">${staff.role || 'staff'}</div><span class="checkin-status ${statusClass}">${statusText}</span>`;
+      card.addEventListener('click', () => handleStaffClick(staff));
       grid.appendChild(card);
     });
   }
 
-  async function checkIn(staff) {
-    const video = document.getElementById('webcamVideo');
-    const canvas = document.getElementById('webcamCanvas');
-    const context = canvas.getContext('2d');
+  function handleStaffClick(staff) {
+    const att = todayAttendance.get(staff.id);
+    const hasCheckedIn = att && att.checkInTime;
+    const hasCheckedOut = att && att.checkOutTime;
     
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    const now = new Date();
-    const scheduledTime = new Date(); scheduledTime.setHours(8, 0, 0, 0);
-    const isLate = now > scheduledTime;
-    const status = isLate ? 'late' : 'on_time';
-    const pointsDeducted = isLate ? 5 : 0;
-    
-    try {
-      await addDoc(collection(db, 'attendance'), {
-        userId: staff.id, checkInTime: serverTimestamp(), date: now.toISOString().split('T')[0],
-        status, lateMinutes: isLate ? Math.floor((now - scheduledTime) / 60000) : 0, pointsDeducted
-      });
-      
-      if (pointsDeducted > 0) await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) });
-      
-      const msg = document.getElementById('checkinMessage');
-      msg.className = `checkin-message ${isLate ? 'warning' : 'success'}`;
-      msg.textContent = `${staff.fullName} checked in ${isLate ? '(Late)' : '✓ On time!'}`;
-      
-      await loadStaffList();
-      setTimeout(() => msg.className = 'checkin-message', 3000);
-    } catch (e) {
-      const msg = document.getElementById('checkinMessage');
-      msg.className = 'checkin-message error';
-      msg.textContent = 'Check-in failed. Try again.';
+    if (currentMode === 'checkin') {
+      if (hasCheckedIn) { showMessage(`${staff.fullName} has already checked in today.`, 'warning'); return; }
+      processCheckIn(staff);
+    } else {
+      if (!hasCheckedIn) { showMessage(`${staff.fullName} must check in first!`, 'error'); return; }
+      if (hasCheckedOut) { showMessage(`${staff.fullName} has already checked out today.`, 'warning'); return; }
+      processCheckOut(staff, att);
     }
   }
 
-  async function loadAdminPin() {
-    const snap = await getDoc(doc(db, 'system_settings', 'admin_pin'));
-    adminPin = snap.exists() ? snap.data().value : '1234';
+  async function processCheckIn(staff) {
+    const video = document.getElementById('webcamVideo');
+    const canvas = document.getElementById('webcamCanvas');
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth || 640; canvas.height = video.videoHeight || 480;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const now = new Date();
+    const checkInTime = new Date(); checkInTime.setHours(kioskSettings.checkInHour, kioskSettings.checkInMinute, 0);
+    const isLate = now > checkInTime;
+    const status = isLate ? 'late' : 'on_time';
+    const pointsDeducted = isLate ? kioskSettings.latePenalty : 0;
+    
+    await addDoc(collection(db, 'attendance'), { userId: staff.id, checkInTime: serverTimestamp(), date: now.toISOString().split('T')[0], status, pointsDeducted });
+    if (pointsDeducted > 0) { await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) }); await addDoc(collection(db, 'coin_transactions'), { userId: staff.id, points: -pointsDeducted, reason: `Late check-in (${formatTime(now)})`, createdAt: serverTimestamp() }); }
+    showMessage(`${staff.fullName} checked in ${isLate ? '(LATE -' + pointsDeducted + ' pts)' : '✓ On time!'}`, isLate ? 'warning' : 'success');
+    await loadStaffList();
   }
+
+  async function processCheckOut(staff, att) {
+    const video = document.getElementById('webcamVideo');
+    const canvas = document.getElementById('webcamCanvas');
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth || 640; canvas.height = video.videoHeight || 480;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const now = new Date();
+    const checkOutTime = new Date(); checkOutTime.setHours(kioskSettings.checkOutHour, kioskSettings.checkOutMinute, 0);
+    const isEarly = now < checkOutTime;
+    const checkOutStatus = isEarly ? 'early' : 'on_time';
+    const pointsDeducted = isEarly ? kioskSettings.earlyPenalty : 0;
+    
+    await updateDoc(doc(db, 'attendance', att.docId), { checkOutTime: serverTimestamp(), checkOutStatus, pointsDeducted: (att.pointsDeducted || 0) + pointsDeducted });
+    if (pointsDeducted > 0) { await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) }); await addDoc(collection(db, 'coin_transactions'), { userId: staff.id, points: -pointsDeducted, reason: `Early departure`, createdAt: serverTimestamp() }); }
+    showMessage(`${staff.fullName} checked out ${isEarly ? '(EARLY -' + pointsDeducted + ' pts)' : '✓ On time!'}`, isEarly ? 'warning' : 'success');
+    await loadStaffList();
+  }
+
+  function formatTime(d) { return d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); }
+  function showMessage(msg, type) { const b = document.getElementById('messageBanner'); b.className = `message-banner ${type}`; b.textContent = msg; setTimeout(() => b.className = 'message-banner', 4000); }
+
+  document.getElementById('checkinModeBtn').addEventListener('click', () => { currentMode = 'checkin'; document.getElementById('checkinModeBtn').classList.add('active'); document.getElementById('checkoutModeBtn').classList.remove('active'); });
+  document.getElementById('checkoutModeBtn').addEventListener('click', () => { currentMode = 'checkout'; document.getElementById('checkoutModeBtn').classList.add('active'); document.getElementById('checkinModeBtn').classList.remove('active'); });
 
   window.showExitModal = () => { document.getElementById('pinModal').classList.add('active'); document.getElementById('pin1').focus(); };
   window.hidePinModal = () => { document.getElementById('pinModal').classList.remove('active'); ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = ''); };
-  window.verifyExitPin = () => {
-    const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
-    if (pin === adminPin || pin === '1234') {
-      if (webcamStream) webcamStream.getTracks().forEach(t => t.stop());
-      window.location.href = 'admin-dashboard.html';
-    } else { alert('Invalid PIN'); }
-  };
-
+  window.verifyExitPin = () => { const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join(''); if (pin === kioskSettings.adminPin) { if (webcamStream) webcamStream.getTracks().forEach(t => t.stop()); window.location.href = 'admin-dashboard.html'; } else { alert('Invalid PIN'); } };
   document.querySelectorAll('.pin-input').forEach((inp, i, arr) => inp.addEventListener('input', e => { if (e.target.value && i < arr.length-1) arr[i+1].focus(); }));
 
-  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; await loadAdminPin(); await initWebcam(); await loadStaffList(); });
+  (async () => { await loadKioskSettings(); await initWebcam(); await loadStaffList(); })();
   window.loadStaffList = loadStaffList;
 </script>
 </body>
