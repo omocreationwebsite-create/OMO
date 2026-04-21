@@ -54,9 +54,7 @@
       box-shadow: 4px 0 24px rgba(0,0,0,0.08);
     }
     
-    .sidebar.collapsed {
-      width: var(--sidebar-collapsed);
-    }
+    .sidebar.collapsed { width: var(--sidebar-collapsed); }
     
     .sidebar-header {
       padding: 24px 18px;
@@ -79,13 +77,7 @@
       flex-shrink: 0;
     }
     
-    .logo-text {
-      font-size: 1.25rem;
-      font-weight: 700;
-      white-space: nowrap;
-      letter-spacing: -0.3px;
-    }
-    
+    .logo-text { font-size: 1.25rem; font-weight: 700; white-space: nowrap; letter-spacing: -0.3px; }
     .logo-text span { color: var(--primary); }
     
     .sidebar.collapsed .logo-text,
@@ -133,7 +125,6 @@
     }
     
     .nav-item i { width: 22px; font-size: 1.1rem; text-align: center; }
-    
     .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
     
     .nav-item.active {
@@ -142,11 +133,7 @@
       box-shadow: 0 6px 14px rgba(255,77,166,0.25);
     }
     
-    .nav-item.logout {
-      color: rgba(239,68,68,0.7);
-      margin-top: auto;
-    }
-    
+    .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: auto; }
     .nav-item.logout:hover { background: rgba(239,68,68,0.12); color: #f87171; }
     
     .sidebar-footer {
@@ -223,12 +210,7 @@
     
     .menu-toggle:hover { background: var(--primary-soft); color: var(--primary); }
     
-    .page-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--dark);
-      letter-spacing: -0.3px;
-    }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); letter-spacing: -0.3px; }
     
     .top-bar-right { display: flex; align-items: center; gap: 16px; }
     
@@ -271,17 +253,17 @@
     /* ========== CONTENT WRAPPER ========== */
     .content-wrapper { padding: 28px; max-width: 1600px; margin: 0 auto; }
     
-    /* ========== STATS GRID ========== */
+    /* ========== STATS GRID - 6 CARDS ========== */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 22px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
       margin-bottom: 28px;
     }
     
     .stat-card {
       background: white;
-      padding: 22px 20px;
+      padding: 18px 16px;
       border-radius: 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
       border: 1px solid rgba(0,0,0,0.03);
@@ -298,11 +280,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     
     .stat-header span {
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       color: var(--gray);
       font-weight: 600;
       text-transform: uppercase;
@@ -310,33 +292,62 @@
     }
     
     .stat-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
       background: var(--primary-soft);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--primary);
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
     
     .stat-value {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: 700;
       color: var(--dark);
       letter-spacing: -0.5px;
     }
     
     .stat-change {
-      font-size: 0.75rem;
-      margin-top: 8px;
+      font-size: 0.65rem;
+      margin-top: 6px;
       font-weight: 500;
     }
     
     .stat-change.positive { color: var(--success); }
     .stat-change.negative { color: var(--danger); }
     .stat-change.warning { color: var(--warning); }
+    
+    /* ========== QUICK ACTIONS ========== */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    
+    .quick-action {
+      background: white;
+      padding: 16px 12px;
+      border-radius: 18px;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.03);
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    
+    .quick-action:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(255,77,166,0.1);
+      border-color: var(--primary);
+    }
+    
+    .quick-action i { font-size: 1.6rem; color: var(--primary); margin-bottom: 8px; }
+    .quick-action h4 { font-size: 0.8rem; margin-bottom: 3px; color: var(--dark); }
+    .quick-action p { font-size: 0.6rem; color: var(--gray); }
     
     /* ========== PANELS ========== */
     .panel {
@@ -367,7 +378,6 @@
     }
     
     .panel-header h3 i { color: var(--primary); }
-    
     .panel-actions { display: flex; gap: 10px; }
     
     /* ========== TABLES ========== */
@@ -420,7 +430,6 @@
     .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
     .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
-    .badge-primary { background: rgba(255,77,166,0.1); color: var(--primary); }
     .badge-pending { background: rgba(107,114,128,0.1); color: var(--gray); }
     
     /* ========== BUTTONS ========== */
@@ -448,23 +457,12 @@
       box-shadow: 0 4px 12px rgba(255,77,166,0.25);
     }
     
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(255,77,166,0.3);
-    }
-    
-    .btn-outline {
-      border: 1.5px solid rgba(255,77,166,0.3);
-      color: var(--primary);
-      background: transparent;
-    }
-    
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(255,77,166,0.3); }
+    .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
     .btn-outline:hover { background: var(--primary-soft); border-color: var(--primary); }
-    
     .btn-sm { padding: 6px 14px; font-size: 0.7rem; }
     .btn-success { background: var(--success); color: white; border: none; }
     .btn-danger { background: var(--danger); color: white; border: none; }
-    .btn-warning { background: var(--warning); color: white; border: none; }
     
     /* ========== TWO COLUMN ========== */
     .two-column {
@@ -492,117 +490,12 @@
     .alert-item.success { background: #d1fae5; border-left-color: var(--success); }
     .alert-item.success i { color: var(--success); }
     
-    /* ========== QUICK ACTIONS ========== */
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    
-    .quick-action {
-      background: white;
-      padding: 20px;
-      border-radius: 20px;
-      text-align: center;
-      cursor: pointer;
-      border: 1px solid rgba(0,0,0,0.03);
-      transition: all 0.15s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-    }
-    
-    .quick-action:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 24px rgba(255,77,166,0.1);
-      border-color: var(--primary);
-    }
-    
-    .quick-action i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
-    .quick-action h4 { font-size: 0.9rem; margin-bottom: 4px; color: var(--dark); }
-    .quick-action p { font-size: 0.7rem; color: var(--gray); }
-    
     /* ========== EMPTY STATE ========== */
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--gray);
-    }
-    
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--gray); }
     .empty-state i { font-size: 2.5rem; color: var(--primary-light); margin-bottom: 16px; }
     
-    /* ========== MODAL ========== */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 16px;
-    }
-    
-    .modal {
-      background: white;
-      border-radius: 28px;
-      padding: 28px;
-      max-width: 480px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-    
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 22px;
-    }
-    
-    .modal-header h3 { font-size: 1.25rem; font-weight: 700; }
-    
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-      color: var(--gray);
-    }
-    
-    .form-group { margin-bottom: 20px; }
-    
-    .form-group label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--dark);
-      margin-bottom: 8px;
-    }
-    
-    .form-control {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid rgba(0,0,0,0.08);
-      border-radius: 14px;
-      font-size: 0.9rem;
-      outline: none;
-      transition: all 0.15s;
-    }
-    
-    .form-control:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(255,77,166,0.1);
-    }
-    
     /* ========== TOAST ========== */
-    .toast-container {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 9999;
-    }
-    
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
     .toast {
       background: white;
       padding: 14px 20px;
@@ -616,49 +509,39 @@
       border-left: 4px solid var(--primary);
       margin-top: 10px;
     }
-    
     .toast.show { transform: translateX(0); }
     .toast.success { border-left-color: var(--success); }
     .toast.error { border-left-color: var(--danger); }
     .toast.warning { border-left-color: var(--warning); }
     
     /* ========== MOBILE RESPONSIVE ========== */
-    @media (max-width: 1200px) {
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .quick-actions { grid-template-columns: repeat(2, 1fr); }
-    }
-    
+    @media (max-width: 1400px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .quick-actions { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 992px) {
       .sidebar { width: var(--sidebar-collapsed); }
-      .sidebar .logo-text,
-      .sidebar .nav-text,
-      .sidebar .user-details,
-      .sidebar .nav-section-title { display: none; }
+      .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: none; }
       .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); }
       .two-column { grid-template-columns: 1fr; }
     }
-    
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); width: var(--sidebar-width); }
       .sidebar:not(.collapsed) { transform: translateX(0); }
-      .sidebar .logo-text,
-      .sidebar .nav-text,
-      .sidebar .user-details,
-      .sidebar .nav-section-title { display: block; }
+      .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: block; }
       .main-content { margin-left: 0 !important; width: 100% !important; }
       .content-wrapper { padding: 18px 14px; }
       .top-bar { padding: 0 16px; }
       .page-title { font-size: 1.2rem; }
       .date-badge { display: none; }
       .stats-grid { grid-template-columns: 1fr; gap: 14px; }
-      .quick-actions { grid-template-columns: 1fr; }
+      .quick-actions { grid-template-columns: repeat(2, 1fr); }
       .panel { padding: 18px 14px; }
     }
+    @media (max-width: 480px) { .quick-actions { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-<!-- Sidebar Overlay for Mobile -->
+<!-- Sidebar Overlay -->
 <div class="sidebar-overlay" id="sidebarOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99;" onclick="closeSidebar()"></div>
 
 <!-- Sidebar -->
@@ -690,6 +573,16 @@
       </button>
       <button class="nav-item" onclick="window.location.href='audit.html'">
         <i class="fas fa-history"></i><span class="nav-text">Audit Logs</span>
+      </button>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">KIOSK</div>
+      <button class="nav-item" onclick="window.open('kiosk.html', '_blank')">
+        <i class="fas fa-desktop"></i><span class="nav-text">Launch Kiosk</span>
+      </button>
+      <button class="nav-item" onclick="window.location.href='kiosk-settings.html'">
+        <i class="fas fa-cog"></i><span class="nav-text">Kiosk Settings</span>
       </button>
     </div>
     
@@ -728,7 +621,6 @@
 <!-- Main Content -->
 <main class="main-content">
   
-  <!-- Top Bar -->
   <header class="top-bar">
     <div class="top-bar-left">
       <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
@@ -736,13 +628,8 @@
       </button>
       <h1 class="page-title">Admin Dashboard</h1>
     </div>
-    
     <div class="top-bar-right">
-      <div class="date-badge">
-        <i class="far fa-calendar-alt"></i>
-        <span id="currentDate"></span>
-      </div>
-      
+      <div class="date-badge"><i class="far fa-calendar-alt"></i> <span id="currentDate"></span></div>
       <button class="notification-btn" onclick="window.location.href='notifications.html'">
         <i class="far fa-bell"></i>
         <span class="notification-badge" id="notificationCount" style="display:none;">0</span>
@@ -750,70 +637,25 @@
     </div>
   </header>
   
-  <!-- Content Wrapper -->
   <div class="content-wrapper">
     
     <!-- Quick Actions -->
     <div class="quick-actions">
-      <div class="quick-action" onclick="window.location.href='approvals.html'">
-        <i class="fas fa-user-check"></i>
-        <h4>Approve Users</h4>
-        <p>Review pending registrations</p>
-      </div>
-      <div class="quick-action" onclick="window.location.href='staff-management.html'">
-        <i class="fas fa-user-plus"></i>
-        <h4>Manage Staff</h4>
-        <p>Add, edit, or suspend staff</p>
-      </div>
-      <div class="quick-action" onclick="window.location.href='finance.html'">
-        <i class="fas fa-chart-bar"></i>
-        <h4>View Finance</h4>
-        <p>Revenue & expenses</p>
-      </div>
-      <div class="quick-action" onclick="window.location.href='audit.html'">
-        <i class="fas fa-clipboard-list"></i>
-        <h4>Audit Logs</h4>
-        <p>Track all activities</p>
-      </div>
+      <div class="quick-action" onclick="window.location.href='approvals.html'"><i class="fas fa-user-check"></i><h4>Approve Users</h4><p>Pending registrations</p></div>
+      <div class="quick-action" onclick="window.location.href='staff-management.html'"><i class="fas fa-user-plus"></i><h4>Manage Staff</h4><p>Add, edit, suspend</p></div>
+      <div class="quick-action" onclick="window.open('kiosk.html', '_blank')"><i class="fas fa-desktop"></i><h4>Launch Kiosk</h4><p>Attendance terminal</p></div>
+      <div class="quick-action" onclick="window.location.href='kiosk-settings.html'"><i class="fas fa-clock"></i><h4>Kiosk Settings</h4><p>Times & penalties</p></div>
+      <div class="quick-action" onclick="window.location.href='finance.html'"><i class="fas fa-chart-bar"></i><h4>Finance</h4><p>Revenue & expenses</p></div>
     </div>
     
-    <!-- Stats Grid -->
+    <!-- Stats Grid - 6 Cards -->
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-header">
-          <span>Total Staff</span>
-          <div class="stat-icon"><i class="fas fa-users"></i></div>
-        </div>
-        <div class="stat-value" id="totalStaff">0</div>
-        <div class="stat-change" id="activeStaff">0 active</div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-header">
-          <span>Pending Approvals</span>
-          <div class="stat-icon"><i class="fas fa-clock"></i></div>
-        </div>
-        <div class="stat-value" id="pendingApprovals">0</div>
-        <div class="stat-change warning">Requires action</div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-header">
-          <span>Revenue (MTD)</span>
-          <div class="stat-icon"><i class="fas fa-naira-sign"></i></div>
-        </div>
-        <div class="stat-value" id="revenueMTD">₦0</div>
-        <div class="stat-change" id="revenueChange">vs last month</div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-header">
-          <span>Tasks Completed</span>
-          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-        </div>
-        <div class="stat-value" id="tasksCompleted">0</div>
-        <div class="stat-change">This month</div>
-      </div>
+      <div class="stat-card"><div class="stat-header"><span>Total Staff</span><div class="stat-icon"><i class="fas fa-users"></i></div></div><div class="stat-value" id="totalStaff">0</div><div class="stat-change" id="activeStaff">0 active</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Total Customers</span><div class="stat-icon"><i class="fas fa-user-friends"></i></div></div><div class="stat-value" id="totalCustomers">0</div><div class="stat-change">Registered</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Total Stock</span><div class="stat-icon"><i class="fas fa-boxes"></i></div></div><div class="stat-value" id="totalStock">0</div><div class="stat-change">Items available</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Stock Sold</span><div class="stat-icon"><i class="fas fa-tags"></i></div></div><div class="stat-value" id="totalSold">0</div><div class="stat-change">All time</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Money In (MTD)</span><div class="stat-icon"><i class="fas fa-arrow-down"></i></div></div><div class="stat-value" id="moneyIn">₦0</div><div class="stat-change positive">Revenue</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Money Out (MTD)</span><div class="stat-icon"><i class="fas fa-arrow-up"></i></div></div><div class="stat-value" id="moneyOut">₦0</div><div class="stat-change negative">Expenses</div></div>
     </div>
     
     <!-- Two Column Layout -->
@@ -824,27 +666,14 @@
         <div class="panel-header">
           <h3><i class="fas fa-user-clock"></i> Pending User Approvals</h3>
           <div class="panel-actions">
-            <button class="btn btn-outline btn-sm" onclick="refreshPendingUsers()">
-              <i class="fas fa-sync-alt"></i> Refresh
-            </button>
-            <button class="btn btn-primary btn-sm" onclick="window.location.href='approvals.html'">
-              View All
-            </button>
+            <button class="btn btn-outline btn-sm" onclick="refreshPendingUsers()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button class="btn btn-primary btn-sm" onclick="window.location.href='approvals.html'">View All</button>
           </div>
         </div>
         <div class="table-wrapper">
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Registered</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="pendingUsersTable">
-              <tr><td colspan="4"><div class="empty-state"><i class="fas fa-check-circle"></i><p>No pending approvals</p></div></td></tr>
-            </tbody>
+            <thead><tr><th>Name</th><th>Email</th><th>Registered</th><th>Actions</th></tr></thead>
+            <tbody id="pendingUsersTable"><tr><td colspan="4"><div class="empty-state"><i class="fas fa-check-circle"></i><p>No pending approvals</p></div></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -853,13 +682,9 @@
       <div class="panel">
         <div class="panel-header">
           <h3><i class="fas fa-exclamation-triangle"></i> Recent Alerts</h3>
-          <button class="btn btn-outline btn-sm" onclick="refreshAlerts()">
-            <i class="fas fa-sync-alt"></i>
-          </button>
+          <button class="btn btn-outline btn-sm" onclick="refreshAlerts()"><i class="fas fa-sync-alt"></i></button>
         </div>
-        <div id="alertsContainer">
-          <div class="empty-state"><i class="far fa-bell"></i><p>No alerts</p></div>
-        </div>
+        <div id="alertsContainer"><div class="empty-state"><i class="far fa-bell"></i><p>No alerts</p></div></div>
       </div>
       
     </div>
@@ -868,94 +693,64 @@
     <div class="panel">
       <div class="panel-header">
         <h3><i class="fas fa-calendar-check"></i> Today's Attendance</h3>
-        <button class="btn btn-outline btn-sm" onclick="refreshAttendance()">
-          <i class="fas fa-sync-alt"></i> Refresh
-        </button>
+        <button class="btn btn-outline btn-sm" onclick="refreshAttendance()"><i class="fas fa-sync-alt"></i> Refresh</button>
       </div>
       <div class="table-wrapper">
         <table class="data-table">
-          <thead>
-            <tr>
-              <th>Staff</th>
-              <th>Check-in Time</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="attendanceTable">
-            <tr><td colspan="3"><div class="empty-state"><i class="far fa-calendar"></i><p>No attendance records today</p></div></td></tr>
-          </tbody>
+          <thead><tr><th>Staff</th><th>Check-in</th><th>Check-out</th><th>Status</th></tr></thead>
+          <tbody id="attendanceTable"><tr><td colspan="4"><div class="empty-state"><i class="far fa-calendar"></i><p>No attendance records today</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
     
-    <!-- Recent Audit Logs Panel -->
+    <!-- Recent Audit Logs -->
     <div class="panel">
       <div class="panel-header">
-        <h3><i class="fas fa-history"></i> Recent Audit Logs</h3>
+        <h3><i class="fas fa-history"></i> Recent Activity</h3>
         <div class="panel-actions">
-          <button class="btn btn-outline btn-sm" onclick="refreshAuditLogs()">
-            <i class="fas fa-sync-alt"></i> Refresh
-          </button>
-          <button class="btn btn-primary btn-sm" onclick="window.location.href='audit.html'">
-            View All
-          </button>
+          <button class="btn btn-outline btn-sm" onclick="refreshAuditLogs()"><i class="fas fa-sync-alt"></i> Refresh</button>
+          <button class="btn btn-primary btn-sm" onclick="window.location.href='audit.html'">View All</button>
         </div>
       </div>
       <div class="table-wrapper">
         <table class="data-table">
-          <thead>
-            <tr>
-              <th>Timestamp</th>
-              <th>Action</th>
-              <th>User</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-          <tbody id="auditTable">
-            <tr><td colspan="4"><div class="empty-state"><i class="fas fa-history"></i><p>No audit logs yet</p></div></td></tr>
-          </tbody>
+          <thead><tr><th>Time</th><th>Action</th><th>User</th><th>Details</th></tr></thead>
+          <tbody id="auditTable"><tr><td colspan="4"><div class="empty-state"><i class="fas fa-history"></i><p>No activity yet</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
     
-    <!-- Stock Overview Panel -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3><i class="fas fa-warehouse"></i> Stock Overview</h3>
-        <button class="btn btn-outline btn-sm" onclick="window.location.href='inventory.html'">
-          View Inventory
-        </button>
+    <!-- Stock & Sales Overview -->
+    <div class="two-column">
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-warehouse"></i> Stock Overview</h3>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='inventory.html'">View Inventory</button>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Item</th><th>Available</th><th>Sold</th><th>Status</th></tr></thead>
+            <tbody id="stockTable"><tr><td colspan="4"><div class="empty-state"><i class="fas fa-box"></i><p>No stock items</p></div></td></tr></tbody>
+          </table>
+        </div>
       </div>
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Available</th>
-              <th>Sold</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="stockTable">
-            <tr><td colspan="4"><div class="empty-state"><i class="fas fa-box"></i><p>No stock items</p></div></td></tr>
-          </tbody>
-        </table>
+      
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-cash-register"></i> Recent Sales</h3>
+          <button class="btn btn-outline btn-sm" onclick="window.location.href='sales.html'">View All Sales</button>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Time</th><th>Customer</th><th>Amount</th><th>Payment</th></tr></thead>
+            <tbody id="recentSalesTable"><tr><td colspan="4"><div class="empty-state"><i class="fas fa-receipt"></i><p>No sales yet</p></div></td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
     
   </div>
 </main>
-
-<!-- Modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="modalTitle">Modal</h3>
-      <button class="modal-close" onclick="hideModal()">&times;</button>
-    </div>
-    <div id="modalContent"></div>
-  </div>
-</div>
 
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
@@ -963,428 +758,105 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { 
-    getFirestore, doc, getDoc, collection, query, where, orderBy, limit, 
-    onSnapshot, updateDoc, serverTimestamp, getDocs, addDoc 
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, orderBy, limit, onSnapshot, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
-    authDomain: "fashion-46e5d.firebaseapp.com",
-    projectId: "fashion-46e5d",
-    storageBucket: "fashion-46e5d.firebasestorage.app",
-    messagingSenderId: "408062284317",
-    appId: "1:408062284317:web:eb905bce68926c10a0ecf4"
-  };
+  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let currentUser = null, userData = null, unsubscribes = [];
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  let currentUser = null;
-  let userData = null;
-  let unsubscribes = [];
-
-  // ========== UTILITIES ==========
-  function formatTime(d) { 
-    if (!d) return '-'; 
-    const date = d.toDate ? d.toDate() : new Date(d);
-    return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); 
-  }
-  
-  function formatDate(d) { 
-    if (!d) return '-'; 
-    const date = d.toDate ? d.toDate() : new Date(d);
-    return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }); 
-  }
-  
+  function formatTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); }
+  function formatDate(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleDateString('en-GB', {day:'2-digit',month:'short'}); }
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
-  
-  function showToast(msg, type = 'success') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'exclamation-triangle'}"></i><span>${msg}</span>`;
-    container.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
-  }
+  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  async function logAudit(action, note) { try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } catch(e) {} }
+  function cleanup() { unsubscribes.forEach(u => u()); unsubscribes = []; }
 
-  function showModal(title, content) {
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalContent').innerHTML = content;
-    document.getElementById('modalOverlay').style.display = 'flex';
-  }
+  window.toggleSidebar = () => { const s = document.getElementById('sidebar'), o = document.getElementById('sidebarOverlay'); if (window.innerWidth <= 768) { s.classList.toggle('collapsed'); o.style.display = s.classList.contains('collapsed') ? 'none' : 'block'; } else { s.classList.toggle('collapsed'); } };
+  window.closeSidebar = () => { document.getElementById('sidebar').classList.add('collapsed'); document.getElementById('sidebarOverlay').style.display = 'none'; };
 
-  window.hideModal = function() { document.getElementById('modalOverlay').style.display = 'none'; };
-
-  async function logAudit(action, note) {
-    try {
-      await addDoc(collection(db, 'audit_logs'), {
-        actionType: action,
-        performedBy: currentUser?.uid,
-        performedByName: userData?.fullName,
-        performedAt: serverTimestamp(),
-        note: note
-      });
-    } catch(e) { console.warn('Audit failed:', e); }
-  }
-
-  function cleanupSubscriptions() {
-    unsubscribes.forEach(u => u());
-    unsubscribes = [];
-  }
-
-  // ========== SIDEBAR TOGGLE ==========
-  window.toggleSidebar = function() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    
-    if (window.innerWidth <= 768) {
-      sidebar.classList.toggle('collapsed');
-      overlay.style.display = sidebar.classList.contains('collapsed') ? 'none' : 'block';
-    } else {
-      sidebar.classList.toggle('collapsed');
-    }
-  };
-
-  window.closeSidebar = function() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    sidebar.classList.add('collapsed');
-    overlay.style.display = 'none';
-  };
-
-  // ========== LOAD DASHBOARD DATA ==========
   function loadDashboard() {
-    cleanupSubscriptions();
+    cleanup();
     
-    // Load total staff and pending approvals
-    const usersQuery = collection(db, 'users');
-    unsubscribes.push(onSnapshot(usersQuery, (snap) => {
+    // Users stats
+    onSnapshot(collection(db, 'users'), (snap) => {
       const users = snap.docs.map(d => d.data());
-      const staffUsers = users.filter(u => u.role === 'staff' || u.role?.includes('attendant'));
-      const activeStaff = staffUsers.filter(u => u.status === 'active');
-      const pendingUsers = users.filter(u => u.status === 'pending_approval');
-      
-      document.getElementById('totalStaff').textContent = staffUsers.length;
-      document.getElementById('activeStaff').textContent = `${activeStaff.length} active`;
-      document.getElementById('pendingApprovals').textContent = pendingUsers.length;
-      document.getElementById('pendingCountBadge').textContent = pendingUsers.length;
-    }));
+      const staff = users.filter(u => u.role === 'staff' || u.role?.includes('attendant'));
+      const active = staff.filter(u => u.status === 'active');
+      const pending = users.filter(u => u.status === 'pending_approval');
+      document.getElementById('totalStaff').textContent = staff.length;
+      document.getElementById('activeStaff').textContent = `${active.length} active`;
+      document.getElementById('pendingApprovals').textContent = pending.length;
+      document.getElementById('pendingCountBadge').textContent = pending.length;
+    });
     
-    // Load pending users table
-    const pendingQuery = query(
-      collection(db, 'users'), 
-      where('status', '==', 'pending_approval'), 
-      orderBy('createdAt', 'desc'), 
-      limit(5)
-    );
-    unsubscribes.push(onSnapshot(pendingQuery, (snap) => {
-      const tbody = document.getElementById('pendingUsersTable');
-      tbody.innerHTML = '';
-      
-      if (snap.empty) {
-        tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-check-circle"></i><p>No pending approvals</p></div></td></tr>';
-        return;
-      }
-      
-      snap.forEach(docSnap => {
-        const user = docSnap.data();
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><strong>${user.fullName || '-'}</strong></td>
-          <td>${user.email || '-'}</td>
-          <td>${formatDate(user.createdAt)}</td>
-          <td>
-            <button class="btn btn-sm btn-success" onclick="window.location.href='approvals.html'">
-              <i class="fas fa-check"></i> Review
-            </button>
-          </td>
-        `;
-        tbody.appendChild(row);
-      });
-    }));
+    // Customers stats
+    onSnapshot(collection(db, 'customers'), (snap) => {
+      const approved = snap.docs.filter(d => d.data().status === 'approved').length;
+      document.getElementById('totalCustomers').textContent = approved;
+    });
     
-    // Load today's attendance
+    // Stock stats
+    onSnapshot(collection(db, 'stock_items'), (snap) => {
+      const items = snap.docs.map(d => d.data());
+      const totalStock = items.reduce((s, i) => s + (i.quantityAvailable || 0), 0);
+      const totalSold = items.reduce((s, i) => s + (i.quantitySold || 0), 0);
+      document.getElementById('totalStock').textContent = totalStock;
+      document.getElementById('totalSold').textContent = totalSold;
+      
+      // Stock table
+      const tbody = document.getElementById('stockTable'); tbody.innerHTML = '';
+      const availableItems = items.filter(i => i.status !== 'pending_approval' && i.status !== 'rejected').slice(0, 5);
+      if (availableItems.length === 0) tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-box"></i><p>No stock items</p></div></td></tr>';
+      else availableItems.forEach(i => { tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.quantityAvailable||0}</td><td>${i.quantitySold||0}</td><td><span class="badge ${i.status==='low'?'badge-warning':i.status==='out_of_stock'?'badge-danger':'badge-success'}">${i.status||'available'}</span></td></tr>`; });
+    });
+    
+    // Money In/Out (MTD)
+    const now = new Date(); const thisMonth = now.getMonth(); const thisYear = now.getFullYear();
+    onSnapshot(collection(db, 'sales'), (snap) => { let rev = 0; snap.forEach(d => { const s = d.data(); const dt = s.createdAt?.toDate(); if (dt && dt.getMonth()===thisMonth && dt.getFullYear()===thisYear) rev += s.totalAmount||0; }); document.getElementById('moneyIn').textContent = formatCurrency(rev); });
+    onSnapshot(collection(db, 'purchase_requests'), (snap) => { let exp = 0; snap.forEach(d => { const p = d.data(); if (p.status === 'purchased') { const dt = p.purchasedAt?.toDate(); if (dt && dt.getMonth()===thisMonth && dt.getFullYear()===thisYear) { const total = p.receivedItems?.reduce((s,i)=>s+((i.received||i.suggested)*i.price),0)||0; exp += total; } } }); document.getElementById('moneyOut').textContent = formatCurrency(exp); });
+    
+    // Pending users table
+    const pendingQuery = query(collection(db, 'users'), where('status', '==', 'pending_approval'), orderBy('createdAt', 'desc'), limit(5));
+    unsubscribes.push(onSnapshot(pendingQuery, (snap) => { const tbody = document.getElementById('pendingUsersTable'); tbody.innerHTML = ''; if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-check-circle"></i><p>No pending approvals</p></div></td></tr>'; return; } snap.forEach(d => { const u = d.data(); tbody.innerHTML += `<tr><td><strong>${u.fullName||'-'}</strong></td><td>${u.email||'-'}</td><td>${formatDate(u.createdAt)}</td><td><button class="btn btn-sm btn-success" onclick="window.location.href='approvals.html'"><i class="fas fa-check"></i> Review</button></td></tr>`; }); }));
+    
+    // Attendance
     const today = new Date().toISOString().split('T')[0];
-    const attQuery = query(
-      collection(db, 'attendance'), 
-      where('date', '==', today), 
-      orderBy('checkInTime', 'desc'), 
-      limit(10)
-    );
-    unsubscribes.push(onSnapshot(attQuery, async (snap) => {
-      const tbody = document.getElementById('attendanceTable');
-      tbody.innerHTML = '';
-      
-      if (snap.empty) {
-        tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><i class="far fa-calendar"></i><p>No attendance records today</p></div></td></tr>';
-        return;
-      }
-      
-      for (const docSnap of snap.docs) {
-        const att = docSnap.data();
-        const userDoc = await getDoc(doc(db, 'users', att.userId));
-        const userName = userDoc.exists() ? userDoc.data().fullName?.split(' ')[0] : 'Unknown';
-        
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${userName}</td>
-          <td>${formatTime(att.checkInTime)}</td>
-          <td><span class="badge ${att.status === 'late' ? 'badge-warning' : 'badge-success'}">${att.status || 'on_time'}</span></td>
-        `;
-        tbody.appendChild(row);
-      }
-    }));
+    const attQuery = query(collection(db, 'attendance'), where('date', '==', today), orderBy('checkInTime', 'desc'), limit(10));
+    unsubscribes.push(onSnapshot(attQuery, async (snap) => { const tbody = document.getElementById('attendanceTable'); tbody.innerHTML = ''; if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="far fa-calendar"></i><p>No attendance today</p></div></td></tr>'; return; } for (const d of snap.docs) { const a = d.data(); const u = await getDoc(doc(db, 'users', a.userId)); const name = u.exists() ? u.data().fullName?.split(' ')[0] : 'Unknown'; tbody.innerHTML += `<tr><td>${name}</td><td>${formatTime(a.checkInTime)}</td><td>${formatTime(a.checkOutTime)}</td><td><span class="badge ${a.status==='late'?'badge-warning':'badge-success'}">${a.status||'on_time'}</span></td></tr>`; } }));
     
-    // Load audit logs
-    const auditQuery = query(
-      collection(db, 'audit_logs'), 
-      orderBy('performedAt', 'desc'), 
-      limit(10)
-    );
-    unsubscribes.push(onSnapshot(auditQuery, (snap) => {
-      const tbody = document.getElementById('auditTable');
-      tbody.innerHTML = '';
-      
-      if (snap.empty) {
-        tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-history"></i><p>No audit logs yet</p></div></td></tr>';
-        return;
-      }
-      
-      snap.forEach(docSnap => {
-        const log = docSnap.data();
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${formatTime(log.performedAt)}</td>
-          <td>${log.actionType}</td>
-          <td>${log.performedByName || log.performedBy?.slice(0,8) || 'System'}</td>
-          <td>${log.note || '-'}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    }));
+    // Audit logs
+    const auditQuery = query(collection(db, 'audit_logs'), orderBy('performedAt', 'desc'), limit(8));
+    unsubscribes.push(onSnapshot(auditQuery, (snap) => { const tbody = document.getElementById('auditTable'); tbody.innerHTML = ''; if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-history"></i><p>No activity yet</p></div></td></tr>'; return; } snap.forEach(d => { const a = d.data(); tbody.innerHTML += `<tr><td>${formatTime(a.performedAt)}</td><td>${a.actionType}</td><td>${a.performedByName||a.performedBy?.slice(0,8)||'System'}</td><td>${a.note||'-'}</td></tr>`; }); }));
     
-    // Load stock overview
-    const stockQuery = query(collection(db, 'stock_items'), limit(5));
-    unsubscribes.push(onSnapshot(stockQuery, (snap) => {
-      const tbody = document.getElementById('stockTable');
-      tbody.innerHTML = '';
-      
-      if (snap.empty) {
-        tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-box"></i><p>No stock items</p></div></td></tr>';
-        return;
-      }
-      
-      snap.forEach(docSnap => {
-        const item = docSnap.data();
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.quantityAvailable || 0}</td>
-          <td>${item.quantitySold || 0}</td>
-          <td><span class="badge ${item.status === 'low' ? 'badge-warning' : item.status === 'out_of_stock' ? 'badge-danger' : 'badge-success'}">${item.status || 'available'}</span></td>
-        `;
-        tbody.appendChild(row);
-      });
-    }));
+    // Recent sales
+    const salesQuery = query(collection(db, 'sales'), orderBy('createdAt', 'desc'), limit(5));
+    unsubscribes.push(onSnapshot(salesQuery, (snap) => { const tbody = document.getElementById('recentSalesTable'); tbody.innerHTML = ''; if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fas fa-receipt"></i><p>No sales yet</p></div></td></tr>'; return; } snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${formatCurrency(s.totalAmount)}</td><td>${s.paymentMethod}</td></tr>`; }); }));
     
-    // Load alerts
+    // Alerts
     loadAlerts();
-    
-    // Load revenue and tasks stats
-    loadStats();
   }
 
   async function loadAlerts() {
     const container = document.getElementById('alertsContainer');
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-    
+    const threeDaysAgo = new Date(); threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
     const alerts = [];
-    
-    // Check for 3-day absences
-    const staffQuery = query(collection(db, 'users'), where('role', '==', 'staff'), where('status', '==', 'active'));
-    const staffSnap = await getDocs(staffQuery);
-    
-    for (const docSnap of staffSnap.docs) {
-      const staff = docSnap.data();
-      const attQuery = query(
-        collection(db, 'attendance'), 
-        where('userId', '==', docSnap.id), 
-        orderBy('date', 'desc'), 
-        limit(1)
-      );
-      const attSnap = await getDocs(attQuery);
-      
-      if (!attSnap.empty) {
-        const lastAtt = attSnap.docs[0].data();
-        if (new Date(lastAtt.date) < threeDaysAgo) {
-          const daysAbsent = Math.floor((new Date() - new Date(lastAtt.date)) / (1000 * 60 * 60 * 24));
-          alerts.push({
-            type: 'danger',
-            icon: 'user-slash',
-            text: `${staff.fullName} absent for ${daysAbsent} days`
-          });
-        }
-      }
+    const staffSnap = await getDocs(query(collection(db, 'users'), where('role', '==', 'staff'), where('status', '==', 'active')));
+    for (const d of staffSnap.docs) {
+      const attSnap = await getDocs(query(collection(db, 'attendance'), where('userId', '==', d.id), orderBy('date', 'desc'), limit(1)));
+      if (!attSnap.empty) { const last = attSnap.docs[0].data(); if (new Date(last.date) < threeDaysAgo) { alerts.push({type:'danger', icon:'user-slash', text:`${d.data().fullName} absent ${Math.floor((new Date()-new Date(last.date))/86400000)} days`}); } }
     }
-    
-    // Check for low stock
-    const stockQuery = query(collection(db, 'stock_items'), where('status', '==', 'low'));
-    const stockSnap = await getDocs(stockQuery);
-    if (!stockSnap.empty) {
-      alerts.push({
-        type: 'warning',
-        icon: 'box',
-        text: `${stockSnap.size} items running low on stock`
-      });
-    }
-    
-    // Check for pending approvals
-    const pendingQuery = query(collection(db, 'users'), where('status', '==', 'pending_approval'));
-    const pendingSnap = await getDocs(pendingQuery);
-    if (!pendingSnap.empty) {
-      alerts.push({
-        type: 'warning',
-        icon: 'user-clock',
-        text: `${pendingSnap.size} users awaiting approval`
-      });
-    }
-    
-    if (alerts.length === 0) {
-      container.innerHTML = '<div class="empty-state"><i class="far fa-bell"></i><p>No alerts</p></div>';
-    } else {
-      container.innerHTML = alerts.map(alert => `
-        <div class="alert-item ${alert.type}">
-          <i class="fas fa-${alert.icon}"></i>
-          <p>${alert.text}</p>
-        </div>
-      `).join('');
-    }
+    const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', '==', 'low')));
+    if (!stockSnap.empty) alerts.push({type:'warning', icon:'box', text:`${stockSnap.size} items running low`});
+    const pendingSnap = await getDocs(query(collection(db, 'users'), where('status', '==', 'pending_approval')));
+    if (!pendingSnap.empty) alerts.push({type:'warning', icon:'user-clock', text:`${pendingSnap.size} users awaiting approval`});
+    container.innerHTML = alerts.length ? alerts.map(a => `<div class="alert-item ${a.type}"><i class="fas fa-${a.icon}"></i><p>${a.text}</p></div>`).join('') : '<div class="empty-state"><i class="far fa-bell"></i><p>No alerts</p></div>';
   }
 
-  async function loadStats() {
-    // Revenue MTD
-    const salesSnap = await getDocs(collection(db, 'sales'));
-    const now = new Date();
-    const thisMonth = now.getMonth();
-    const thisYear = now.getFullYear();
-    
-    let revenue = 0;
-    salesSnap.forEach(doc => {
-      const sale = doc.data();
-      const saleDate = sale.createdAt?.toDate();
-      if (saleDate && saleDate.getMonth() === thisMonth && saleDate.getFullYear() === thisYear) {
-        revenue += sale.totalAmount || 0;
-      }
-    });
-    document.getElementById('revenueMTD').textContent = formatCurrency(revenue);
-    
-    // Tasks completed MTD
-    const tasksSnap = await getDocs(collection(db, 'tasks'));
-    let completed = 0;
-    tasksSnap.forEach(doc => {
-      const task = doc.data();
-      if (task.status === 'completed') {
-        const completedDate = task.submittedAt?.toDate();
-        if (completedDate && completedDate.getMonth() === thisMonth) {
-          completed++;
-        }
-      }
-    });
-    document.getElementById('tasksCompleted').textContent = completed;
-  }
+  window.refreshPendingUsers = window.refreshAlerts = window.refreshAttendance = window.refreshAuditLogs = () => { loadDashboard(); showToast('Refreshed', 'success'); };
 
-  // ========== REFRESH FUNCTIONS ==========
-  window.refreshPendingUsers = function() {
-    loadDashboard();
-    showToast('Refreshed', 'success');
-  };
-  
-  window.refreshAlerts = function() {
-    loadAlerts();
-    showToast('Alerts refreshed', 'success');
-  };
-  
-  window.refreshAttendance = function() {
-    loadDashboard();
-    showToast('Attendance refreshed', 'success');
-  };
-  
-  window.refreshAuditLogs = function() {
-    loadDashboard();
-    showToast('Audit logs refreshed', 'success');
-  };
-
-  // ========== INITIALIZATION ==========
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = 'auth.html';
-      return;
-    }
-    
-    currentUser = user;
-    const userRef = doc(db, 'users', user.uid);
-    const userSnap = await getDoc(userRef);
-    
-    if (!userSnap.exists()) {
-      await signOut(auth);
-      window.location.href = 'auth.html';
-      return;
-    }
-    
-    userData = userSnap.data();
-    
-    // Check if user is admin
-    if (userData.role !== 'admin' && userData.role !== 'super_admin') {
-      window.location.href = userData.role?.includes('attendant') ? 'attendant-dashboard.html' : 'staff-dashboard.html';
-      return;
-    }
-    
-    // Check if active
-    if (userData.status !== 'active') {
-      await signOut(auth);
-      window.location.href = 'auth.html';
-      return;
-    }
-    
-    // Update UI
-    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin';
-    document.getElementById('userRole').textContent = userData.role === 'super_admin' ? 'Super Admin' : 'Admin';
-    document.getElementById('userAvatar').textContent = (userData.fullName || 'A').charAt(0).toUpperCase();
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', { 
-      day: '2-digit', month: 'short', year: 'numeric' 
-    });
-    
-    // Load dashboard data
-    loadDashboard();
-    
-    // Log dashboard view
-    await logAudit('dashboard_view', 'Admin viewed dashboard');
-  });
-
-  // ========== LOGOUT ==========
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await logAudit('logout', 'Admin logged out');
-    await signOut(auth);
-    window.location.href = 'auth.html';
-  });
-
-  // ========== MODAL CLOSE ON OVERLAY CLICK ==========
-  document.getElementById('modalOverlay').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('modalOverlay')) {
-      window.hideModal();
-    }
-  });
-
-  // ========== CLEANUP ON PAGE UNLOAD ==========
-  window.addEventListener('beforeunload', () => {
-    cleanupSubscriptions();
-  });
-
-  console.log('✅ Admin Dashboard — FashionStone ERP Active');
+  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } userData = snap.data(); document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin'; document.getElementById('userRole').textContent = userData.role === 'super_admin' ? 'Super Admin' : 'Admin'; document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0); document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadDashboard(); logAudit('dashboard_view', 'Admin viewed dashboard'); });
+  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+  window.addEventListener('beforeunload', cleanup);
 </script>
 </body>
 </html>
