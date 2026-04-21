@@ -29,15 +29,6 @@
     .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
     .content-wrapper { padding: 28px; max-width: 1600px; }
     
-    .index-banner { background: linear-gradient(135deg, #fef3c7, #fff); border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-left: 4px solid var(--warning); }
-    .index-banner i { color: var(--warning); font-size: 1.3rem; }
-    .index-banner .content { flex: 1; }
-    .index-banner .content h4 { font-size: 0.9rem; margin-bottom: 4px; }
-    .index-banner .content p { font-size: 0.85rem; color: var(--gray); }
-    .index-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .index-link { background: var(--primary-soft); color: var(--primary); padding: 8px 14px; border-radius: 30px; font-size: 0.75rem; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--primary); }
-    .index-link:hover { background: var(--primary); color: white; }
-    
     .tabs-container { background: white; border-radius: 20px; padding: 6px; margin-bottom: 24px; display: flex; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-wrap: wrap; }
     .tab { padding: 14px 24px; border-radius: 16px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; background: none; color: var(--gray); flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .tab.active { background: var(--primary); color: white; }
@@ -61,7 +52,7 @@
     .btn-sm { padding: 6px 12px; }
     .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
     
-    .form-control { padding: 10px 14px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px; font-size: 0.8rem; width: 100%; }
+    .form-control { padding: 8px 12px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 0.8rem; width: 100%; }
     
     .empty-state { text-align: center; padding: 40px; color: var(--gray); }
     .empty-state i { font-size: 2rem; color: var(--primary-light); margin-bottom: 10px; }
@@ -99,22 +90,6 @@
 <main class="main-content">
   <header class="top-bar"><h1 class="page-title">Approval Center</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
-    
-    <!-- INDEX CREATION BANNER -->
-    <div class="index-banner">
-      <i class="fas fa-database"></i>
-      <div class="content">
-        <h4>📌 Firestore Indexes Required</h4>
-        <p>If data is not showing, click each link below to create the required indexes. Wait 2-3 minutes after creating.</p>
-        <div class="index-links">
-          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=EgV1c2VycxoGCgZzdGF0dXMQARoJY3JlYXRlZEF0EAIaCgZfX25hbWVfXxACGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAC" target="_blank" class="index-link"><i class="fas fa-users"></i> Users Index</a>
-          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=Eg1zdG9ja19pdGVtcxoGCgZzdGF0dXMQARoJY3JlYXRlZEF0EAIaCgZfX25hbWVfXxACGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAC" target="_blank" class="index-link"><i class="fas fa-box"></i> Stock Items Index</a>
-          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=EhFwdXJjaGFzZV9yZXF1ZXN0cxoGCgZzdGF0dXMQARoJY3JlYXRlZEF0EAIaCgZfX25hbWVfXxACGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAC" target="_blank" class="index-link"><i class="fas fa-shopping-cart"></i> Purchases Index</a>
-          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=Eg5jdXN0b21lcnMaBgoGc3RhdHVzEAEaCWNyZWF0ZWRBdBACGgoGX19uYW1lX18QAhoICgZzdGF0dXMQAhoJCgljcmVhdGVkQXQQAhoGCgRfX25hbWVfXxABGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAB" target="_blank" class="index-link"><i class="fas fa-user"></i> Customers Index</a>
-          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=Eg5sZWF2ZV9yZXF1ZXN0cxoGCgZzdGF0dXMQARoJY3JlYXRlZEF0EAIaCgZfX25hbWVfXxACGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAC" target="_blank" class="index-link"><i class="fas fa-calendar"></i> Leave Index</a>
-        </div>
-      </div>
-    </div>
     
     <div class="tabs-container">
       <button class="tab active" data-tab="users"><i class="fas fa-user"></i> Users <span class="count" id="userCount">0</span></button>
@@ -172,7 +147,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, updateDoc, serverTimestamp, addDoc, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, updateDoc, serverTimestamp, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
@@ -185,14 +160,17 @@
 
   function cleanup() { unsubscribes.forEach(u => u()); unsubscribes = []; }
 
-  // ========== LOAD USERS ==========
+  // ========== LOAD ALL PENDING USERS (NO ORDERBY - NO INDEX NEEDED) ==========
   function loadUsers() {
-    const q = query(collection(db, 'users'), where('status', '==', 'pending_approval'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'users'), where('status', '==', 'pending_approval'));
     unsubscribes.push(onSnapshot(q, (snap) => {
-      document.getElementById('userCount').textContent = snap.size;
+      const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      users.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
+      document.getElementById('userCount').textContent = users.length;
       const tbody = document.getElementById('usersTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-user-check"></i><p>No pending users</p></div></td></tr>'; return; }
-      snap.forEach(d => { const u = d.data(); tbody.innerHTML += `<tr><td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td><td>${formatDate(u.createdAt)}</td><td><select id="role-${d.id}" class="form-control" style="width:130px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></td><td><input type="number" id="salary-${d.id}" class="form-control" style="width:100px;" value="50000"></td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveUser('${d.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectUser('${d.id}')">✕ Reject</button></td></tr>`; });
+      if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-user-check"></i><p>No pending users</p></div></td></tr>'; return; }
+      users.forEach(u => { tbody.innerHTML += `<tr><td>${u.fullName||'-'}</td><td>${u.email||'-'}</td><td>${u.phone||'-'}</td><td>${formatDate(u.createdAt)}</td><td><select id="role-${u.id}" class="form-control" style="width:130px;"><option value="staff">Staff</option><option value="attendant">Attendant</option><option value="attendant_chief">Chief Attendant</option></select></td><td><input type="number" id="salary-${u.id}" class="form-control" style="width:100px;" value="50000"></td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveUser('${u.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectUser('${u.id}')">✕ Reject</button></td></tr>`; });
     }));
   }
 
@@ -212,88 +190,71 @@
     showToast('User rejected', 'info'); 
   };
 
-  // ========== LOAD STOCK ITEMS ==========
+  // ========== LOAD STOCK ITEMS (NO ORDERBY) ==========
   function loadItems() {
-    const q = query(collection(db, 'stock_items'), where('status', '==', 'pending_approval'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'stock_items'), where('status', '==', 'pending_approval'));
     unsubscribes.push(onSnapshot(q, (snap) => {
-      document.getElementById('itemCount').textContent = snap.size;
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
+      document.getElementById('itemCount').textContent = items.length;
       const tbody = document.getElementById('itemsTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-box"></i><p>No pending stock items</p></div></td></tr>'; return; }
-      snap.forEach(d => { const i = d.data(); tbody.innerHTML += `<tr><td>${i.name||'-'}</td><td>${i.category||'-'}</td><td>${i.quantityAvailable||0}</td><td>${formatCurrency(i.unitPrice)}</td><td>${i.createdByName||'-'}</td><td>${formatDate(i.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveItem('${d.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectItem('${d.id}')">✕ Reject</button></td></tr>`; });
+      if (items.length === 0) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-box"></i><p>No pending stock items</p></div></td></tr>'; return; }
+      items.forEach(i => { tbody.innerHTML += `<tr><td>${i.name||'-'}</td><td>${i.category||'-'}</td><td>${i.quantityAvailable||0}</td><td>${formatCurrency(i.unitPrice)}</td><td>${i.createdByName||'-'}</td><td>${formatDate(i.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveItem('${i.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectItem('${i.id}')">✕ Reject</button></td></tr>`; });
     }));
   }
 
-  window.approveItem = async (id) => { 
-    await updateDoc(doc(db, 'stock_items', id), { status: 'available', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); 
-    await logAudit('approve_item', 'Approved stock item'); 
-    showToast('Item approved', 'success'); 
-  };
-  
-  window.rejectItem = async (id) => { 
-    await updateDoc(doc(db, 'stock_items', id), { status: 'rejected' }); 
-    await logAudit('reject_item', 'Rejected stock item'); 
-    showToast('Item rejected', 'info'); 
-  };
+  window.approveItem = async (id) => { await updateDoc(doc(db, 'stock_items', id), { status: 'available', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_item', 'Approved stock item'); showToast('Item approved', 'success'); };
+  window.rejectItem = async (id) => { await updateDoc(doc(db, 'stock_items', id), { status: 'rejected' }); await logAudit('reject_item', 'Rejected stock item'); showToast('Item rejected', 'info'); };
 
-  // ========== LOAD PURCHASES ==========
+  // ========== LOAD PURCHASES (NO ORDERBY) ==========
   function loadPurchases() {
-    const q = query(collection(db, 'purchase_requests'), where('status', '==', 'pending_approval'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'purchase_requests'), where('status', '==', 'pending_approval'));
     unsubscribes.push(onSnapshot(q, (snap) => {
-      document.getElementById('purchaseCount').textContent = snap.size;
+      const purchases = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      purchases.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
+      document.getElementById('purchaseCount').textContent = purchases.length;
       const tbody = document.getElementById('purchasesTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-shopping-cart"></i><p>No pending purchase requests</p></div></td></tr>'; return; }
-      snap.forEach(d => { const p = d.data(); const total = p.items?.reduce((s,i)=>s+((i.suggested||0)*(i.price||0)),0)||0; tbody.innerHTML += `<tr><td>${p.requestedByName||'-'}</td><td>${p.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${formatDate(p.createdAt)}</td><td>${p.note||'-'}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approvePurchase('${d.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectPurchase('${d.id}')">✕ Reject</button></td></tr>`; });
+      if (purchases.length === 0) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-shopping-cart"></i><p>No pending purchase requests</p></div></td></tr>'; return; }
+      purchases.forEach(p => { const total = p.items?.reduce((s,i)=>s+((i.suggested||0)*(i.price||0)),0)||0; tbody.innerHTML += `<tr><td>${p.requestedByName||'-'}</td><td>${p.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${formatDate(p.createdAt)}</td><td>${p.note||'-'}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approvePurchase('${p.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectPurchase('${p.id}')">✕ Reject</button></td></tr>`; });
     }));
   }
 
-  window.approvePurchase = async (id) => { 
-    await updateDoc(doc(db, 'purchase_requests', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); 
-    await logAudit('approve_purchase', 'Approved purchase request'); 
-    showToast('Request approved', 'success'); 
-  };
-  
-  window.rejectPurchase = async (id) => { 
-    const reason = prompt('Rejection reason:') || 'No reason'; 
-    await updateDoc(doc(db, 'purchase_requests', id), { status: 'rejected', rejectionReason: reason }); 
-    await logAudit('reject_purchase', `Rejected. Reason: ${reason}`); 
-    showToast('Request rejected', 'info'); 
-  };
+  window.approvePurchase = async (id) => { await updateDoc(doc(db, 'purchase_requests', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_purchase', 'Approved purchase request'); showToast('Request approved', 'success'); };
+  window.rejectPurchase = async (id) => { const reason = prompt('Rejection reason:') || 'No reason'; await updateDoc(doc(db, 'purchase_requests', id), { status: 'rejected', rejectionReason: reason }); await logAudit('reject_purchase', `Rejected. Reason: ${reason}`); showToast('Request rejected', 'info'); };
 
-  // ========== LOAD CUSTOMERS ==========
+  // ========== LOAD CUSTOMERS (NO ORDERBY) ==========
   function loadCustomers() {
-    const q = query(collection(db, 'customers'), where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'customers'), where('status', '==', 'pending'));
     unsubscribes.push(onSnapshot(q, (snap) => {
-      document.getElementById('customerCount').textContent = snap.size;
+      const customers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      customers.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
+      document.getElementById('customerCount').textContent = customers.length;
       const tbody = document.getElementById('customersTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i><p>No pending customers</p></div></td></tr>'; return; }
-      snap.forEach(d => { const c = d.data(); tbody.innerHTML += `<tr><td>${c.fullName||'-'}</td><td>${c.phone||'-'}</td><td>${c.email||'-'}</td><td>${c.birthday||'-'}</td><td>${c.createdByName||'-'}</td><td>${formatDate(c.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveCustomer('${d.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectCustomer('${d.id}')">✕ Reject</button></td></tr>`; });
+      if (customers.length === 0) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i><p>No pending customers</p></div></td></tr>'; return; }
+      customers.forEach(c => { tbody.innerHTML += `<tr><td>${c.fullName||'-'}</td><td>${c.phone||'-'}</td><td>${c.email||'-'}</td><td>${c.birthday||'-'}</td><td>${c.createdByName||'-'}</td><td>${formatDate(c.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveCustomer('${c.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectCustomer('${c.id}')">✕ Reject</button></td></tr>`; });
     }));
   }
 
-  window.approveCustomer = async (id) => { 
-    await updateDoc(doc(db, 'customers', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); 
-    await logAudit('approve_customer', 'Approved customer'); 
-    showToast('Customer approved', 'success'); 
-  };
-  
-  window.rejectCustomer = async (id) => { 
-    await updateDoc(doc(db, 'customers', id), { status: 'rejected' }); 
-    await logAudit('reject_customer', 'Rejected customer'); 
-    showToast('Customer rejected', 'info'); 
-  };
+  window.approveCustomer = async (id) => { await updateDoc(doc(db, 'customers', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_customer', 'Approved customer'); showToast('Customer approved', 'success'); };
+  window.rejectCustomer = async (id) => { await updateDoc(doc(db, 'customers', id), { status: 'rejected' }); await logAudit('reject_customer', 'Rejected customer'); showToast('Customer rejected', 'info'); };
 
-  // ========== LOAD LEAVE REQUESTS ==========
+  // ========== LOAD LEAVE REQUESTS (NO ORDERBY) ==========
   function loadLeave() {
-    const q = query(collection(db, 'leave_requests'), where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'leave_requests'), where('status', '==', 'pending'));
     unsubscribes.push(onSnapshot(q, async (snap) => {
-      document.getElementById('leaveCount').textContent = snap.size;
+      const requests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      requests.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
+      document.getElementById('leaveCount').textContent = requests.length;
       const tbody = document.getElementById('leaveTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-calendar"></i><p>No pending leave requests</p></div></td></tr>'; return; }
-      for (const d of snap.docs) { 
-        const l = d.data(); 
+      if (requests.length === 0) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-calendar"></i><p>No pending leave requests</p></div></td></tr>'; return; }
+      for (const l of requests) { 
         const u = await getDoc(doc(db, 'users', l.userId)); 
         const name = u.exists() ? u.data().fullName : 'Unknown'; 
-        tbody.innerHTML += `<tr><td>${name}</td><td>${l.requestedDates?.join(' to ')||'-'}</td><td>${l.reason||'-'}</td><td>${formatDate(l.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveLeave('${d.id}','${l.userId}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectLeave('${d.id}')">✕ Reject</button></td></tr>`; 
+        tbody.innerHTML += `<tr><td>${name}</td><td>${l.requestedDates?.join(' to ')||'-'}</td><td>${l.reason||'-'}</td><td>${formatDate(l.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveLeave('${l.id}','${l.userId}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectLeave('${l.id}')">✕ Reject</button></td></tr>`; 
       }
     }));
   }
@@ -311,10 +272,7 @@
     showToast('Leave approved', 'success'); 
   };
   
-  window.rejectLeave = async (id) => { 
-    await updateDoc(doc(db, 'leave_requests', id), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp() }); 
-    showToast('Leave rejected', 'info'); 
-  };
+  window.rejectLeave = async (id) => { await updateDoc(doc(db, 'leave_requests', id), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp() }); showToast('Leave rejected', 'info'); };
 
   window.refreshAll = () => { cleanup(); loadUsers(); loadItems(); loadPurchases(); loadCustomers(); loadLeave(); };
 
