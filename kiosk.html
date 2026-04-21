@@ -50,7 +50,13 @@
     
     .webcam-section { background: rgba(255,255,255,0.05); border-radius: 24px; padding: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
     .webcam-container { position: relative; border-radius: 16px; overflow: hidden; background: #000; }
-    .webcam-container video { width: 100%; max-height: 250px; object-fit: cover; display: block; }
+    .webcam-container video { width: 100%; max-height: 200px; object-fit: cover; display: block; }
+    
+    .camera-permission-banner { background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px; }
+    .camera-permission-banner i { font-size: 3rem; color: var(--danger); margin-bottom: 10px; }
+    .camera-permission-banner h3 { color: white; margin-bottom: 10px; }
+    .camera-permission-banner p { color: var(--gray); margin-bottom: 20px; }
+    .camera-permission-banner button { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 40px; font-weight: 600; cursor: pointer; }
     
     .message-banner { text-align: center; margin-top: 15px; padding: 15px; border-radius: 50px; font-weight: 600; display: none; }
     .message-banner.success { background: rgba(16,185,129,0.2); color: var(--success); display: block; }
@@ -90,7 +96,7 @@
   
   <div class="kiosk-header">
     <h1><i class="fas fa-camera"></i> Fashion<span>Stone</span> Kiosk</h1>
-    <p>Tap your name · Photo captured automatically</p>
+    <p>Tap your name · Photo captured instantly</p>
   </div>
   
   <div class="clock-display">
@@ -116,9 +122,17 @@
     <button class="action-btn checkout" id="checkoutModeBtn"><i class="fas fa-sign-out-alt"></i> CHECK-OUT</button>
   </div>
   
+  <!-- Camera Permission Banner (shown if camera denied) -->
+  <div class="camera-permission-banner" id="cameraPermissionBanner" style="display: none;">
+    <i class="fas fa-camera-slash"></i>
+    <h3>Camera Access Required</h3>
+    <p>This kiosk requires camera access for attendance photos.</p>
+    <button onclick="requestCameraPermission()"><i class="fas fa-camera"></i> Enable Camera</button>
+  </div>
+  
   <div class="staff-grid" id="staffGrid"></div>
   
-  <div class="webcam-section">
+  <div class="webcam-section" id="webcamSection">
     <div class="webcam-container">
       <video id="webcamVideo" autoplay playsinline></video>
       <canvas id="webcamCanvas" style="display:none;"></canvas>
@@ -152,17 +166,20 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs, updateDoc, increment, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const db = getFirestore(app);
   
   let webcamStream = null, allStaff = [], todayAttendance = new Map(), kioskSettings = { checkInHour: 9, checkInMinute: 0, checkOutHour: 18, checkOutMinute: 0, latePenalty: 5, earlyPenalty: 5, absentPenalty: 10, adminPin: '1234' };
-  let currentMode = 'checkin'; // 'checkin' or 'checkout'
+  let currentMode = 'checkin';
+  let cameraPermissionGranted = false;
 
+  // ========== CLOCK ==========
   function updateClock() { const now = new Date(); document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-GB'); document.getElementById('liveDate').textContent = now.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'}); }
   setInterval(updateClock, 1000); updateClock();
 
+  // ========== LOAD SETTINGS ==========
   async function loadKioskSettings() {
     const snap = await getDoc(doc(db, 'system_settings', 'kiosk'));
     if (snap.exists()) { kioskSettings = { ...kioskSettings, ...snap.data() }; }
@@ -171,11 +188,31 @@
     document.getElementById('ruleAbsentPenalty').textContent = kioskSettings.absentPenalty;
   }
 
-  async function initWebcam() {
-    try { webcamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } }); document.getElementById('webcamVideo').srcObject = webcamStream; }
-    catch (e) { showMessage('Camera access denied. Please enable camera permissions.', 'error'); }
+  // ========== REQUEST CAMERA PERMISSION (CALLED IMMEDIATELY) ==========
+  async function requestCameraPermission() {
+    try {
+      // Stop any existing stream
+      if (webcamStream) { webcamStream.getTracks().forEach(t => t.stop()); }
+      
+      // Request camera access
+      webcamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
+      document.getElementById('webcamVideo').srcObject = webcamStream;
+      document.getElementById('cameraPermissionBanner').style.display = 'none';
+      document.getElementById('webcamSection').style.display = 'block';
+      cameraPermissionGranted = true;
+      console.log('✅ Camera permission granted');
+    } catch (e) {
+      console.warn('❌ Camera permission denied:', e);
+      document.getElementById('cameraPermissionBanner').style.display = 'block';
+      document.getElementById('webcamSection').style.display = 'none';
+      cameraPermissionGranted = false;
+    }
   }
 
+  // Expose to global for the banner button
+  window.requestCameraPermission = requestCameraPermission;
+
+  // ========== LOAD STAFF LIST ==========
   async function loadStaffList() {
     const staffQuery = query(collection(db, 'users'), where('role', 'in', ['staff', 'attendant', 'attendant_chief']), where('status', '==', 'active'));
     const staffSnap = await getDocs(staffQuery);
@@ -218,10 +255,18 @@
     });
   }
 
+  // ========== HANDLE STAFF CLICK - INSTANT SNAP ==========
   function handleStaffClick(staff) {
     const att = todayAttendance.get(staff.id);
     const hasCheckedIn = att && att.checkInTime;
     const hasCheckedOut = att && att.checkOutTime;
+    
+    // Check camera permission first
+    if (!cameraPermissionGranted) {
+      showMessage('Camera access required. Please enable camera.', 'error');
+      requestCameraPermission();
+      return;
+    }
     
     if (currentMode === 'checkin') {
       if (hasCheckedIn) { showMessage(`${staff.fullName} has already checked in today.`, 'warning'); return; }
@@ -233,56 +278,129 @@
     }
   }
 
-  async function processCheckIn(staff) {
+  // ========== INSTANT SNAP FUNCTION ==========
+  function capturePhoto() {
     const video = document.getElementById('webcamVideo');
     const canvas = document.getElementById('webcamCanvas');
+    
+    // Set canvas dimensions to match video
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    
+    // Draw the current video frame to canvas
     const context = canvas.getContext('2d');
-    canvas.width = video.videoWidth || 640; canvas.height = video.videoHeight || 480;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
+    // Return the photo as data URL (can be saved later)
+    return canvas.toDataURL('image/jpeg', 0.9);
+  }
+
+  async function processCheckIn(staff) {
+    // SNAP PHOTO INSTANTLY
+    const photoData = capturePhoto();
+    
     const now = new Date();
-    const checkInTime = new Date(); checkInTime.setHours(kioskSettings.checkInHour, kioskSettings.checkInMinute, 0);
+    const checkInTime = new Date(); 
+    checkInTime.setHours(kioskSettings.checkInHour, kioskSettings.checkInMinute, 0);
     const isLate = now > checkInTime;
     const status = isLate ? 'late' : 'on_time';
     const pointsDeducted = isLate ? kioskSettings.latePenalty : 0;
     
-    await addDoc(collection(db, 'attendance'), { userId: staff.id, checkInTime: serverTimestamp(), date: now.toISOString().split('T')[0], status, pointsDeducted });
-    if (pointsDeducted > 0) { await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) }); await addDoc(collection(db, 'coin_transactions'), { userId: staff.id, points: -pointsDeducted, reason: `Late check-in (${formatTime(now)})`, createdAt: serverTimestamp() }); }
-    showMessage(`${staff.fullName} checked in ${isLate ? '(LATE -' + pointsDeducted + ' pts)' : '✓ On time!'}`, isLate ? 'warning' : 'success');
-    await loadStaffList();
+    try {
+      await addDoc(collection(db, 'attendance'), {
+        userId: staff.id,
+        checkInTime: serverTimestamp(),
+        date: now.toISOString().split('T')[0],
+        status,
+        pointsDeducted,
+        photoData: photoData // Store the photo
+      });
+      
+      if (pointsDeducted > 0) {
+        await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) });
+        await addDoc(collection(db, 'coin_transactions'), { userId: staff.id, points: -pointsDeducted, reason: `Late check-in`, createdAt: serverTimestamp() });
+      }
+      
+      showMessage(`${staff.fullName} checked in ${isLate ? '(LATE -' + pointsDeducted + ' pts)' : '✓ On time!'}`, isLate ? 'warning' : 'success');
+      await loadStaffList();
+    } catch (e) {
+      showMessage('Check-in failed. Try again.', 'error');
+    }
   }
 
   async function processCheckOut(staff, att) {
-    const video = document.getElementById('webcamVideo');
-    const canvas = document.getElementById('webcamCanvas');
-    const context = canvas.getContext('2d');
-    canvas.width = video.videoWidth || 640; canvas.height = video.videoHeight || 480;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // SNAP PHOTO INSTANTLY
+    const photoData = capturePhoto();
     
     const now = new Date();
-    const checkOutTime = new Date(); checkOutTime.setHours(kioskSettings.checkOutHour, kioskSettings.checkOutMinute, 0);
+    const checkOutTime = new Date(); 
+    checkOutTime.setHours(kioskSettings.checkOutHour, kioskSettings.checkOutMinute, 0);
     const isEarly = now < checkOutTime;
     const checkOutStatus = isEarly ? 'early' : 'on_time';
     const pointsDeducted = isEarly ? kioskSettings.earlyPenalty : 0;
     
-    await updateDoc(doc(db, 'attendance', att.docId), { checkOutTime: serverTimestamp(), checkOutStatus, pointsDeducted: (att.pointsDeducted || 0) + pointsDeducted });
-    if (pointsDeducted > 0) { await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) }); await addDoc(collection(db, 'coin_transactions'), { userId: staff.id, points: -pointsDeducted, reason: `Early departure`, createdAt: serverTimestamp() }); }
-    showMessage(`${staff.fullName} checked out ${isEarly ? '(EARLY -' + pointsDeducted + ' pts)' : '✓ On time!'}`, isEarly ? 'warning' : 'success');
-    await loadStaffList();
+    try {
+      await updateDoc(doc(db, 'attendance', att.docId), {
+        checkOutTime: serverTimestamp(),
+        checkOutStatus,
+        pointsDeducted: (att.pointsDeducted || 0) + pointsDeducted,
+        checkOutPhotoData: photoData
+      });
+      
+      if (pointsDeducted > 0) {
+        await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) });
+        await addDoc(collection(db, 'coin_transactions'), { userId: staff.id, points: -pointsDeducted, reason: `Early departure`, createdAt: serverTimestamp() });
+      }
+      
+      showMessage(`${staff.fullName} checked out ${isEarly ? '(EARLY -' + pointsDeducted + ' pts)' : '✓ On time!'}`, isEarly ? 'warning' : 'success');
+      await loadStaffList();
+    } catch (e) {
+      showMessage('Check-out failed. Try again.', 'error');
+    }
   }
 
-  function formatTime(d) { return d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); }
-  function showMessage(msg, type) { const b = document.getElementById('messageBanner'); b.className = `message-banner ${type}`; b.textContent = msg; setTimeout(() => b.className = 'message-banner', 4000); }
+  function showMessage(msg, type) {
+    const b = document.getElementById('messageBanner');
+    b.className = `message-banner ${type}`;
+    b.textContent = msg;
+    setTimeout(() => b.className = 'message-banner', 4000);
+  }
 
-  document.getElementById('checkinModeBtn').addEventListener('click', () => { currentMode = 'checkin'; document.getElementById('checkinModeBtn').classList.add('active'); document.getElementById('checkoutModeBtn').classList.remove('active'); });
-  document.getElementById('checkoutModeBtn').addEventListener('click', () => { currentMode = 'checkout'; document.getElementById('checkoutModeBtn').classList.add('active'); document.getElementById('checkinModeBtn').classList.remove('active'); });
+  // ========== MODE TOGGLE ==========
+  document.getElementById('checkinModeBtn').addEventListener('click', () => { 
+    currentMode = 'checkin'; 
+    document.getElementById('checkinModeBtn').classList.add('active'); 
+    document.getElementById('checkoutModeBtn').classList.remove('active'); 
+  });
+  document.getElementById('checkoutModeBtn').addEventListener('click', () => { 
+    currentMode = 'checkout'; 
+    document.getElementById('checkoutModeBtn').classList.add('active'); 
+    document.getElementById('checkinModeBtn').classList.remove('active'); 
+  });
 
+  // ========== PIN MODAL ==========
   window.showExitModal = () => { document.getElementById('pinModal').classList.add('active'); document.getElementById('pin1').focus(); };
   window.hidePinModal = () => { document.getElementById('pinModal').classList.remove('active'); ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = ''); };
-  window.verifyExitPin = () => { const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join(''); if (pin === kioskSettings.adminPin) { if (webcamStream) webcamStream.getTracks().forEach(t => t.stop()); window.location.href = 'admin-dashboard.html'; } else { alert('Invalid PIN'); } };
+  window.verifyExitPin = () => {
+    const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
+    if (pin === kioskSettings.adminPin) {
+      if (webcamStream) webcamStream.getTracks().forEach(t => t.stop());
+      window.location.href = 'admin-dashboard.html';
+    } else { alert('Invalid PIN'); }
+  };
+  
   document.querySelectorAll('.pin-input').forEach((inp, i, arr) => inp.addEventListener('input', e => { if (e.target.value && i < arr.length-1) arr[i+1].focus(); }));
 
-  (async () => { await loadKioskSettings(); await initWebcam(); await loadStaffList(); })();
+  // ========== INITIALIZE EVERYTHING ==========
+  (async () => {
+    await loadKioskSettings();
+    
+    // REQUEST CAMERA PERMISSION IMMEDIATELY ON PAGE LOAD
+    await requestCameraPermission();
+    
+    await loadStaffList();
+  })();
+  
   window.loadStaffList = loadStaffList;
 </script>
 </body>
