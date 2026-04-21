@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --header-height: 70px; --sidebar-width: 280px; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 70px; --sidebar-width: 280px; }
     body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
     .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
     .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
@@ -29,6 +29,15 @@
     .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
     .content-wrapper { padding: 28px; max-width: 1600px; }
     
+    .index-banner { background: linear-gradient(135deg, #fef3c7, #fff); border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-left: 4px solid var(--warning); }
+    .index-banner i { color: var(--warning); font-size: 1.3rem; }
+    .index-banner .content { flex: 1; }
+    .index-banner .content h4 { font-size: 0.9rem; margin-bottom: 4px; }
+    .index-banner .content p { font-size: 0.85rem; color: var(--gray); }
+    .index-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .index-link { background: var(--primary-soft); color: var(--primary); padding: 8px 14px; border-radius: 30px; font-size: 0.75rem; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--primary); }
+    .index-link:hover { background: var(--primary); color: white; }
+    
     .tabs-container { background: white; border-radius: 20px; padding: 6px; margin-bottom: 24px; display: flex; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-wrap: wrap; }
     .tab { padding: 14px 24px; border-radius: 16px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; background: none; color: var(--gray); flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .tab.active { background: var(--primary); color: white; }
@@ -45,7 +54,6 @@
     
     .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
     .badge-pending { background: rgba(107,114,128,0.1); color: var(--gray); }
-    .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     
     .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
     .btn-success { background: var(--success); color: white; }
@@ -91,6 +99,22 @@
 <main class="main-content">
   <header class="top-bar"><h1 class="page-title">Approval Center</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
+    
+    <!-- INDEX CREATION BANNER -->
+    <div class="index-banner">
+      <i class="fas fa-database"></i>
+      <div class="content">
+        <h4>📌 Firestore Indexes Required</h4>
+        <p>If data is not showing, click each link below to create the required indexes. Wait 2-3 minutes after creating.</p>
+        <div class="index-links">
+          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=EgV1c2VycxoGCgZzdGF0dXMQARoJY3JlYXRlZEF0EAIaCgZfX25hbWVfXxACGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAC" target="_blank" class="index-link"><i class="fas fa-users"></i> Users Index</a>
+          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=Eg1zdG9ja19pdGVtcxoGCgZzdGF0dXMQARoJY3JlYXRlZEF0EAIaCgZfX25hbWVfXxACGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAC" target="_blank" class="index-link"><i class="fas fa-box"></i> Stock Items Index</a>
+          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=EhFwdXJjaGFzZV9yZXF1ZXN0cxoGCgZzdGF0dXMQARoJY3JlYXRlZEF0EAIaCgZfX25hbWVfXxACGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAC" target="_blank" class="index-link"><i class="fas fa-shopping-cart"></i> Purchases Index</a>
+          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=Eg5jdXN0b21lcnMaBgoGc3RhdHVzEAEaCWNyZWF0ZWRBdBACGgoGX19uYW1lX18QAhoICgZzdGF0dXMQAhoJCgljcmVhdGVkQXQQAhoGCgRfX25hbWVfXxABGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAB" target="_blank" class="index-link"><i class="fas fa-user"></i> Customers Index</a>
+          <a href="https://console.firebase.google.com/project/fashion-46e5d/firestore/indexes?create_index=Eg5sZWF2ZV9yZXF1ZXN0cxoGCgZzdGF0dXMQARoJY3JlYXRlZEF0EAIaCgZfX25hbWVfXxACGggKBnN0YXR1cxABGgkKCWNyZWF0ZWRBdBAC" target="_blank" class="index-link"><i class="fas fa-calendar"></i> Leave Index</a>
+        </div>
+      </div>
+    </div>
     
     <div class="tabs-container">
       <button class="tab active" data-tab="users"><i class="fas fa-user"></i> Users <span class="count" id="userCount">0</span></button>
@@ -182,7 +206,7 @@
   };
   
   window.rejectUser = async (uid) => { 
-    const reason = prompt('Rejection reason (optional):') || 'No reason provided'; 
+    const reason = prompt('Rejection reason:') || 'No reason'; 
     await updateDoc(doc(db, 'users', uid), { status: 'rejected', rejectedBy: currentUser.uid, rejectedAt: serverTimestamp(), rejectionReason: reason }); 
     await logAudit('reject_user', `Rejected. Reason: ${reason}`); 
     showToast('User rejected', 'info'); 
@@ -242,7 +266,7 @@
       document.getElementById('customerCount').textContent = snap.size;
       const tbody = document.getElementById('customersTable'); tbody.innerHTML = '';
       if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i><p>No pending customers</p></div></td></tr>'; return; }
-      snap.forEach(d => { const c = d.data(); tbody.innerHTML += `<tr><td>${c.fullName||'-'}</td><td>${c.phone||'-'}</td><td>${c.email||'-'}</td><td>${c.birthday||'-'}</td><td>${c.createdByName||'-'}</td><td>${formatDate(c.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn75" onclick="window.approveCustomer('${d.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectCustomer('${d.id}')">✕ Reject</button></td></tr>`; });
+      snap.forEach(d => { const c = d.data(); tbody.innerHTML += `<tr><td>${c.fullName||'-'}</td><td>${c.phone||'-'}</td><td>${c.email||'-'}</td><td>${c.birthday||'-'}</td><td>${c.createdByName||'-'}</td><td>${formatDate(c.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approveCustomer('${d.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectCustomer('${d.id}')">✕ Reject</button></td></tr>`; });
     }));
   }
 
@@ -311,7 +335,7 @@
     userData = snap.data(); 
     document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin'; 
     document.getElementById('userRole').textContent = userData.role; 
-    document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0).toUpperCase(); 
+    document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0); 
     document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); 
     refreshAll(); 
   });
