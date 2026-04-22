@@ -48,7 +48,7 @@
     .panel-header h3 i { color: var(--primary); }
     
     .table-wrapper { overflow-x: auto; }
-    .data-table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+    .data-table { width: 100%; border-collapse: collapse; min-width: 1200px; }
     .data-table th { text-align: left; padding: 14px 10px; font-size: 0.7rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
     .data-table td { padding: 14px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 0.85rem; }
     
@@ -193,10 +193,10 @@
       <div class="table-wrapper">
         <table class="data-table">
           <thead><tr>
-            <th>Item Name</th><th>Category</th><th>Available</th><th>Sold</th>
+            <th>Item Name</th><th>Category</th><th>Initial Stock</th><th>Available</th><th>Sold</th>
             <th>Unit Price</th><th>Total Value</th><th>Status</th><th>Actions</th>
           </tr></thead>
-          <tbody id="inventoryTable"><tr><td colspan="8"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+          <tbody id="inventoryTable"><tr><td colspan="9"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -311,7 +311,7 @@
     } catch(e) { console.warn('Audit failed:', e); }
   }
 
-  // FIXED: Render inventory with existing Firestore fields
+  // FIXED: Properly render inventory with real-time updates
   function renderInventory() {
     let filtered = [...allItems];
     const search = document.getElementById('searchInput').value.toLowerCase();
@@ -321,12 +321,19 @@
     if (category !== 'all') filtered = filtered.filter(i => i.category === category);
     
     const status = document.getElementById('statusFilter').value;
-    if (status !== 'all') filtered = filtered.filter(i => i.status === status);
+    if (status !== 'all') filtered = filtered.filter(i => {
+      const qty = i.quantityAvailable || 0;
+      const threshold = i.threshold || 10;
+      let actualStatus = i.status;
+      if (qty === 0) actualStatus = 'out_of_stock';
+      else if (qty <= threshold) actualStatus = 'low';
+      else actualStatus = 'available';
+      return actualStatus === status;
+    });
     
     // Update stats
     document.getElementById('totalItems').textContent = allItems.length;
     
-    // Recalculate status based on actual quantities
     const lowItems = allItems.filter(i => {
       const qty = i.quantityAvailable || 0;
       const threshold = i.threshold || 10;
@@ -351,11 +358,12 @@
     tbody.innerHTML = '';
     
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="fas fa-box"></i><p>No items found. Click "Add Item" to create one.</p></div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><i class="fas fa-box"></i><p>No items found. Click "Add Item" to create one.</p></div></td></tr>';
       return;
     }
     
     filtered.forEach(item => {
+      const initialStock = item.initialStock || item.quantityAvailable || 0;
       const qty = item.quantityAvailable || 0;
       const sold = item.quantitySold || 0;
       const price = item.unitPrice || 0;
@@ -380,6 +388,7 @@
       tbody.innerHTML += `<tr>
         <td>${item.name || '-'}</td>
         <td>${item.category || '-'}</td>
+        <td>${initialStock}</td>
         <td style="color: ${qty <= threshold ? 'var(--danger)' : 'inherit'}; font-weight: ${qty <= threshold ? '600' : '400'};">
           ${qty}
         </td>
@@ -387,7 +396,7 @@
         <td>${formatCurrency(price)}</td>
         <td>${formatCurrency(totalItemValue)}</td>
         <td><span class="badge badge-${statusBadge}">${actualStatus}</span></td>
-        <td class="action-group">
+        <td style="display:flex;gap:5px;">
           <button class="btn btn-sm btn-outline" onclick="openEditItem('${item.id}')"><i class="fas fa-edit"></i></button>
           <button class="btn btn-sm btn-outline" onclick="openRestockItem('${item.id}')"><i class="fas fa-plus"></i></button>
           <button class="btn btn-sm btn-outline" onclick="viewHistory('${item.id}')"><i class="fas fa-history"></i></button>
@@ -406,16 +415,22 @@
     unsubscribes.push(onSnapshot(q, (snap) => {
       allItems = snap.docs.map(d => {
         const data = d.data();
+        // If initialStock doesn't exist, use quantityAvailable
+        if (!data.initialStock && data.quantityAvailable) {
+          updateDoc(d.ref, { initialStock: data.quantityAvailable });
+          data.initialStock = data.quantityAvailable;
+        }
         return { 
           id: d.id, 
           ...data,
-          // Ensure defaults for missing fields
           quantityAvailable: data.quantityAvailable || 0,
           quantitySold: data.quantitySold || 0,
           unitPrice: data.unitPrice || 0,
-          threshold: data.threshold || 10
+          threshold: data.threshold || 10,
+          initialStock: data.initialStock || data.quantityAvailable || 0
         };
       });
+      console.log('📦 Inventory loaded:', allItems.length, 'items');
       renderInventory();
     }, (error) => {
       console.error('Error loading inventory:', error);
@@ -431,11 +446,11 @@
         <option value="bridal">Bridal Materials</option><option value="paperstones">Paperstones</option>
         <option value="other">Other</option>
       </select></div>
-      <div class="form-group"><label>Initial Quantity</label><input type="number" class="form-control" id="itemQty" value="0"></div>
-      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="itemPrice" value="0" step="0.01"></div>
-      <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="itemThreshold" value="10"></div>
+      <div class="form-group"><label>Initial Quantity *</label><input type="number" class="form-control" id="itemQty" value="0" min="0"></div>
+      <div class="form-group"><label>Unit Price (₦) *</label><input type="number" class="form-control" id="itemPrice" value="0" step="0.01" min="0"></div>
+      <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="itemThreshold" value="10" min="1"></div>
       <p style="font-size:0.75rem;color:var(--gray);margin-bottom:15px;">
-        <i class="fas fa-info-circle"></i> Item will require admin approval before becoming available.
+        <i class="fas fa-info-circle"></i> Item will be available immediately if you're admin, or pending approval if attendant.
       </p>
       <button class="btn btn-primary" onclick="addItem()">Add Item</button>
     `);
@@ -454,16 +469,15 @@
         const threshold = parseInt(document.getElementById('itemThreshold')?.value) || 10;
         const category = document.getElementById('itemCategory')?.value || 'other';
         
-        // Determine status based on role
         const isAdmin = userData?.role === 'admin' || userData?.role === 'super_admin';
         const status = isAdmin ? 
           (qty === 0 ? 'out_of_stock' : qty <= threshold ? 'low' : 'available') : 
           'pending_approval';
         
-        // Create the document with proper fields
         const docRef = await addDoc(collection(db, 'stock_items'), {
           name,
           category,
+          initialStock: qty,
           quantityAvailable: qty,
           quantitySold: 0,
           unitPrice: price,
@@ -475,7 +489,8 @@
           updatedAt: serverTimestamp()
         });
         
-        await logAudit('add_item', `Added item: ${name} (Qty: ${qty}, Price: ₦${price})`);
+        console.log('✅ Item added:', docRef.id, { name, qty, price });
+        await logAudit('add_item', `Added item: ${name} (Initial: ${qty}, Price: ₦${price})`);
         showToast(isAdmin ? 'Item added successfully' : 'Item submitted for admin approval', 'success');
         hideModal();
       } catch (error) {
@@ -498,9 +513,9 @@
         <option value="paperstones" ${item.category === 'paperstones' ? 'selected' : ''}>Paperstones</option>
         <option value="other" ${item.category === 'other' ? 'selected' : ''}>Other</option>
       </select></div>
-      <div class="form-group"><label>Available Quantity</label><input type="number" class="form-control" id="editQty" value="${item.quantityAvailable || 0}"></div>
-      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${item.unitPrice || 0}" step="0.01"></div>
-      <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="editThreshold" value="${item.threshold || 10}"></div>
+      <div class="form-group"><label>Available Quantity</label><input type="number" class="form-control" id="editQty" value="${item.quantityAvailable || 0}" min="0"></div>
+      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${item.unitPrice || 0}" step="0.01" min="0"></div>
+      <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="editThreshold" value="${item.threshold || 10}" min="1"></div>
       <button class="btn btn-primary" onclick="saveEdit('${id}')">Save Changes</button>
     `);
   };
@@ -550,7 +565,9 @@
       let historyHTML = `
         <div style="margin-bottom:20px;">
           <h4 style="margin-bottom:10px;">${item.name}</h4>
-          <p style="color:var(--gray);margin-bottom:15px;">Available: ${item.quantityAvailable || 0} | Sold: ${item.quantitySold || 0}</p>
+          <p style="color:var(--gray);margin-bottom:15px;">
+            Initial: ${item.initialStock || 0} | Available: ${item.quantityAvailable || 0} | Sold: ${item.quantitySold || 0}
+          </p>
         </div>
         <div style="max-height:300px;overflow-y:auto;">
       `;
@@ -585,13 +602,13 @@
     const item = allItems.find(i => i.id === id);
     if (!item) return;
     
-    showModal('Restock Item', `
-      <p><strong>${item.name}</strong> (Current stock: ${item.quantityAvailable || 0})</p>
-      <div class="form-group"><label>Quantity to Add</label><input type="number" class="form-control" id="restockQty" value="10" min="1"></div>
+    showModal('Request Restock', `
+      <p><strong>${item.name}</strong> (Current: ${item.quantityAvailable || 0} units)</p>
+      <div class="form-group"><label>Quantity Needed</label><input type="number" class="form-control" id="restockQty" value="${(item.threshold || 10) * 2}" min="1"></div>
       <p style="font-size:0.75rem;color:var(--gray);margin-bottom:15px;">
-        <i class="fas fa-info-circle"></i> This will create a restock request for admin approval.
+        <i class="fas fa-info-circle"></i> This creates a request for admin approval. You can track expected vs actual when restocking.
       </p>
-      <button class="btn btn-primary" onclick="confirmRestock('${id}')">Request Restock</button>
+      <button class="btn btn-primary" onclick="confirmRestock('${id}')">Create Restock Request</button>
     `);
   };
 
@@ -603,6 +620,7 @@
         
         const item = allItems.find(i => i.id === id);
         
+        // Create purchase request with expected vs actual tracking
         await addDoc(collection(db, 'purchase_requests'), {
           itemId: id,
           itemName: item.name,
@@ -611,16 +629,19 @@
           expectedQuantity: qty,
           actualQuantity: 0,
           variance: 0,
+          variancePercentage: 0,
           status: 'pending',
           requestedBy: currentUser.uid,
           requestedByName: userData?.fullName,
           requestDate: serverTimestamp(),
           approvedBy: null,
-          approvedAt: null
+          approvedAt: null,
+          restockCompleted: false,
+          restockDate: null
         });
         
-        await logAudit('restock_request', `Requested restock of ${qty} units for ${item.name}`);
-        showToast(`Restock request created for ${qty} units`, 'success');
+        await logAudit('restock_request', `Requested ${qty} units for ${item.name}`);
+        showToast(`Restock request for ${qty} units created. Awaiting admin approval.`, 'success');
         hideModal();
       } catch (error) {
         console.error('Error creating restock request:', error);
@@ -652,10 +673,11 @@
     const items = allItems;
     
     if (format === 'csv' || format === 'excel') {
-      const headers = ['Name', 'Category', 'Available', 'Sold', 'Unit Price', 'Total Value', 'Status'];
+      const headers = ['Name', 'Category', 'Initial Stock', 'Available', 'Sold', 'Unit Price', 'Total Value', 'Status'];
       const rows = items.map(i => [
         i.name || '', 
         i.category || '', 
+        i.initialStock || 0,
         i.quantityAvailable || 0, 
         i.quantitySold || 0,
         i.unitPrice || 0, 
@@ -687,7 +709,7 @@
     document.getElementById('exportMenu').classList.remove('show');
   });
 
-  // Filters
+  // Real-time filters
   document.getElementById('searchInput').addEventListener('input', renderInventory);
   document.getElementById('categoryFilter').addEventListener('change', renderInventory);
   document.getElementById('statusFilter').addEventListener('change', renderInventory);
