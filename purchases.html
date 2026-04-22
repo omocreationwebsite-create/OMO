@@ -188,8 +188,9 @@
         r.receivedItems?.forEach(i => { 
           const expected = i.expected || i.suggested || i.quantity || 0;
           const received = i.received || 0;
-          const diff = received - expected; 
-          diffHtml += `<div>${i.name}: ${received}/${expected} <span class="${diff<0?'difference-negative':'difference-positive'}">(${diff>0?'+':''}${diff})</span></div>`; 
+          const diff = received - expected;
+          const diffPercent = expected > 0 ? ((diff / expected) * 100).toFixed(1) : 0;
+          diffHtml += `<div style="margin-bottom:5px;"><strong>${i.name}:</strong> ${received}/${expected} <span class="${diff < 0 ? 'difference-negative' : 'difference-positive'}">(${diff > 0 ? '+' : ''}${diff}, ${diffPercent}%)</span></div>`; 
         });
         purchasedTbody.innerHTML += `<tr><td>${formatDate(r.purchasedAt || r.createdAt)}</td><td>${r.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${diffHtml || '-'}</td></tr>`;
       }
@@ -217,7 +218,7 @@
   window.viewRequest = (id) => { 
     const r = allRequests.find(x => x.id === id); 
     if(!r) return; 
-    let html = `<p><strong>Requested by:</strong> ${r.requestedByName}</p><p><strong>Date:</strong> ${formatDate(r.createdAt)}</p><p><strong>Status:</strong> ${r.status}</p><p><strong>Note:</strong> ${r.note||'-'}</p><h4 style="margin:15px 0 10px;">Items:</h4><table style="width:100%;"><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>`; 
+    let html = `<p><strong>Requested by:</strong> ${r.requestedByName}</p><p><strong>Date:</strong> ${formatDate(r.createdAt)}</p><p><strong>Status:</strong> ${r.status}</p><p><strong>Note:</strong> ${r.note||'-'}</p><h4 style="margin:15px 0 10px;">Requested Items:</h4><table style="width:100%;"><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>`; 
     let total=0; 
     r.items?.forEach(i=>{
       const qty = i.suggested || i.quantity || 0;
@@ -226,15 +227,20 @@
       total+=t; 
       html+=`<tr><td>${i.name}</td><td>${qty}</td><td>${formatCurrency(price)}</td><td>${formatCurrency(t)}</td></tr>`;
     }); 
-    html+=`<tr><td colspan="3"><strong>Total</strong></td><td><strong>${formatCurrency(total)}</strong></td></tr></table>`; 
+    html+=`<tr><td colspan="3"><strong>Expected Total</strong></td><td><strong>${formatCurrency(total)}</strong></td></tr></table>`; 
     if(r.receivedItems){
-      html+='<h4 style="margin:15px 0 10px;">Received:</h4><table style="width:100%;"><tr><th>Item</th><th>Expected</th><th>Received</th><th>Diff</th></tr>'; 
+      let actualTotal = 0;
+      html+='<h4 style="margin:15px 0 10px;">Purchase Results:</h4><table style="width:100%;"><tr><th>Item</th><th>Planned</th><th>Actual</th><th>Difference</th></tr>'; 
       r.receivedItems.forEach(i=>{
         const expected = i.expected || i.suggested || i.quantity || 0;
         const received = i.received || 0;
-        const diff = received - expected; 
-        html+=`<tr><td>${i.name}</td><td>${expected}</td><td>${received}</td><td class="${diff<0?'difference-negative':'difference-positive'}">${diff>0?'+':''}${diff}</td></tr>`;
+        const diff = received - expected;
+        const diffPercent = expected > 0 ? ((diff / expected) * 100).toFixed(1) : 0;
+        const price = i.price || i.unitPrice || 0;
+        actualTotal += received * price;
+        html+=`<tr><td>${i.name}</td><td>${expected}</td><td>${received}</td><td class="${diff<0?'difference-negative':'difference-positive'}">${diff>0?'+':''}${diff} (${diffPercent}%)</td></tr>`;
       }); 
+      html+=`<tr><td colspan="3"><strong>Actual Total</strong></td><td><strong>${formatCurrency(actualTotal)}</strong></td></tr>`;
       html+='</table>';
     } 
     document.getElementById('modalTitle').textContent='Request Details'; 
@@ -349,15 +355,25 @@
   window.markPurchased = (id) => { 
     showPinModal('Mark Purchased', 'confirm purchase', async () => { 
       const r = allRequests.find(x => x.id === id); 
+      
+      // Get the actual quantities entered by the user
       const receivedItems = r.items.map((item, idx) => {
         const expected = item.suggested || item.quantity || 0;
-        const received = parseInt(document.getElementById(`rec-${idx}`)?.value) || expected;
-        return { ...item, expected, received }; 
+        const receivedInput = document.getElementById(`rec-${idx}`);
+        const received = receivedInput ? parseInt(receivedInput.value) : expected;
+        
+        console.log(`📊 ${item.name}: Expected ${expected}, Received ${received}`);
+        
+        return { 
+          ...item, 
+          expected: expected,  // What was planned
+          received: received   // What was actually bought
+        }; 
       });
       
       console.log('📦 Marking as purchased:', receivedItems);
       
-      // Update stock in inventory - FIXED
+      // Update stock in inventory - add the ACTUAL quantity bought
       const batch = writeBatch(db);
       for (const item of receivedItems) { 
         if (item.id) { 
@@ -367,7 +383,7 @@
             const data = snap.data();
             const cur = data.quantityAvailable || 0; 
             const threshold = data.threshold || 10;
-            const newQty = cur + item.received;
+            const newQty = cur + item.received;  // Add the ACTUAL quantity bought
             
             console.log(`📦 Updating ${item.name}: ${cur} + ${item.received} = ${newQty}`);
             
@@ -392,10 +408,10 @@
         return;
       }
       
-      // Mark request as purchased
+      // Mark request as purchased with both expected and received
       await updateDoc(doc(db, 'purchase_requests', id), { 
         status: 'purchased', 
-        receivedItems, 
+        receivedItems: receivedItems,  // Contains both expected and received
         purchasedBy: currentUser.uid, 
         purchasedByName: userData.fullName,
         purchasedAt: serverTimestamp() 
