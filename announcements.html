@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ff4da6">
-  <title>Announcements · FashionStone</title>
+  <title>Announcements · Omocreations</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -25,18 +25,18 @@
     .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
     .user-details h4 { font-size: 0.85rem; } .user-details p { font-size: 0.7rem; opacity: 0.6; }
     .main-content { flex: 1; margin-left: var(--sidebar-width); }
-    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; }
+    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
     .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
     .content-wrapper { padding: 28px; max-width: 1200px; }
-    .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; }
-    .panel-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .panel-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
     .form-group { margin-bottom: 18px; }
     .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
-    .form-control { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; font-size: 0.9rem; outline: none; }
+    .form-control { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; font-size: 0.9rem; outline: none; background: white; }
     textarea.form-control { min-height: 100px; resize: vertical; }
     .target-options { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
-    .target-option { padding: 10px 20px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; cursor: pointer; font-size: 0.85rem; }
+    .target-option { padding: 10px 20px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; cursor: pointer; font-size: 0.85rem; background: white; }
     .target-option.selected { background: var(--primary); color: white; border-color: var(--primary); }
     .user-select-list { max-height: 200px; overflow-y: auto; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; padding: 10px; margin-top: 10px; display: none; }
     .user-select-item { padding: 8px 12px; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
@@ -48,21 +48,35 @@
     .data-table td { padding: 14px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 0.85rem; }
     .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
-    .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
+    .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
+    .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
+    .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); transition: all 0.15s; }
     .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
     .btn-danger { background: var(--danger); color: white; }
     .btn-sm { padding: 6px 12px; }
     .empty-state { text-align: center; padding: 40px; color: var(--gray); }
+    .reply-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(0,0,0,0.1); }
+    .reply-item { background: var(--gray-light); padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; }
+    .reply-item small { color: var(--gray); }
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
     .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
     .toast.show { transform: translateX(0); }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+    .modal { background: white; border-radius: 28px; padding: 28px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--gray); }
+    .tabs-container { display: flex; gap: 6px; margin-bottom: 20px; background: var(--gray-light); padding: 6px; border-radius: 40px; }
+    .tab-btn { padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; border: none; background: none; color: var(--gray); cursor: pointer; flex: 1; }
+    .tab-btn.active { background: var(--primary); color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
     @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } }
   </style>
 </head>
 <body>
 
 <aside class="sidebar">
-  <div class="sidebar-header"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div>
+  <div class="sidebar-header"><div class="logo-icon">✨</div><div class="logo-text"><span>Omo</span>creations</div></div>
   <nav class="sidebar-nav">
     <button class="nav-item" onclick="window.location.href='admin-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
     <button class="nav-item" onclick="window.location.href='approvals.html'"><i class="fas fa-check-circle"></i><span>Approvals</span></button>
@@ -79,51 +93,106 @@
   <header class="top-bar"><h1 class="page-title">Announcements</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
     
-    <div class="panel">
-      <div class="panel-header"><h3><i class="fas fa-plus-circle"></i> Create Announcement</h3></div>
-      <div class="form-group"><label>Title</label><input class="form-control" id="announcementTitle" placeholder="e.g., Staff Meeting"></div>
-      <div class="form-group"><label>Message</label><textarea class="form-control" id="announcementMessage" placeholder="Your announcement..."></textarea></div>
-      <div class="form-group"><label>Send To</label>
-        <div class="target-options">
-          <div class="target-option selected" data-target="all"><i class="fas fa-globe"></i> Everyone</div>
-          <div class="target-option" data-target="workers"><i class="fas fa-users"></i> Workers Only</div>
-          <div class="target-option" data-target="attendants"><i class="fas fa-user-tie"></i> Attendants Only</div>
-          <div class="target-option" data-target="specific"><i class="fas fa-user"></i> Specific People</div>
-        </div>
-      </div>
-      <div class="user-select-list" id="userSelectList"></div>
-      <button class="btn btn-primary" onclick="sendAnnouncement()"><i class="fas fa-paper-plane"></i> Send Announcement</button>
+    <div class="tabs-container">
+      <button class="tab-btn active" data-tab="create"><i class="fas fa-plus-circle"></i> Create</button>
+      <button class="tab-btn" data-tab="sent"><i class="fas fa-paper-plane"></i> Sent</button>
+      <button class="tab-btn" data-tab="replies"><i class="fas fa-reply-all"></i> Replies</button>
     </div>
     
-    <div class="panel">
-      <div class="panel-header"><h3><i class="fas fa-history"></i> Previous Announcements</h3><button class="btn btn-outline btn-sm" onclick="refreshAnnouncements()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
-      <div class="table-wrapper"><table class="data-table"><thead><tr><th>Title</th><th>Message</th><th>Sent To</th><th>Sent By</th><th>Date</th><th>Actions</th></tr></thead><tbody id="announcementsTable"></tbody></table></div>
+    <div id="createTab" class="tab-content active">
+      <div class="panel">
+        <div class="panel-header"><h3><i class="fas fa-bullhorn"></i> Create Announcement</h3></div>
+        <div class="form-group"><label>Title</label><input class="form-control" id="announcementTitle" placeholder="e.g., Staff Meeting"></div>
+        <div class="form-group"><label>Message</label><textarea class="form-control" id="announcementMessage" placeholder="Your announcement..."></textarea></div>
+        <div class="form-group"><label>Send To</label>
+          <div class="target-options">
+            <div class="target-option selected" data-target="all"><i class="fas fa-globe"></i> Everyone</div>
+            <div class="target-option" data-target="workers"><i class="fas fa-users"></i> Workers Only</div>
+            <div class="target-option" data-target="attendants"><i class="fas fa-user-tie"></i> Attendants Only</div>
+            <div class="target-option" data-target="specific"><i class="fas fa-user"></i> Specific People</div>
+          </div>
+        </div>
+        <div class="form-group"><label>Require Acknowledgment</label>
+          <select class="form-control" id="requireAck">
+            <option value="false">No - Just inform</option>
+            <option value="true">Yes - Require staff to acknowledge</option>
+          </select>
+        </div>
+        <div class="user-select-list" id="userSelectList"></div>
+        <button class="btn btn-primary" onclick="sendAnnouncement()"><i class="fas fa-paper-plane"></i> Send Announcement</button>
+      </div>
+    </div>
+    
+    <div id="sentTab" class="tab-content">
+      <div class="panel">
+        <div class="panel-header"><h3><i class="fas fa-history"></i> Sent Announcements</h3><button class="btn btn-outline btn-sm" onclick="refreshAnnouncements()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Title</th><th>Message</th><th>Sent To</th><th>Sent By</th><th>Acknowledged</th><th>Date</th><th>Actions</th></tr></thead><tbody id="announcementsTable"></tbody></table></div>
+      </div>
+    </div>
+    
+    <div id="repliesTab" class="tab-content">
+      <div class="panel">
+        <div class="panel-header"><h3><i class="fas fa-reply-all"></i> Replies & Acknowledgments</h3></div>
+        <div class="table-wrapper"><table class="data-table"><thead><tr><th>Announcement</th><th>From</th><th>Type</th><th>Message</th><th>Time</th></tr></thead><tbody id="repliesTable"></tbody></table></div>
+      </div>
     </div>
     
   </div>
 </main>
 
+<div class="modal-overlay" id="modalOverlay"><div class="modal"><div class="modal-header"><h3 id="modalTitle">Modal</h3><button class="modal-close" onclick="hideModal()">&times;</button></div><div id="modalContent"></div></div></div>
 <div class="toast-container" id="toastContainer"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, getDocs, where, writeBatch, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
   let currentUser = null, userData = null, unsubscribes = [], selectedTarget = 'all', selectedUsers = new Set(), allStaff = [];
 
-  function formatDateTime(d) { if (!d) return '-'; return d.toDate().toLocaleString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
+  function formatDateTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
   function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  window.hideModal = () => document.getElementById('modalOverlay').style.display = 'none';
+  function showModal(title, content) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content; document.getElementById('modalOverlay').style.display = 'flex'; }
 
-  document.querySelectorAll('.target-option').forEach(opt => opt.addEventListener('click', function() { document.querySelectorAll('.target-option').forEach(o => o.classList.remove('selected')); this.classList.add('selected'); selectedTarget = this.dataset.target; document.getElementById('userSelectList').style.display = selectedTarget === 'specific' ? 'block' : 'none'; }));
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(t => t.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(this.dataset.tab + 'Tab').classList.add('active');
+  }));
 
-  async function loadStaffList() { const snap = await getDocs(query(collection(db, 'users'), where('role', 'in', ['staff','attendant','attendant_chief']), where('status', '==', 'active'))); allStaff = snap.docs.map(d => ({id:d.id, ...d.data()})); renderUserList(); }
-  function renderUserList() { const list = document.getElementById('userSelectList'); list.innerHTML = ''; allStaff.forEach(s => { const div = document.createElement('div'); div.className = `user-select-item ${selectedUsers.has(s.id)?'selected':''}`; div.innerHTML = `<input type="checkbox" ${selectedUsers.has(s.id)?'checked':''} style="accent-color:var(--primary);"> <span>${s.fullName} (${s.role})</span>`; div.querySelector('input').addEventListener('change', e => { if (e.target.checked) selectedUsers.add(s.id); else selectedUsers.delete(s.id); div.classList.toggle('selected'); }); div.addEventListener('click', (e) => { if (e.target.tagName !== 'INPUT') { const cb = div.querySelector('input'); cb.checked = !cb.checked; if (cb.checked) selectedUsers.add(s.id); else selectedUsers.delete(s.id); div.classList.toggle('selected'); } }); list.appendChild(div); }); }
+  document.querySelectorAll('.target-option').forEach(opt => opt.addEventListener('click', function() { 
+    document.querySelectorAll('.target-option').forEach(o => o.classList.remove('selected')); 
+    this.classList.add('selected'); 
+    selectedTarget = this.dataset.target; 
+    document.getElementById('userSelectList').style.display = selectedTarget === 'specific' ? 'block' : 'none'; 
+  }));
+
+  async function loadStaffList() { 
+    const snap = await getDocs(query(collection(db, 'users'), where('role', 'in', ['staff','attendant','attendant_chief']), where('status', '==', 'active'))); 
+    allStaff = snap.docs.map(d => ({id:d.id, ...d.data()})); 
+    renderUserList(); 
+  }
+  
+  function renderUserList() { 
+    const list = document.getElementById('userSelectList'); list.innerHTML = ''; 
+    allStaff.forEach(s => { 
+      const div = document.createElement('div'); 
+      div.className = `user-select-item ${selectedUsers.has(s.id)?'selected':''}`; 
+      div.innerHTML = `<input type="checkbox" ${selectedUsers.has(s.id)?'checked':''} style="accent-color:var(--primary);"> <span>${s.fullName} (${s.role})</span>`; 
+      div.querySelector('input').addEventListener('change', e => { if (e.target.checked) selectedUsers.add(s.id); else selectedUsers.delete(s.id); div.classList.toggle('selected'); }); 
+      div.addEventListener('click', (e) => { if (e.target.tagName !== 'INPUT') { const cb = div.querySelector('input'); cb.checked = !cb.checked; if (cb.checked) selectedUsers.add(s.id); else selectedUsers.delete(s.id); div.classList.toggle('selected'); } }); 
+      list.appendChild(div); 
+    }); 
+  }
 
   window.sendAnnouncement = async () => {
     const title = document.getElementById('announcementTitle').value.trim(), message = document.getElementById('announcementMessage').value.trim();
+    const requireAck = document.getElementById('requireAck').value === 'true';
     if (!title || !message) { showToast('Title and message required', 'error'); return; }
     let recipientIds = []; let targetDescription = '';
     if (selectedTarget === 'all') { const snap = await getDocs(query(collection(db, 'users'), where('role', 'in', ['staff','attendant','attendant_chief']), where('status', '==', 'active'))); recipientIds = snap.docs.map(d => d.id); targetDescription = 'Everyone'; }
@@ -131,16 +200,72 @@
     else if (selectedTarget === 'attendants') { const snap = await getDocs(query(collection(db, 'users'), where('role', 'in', ['attendant','attendant_chief']), where('status', '==', 'active'))); recipientIds = snap.docs.map(d => d.id); targetDescription = 'Attendants Only'; }
     else { recipientIds = Array.from(selectedUsers); targetDescription = `${recipientIds.length} specific people`; }
     if (recipientIds.length === 0) { showToast('No recipients selected', 'error'); return; }
-    await addDoc(collection(db, 'announcements'), { title, message, target: selectedTarget, targetDescription, recipientIds, sentBy: currentUser.uid, sentByName: userData.fullName, createdAt: serverTimestamp() });
-    const batch = writeBatch(db); recipientIds.forEach(id => { const ref = doc(collection(db, 'notifications')); batch.set(ref, { userId: id, type: 'announcement', title, message, isRead: false, createdAt: serverTimestamp() }); }); await batch.commit();
-    showToast(`Announcement sent to ${recipientIds.length} people`, 'success'); document.getElementById('announcementTitle').value = ''; document.getElementById('announcementMessage').value = ''; selectedUsers.clear(); renderUserList();
+    
+    await addDoc(collection(db, 'announcements'), { title, message, target: selectedTarget, targetDescription, recipientIds, requireAcknowledgment: requireAck, sentBy: currentUser.uid, sentByName: userData.fullName, createdAt: serverTimestamp(), acknowledgedBy: [] });
+    const batch = writeBatch(db); 
+    recipientIds.forEach(id => { const ref = doc(collection(db, 'notifications')); batch.set(ref, { userId: id, type: 'announcement', title, message, isRead: false, createdAt: serverTimestamp() }); }); 
+    await batch.commit();
+    showToast(`Announcement sent to ${recipientIds.length} people`, 'success'); 
+    document.getElementById('announcementTitle').value = ''; 
+    document.getElementById('announcementMessage').value = ''; 
+    selectedUsers.clear(); 
+    renderUserList();
   };
 
-  function loadAnnouncements() { unsubscribes.forEach(u => u()); unsubscribes = []; unsubscribes.push(onSnapshot(query(collection(db, 'announcements'), orderBy('createdAt', 'desc')), snap => { const tbody = document.getElementById('announcementsTable'); tbody.innerHTML = ''; if (snap.empty) tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state">No announcements</div></td></tr>'; else snap.forEach(d => { const a = d.data(); tbody.innerHTML += `<tr><td>${a.title}</td><td>${a.message.substring(0,50)}...</td><td>${a.targetDescription}</td><td>${a.sentByName}</td><td>${formatDateTime(a.createdAt)}</td><td><button class="btn btn-sm btn-danger" onclick="deleteAnnouncement('${d.id}')"><i class="fas fa-trash"></i></button></td></tr>`; }); })); }
+  function loadAnnouncements() { 
+    unsubscribes.forEach(u => u()); unsubscribes = []; 
+    unsubscribes.push(onSnapshot(query(collection(db, 'announcements'), orderBy('createdAt', 'desc')), snap => { 
+      const tbody = document.getElementById('announcementsTable'); tbody.innerHTML = ''; 
+      if (snap.empty) tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state">No announcements</div></td></tr>'; 
+      else snap.forEach(d => { 
+        const a = d.data(); 
+        const ackCount = a.acknowledgedBy?.length || 0;
+        const totalRecipients = a.recipientIds?.length || 0;
+        tbody.innerHTML += `<tr><td>${a.title}</td><td>${a.message.substring(0,40)}...</td><td>${a.targetDescription}</td><td>${a.sentByName}</td><td>${ackCount}/${totalRecipients} ${a.requireAcknowledgment ? '✓' : '-'}</td><td>${formatDateTime(a.createdAt)}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-outline" onclick="viewAnnouncement('${d.id}')"><i class="fas fa-eye"></i></button><button class="btn btn-sm btn-danger" onclick="deleteAnnouncement('${d.id}')"><i class="fas fa-trash"></i></button></td></tr>`; 
+      }); 
+    })); 
+    
+    // Replies tab
+    unsubscribes.push(onSnapshot(query(collection(db, 'announcement_replies'), orderBy('createdAt', 'desc')), snap => {
+      const tbody = document.getElementById('repliesTable'); tbody.innerHTML = '';
+      if (snap.empty) tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">No replies yet</div></td></tr>';
+      else snap.forEach(d => {
+        const r = d.data();
+        tbody.innerHTML += `<tr><td>${r.announcementTitle}</td><td>${r.userName}</td><td><span class="badge badge-${r.type==='acknowledgment'?'success':'info'}">${r.type}</span></td><td>${r.message || 'Acknowledged'}</td><td>${formatDateTime(r.createdAt)}</td></tr>`;
+      });
+    }));
+  }
+  
+  window.viewAnnouncement = (id) => { 
+    const a = allAnnouncements?.find(x => x.id === id); 
+    if (!a) return; 
+    let html = `<p><strong>${a.title}</strong></p><p>${a.message}</p><p><small>Sent to: ${a.targetDescription} | ${formatDateTime(a.createdAt)}</small></p><h4 style="margin-top:15px;">Acknowledged By (${a.acknowledgedBy?.length || 0})</h4>`; 
+    if (a.acknowledgedBy?.length) { a.acknowledgedBy.forEach(ack => { html += `<div class="reply-item"><strong>${ack.name}</strong> - ${formatDateTime(ack.at)}</div>`; }); } 
+    else { html += '<p>No acknowledgments yet.</p>'; } 
+    showModal('Announcement Details', html + '<button class="btn btn-primary" onclick="hideModal()" style="margin-top:15px;">Close</button>'); 
+  };
+  
   window.deleteAnnouncement = async (id) => { if (!confirm('Delete this announcement?')) return; await deleteDoc(doc(db, 'announcements', id)); showToast('Deleted', 'success'); };
   window.refreshAnnouncements = () => loadAnnouncements();
 
-  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } userData = snap.data(); document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin'; document.getElementById('userRole').textContent = userData.role; document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0); document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadStaffList(); loadAnnouncements(); });
+  let allAnnouncements = [];
+  onAuthStateChanged(auth, async (u) => { 
+    if (!u) { window.location.href = 'auth.html'; return; } 
+    currentUser = u; 
+    const snap = await getDoc(doc(db, 'users', u.uid)); 
+    if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } 
+    userData = snap.data(); 
+    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Admin'; 
+    document.getElementById('userRole').textContent = userData.role; 
+    document.getElementById('userAvatar').textContent = (userData.fullName||'A').charAt(0); 
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); 
+    
+    // Load announcements for view
+    onSnapshot(collection(db, 'announcements'), snap => { allAnnouncements = snap.docs.map(d => ({id: d.id, ...d.data()})); });
+    
+    loadStaffList(); 
+    loadAnnouncements(); 
+  });
   document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
 </script>
 </body>
