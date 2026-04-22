@@ -7,7 +7,6 @@
   <title>Sales · FashionStone</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Add Select2 for searchable dropdowns -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -110,12 +109,10 @@
     .session-lock-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); background: rgba(0,0,0,0.3); z-index: 9999; display: none; align-items: center; justify-content: center; }
     .session-lock-modal { background: white; border-radius: 24px; padding: 28px; max-width: 350px; text-align: center; }
     
-    /* Select2 Custom Styling */
     .select2-container--default .select2-selection--single { height: 46px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; }
     .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 46px; padding-left: 16px; }
     .select2-container--default .select2-selection--single .select2-selection__arrow { height: 44px; }
     .select2-dropdown { border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; }
-    .select2-search--dropdown .select2-search__field { border-radius: 10px; padding: 10px; }
     
     .receipt-container { background: #f8f9fa; border-radius: 12px; padding: 20px; font-family: 'Courier New', monospace; }
     .receipt-header { text-align: center; border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 10px; }
@@ -124,6 +121,9 @@
     .receipt-total { border-top: 1px dashed #ccc; padding-top: 10px; font-weight: bold; font-size: 1.1rem; }
     
     .customer-stats { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 14px; margin-bottom: 15px; }
+    
+    .index-warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; }
+    .index-warning a { color: #d97706; font-weight: 600; text-decoration: underline; }
     
     @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
@@ -164,6 +164,13 @@
 <main class="main-content">
   <header class="top-bar"><h1 class="page-title">Sales & Transactions</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
+    
+    <!-- Index Creation Links -->
+    <div class="index-warning" id="indexWarning" style="display:none;">
+      <i class="fas fa-database"></i> <strong>Missing Firestore Indexes?</strong> 
+      <a href="#" id="salesIndexLink" target="_blank">Create Sales Index</a> | 
+      <a href="#" id="stockHistoryIndexLink" target="_blank">Create Stock History Index</a>
+    </div>
     
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-header"><span>Today's Sales</span><div class="stat-icon"><i class="fas fa-calendar-day"></i></div></div><div class="stat-value" id="todaySales">₦0</div><div class="stat-sub" id="todayTransactions">0 transactions</div></div>
@@ -207,7 +214,6 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -215,13 +221,24 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, increment, where, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, increment, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
   
   let currentUser = null, userData = null, unsubscribes = [], allSales = [], allCustomers = [], allStockItems = [];
   let selectedPayment = 'cash', customerType = 'existing', selectedCustomerId = '', inactivityTimer = null, sessionLocked = false;
+
+  // Update Firestore rules link
+  console.log('🔥 Firestore Rules: Add stock_history to your rules!');
+  
+  // Generate index creation links
+  const projectId = "fashion-46e5d";
+  const salesIndexLink = `https://console.firebase.google.com/project/${projectId}/firestore/indexes?create_index=EgNzYWxlcxoACghjcmVhdGVkQXQQAhoLdG90YWxBbW91bnQQAxoMY3VzdG9tZXJJZBAEGgwKA2tleRABGg8KC19uYW1lX2FzY18xEAEaEAoMX19uYW1lX2FzY18yEAEaEAoMX19uYW1lX2FzY18zEAE`;
+  const stockHistoryIndexLink = `https://console.firebase.google.com/project/${projectId}/firestore/indexes?create_index=Eg1zdG9ja19oaXN0b3J5GgAKCGl0ZW1JZBABGgoLY3JlYXRlZEF0EAIaDAoDa2V5EAEaDwoLX25hbWVfYXNjXzEQARoQCgxfX25hbWVfYXNjXzIQARoQCgxfX25hbWVfYXNjXzMQAQ`;
+  
+  document.getElementById('salesIndexLink').href = salesIndexLink;
+  document.getElementById('stockHistoryIndexLink').href = stockHistoryIndexLink;
 
   function formatTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); }
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
@@ -231,15 +248,27 @@
     const c = document.getElementById('toastContainer'); 
     const t = document.createElement('div'); 
     t.className = `toast ${type}`; 
-    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`; 
+    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'}"></i><span>${msg}</span>`; 
     c.appendChild(t); 
     setTimeout(() => t.classList.add('show'), 10); 
     setTimeout(() => t.remove(), 4000); 
   }
   
   async function logAudit(action, note) { 
-    try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } 
-    catch(e) { console.warn('Audit failed:', e); } 
+    try { 
+      await addDoc(collection(db, 'audit_logs'), { 
+        actionType: action, 
+        performedBy: currentUser?.uid, 
+        performedByName: userData?.fullName, 
+        performedAt: serverTimestamp(), 
+        note 
+      }); 
+    } catch(e) { 
+      console.warn('Audit failed:', e); 
+      if (e.message.includes('Missing or insufficient permissions')) {
+        document.getElementById('indexWarning').style.display = 'block';
+      }
+    } 
   }
   
   window.hideModal = () => { document.getElementById('modalOverlay').style.display = 'none'; };
@@ -363,20 +392,48 @@
   function loadSales() { 
     unsubscribes.forEach(u => u()); 
     unsubscribes = []; 
-    unsubscribes.push(onSnapshot(query(collection(db, 'sales'), orderBy('createdAt', 'desc')), snap => { 
+    
+    try {
+      unsubscribes.push(onSnapshot(query(collection(db, 'sales'), orderBy('createdAt', 'desc')), snap => { 
+        allSales = snap.docs.map(d => ({id:d.id, ...d.data()})); 
+        console.log('📊 Sales loaded:', allSales.length);
+        renderSales(); 
+      }, (error) => {
+        console.error('Sales load error:', error);
+        if (error.message.includes('index')) {
+          document.getElementById('indexWarning').style.display = 'block';
+          showToast('Click the link above to create required index', 'error');
+        }
+        // Fallback: Load without ordering
+        loadSalesWithoutOrder();
+      }));
+    } catch (e) {
+      console.error('Setup error:', e);
+      loadSalesWithoutOrder();
+    }
+  }
+  
+  function loadSalesWithoutOrder() {
+    unsubscribes.push(onSnapshot(collection(db, 'sales'), snap => { 
       allSales = snap.docs.map(d => ({id:d.id, ...d.data()})); 
-      console.log('📊 Sales loaded:', allSales.length);
+      allSales.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+      console.log('📊 Sales loaded (no order):', allSales.length);
       renderSales(); 
-    })); 
+    }));
   }
 
   async function loadCustomersAndStock() {
-    const custSnap = await getDocs(query(collection(db, 'customers'), where('status', '==', 'approved')));
-    allCustomers = custSnap.docs.map(d => ({id: d.id, ...d.data()}));
-    
-    const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', 'in', ['available', 'low'])));
-    allStockItems = stockSnap.docs.map(d => ({id: d.id, ...d.data()})).filter(i => i.quantityAvailable > 0);
-    console.log('📦 Stock items loaded:', allStockItems.length);
+    try {
+      const custSnap = await getDocs(query(collection(db, 'customers'), where('status', '==', 'approved')));
+      allCustomers = custSnap.docs.map(d => ({id: d.id, ...d.data()}));
+      
+      const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', 'in', ['available', 'low'])));
+      allStockItems = stockSnap.docs.map(d => ({id: d.id, ...d.data()})).filter(i => i.quantityAvailable > 0);
+      console.log('📦 Stock items loaded:', allStockItems.length);
+    } catch (error) {
+      console.error('Load error:', error);
+      showToast('Error loading data', 'error');
+    }
   }
 
   window.openNewSaleModal = async () => {
@@ -446,14 +503,12 @@
       <button class="btn btn-primary" onclick="processSale()" style="width:100%;margin-top:15px;"><i class="fas fa-check-circle"></i> Process Sale & Print Receipt</button>
     `;
     
-    // Initialize Select2 for searchable dropdowns
     setTimeout(() => {
       $('#existingCustomerSelect').select2({
         placeholder: 'Search customer by name or phone...',
         allowClear: true,
         width: '100%'
       }).on('change', function() {
-        const selected = $(this).find('option:selected');
         const customerId = $(this).val();
         if (customerId) {
           loadCustomerStats(customerId);
@@ -466,9 +521,8 @@
         placeholder: 'Search product...',
         allowClear: true,
         width: '100%'
-      });
+      }).on('change', updateSaleSummary);
       
-      $('.item-select').on('change', updateSaleSummary);
       $('.item-qty').on('input', updateSaleSummary);
       updateSaleSummary();
     }, 100);
@@ -481,8 +535,7 @@
       const customer = allCustomers.find(c => c.id === customerId);
       if (!customer) return;
       
-      // Get customer purchase history
-      const salesQuery = query(collection(db, 'sales'), where('customerId', '==', customerId), orderBy('createdAt', 'desc'));
+      const salesQuery = query(collection(db, 'sales'), where('customerId', '==', customerId));
       const salesSnap = await getDocs(salesQuery);
       const customerSales = salesSnap.docs.map(d => d.data());
       
@@ -631,8 +684,12 @@
     
     showPinModal('Process Sale', `process sale of ${formatCurrency(total)}`, async () => {
       try {
+        const batch = writeBatch(db);
+        
+        // Create new customer if needed
         if (customerType === 'new') {
-          const custRef = await addDoc(collection(db, 'customers'), {
+          const custRef = doc(collection(db, 'customers'));
+          batch.set(custRef, {
             fullName: customerName,
             phone: customerPhone,
             email: customerEmail,
@@ -645,8 +702,6 @@
             createdAt: serverTimestamp()
           });
           customerId = custRef.id;
-          await logAudit('create_customer', `Created new customer: ${customerName} (Pending approval)`);
-          showToast('Customer created, pending admin approval', 'info');
         }
         
         // Update stock quantities
@@ -657,27 +712,17 @@
             const cur = snap.data().quantityAvailable || 0;
             const threshold = snap.data().threshold || 10;
             const newQty = cur - item.quantity;
-            await updateDoc(ref, {
+            batch.update(ref, {
               quantityAvailable: newQty,
               quantitySold: increment(item.quantity),
               status: newQty <= 0 ? 'out_of_stock' : newQty <= threshold ? 'low' : 'available',
               updatedAt: serverTimestamp()
             });
-            
-            // Log stock history
-            await addDoc(collection(db, 'stock_history'), {
-              itemId: item.id,
-              itemName: item.name,
-              type: 'sale',
-              quantity: -item.quantity,
-              performedBy: currentUser.uid,
-              performedByName: userData.fullName,
-              createdAt: serverTimestamp()
-            });
           }
         }
         
         // Create sale record
+        const saleRef = doc(collection(db, 'sales'));
         const saleData = {
           receiptNumber,
           customerId,
@@ -692,28 +737,35 @@
           attendantName: userData.fullName,
           createdAt: serverTimestamp()
         };
-        
-        const saleRef = await addDoc(collection(db, 'sales'), saleData);
+        batch.set(saleRef, saleData);
         
         // Update customer stats
         if (customerId && customerType === 'existing') {
-          await updateDoc(doc(db, 'customers', customerId), {
+          const custRef = doc(db, 'customers', customerId);
+          batch.update(custRef, {
             totalSpent: increment(total),
             purchaseCount: increment(1),
             lastPurchase: serverTimestamp()
           });
         }
         
-        await logAudit('sale', `Sale ${receiptNumber}: ${formatCurrency(total)} to ${customerName} (${selectedPayment})`);
+        await batch.commit();
+        
+        // Log audit (non-blocking)
+        logAudit('sale', `Sale ${receiptNumber}: ${formatCurrency(total)} to ${customerName}`).catch(console.warn);
+        
         showToast(`Sale completed! Receipt #${receiptNumber}`, 'success');
-        
-        // Show receipt
         showReceiptModal({ id: saleRef.id, ...saleData });
-        
         hideModal();
+        
       } catch (error) {
         console.error('Sale error:', error);
-        showToast('Failed to process sale: ' + error.message, 'error');
+        if (error.message.includes('permission')) {
+          showToast('Permission denied. Check Firestore rules for stock_history.', 'error');
+          document.getElementById('indexWarning').style.display = 'block';
+        } else {
+          showToast('Failed to process sale: ' + error.message, 'error');
+        }
       }
     });
   };
@@ -849,35 +901,47 @@
     showToast('Data refreshed', 'success');
   };
 
-  // Search functionality
   document.getElementById('salesSearchInput').addEventListener('input', renderSales);
 
   // Initialize
   onAuthStateChanged(auth, async (u) => {
     if (!u) { window.location.href = 'auth.html'; return; }
     currentUser = u;
-    const snap = await getDoc(doc(db, 'users', u.uid));
-    if (!snap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; }
     
-    userData = snap.data();
-    if (userData.status !== 'active') { await signOut(auth); window.location.href = 'auth.html'; return; }
-    
-    if (userData.role !== 'attendant' && userData.role !== 'attendant_chief' && userData.role !== 'admin' && userData.role !== 'super_admin') {
-      window.location.href = 'staff-dashboard.html';
-      return;
+    try {
+      const snap = await getDoc(doc(db, 'users', u.uid));
+      if (!snap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; }
+      
+      userData = snap.data();
+      if (userData.status !== 'active') { await signOut(auth); window.location.href = 'auth.html'; return; }
+      
+      if (userData.role !== 'attendant' && userData.role !== 'attendant_chief' && userData.role !== 'admin' && userData.role !== 'super_admin') {
+        window.location.href = 'staff-dashboard.html';
+        return;
+      }
+      
+      document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'User';
+      document.getElementById('userRole').textContent = userData.role?.replace('_',' ') || 'Staff';
+      document.getElementById('userAvatar').textContent = (userData.fullName||'U').charAt(0);
+      document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+      
+      loadSales();
+      resetInactivityTimer();
+    } catch (error) {
+      console.error('Init error:', error);
+      showToast('Error initializing', 'error');
     }
-    
-    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'User';
-    document.getElementById('userRole').textContent = userData.role?.replace('_',' ') || 'Staff';
-    document.getElementById('userAvatar').textContent = (userData.fullName||'U').charAt(0);
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
-    
-    loadSales();
-    resetInactivityTimer();
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
-  window.addEventListener('beforeunload', () => { unsubscribes.forEach(u => u()); if (inactivityTimer) clearTimeout(inactivityTimer); });
+  document.getElementById('logoutBtn').addEventListener('click', async () => { 
+    await signOut(auth); 
+    window.location.href = 'auth.html'; 
+  });
+  
+  window.addEventListener('beforeunload', () => { 
+    unsubscribes.forEach(u => u()); 
+    if (inactivityTimer) clearTimeout(inactivityTimer); 
+  });
 </script>
 </body>
 </html>
