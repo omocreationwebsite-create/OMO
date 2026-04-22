@@ -46,9 +46,10 @@
     .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
     .panel-header h3 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     
-    .announcement-card { background: var(--primary-soft); border-radius: 14px; padding: 14px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+    .announcement-card { background: var(--primary-soft); border-radius: 14px; padding: 14px; margin-bottom: 10px; border-left: 4px solid var(--primary); cursor: pointer; }
     .announcement-card h4 { font-size: 0.9rem; margin-bottom: 6px; }
     .announcement-card p { font-size: 0.8rem; color: var(--gray); }
+    .announcement-card .meta { font-size: 0.65rem; color: var(--gray); margin-top: 8px; }
     
     .task-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
     .task-item:last-child { border-bottom: none; }
@@ -70,6 +71,16 @@
     .salary-summary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px; border-radius: 14px; margin-bottom: 15px; }
     .salary-row { display: flex; justify-content: space-between; padding: 6px 0; }
     .salary-row.total { border-top: 1px solid rgba(255,255,255,0.3); margin-top: 6px; padding-top: 10px; font-weight: 700; font-size: 1.1rem; }
+    
+    .points-breakdown { background: white; border-radius: 14px; padding: 16px; margin-top: 15px; border: 1px solid rgba(0,0,0,0.04); }
+    .points-row { display: flex; justify-content: space-between; padding: 8px 0; }
+    .points-row .positive { color: var(--success); font-weight: 600; }
+    .points-row .negative { color: var(--danger); font-weight: 600; }
+    
+    .tabs-container { display: flex; gap: 6px; margin-bottom: 15px; background: var(--gray-light); padding: 5px; border-radius: 40px; }
+    .tab-btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; background: none; color: var(--gray); cursor: pointer; flex: 1; }
+    .tab-btn.active { background: var(--primary); color: white; }
+    .tab-content { display: none; } .tab-content.active { display: block; }
     
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
     .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); }
@@ -110,17 +121,25 @@
     
     <div class="two-column">
       <div>
+        <!-- Salary & Points Overview -->
         <div class="panel">
-          <div class="panel-header"><h3><i class="fas fa-money-bill-wave"></i> Salary Overview</h3></div>
-          <div class="salary-summary" id="salarySummary">
-            <div class="salary-row"><span>Base Salary</span><span id="salaryBase">₦0</span></div>
-            <div class="salary-row"><span>Points Earned</span><span id="salaryPoints">0</span></div>
+          <div class="panel-header"><h3><i class="fas fa-money-bill-wave"></i> Salary & Points Overview</h3></div>
+          <div class="salary-summary">
+            <div class="salary-row"><span>Initial Base Salary</span><span id="initialSalary">₦0</span></div>
+            <div class="salary-row"><span>Current Base Salary</span><span id="salaryBase">₦0</span></div>
             <div class="salary-row"><span>Point Value</span><span>₦<span id="salaryPointValue">100</span>/pt</span></div>
-            <div class="salary-row"><span>Points Bonus</span><span id="pointsBonus">₦0</span></div>
-            <div class="salary-row total"><span>Estimated Salary</span><span id="finalSalary">₦0</span></div>
+          </div>
+          <div class="points-breakdown">
+            <h4 style="margin-bottom:12px;font-size:0.9rem;"><i class="fas fa-coins"></i> Points Breakdown</h4>
+            <div class="points-row"><span>Points Added (Tasks/Attendance)</span><span class="positive" id="pointsAdded">+0</span></div>
+            <div class="points-row"><span>Points Deducted (Late/Penalties)</span><span class="negative" id="pointsDeducted">-0</span></div>
+            <div class="points-row" style="border-top:1px dashed #ddd;margin-top:8px;padding-top:12px;"><strong>Net Points</strong><strong id="netPoints">0</strong></div>
+            <div class="points-row"><span>Points Bonus Value</span><span id="pointsBonusValue">₦0</span></div>
+            <div class="points-row total" style="border-top:1px solid #ddd;margin-top:8px;padding-top:12px;"><strong>TOTAL ESTIMATED SALARY</strong><strong id="finalSalary">₦0</strong></div>
           </div>
         </div>
         
+        <!-- Request Leave -->
         <div class="panel">
           <div class="panel-header"><h3><i class="fas fa-calendar-plus"></i> Request Leave</h3></div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;">
@@ -133,15 +152,24 @@
       </div>
       
       <div>
+        <!-- Announcements -->
         <div class="panel">
           <div class="panel-header"><h3><i class="fas fa-bullhorn"></i> Announcements</h3></div>
-          <div id="announcementsList" style="max-height: 250px; overflow-y: auto;">
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="general">General</button>
+            <button class="tab-btn" data-tab="personal">Personal</button>
+          </div>
+          <div id="generalAnnouncements" class="tab-content active" style="max-height: 250px; overflow-y: auto;">
             <div class="empty-state"><i class="fas fa-bullhorn"></i><p>Loading...</p></div>
+          </div>
+          <div id="personalAnnouncements" class="tab-content" style="max-height: 250px; overflow-y: auto;">
+            <div class="empty-state"><i class="fas fa-envelope"></i><p>Loading...</p></div>
           </div>
         </div>
       </div>
     </div>
     
+    <!-- My Tasks -->
     <div class="panel">
       <div class="panel-header"><h3><i class="fas fa-tasks"></i> My Tasks</h3></div>
       <div id="myTasksList">
@@ -164,7 +192,18 @@
   let currentUser = null, userData = null, globalPointValue = 500, unsubscribes = [];
 
   function formatDate(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleDateString('en-GB', {day:'2-digit',month:'short'}); }
+  function formatDateTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
+  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
   function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+
+  // Tab switching
+  document.querySelectorAll('[data-tab]').forEach(t => t.addEventListener('click', function() {
+    const container = this.closest('.panel');
+    container.querySelectorAll('[data-tab]').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(this.dataset.tab + 'Announcements').classList.add('active');
+  }));
 
   function loadDashboard() {
     if (!currentUser) return;
@@ -191,17 +230,32 @@
       updateSalaryDisplay();
     }));
     
+    // Coin transactions for points breakdown
+    unsubscribes.push(onSnapshot(query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid)), (snap) => {
+      let added = 0, deducted = 0;
+      snap.forEach(d => {
+        const pts = d.data().points || 0;
+        if (pts > 0) added += pts;
+        else deducted += Math.abs(pts);
+      });
+      document.getElementById('pointsAdded').textContent = `+${added}`;
+      document.getElementById('pointsDeducted').textContent = `-${deducted}`;
+      document.getElementById('netPoints').textContent = (userData?.totalPoints || 0);
+      updateSalaryDisplay();
+    }));
+    
     function updateSalaryDisplay() {
       if (!userData) return;
       const ppv = globalPointValue / 5;
       const bonus = (userData.totalPoints || 0) * ppv;
       const final = (userData.baseSalary || 0) + bonus;
-      document.getElementById('pointValue').textContent = ppv.toFixed(0);
-      document.getElementById('salaryBase').textContent = '₦' + (userData.baseSalary || 0).toLocaleString();
-      document.getElementById('salaryPoints').textContent = userData.totalPoints || 0;
+      
+      document.getElementById('initialSalary').textContent = formatCurrency(userData.initialBaseSalary || userData.baseSalary || 0);
+      document.getElementById('salaryBase').textContent = formatCurrency(userData.baseSalary || 0);
       document.getElementById('salaryPointValue').textContent = ppv.toFixed(0);
-      document.getElementById('pointsBonus').innerHTML = `<span style="color:${bonus>=0?'#10b981':'#ef4444'}">${bonus>=0?'+':''}₦${bonus.toLocaleString()}</span>`;
-      document.getElementById('finalSalary').textContent = '₦' + final.toLocaleString();
+      document.getElementById('pointValue').textContent = ppv.toFixed(0);
+      document.getElementById('pointsBonusValue').textContent = formatCurrency(bonus);
+      document.getElementById('finalSalary').textContent = formatCurrency(final);
     }
     
     // TASKS
@@ -263,15 +317,35 @@
       taskDiv.innerHTML = html || '<div class="empty-state"><i class="fas fa-tasks"></i><p>No tasks available</p></div>';
     }));
     
-    // ANNOUNCEMENTS
-    const announcementQuery = query(collection(db, 'announcements'), where('target', 'in', ['all', 'workers']), orderBy('createdAt', 'desc'), limit(5));
-    unsubscribes.push(onSnapshot(announcementQuery, (snap) => {
-      const div = document.getElementById('announcementsList');
-      console.log('📢 Announcements:', snap.size);
-      if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No announcements</p></div>'; return; }
+    // ANNOUNCEMENTS - GENERAL (target: all, workers)
+    const generalQuery = query(collection(db, 'announcements'), where('target', 'in', ['all', 'workers']), orderBy('createdAt', 'desc'), limit(10));
+    unsubscribes.push(onSnapshot(generalQuery, (snap) => {
+      const div = document.getElementById('generalAnnouncements');
+      console.log('📢 General announcements:', snap.size);
+      if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No general announcements</p></div>'; return; }
       div.innerHTML = snap.docs.map(d => {
         const a = d.data();
-        return `<div class="announcement-card"><h4>📢 ${a.title}</h4><p>${a.message}</p><div style="font-size:0.7rem;color:var(--gray);margin-top:8px;">From: ${a.sentByName} · ${formatDate(a.createdAt)}</div></div>`;
+        return `<div class="announcement-card">
+          <h4>📢 ${a.title}</h4>
+          <p>${a.message}</p>
+          <div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div>
+        </div>`;
+      }).join('');
+    }));
+    
+    // ANNOUNCEMENTS - PERSONAL (recipientIds includes current user)
+    const personalQuery = query(collection(db, 'announcements'), where('recipientIds', 'array-contains', currentUser.uid), orderBy('createdAt', 'desc'), limit(10));
+    unsubscribes.push(onSnapshot(personalQuery, (snap) => {
+      const div = document.getElementById('personalAnnouncements');
+      console.log('📢 Personal announcements:', snap.size);
+      if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-envelope"></i><p>No personal announcements</p></div>'; return; }
+      div.innerHTML = snap.docs.map(d => {
+        const a = d.data();
+        return `<div class="announcement-card" style="border-left-color:var(--info);">
+          <h4>🔒 ${a.title}</h4>
+          <p>${a.message}</p>
+          <div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div>
+        </div>`;
       }).join('');
     }));
   }
