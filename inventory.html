@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* KEEPING YOUR EXACT STYLES - ONLY ADDING NEW ONES */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 64px; --sidebar-width: 280px; }
     body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
@@ -96,8 +95,6 @@
     .session-lock-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); background: rgba(0,0,0,0.3); z-index: 9999; display: none; align-items: center; justify-content: center; }
     .session-lock-modal { background: white; border-radius: 24px; padding: 28px; max-width: 350px; text-align: center; }
     
-    /* NEW STYLES ADDED */
-    .action-group { display: flex; gap: 5px; }
     .export-dropdown { position: relative; display: inline-block; }
     .export-menu { position: absolute; top: 100%; right: 0; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 150px; display: none; z-index: 50; }
     .export-menu.show { display: block; }
@@ -179,8 +176,8 @@
         <button class="btn btn-outline" id="exportDropdownBtn"><i class="fas fa-download"></i> Export</button>
         <div class="export-menu" id="exportMenu">
           <div class="export-item" onclick="exportData('csv')"><i class="fas fa-file-csv"></i> Export CSV</div>
-          <div class="export-item" onclick="exportData('pdf')"><i class="fas fa-file-pdf"></i> Export PDF</div>
           <div class="export-item" onclick="exportData('excel')"><i class="fas fa-file-excel"></i> Export Excel</div>
+          <div class="export-item" onclick="exportData('pdf')"><i class="fas fa-file-pdf"></i> Export PDF</div>
         </div>
       </div>
     </div>
@@ -196,10 +193,10 @@
       <div class="table-wrapper">
         <table class="data-table">
           <thead><tr>
-            <th>Item Name</th><th>Category</th><th>Initial Stock</th><th>Available</th><th>Sold</th>
+            <th>Item Name</th><th>Category</th><th>Available</th><th>Sold</th>
             <th>Unit Price</th><th>Total Value</th><th>Status</th><th>Actions</th>
           </tr></thead>
-          <tbody id="inventoryTable"><tr><td colspan="9"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+          <tbody id="inventoryTable"><tr><td colspan="8"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -219,14 +216,18 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, deleteDoc, increment, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
   
   let currentUser = null, userData = null, unsubscribes = [], allItems = [], inactivityTimer = null, sessionLocked = false;
 
-  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
+  function formatCurrency(n) { 
+    const num = n || 0;
+    return '₦' + num.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); 
+  }
+  
   function showToast(msg, type='success') { 
     const c = document.getElementById('toastContainer'); 
     const t = document.createElement('div'); 
@@ -310,7 +311,7 @@
     } catch(e) { console.warn('Audit failed:', e); }
   }
 
-  // UPDATED: Render inventory with initial stock
+  // FIXED: Render inventory with existing Firestore fields
   function renderInventory() {
     let filtered = [...allItems];
     const search = document.getElementById('searchInput').value.toLowerCase();
@@ -324,8 +325,15 @@
     
     // Update stats
     document.getElementById('totalItems').textContent = allItems.length;
-    const lowItems = allItems.filter(i => i.status === 'low');
-    const outItems = allItems.filter(i => i.status === 'out_of_stock');
+    
+    // Recalculate status based on actual quantities
+    const lowItems = allItems.filter(i => {
+      const qty = i.quantityAvailable || 0;
+      const threshold = i.threshold || 10;
+      return qty > 0 && qty <= threshold;
+    });
+    
+    const outItems = allItems.filter(i => (i.quantityAvailable || 0) === 0);
     document.getElementById('lowStock').textContent = lowItems.length;
     document.getElementById('outOfStock').textContent = outItems.length;
     
@@ -338,31 +346,47 @@
     banner.style.display = lowCount > 0 ? 'flex' : 'none';
     document.getElementById('lowStockCount').textContent = lowCount;
     
-    // Render table with initial stock
+    // Render table
     const tbody = document.getElementById('inventoryTable');
     tbody.innerHTML = '';
     
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><i class="fas fa-box"></i><p>No items found. Click "Add Item" to create one.</p></div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="fas fa-box"></i><p>No items found. Click "Add Item" to create one.</p></div></td></tr>';
       return;
     }
     
     filtered.forEach(item => {
-      const totalItemValue = (item.quantityAvailable || 0) * (item.unitPrice || 0);
-      const statusBadge = item.status === 'available' ? 'success' : 
-                          item.status === 'low' ? 'warning' : 
-                          item.status === 'out_of_stock' ? 'danger' : 
-                          item.status === 'restock' ? 'info' : 'pending';
+      const qty = item.quantityAvailable || 0;
+      const sold = item.quantitySold || 0;
+      const price = item.unitPrice || 0;
+      const threshold = item.threshold || 10;
+      const totalItemValue = qty * price;
+      
+      // Determine actual status based on quantity
+      let actualStatus = item.status;
+      if (qty === 0) {
+        actualStatus = 'out_of_stock';
+      } else if (qty <= threshold) {
+        actualStatus = 'low';
+      } else {
+        actualStatus = 'available';
+      }
+      
+      const statusBadge = actualStatus === 'available' ? 'success' : 
+                          actualStatus === 'low' ? 'warning' : 
+                          actualStatus === 'out_of_stock' ? 'danger' : 
+                          actualStatus === 'pending_approval' ? 'pending' : 'pending';
       
       tbody.innerHTML += `<tr>
         <td>${item.name || '-'}</td>
         <td>${item.category || '-'}</td>
-        <td>${item.initialStock || 0}</td>
-        <td style="color: ${item.quantityAvailable <= item.threshold ? 'var(--danger)' : 'inherit'}; font-weight: ${item.quantityAvailable <= item.threshold ? '600' : '400'};">${item.quantityAvailable || 0}</td>
-        <td>${item.quantitySold || 0}</td>
-        <td>${formatCurrency(item.unitPrice)}</td>
+        <td style="color: ${qty <= threshold ? 'var(--danger)' : 'inherit'}; font-weight: ${qty <= threshold ? '600' : '400'};">
+          ${qty}
+        </td>
+        <td>${sold}</td>
+        <td>${formatCurrency(price)}</td>
         <td>${formatCurrency(totalItemValue)}</td>
-        <td><span class="badge badge-${statusBadge}">${item.status || 'pending'}</span></td>
+        <td><span class="badge badge-${statusBadge}">${actualStatus}</span></td>
         <td class="action-group">
           <button class="btn btn-sm btn-outline" onclick="openEditItem('${item.id}')"><i class="fas fa-edit"></i></button>
           <button class="btn btn-sm btn-outline" onclick="openRestockItem('${item.id}')"><i class="fas fa-plus"></i></button>
@@ -380,7 +404,18 @@
     
     const q = query(collection(db, 'stock_items'), orderBy('name'));
     unsubscribes.push(onSnapshot(q, (snap) => {
-      allItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      allItems = snap.docs.map(d => {
+        const data = d.data();
+        return { 
+          id: d.id, 
+          ...data,
+          // Ensure defaults for missing fields
+          quantityAvailable: data.quantityAvailable || 0,
+          quantitySold: data.quantitySold || 0,
+          unitPrice: data.unitPrice || 0,
+          threshold: data.threshold || 10
+        };
+      });
       renderInventory();
     }, (error) => {
       console.error('Error loading inventory:', error);
@@ -390,15 +425,14 @@
 
   window.openAddItemModal = () => {
     showModal('Add New Item', `
-      <div class="form-group"><label>Item Name *</label><input class="form-control" id="itemName" placeholder="e.g., Rhinestones (Small)"></div>
+      <div class="form-group"><label>Item Name *</label><input class="form-control" id="itemName" placeholder="e.g., Bag"></div>
       <div class="form-group"><label>Category</label><select class="form-control" id="itemCategory">
         <option value="rhinestones">Rhinestones</option><option value="beads">Beads</option>
         <option value="bridal">Bridal Materials</option><option value="paperstones">Paperstones</option>
         <option value="other">Other</option>
       </select></div>
       <div class="form-group"><label>Initial Quantity</label><input type="number" class="form-control" id="itemQty" value="0"></div>
-      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="itemPrice" value="0"></div>
-      <div class="form-group"><label>Cost Price (₦) [Optional]</label><input type="number" class="form-control" id="itemCostPrice" value="0"></div>
+      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="itemPrice" value="0" step="0.01"></div>
       <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="itemThreshold" value="10"></div>
       <p style="font-size:0.75rem;color:var(--gray);margin-bottom:15px;">
         <i class="fas fa-info-circle"></i> Item will require admin approval before becoming available.
@@ -409,14 +443,15 @@
 
   window.addItem = () => {
     const name = document.getElementById('itemName')?.value?.trim();
+    const qty = parseInt(document.getElementById('itemQty')?.value) || 0;
+    const price = parseFloat(document.getElementById('itemPrice')?.value) || 0;
+    
     if (!name) { showToast('Item name is required', 'error'); return; }
+    if (price <= 0) { showToast('Unit price must be greater than 0', 'error'); return; }
     
     showPinModal('Add Item', 'add stock item', async () => {
       try {
-        const qty = parseInt(document.getElementById('itemQty')?.value) || 0;
         const threshold = parseInt(document.getElementById('itemThreshold')?.value) || 10;
-        const price = parseFloat(document.getElementById('itemPrice')?.value) || 0;
-        const costPrice = parseFloat(document.getElementById('itemCostPrice')?.value) || 0;
         const category = document.getElementById('itemCategory')?.value || 'other';
         
         // Determine status based on role
@@ -425,15 +460,13 @@
           (qty === 0 ? 'out_of_stock' : qty <= threshold ? 'low' : 'available') : 
           'pending_approval';
         
-        // Create the document with initial stock tracking
+        // Create the document with proper fields
         const docRef = await addDoc(collection(db, 'stock_items'), {
           name,
           category,
-          initialStock: qty,
           quantityAvailable: qty,
           quantitySold: 0,
           unitPrice: price,
-          costPrice: costPrice,
           threshold,
           status,
           createdBy: currentUser.uid,
@@ -442,7 +475,7 @@
           updatedAt: serverTimestamp()
         });
         
-        await logAudit('add_item', `Added item: ${name} (Initial: ${qty}, Price: ₦${price})`);
+        await logAudit('add_item', `Added item: ${name} (Qty: ${qty}, Price: ₦${price})`);
         showToast(isAdmin ? 'Item added successfully' : 'Item submitted for admin approval', 'success');
         hideModal();
       } catch (error) {
@@ -466,8 +499,7 @@
         <option value="other" ${item.category === 'other' ? 'selected' : ''}>Other</option>
       </select></div>
       <div class="form-group"><label>Available Quantity</label><input type="number" class="form-control" id="editQty" value="${item.quantityAvailable || 0}"></div>
-      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${item.unitPrice || 0}"></div>
-      <div class="form-group"><label>Cost Price (₦)</label><input type="number" class="form-control" id="editCostPrice" value="${item.costPrice || 0}"></div>
+      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${item.unitPrice || 0}" step="0.01"></div>
       <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="editThreshold" value="${item.threshold || 10}"></div>
       <button class="btn btn-primary" onclick="saveEdit('${id}')">Save Changes</button>
     `);
@@ -478,15 +510,14 @@
       try {
         const qty = parseInt(document.getElementById('editQty')?.value) || 0;
         const threshold = parseInt(document.getElementById('editThreshold')?.value) || 10;
+        const price = parseFloat(document.getElementById('editPrice')?.value) || 0;
         const status = qty === 0 ? 'out_of_stock' : qty <= threshold ? 'low' : 'available';
-        const costPrice = parseFloat(document.getElementById('editCostPrice')?.value) || 0;
         
         await updateDoc(doc(db, 'stock_items', id), {
           name: document.getElementById('editName')?.value,
           category: document.getElementById('editCategory')?.value,
           quantityAvailable: qty,
-          unitPrice: parseFloat(document.getElementById('editPrice')?.value) || 0,
-          costPrice: costPrice,
+          unitPrice: price,
           threshold,
           status,
           updatedAt: serverTimestamp()
@@ -502,7 +533,6 @@
     });
   };
 
-  // NEW: View item history
   window.viewHistory = async (id) => {
     const item = allItems.find(i => i.id === id);
     if (!item) return;
@@ -520,7 +550,7 @@
       let historyHTML = `
         <div style="margin-bottom:20px;">
           <h4 style="margin-bottom:10px;">${item.name}</h4>
-          <p style="color:var(--gray);margin-bottom:15px;">Initial Stock: ${item.initialStock || 0} | Sold: ${item.quantitySold || 0} | Available: ${item.quantityAvailable || 0}</p>
+          <p style="color:var(--gray);margin-bottom:15px;">Available: ${item.quantityAvailable || 0} | Sold: ${item.quantitySold || 0}</p>
         </div>
         <div style="max-height:300px;overflow-y:auto;">
       `;
@@ -573,15 +603,11 @@
         
         const item = allItems.find(i => i.id === id);
         
-        // Create purchase request for admin approval
         await addDoc(collection(db, 'purchase_requests'), {
           itemId: id,
           itemName: item.name,
-          itemSKU: item.sku || `ITM-${id.slice(0,6)}`,
           requestedQuantity: qty,
-          currentStock: item.quantityAvailable,
-          expectedRestockDate: null,
-          actualRestockDate: null,
+          currentStock: item.quantityAvailable || 0,
           expectedQuantity: qty,
           actualQuantity: 0,
           variance: 0,
@@ -622,39 +648,28 @@
     showToast('Inventory refreshed', 'success');
   };
 
-  // UPDATED: Export functionality
   window.exportData = (format) => {
     const items = allItems;
     
-    if (format === 'csv') {
-      const headers = ['Name', 'Category', 'Initial Stock', 'Available', 'Sold', 'Unit Price', 'Cost Price', 'Total Value', 'Status'];
+    if (format === 'csv' || format === 'excel') {
+      const headers = ['Name', 'Category', 'Available', 'Sold', 'Unit Price', 'Total Value', 'Status'];
       const rows = items.map(i => [
-        i.name || '', i.category || '', i.initialStock || 0, i.quantityAvailable || 0, i.quantitySold || 0,
-        i.unitPrice || 0, i.costPrice || 0, (i.quantityAvailable || 0) * (i.unitPrice || 0), i.status || ''
+        i.name || '', 
+        i.category || '', 
+        i.quantityAvailable || 0, 
+        i.quantitySold || 0,
+        i.unitPrice || 0, 
+        (i.quantityAvailable || 0) * (i.unitPrice || 0), 
+        i.status || ''
       ]);
       
       const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
+      const blob = new Blob([csv], { type: format === 'csv' ? 'text/csv' : 'application/vnd.ms-excel' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `inventory_${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = `inventory_${new Date().toISOString().split('T')[0]}.${format}`;
       a.click();
-      showToast('CSV exported successfully', 'success');
-    } else if (format === 'excel') {
-      // Create XLSX format (CSV with .xls extension for Excel compatibility)
-      const headers = ['Name', 'Category', 'Initial Stock', 'Available', 'Sold', 'Unit Price', 'Cost Price', 'Total Value', 'Status'];
-      const rows = items.map(i => [
-        i.name || '', i.category || '', i.initialStock || 0, i.quantityAvailable || 0, i.quantitySold || 0,
-        i.unitPrice || 0, i.costPrice || 0, (i.quantityAvailable || 0) * (i.unitPrice || 0), i.status || ''
-      ]);
-      
-      const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
-      const blob = new Blob([csv], { type: 'application/vnd.ms-excel' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `inventory_${new Date().toISOString().split('T')[0]}.xls`;
-      a.click();
-      showToast('Excel file exported successfully', 'success');
+      showToast(`${format.toUpperCase()} exported successfully`, 'success');
     } else if (format === 'pdf') {
       showToast('PDF export will be available soon', 'info');
     }
@@ -699,20 +714,17 @@
         return; 
       }
       
-      // Check role
       if (userData.role !== 'attendant' && userData.role !== 'attendant_chief' && 
           userData.role !== 'admin' && userData.role !== 'super_admin') {
         window.location.href = 'staff-dashboard.html';
         return;
       }
       
-      // Update UI
       document.getElementById('sidebarAvatar').textContent = (userData.fullName || 'A').charAt(0).toUpperCase();
       document.getElementById('sidebarName').textContent = userData.fullName?.split(' ')[0] || 'Attendant';
       document.getElementById('sidebarRole').textContent = userData.role || 'Attendant';
       document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
       
-      // Load inventory
       loadInventory();
       resetInactivityTimer();
       
