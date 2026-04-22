@@ -190,7 +190,12 @@
           const received = i.received || 0;
           const diff = received - expected;
           const diffPercent = expected > 0 ? ((diff / expected) * 100).toFixed(1) : 0;
-          diffHtml += `<div style="margin-bottom:5px;"><strong>${i.name}:</strong> ${received}/${expected} <span class="${diff < 0 ? 'difference-negative' : 'difference-positive'}">(${diff > 0 ? '+' : ''}${diff}, ${diffPercent}%)</span></div>`; 
+          
+          if (expected !== received) {
+            diffHtml += `<div style="margin-bottom:5px;"><strong>${i.name}:</strong> ${received}/${expected} <span class="${diff < 0 ? 'difference-negative' : 'difference-positive'}">(${diff > 0 ? '+' : ''}${diff}, ${diffPercent}%)</span></div>`;
+          } else {
+            diffHtml += `<div style="margin-bottom:5px;"><strong>${i.name}:</strong> ${received}/${expected}</div>`;
+          }
         });
         purchasedTbody.innerHTML += `<tr><td>${formatDate(r.purchasedAt || r.createdAt)}</td><td>${r.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${diffHtml || '-'}</td></tr>`;
       }
@@ -344,7 +349,7 @@
     let html = `<p>Enter actual quantities purchased:</p>`; 
     r.items?.forEach((item, idx) => { 
       const qty = item.suggested || item.quantity || 0;
-      html += `<div class="form-group"><label>${item.name} (Expected: ${qty})</label><input type="number" class="form-control" id="rec-${idx}" value="${qty}"></div>`; 
+      html += `<div class="form-group"><label>${item.name} (Planned: ${qty})</label><input type="number" class="form-control" id="rec-${idx}" value="${qty}" min="0"></div>`; 
     }); 
     html += `<button class="btn btn-primary" onclick="markPurchased('${id}')">Confirm Purchase & Update Stock</button>`; 
     document.getElementById('modalTitle').textContent = 'Mark as Purchased'; 
@@ -357,23 +362,34 @@
       const r = allRequests.find(x => x.id === id); 
       
       // Get the actual quantities entered by the user
-      const receivedItems = r.items.map((item, idx) => {
+      const receivedItems = [];
+      
+      for (let idx = 0; idx < r.items.length; idx++) {
+        const item = r.items[idx];
         const expected = item.suggested || item.quantity || 0;
         const receivedInput = document.getElementById(`rec-${idx}`);
-        const received = receivedInput ? parseInt(receivedInput.value) : expected;
         
-        console.log(`📊 ${item.name}: Expected ${expected}, Received ${received}`);
+        // IMPORTANT: Get the actual value entered, don't default to expected!
+        let received = expected;
+        if (receivedInput) {
+          const inputValue = receivedInput.value.trim();
+          if (inputValue !== '') {
+            received = parseInt(inputValue) || 0;
+          }
+        }
         
-        return { 
+        console.log(`📊 ${item.name}: Expected ${expected}, Input value: ${receivedInput?.value}, Parsed received: ${received}`);
+        
+        receivedItems.push({ 
           ...item, 
-          expected: expected,  // What was planned
-          received: received   // What was actually bought
-        }; 
-      });
+          expected: expected,
+          received: received
+        });
+      }
       
-      console.log('📦 Marking as purchased:', receivedItems);
+      console.log('📦 Final received items:', receivedItems);
       
-      // Update stock in inventory - add the ACTUAL quantity bought
+      // Update stock in inventory
       const batch = writeBatch(db);
       for (const item of receivedItems) { 
         if (item.id) { 
@@ -383,7 +399,7 @@
             const data = snap.data();
             const cur = data.quantityAvailable || 0; 
             const threshold = data.threshold || 10;
-            const newQty = cur + item.received;  // Add the ACTUAL quantity bought
+            const newQty = cur + item.received;
             
             console.log(`📦 Updating ${item.name}: ${cur} + ${item.received} = ${newQty}`);
             
@@ -408,10 +424,10 @@
         return;
       }
       
-      // Mark request as purchased with both expected and received
+      // Mark request as purchased
       await updateDoc(doc(db, 'purchase_requests', id), { 
         status: 'purchased', 
-        receivedItems: receivedItems,  // Contains both expected and received
+        receivedItems: receivedItems,
         purchasedBy: currentUser.uid, 
         purchasedByName: userData.fullName,
         purchasedAt: serverTimestamp() 
