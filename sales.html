@@ -7,6 +7,8 @@
   <title>Sales · FashionStone</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Add Select2 for searchable dropdowns -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 70px; --sidebar-width: 280px; }
@@ -37,18 +39,24 @@
     .stat-value { font-size: 2rem; font-weight: 700; color: var(--dark); }
     .stat-sub { font-size: 0.75rem; color: var(--gray); margin-top: 5px; }
     
+    .filter-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .search-wrapper { flex: 1; min-width: 200px; position: relative; }
+    .search-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+    .search-input { width: 100%; padding: 12px 16px 12px 42px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; font-size: 0.85rem; outline: none; }
+    
     .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
     .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .panel-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 10px; }
     .panel-header h3 i { color: var(--primary); }
     
     .table-wrapper { overflow-x: auto; }
-    .data-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+    .data-table { width: 100%; border-collapse: collapse; min-width: 1000px; }
     .data-table th { text-align: left; padding: 14px 10px; font-size: 0.7rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
     .data-table td { padding: 14px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 0.85rem; }
     
     .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
+    .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
     
     .btn { padding: 10px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: white; border: 1px solid rgba(0,0,0,0.08); transition: all 0.15s; }
     .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; }
@@ -57,7 +65,7 @@
     .btn-success { background: var(--success); color: white; }
     
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
-    .modal { background: white; border-radius: 28px; padding: 28px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; }
+    .modal { background: white; border-radius: 28px; padding: 28px; max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .modal-header h3 { font-size: 1.2rem; font-weight: 700; }
     .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--gray); }
@@ -102,6 +110,21 @@
     .session-lock-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); background: rgba(0,0,0,0.3); z-index: 9999; display: none; align-items: center; justify-content: center; }
     .session-lock-modal { background: white; border-radius: 24px; padding: 28px; max-width: 350px; text-align: center; }
     
+    /* Select2 Custom Styling */
+    .select2-container--default .select2-selection--single { height: 46px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; }
+    .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 46px; padding-left: 16px; }
+    .select2-container--default .select2-selection--single .select2-selection__arrow { height: 44px; }
+    .select2-dropdown { border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; }
+    .select2-search--dropdown .select2-search__field { border-radius: 10px; padding: 10px; }
+    
+    .receipt-container { background: #f8f9fa; border-radius: 12px; padding: 20px; font-family: 'Courier New', monospace; }
+    .receipt-header { text-align: center; border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 10px; }
+    .receipt-items { margin: 15px 0; }
+    .receipt-item { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; }
+    .receipt-total { border-top: 1px dashed #ccc; padding-top: 10px; font-weight: bold; font-size: 1.1rem; }
+    
+    .customer-stats { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 14px; margin-bottom: 15px; }
+    
     @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
   </style>
@@ -143,24 +166,31 @@
   <div class="content-wrapper">
     
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-header"><span>Today's Sales</span><div class="stat-icon"><i class="fas fa-calendar-day"></i></div></div><div class="stat-value" id="todaySales">₦0</div><div class="stat-sub">Cash/Transfer/POS</div></div>
-      <div class="stat-card"><div class="stat-header"><span>This Week</span><div class="stat-icon"><i class="fas fa-calendar-week"></i></div></div><div class="stat-value" id="weekSales">₦0</div><div class="stat-sub">Total revenue</div></div>
-      <div class="stat-card"><div class="stat-header"><span>This Month</span><div class="stat-icon"><i class="fas fa-calendar-alt"></i></div></div><div class="stat-value" id="monthSales">₦0</div><div class="stat-sub">MTD</div></div>
-      <div class="stat-card"><div class="stat-header"><span>Transactions</span><div class="stat-icon"><i class="fas fa-receipt"></i></div></div><div class="stat-value" id="totalTransactions">0</div><div class="stat-sub">Today</div></div>
+      <div class="stat-card"><div class="stat-header"><span>Today's Sales</span><div class="stat-icon"><i class="fas fa-calendar-day"></i></div></div><div class="stat-value" id="todaySales">₦0</div><div class="stat-sub" id="todayTransactions">0 transactions</div></div>
+      <div class="stat-card"><div class="stat-header"><span>This Week</span><div class="stat-icon"><i class="fas fa-calendar-week"></i></div></div><div class="stat-value" id="weekSales">₦0</div><div class="stat-sub" id="weekTransactions">0 transactions</div></div>
+      <div class="stat-card"><div class="stat-header"><span>This Month</span><div class="stat-icon"><i class="fas fa-calendar-alt"></i></div></div><div class="stat-value" id="monthSales">₦0</div><div class="stat-sub" id="monthTransactions">0 transactions</div></div>
+      <div class="stat-card"><div class="stat-header"><span>This Year</span><div class="stat-icon"><i class="fas fa-chart-line"></i></div></div><div class="stat-value" id="yearSales">₦0</div><div class="stat-sub" id="yearTransactions">0 transactions</div></div>
+    </div>
+    
+    <div class="filter-bar">
+      <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" class="search-input" id="salesSearchInput" placeholder="Search by customer name, phone, or receipt #..."></div>
     </div>
     
     <div class="panel">
       <div class="panel-header">
         <h3><i class="fas fa-history"></i> Recent Sales</h3>
         <div>
+          <button class="btn btn-outline btn-sm" onclick="exportSalesData()"><i class="fas fa-download"></i> Export</button>
           <button class="btn btn-outline btn-sm" onclick="refreshData()"><i class="fas fa-sync-alt"></i> Refresh</button>
           <button class="btn btn-primary btn-sm" onclick="openNewSaleModal()"><i class="fas fa-plus"></i> New Sale</button>
         </div>
       </div>
       <div class="table-wrapper">
         <table class="data-table">
-          <thead><tr><th>Time</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Payment</th></tr></thead>
-          <tbody id="salesTable"><tr><td colspan="6"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+          <thead><tr>
+            <th>Time</th><th>Receipt #</th><th>Customer</th><th>Phone</th><th>Location</th><th>Items</th><th>Total</th><th>Payment</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="salesTable"><tr><td colspan="9"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -177,10 +207,15 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, increment, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, increment, where, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
@@ -189,7 +224,8 @@
   let selectedPayment = 'cash', customerType = 'existing', selectedCustomerId = '', inactivityTimer = null, sessionLocked = false;
 
   function formatTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); }
-  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
+  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+  function generateReceiptNumber() { return 'RCP-' + Date.now().toString().slice(-8) + '-' + Math.random().toString(36).substr(2, 4).toUpperCase(); }
   
   function showToast(msg, type='success') { 
     const c = document.getElementById('toastContainer'); 
@@ -253,38 +289,73 @@
   });
 
   function updateStats() {
-    const today = new Date().toISOString().split('T')[0];
-    let todayTotal = 0, weekTotal = 0, monthTotal = 0, todayCount = 0;
     const now = new Date();
+    const today = now.toISOString().split('T')[0];
     const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+    
+    let todayTotal = 0, weekTotal = 0, monthTotal = 0, yearTotal = 0;
+    let todayCount = 0, weekCount = 0, monthCount = 0, yearCount = 0;
     
     allSales.forEach(s => { 
       const d = s.createdAt?.toDate(); 
       if (d) { 
-        if (d.toISOString().split('T')[0] === today) { todayTotal += s.totalAmount||0; todayCount++; }
-        if (d >= weekStart) weekTotal += s.totalAmount||0; 
-        if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) monthTotal += s.totalAmount||0; 
+        const amount = s.totalAmount || 0;
+        if (d.toISOString().split('T')[0] === today) { todayTotal += amount; todayCount++; }
+        if (d >= weekStart) { weekTotal += amount; weekCount++; }
+        if (d >= monthStart) { monthTotal += amount; monthCount++; }
+        if (d >= yearStart) { yearTotal += amount; yearCount++; }
       } 
     });
     
     document.getElementById('todaySales').textContent = formatCurrency(todayTotal);
     document.getElementById('weekSales').textContent = formatCurrency(weekTotal);
     document.getElementById('monthSales').textContent = formatCurrency(monthTotal);
-    document.getElementById('totalTransactions').textContent = todayCount;
+    document.getElementById('yearSales').textContent = formatCurrency(yearTotal);
+    
+    document.getElementById('todayTransactions').textContent = `${todayCount} transaction${todayCount !== 1 ? 's' : ''}`;
+    document.getElementById('weekTransactions').textContent = `${weekCount} transaction${weekCount !== 1 ? 's' : ''}`;
+    document.getElementById('monthTransactions').textContent = `${monthCount} transaction${monthCount !== 1 ? 's' : ''}`;
+    document.getElementById('yearTransactions').textContent = `${yearCount} transaction${yearCount !== 1 ? 's' : ''}`;
   }
 
   function renderSales() {
     const tbody = document.getElementById('salesTable');
+    const searchTerm = document.getElementById('salesSearchInput')?.value.toLowerCase() || '';
+    
+    let filtered = [...allSales];
+    if (searchTerm) {
+      filtered = filtered.filter(s => 
+        (s.customerName || '').toLowerCase().includes(searchTerm) ||
+        (s.customerPhone || '').toLowerCase().includes(searchTerm) ||
+        (s.receiptNumber || '').toLowerCase().includes(searchTerm)
+      );
+    }
+    
     tbody.innerHTML = '';
-    if (allSales.length === 0) { 
-      tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-cash-register"></i><p>No sales yet. Click "New Sale" to start.</p></div></td></tr>'; 
+    if (filtered.length === 0) { 
+      tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><i class="fas fa-cash-register"></i><p>No sales found.</p></div></td></tr>'; 
       updateStats();
       return; 
     }
     
-    const sorted = [...allSales].sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-    sorted.slice(0, 20).forEach(s => { 
-      tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${s.customerPhone||'-'}</td><td>${s.items?.length||0} items</td><td>${formatCurrency(s.totalAmount)}</td><td><span class="badge badge-success">${s.paymentMethod}</span></td></tr>`; 
+    const sorted = [...filtered].sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    sorted.forEach(s => { 
+      tbody.innerHTML += `<tr>
+        <td>${formatTime(s.createdAt)}</td>
+        <td><span class="badge badge-info">${s.receiptNumber || 'N/A'}</span></td>
+        <td>${s.customerName||'Walk-in'}</td>
+        <td>${s.customerPhone||'-'}</td>
+        <td>${s.customerLocation || '-'}</td>
+        <td>${s.items?.length||0} items</td>
+        <td><strong>${formatCurrency(s.totalAmount)}</strong></td>
+        <td><span class="badge badge-success">${s.paymentMethod}</span></td>
+        <td>
+          <button class="btn btn-sm btn-outline" onclick="viewReceipt('${s.id}')"><i class="fas fa-receipt"></i></button>
+          <button class="btn btn-sm btn-outline" onclick="printReceipt('${s.id}')"><i class="fas fa-print"></i></button>
+        </td>
+      </tr>`; 
     });
     updateStats();
   }
@@ -294,6 +365,7 @@
     unsubscribes = []; 
     unsubscribes.push(onSnapshot(query(collection(db, 'sales'), orderBy('createdAt', 'desc')), snap => { 
       allSales = snap.docs.map(d => ({id:d.id, ...d.data()})); 
+      console.log('📊 Sales loaded:', allSales.length);
       renderSales(); 
     })); 
   }
@@ -304,51 +376,58 @@
     
     const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', 'in', ['available', 'low'])));
     allStockItems = stockSnap.docs.map(d => ({id: d.id, ...d.data()})).filter(i => i.quantityAvailable > 0);
+    console.log('📦 Stock items loaded:', allStockItems.length);
   }
 
   window.openNewSaleModal = async () => {
     await loadCustomersAndStock();
     
-    const custOptions = allCustomers.map(c => `<option value="${c.id}" data-name="${c.fullName}" data-phone="${c.phone||''}">${c.fullName} (${c.phone||'No phone'})</option>`).join('');
-    const stockOptions = allStockItems.map(i => `<option value="${i.id}" data-name="${i.name}" data-price="${i.unitPrice||0}" data-stock="${i.quantityAvailable}">${i.name} - ₦${i.unitPrice||0} (${i.quantityAvailable} left)</option>`).join('');
+    if (allStockItems.length === 0) {
+      showToast('No items available in stock', 'error');
+      return;
+    }
+    
+    const custOptions = allCustomers.map(c => `<option value="${c.id}" data-name="${c.fullName}" data-phone="${c.phone||''}" data-location="${c.location||''}" data-email="${c.email||''}">${c.fullName} - ${c.phone||'No phone'}</option>`).join('');
+    const stockOptions = allStockItems.map(i => `<option value="${i.id}" data-name="${i.name}" data-price="${i.unitPrice||0}" data-stock="${i.quantityAvailable}">${i.name} - ${formatCurrency(i.unitPrice)} (Stock: ${i.quantityAvailable})</option>`).join('');
     
     document.getElementById('modalTitle').textContent = 'New Sale';
     document.getElementById('modalContent').innerHTML = `
-      <!-- Customer Type Toggle -->
       <div class="customer-type-toggle">
         <button class="customer-type-btn active" data-type="existing" onclick="switchCustomerType('existing')"><i class="fas fa-users"></i> Existing Customer</button>
         <button class="customer-type-btn" data-type="new" onclick="switchCustomerType('new')"><i class="fas fa-user-plus"></i> New Customer</button>
       </div>
       
-      <!-- Existing Customer Section -->
       <div id="existingCustomerSection">
         <div class="form-group">
-          <label>Select Customer</label>
-          <select class="form-control" id="existingCustomerSelect">
-            <option value="">-- Select a customer --</option>
+          <label>Search Customer</label>
+          <select class="form-control" id="existingCustomerSelect" style="width:100%;">
+            <option value="">-- Search customer --</option>
             ${custOptions}
           </select>
         </div>
+        <div id="customerStats" class="customer-stats" style="display:none;"></div>
       </div>
       
-      <!-- New Customer Section (Hidden by default) -->
       <div id="newCustomerSection" style="display:none;">
         <div class="form-group"><label>Full Name *</label><input type="text" class="form-control" id="newCustomerName" placeholder="e.g., John Doe"></div>
         <div class="form-group"><label>Phone Number *</label><input type="tel" class="form-control" id="newCustomerPhone" placeholder="08012345678"></div>
+        <div class="form-group"><label>Location/Address</label><input type="text" class="form-control" id="newCustomerLocation" placeholder="e.g., Lagos"></div>
         <div class="form-group"><label>Email (Optional)</label><input type="email" class="form-control" id="newCustomerEmail" placeholder="john@example.com"></div>
       </div>
       
-      <!-- Items Section -->
-      <div class="form-group"><label>Items Purchased</label></div>
+      <div class="form-group"><label>Search & Add Items</label></div>
       <div id="saleItems">
         <div class="item-row">
-          <select class="form-control item-select">${stockOptions}</select>
-          <input type="number" class="form-control item-qty" value="1" min="1">
+          <select class="form-control item-select" style="width:100%;">
+            <option value="">-- Search product --</option>
+            ${stockOptions}
+          </select>
+          <input type="number" class="form-control item-qty" value="1" min="1" style="width:100px;">
+          <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove(); updateSaleSummary();" style="display:none;"><i class="fas fa-times"></i></button>
         </div>
       </div>
       <button type="button" class="btn btn-outline btn-sm" onclick="addSaleItem()"><i class="fas fa-plus"></i> Add Another Item</button>
       
-      <!-- Payment Method -->
       <div class="form-group" style="margin-top:20px;"><label>Payment Method</label>
         <div class="payment-methods">
           <div class="payment-method selected" data-method="cash" onclick="selectPayment('cash')">💵 Cash</div>
@@ -359,22 +438,90 @@
       
       <div class="form-group"><label>Transfer Reference (if applicable)</label><input type="text" class="form-control" id="transferRef" placeholder="Optional"></div>
       
-      <!-- Summary -->
       <div class="sale-summary" id="saleSummary">
         <div class="summary-row"><span>Items:</span><span id="itemCount">0</span></div>
-        <div class="summary-row total"><span>Total:</span><span id="saleTotal">₦0</span></div>
+        <div class="summary-row total"><span>Total:</span><span id="saleTotal">₦0.00</span></div>
       </div>
       
-      <button class="btn btn-primary" onclick="processSale()" style="width:100%;margin-top:15px;"><i class="fas fa-check-circle"></i> Process Sale</button>
+      <button class="btn btn-primary" onclick="processSale()" style="width:100%;margin-top:15px;"><i class="fas fa-check-circle"></i> Process Sale & Print Receipt</button>
     `;
     
-    // Attach event listeners to item selects and quantities
+    // Initialize Select2 for searchable dropdowns
     setTimeout(() => {
-      document.querySelectorAll('.item-select, .item-qty').forEach(el => el.addEventListener('change', updateSaleSummary));
+      $('#existingCustomerSelect').select2({
+        placeholder: 'Search customer by name or phone...',
+        allowClear: true,
+        width: '100%'
+      }).on('change', function() {
+        const selected = $(this).find('option:selected');
+        const customerId = $(this).val();
+        if (customerId) {
+          loadCustomerStats(customerId);
+        } else {
+          document.getElementById('customerStats').style.display = 'none';
+        }
+      });
+      
+      $('.item-select').select2({
+        placeholder: 'Search product...',
+        allowClear: true,
+        width: '100%'
+      });
+      
+      $('.item-select').on('change', updateSaleSummary);
+      $('.item-qty').on('input', updateSaleSummary);
       updateSaleSummary();
     }, 100);
     
     document.getElementById('modalOverlay').style.display = 'flex';
+  };
+
+  window.loadCustomerStats = async (customerId) => {
+    try {
+      const customer = allCustomers.find(c => c.id === customerId);
+      if (!customer) return;
+      
+      // Get customer purchase history
+      const salesQuery = query(collection(db, 'sales'), where('customerId', '==', customerId), orderBy('createdAt', 'desc'));
+      const salesSnap = await getDocs(salesQuery);
+      const customerSales = salesSnap.docs.map(d => d.data());
+      
+      const now = new Date();
+      const today = now.toISOString().split('T')[0];
+      const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const yearStart = new Date(now.getFullYear(), 0, 1);
+      
+      let daily = 0, weekly = 0, monthly = 0, yearly = 0, totalSpent = 0;
+      let purchaseCount = customerSales.length;
+      
+      customerSales.forEach(s => {
+        const d = s.createdAt?.toDate();
+        const amount = s.totalAmount || 0;
+        totalSpent += amount;
+        if (d) {
+          if (d.toISOString().split('T')[0] === today) daily += amount;
+          if (d >= weekStart) weekly += amount;
+          if (d >= monthStart) monthly += amount;
+          if (d >= yearStart) yearly += amount;
+        }
+      });
+      
+      const statsDiv = document.getElementById('customerStats');
+      statsDiv.innerHTML = `
+        <i class="fas fa-user-circle"></i> <strong>${customer.fullName}</strong><br>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px;">
+          <div><small>Today:</small><br>${formatCurrency(daily)}</div>
+          <div><small>This Week:</small><br>${formatCurrency(weekly)}</div>
+          <div><small>This Month:</small><br>${formatCurrency(monthly)}</div>
+          <div><small>This Year:</small><br>${formatCurrency(yearly)}</div>
+        </div>
+        <div style="margin-top:10px;"><small>Total Purchases: ${purchaseCount} | Total Spent: ${formatCurrency(totalSpent)}</small></div>
+      `;
+      statsDiv.style.display = 'block';
+    } catch (error) {
+      console.error('Error loading customer stats:', error);
+    }
   };
 
   window.switchCustomerType = (type) => {
@@ -392,16 +539,26 @@
   };
 
   window.addSaleItem = () => {
-    const stockOptions = allStockItems.map(i => `<option value="${i.id}" data-name="${i.name}" data-price="${i.unitPrice||0}" data-stock="${i.quantityAvailable}">${i.name} - ₦${i.unitPrice||0} (${i.quantityAvailable} left)</option>`).join('');
+    const stockOptions = allStockItems.map(i => `<option value="${i.id}" data-name="${i.name}" data-price="${i.unitPrice||0}" data-stock="${i.quantityAvailable}">${i.name} - ${formatCurrency(i.unitPrice)} (Stock: ${i.quantityAvailable})</option>`).join('');
     const div = document.createElement('div');
     div.className = 'item-row';
     div.innerHTML = `
-      <select class="form-control item-select">${stockOptions}</select>
-      <input type="number" class="form-control item-qty" value="1" min="1">
+      <select class="form-control item-select" style="width:100%;">
+        <option value="">-- Search product --</option>
+        ${stockOptions}
+      </select>
+      <input type="number" class="form-control item-qty" value="1" min="1" style="width:100px;">
       <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove(); updateSaleSummary();"><i class="fas fa-times"></i></button>
     `;
     document.getElementById('saleItems').appendChild(div);
-    div.querySelectorAll('.item-select, .item-qty').forEach(el => el.addEventListener('change', updateSaleSummary));
+    
+    $(div).find('.item-select').select2({
+      placeholder: 'Search product...',
+      allowClear: true,
+      width: '100%'
+    }).on('change', updateSaleSummary);
+    
+    $(div).find('.item-qty').on('input', updateSaleSummary);
     updateSaleSummary();
   };
 
@@ -410,7 +567,7 @@
     document.querySelectorAll('.item-row').forEach(row => {
       const select = row.querySelector('.item-select');
       const qty = row.querySelector('.item-qty');
-      if (select && qty) {
+      if (select && qty && select.value) {
         const opt = select.options[select.selectedIndex];
         const price = parseFloat(opt?.dataset.price) || 0;
         const quantity = parseInt(qty.value) || 1;
@@ -423,8 +580,7 @@
   };
 
   window.processSale = () => {
-    // Validate customer
-    let customerId = '', customerName = '', customerPhone = '', customerEmail = '';
+    let customerId = '', customerName = '', customerPhone = '', customerEmail = '', customerLocation = '';
     
     if (customerType === 'existing') {
       const select = document.getElementById('existingCustomerSelect');
@@ -433,24 +589,30 @@
       const opt = select.options[select.selectedIndex];
       customerName = opt.dataset.name;
       customerPhone = opt.dataset.phone;
+      customerLocation = opt.dataset.location || '';
     } else {
       customerName = document.getElementById('newCustomerName')?.value?.trim();
       customerPhone = document.getElementById('newCustomerPhone')?.value?.trim();
       customerEmail = document.getElementById('newCustomerEmail')?.value?.trim();
+      customerLocation = document.getElementById('newCustomerLocation')?.value?.trim();
       if (!customerName || !customerPhone) { showToast('Customer name and phone are required', 'error'); return; }
     }
     
-    // Collect items
     const items = [];
     let total = 0;
-    document.querySelectorAll('.item-row').forEach(row => {
+    const rows = document.querySelectorAll('.item-row');
+    
+    for (const row of rows) {
       const select = row.querySelector('.item-select');
       const qty = row.querySelector('.item-qty');
-      if (select && qty) {
+      if (select && select.value && qty) {
         const opt = select.options[select.selectedIndex];
         const quantity = parseInt(qty.value) || 1;
         const stockAvailable = parseInt(opt?.dataset.stock) || 0;
-        if (quantity > stockAvailable) { showToast(`Only ${stockAvailable} available for ${opt.dataset.name}`, 'error'); throw new Error('Insufficient stock'); }
+        if (quantity > stockAvailable) { 
+          showToast(`Only ${stockAvailable} available for ${opt.dataset.name}`, 'error'); 
+          return;
+        }
         
         items.push({
           id: select.value,
@@ -460,28 +622,31 @@
         });
         total += quantity * (parseFloat(opt.dataset.price) || 0);
       }
-    });
+    }
     
     if (items.length === 0) { showToast('Add at least one item', 'error'); return; }
     
     const transferRef = document.getElementById('transferRef')?.value || null;
+    const receiptNumber = generateReceiptNumber();
     
     showPinModal('Process Sale', `process sale of ${formatCurrency(total)}`, async () => {
       try {
-        // If new customer, create customer record first
         if (customerType === 'new') {
           const custRef = await addDoc(collection(db, 'customers'), {
             fullName: customerName,
             phone: customerPhone,
             email: customerEmail,
+            location: customerLocation,
             totalSpent: 0,
-            status: 'approved',
+            purchaseCount: 0,
+            status: 'pending_approval',
             createdBy: currentUser.uid,
             createdByName: userData.fullName,
             createdAt: serverTimestamp()
           });
           customerId = custRef.id;
-          await logAudit('create_customer', `Created new customer: ${customerName}`);
+          await logAudit('create_customer', `Created new customer: ${customerName} (Pending approval)`);
+          showToast('Customer created, pending admin approval', 'info');
         }
         
         // Update stock quantities
@@ -495,16 +660,30 @@
             await updateDoc(ref, {
               quantityAvailable: newQty,
               quantitySold: increment(item.quantity),
-              status: newQty <= 0 ? 'out_of_stock' : newQty <= threshold ? 'low' : 'available'
+              status: newQty <= 0 ? 'out_of_stock' : newQty <= threshold ? 'low' : 'available',
+              updatedAt: serverTimestamp()
+            });
+            
+            // Log stock history
+            await addDoc(collection(db, 'stock_history'), {
+              itemId: item.id,
+              itemName: item.name,
+              type: 'sale',
+              quantity: -item.quantity,
+              performedBy: currentUser.uid,
+              performedByName: userData.fullName,
+              createdAt: serverTimestamp()
             });
           }
         }
         
         // Create sale record
-        await addDoc(collection(db, 'sales'), {
+        const saleData = {
+          receiptNumber,
           customerId,
           customerName,
           customerPhone,
+          customerLocation,
           items,
           totalAmount: total,
           paymentMethod: selectedPayment,
@@ -512,18 +691,25 @@
           attendantId: currentUser.uid,
           attendantName: userData.fullName,
           createdAt: serverTimestamp()
-        });
+        };
         
-        // Update customer total spent
-        if (customerId) {
+        const saleRef = await addDoc(collection(db, 'sales'), saleData);
+        
+        // Update customer stats
+        if (customerId && customerType === 'existing') {
           await updateDoc(doc(db, 'customers', customerId), {
             totalSpent: increment(total),
+            purchaseCount: increment(1),
             lastPurchase: serverTimestamp()
           });
         }
         
-        await logAudit('sale', `Sale of ${formatCurrency(total)} to ${customerName} (${selectedPayment})`);
-        showToast(`Sale completed: ${formatCurrency(total)}`, 'success');
+        await logAudit('sale', `Sale ${receiptNumber}: ${formatCurrency(total)} to ${customerName} (${selectedPayment})`);
+        showToast(`Sale completed! Receipt #${receiptNumber}`, 'success');
+        
+        // Show receipt
+        showReceiptModal({ id: saleRef.id, ...saleData });
+        
         hideModal();
       } catch (error) {
         console.error('Sale error:', error);
@@ -532,7 +718,139 @@
     });
   };
 
-  window.refreshData = () => loadSales();
+  window.showReceiptModal = (sale) => {
+    const itemsHtml = sale.items.map(item => `
+      <div class="receipt-item">
+        <span>${item.quantity}x ${item.name}</span>
+        <span>${formatCurrency(item.quantity * item.unitPrice)}</span>
+      </div>
+    `).join('');
+    
+    const receiptHtml = `
+      <div class="receipt-container">
+        <div class="receipt-header">
+          <h3>💎 FashionStone</h3>
+          <p>Receipt #${sale.receiptNumber}</p>
+          <p>${new Date().toLocaleString()}</p>
+        </div>
+        <div style="margin:15px 0;">
+          <p><strong>Customer:</strong> ${sale.customerName}</p>
+          <p><strong>Phone:</strong> ${sale.customerPhone || 'N/A'}</p>
+          <p><strong>Attendant:</strong> ${sale.attendantName}</p>
+        </div>
+        <div class="receipt-items">
+          ${itemsHtml}
+        </div>
+        <div class="receipt-total">
+          <span>Total:</span>
+          <span>${formatCurrency(sale.totalAmount)}</span>
+        </div>
+        <div style="margin-top:15px;text-align:center;font-size:0.85rem;">
+          <p>Payment: ${sale.paymentMethod.toUpperCase()}</p>
+          <p>Thank you for your purchase!</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="btn btn-primary" onclick="printReceipt('${sale.id}')" style="flex:1;"><i class="fas fa-print"></i> Print</button>
+        <button class="btn btn-outline" onclick="downloadReceiptPDF('${sale.id}')" style="flex:1;"><i class="fas fa-download"></i> PDF</button>
+        <button class="btn btn-outline" onclick="hideModal()" style="flex:1;">Close</button>
+      </div>
+    `;
+    
+    document.getElementById('modalTitle').textContent = 'Receipt';
+    document.getElementById('modalContent').innerHTML = receiptHtml;
+    document.getElementById('modalOverlay').style.display = 'flex';
+  };
+
+  window.viewReceipt = (saleId) => {
+    const sale = allSales.find(s => s.id === saleId);
+    if (sale) showReceiptModal(sale);
+  };
+
+  window.printReceipt = (saleId) => {
+    const sale = allSales.find(s => s.id === saleId);
+    if (!sale) return;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html><head><title>Receipt ${sale.receiptNumber}</title>
+      <style>body{font-family:'Courier New',monospace;padding:20px;} .header{text-align:center;} .items{margin:20px 0;} .total{font-weight:bold;}</style>
+      </head><body>
+      <div class="header"><h2>FashionStone</h2><p>Receipt #${sale.receiptNumber}</p><p>${new Date(sale.createdAt?.toDate()).toLocaleString()}</p></div>
+      <p>Customer: ${sale.customerName}<br>Phone: ${sale.customerPhone||'N/A'}</p>
+      <div class="items">${sale.items.map(i => `<p>${i.quantity}x ${i.name} - ${formatCurrency(i.quantity * i.unitPrice)}</p>`).join('')}</div>
+      <p class="total">Total: ${formatCurrency(sale.totalAmount)}</p>
+      <p>Payment: ${sale.paymentMethod}</p>
+      </body></html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  window.downloadReceiptPDF = (saleId) => {
+    const sale = allSales.find(s => s.id === saleId);
+    if (!sale) return;
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.text('FashionStone', 105, 20, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text(`Receipt #${sale.receiptNumber}`, 105, 30, { align: 'center' });
+    doc.text(new Date(sale.createdAt?.toDate()).toLocaleString(), 105, 40, { align: 'center' });
+    
+    doc.text(`Customer: ${sale.customerName}`, 20, 60);
+    doc.text(`Phone: ${sale.customerPhone || 'N/A'}`, 20, 70);
+    
+    let y = 90;
+    doc.text('Items:', 20, y);
+    y += 10;
+    sale.items.forEach(item => {
+      doc.text(`${item.quantity}x ${item.name} - ${formatCurrency(item.quantity * item.unitPrice)}`, 25, y);
+      y += 8;
+    });
+    
+    y += 5;
+    doc.setFontSize(14);
+    doc.text(`Total: ${formatCurrency(sale.totalAmount)}`, 20, y);
+    doc.setFontSize(12);
+    doc.text(`Payment Method: ${sale.paymentMethod}`, 20, y + 15);
+    
+    doc.save(`receipt_${sale.receiptNumber}.pdf`);
+    showToast('PDF downloaded', 'success');
+  };
+
+  window.exportSalesData = () => {
+    const headers = ['Receipt #', 'Date', 'Customer', 'Phone', 'Location', 'Items', 'Total', 'Payment', 'Attendant'];
+    const rows = allSales.map(s => [
+      s.receiptNumber || '',
+      s.createdAt?.toDate().toLocaleString() || '',
+      s.customerName || '',
+      s.customerPhone || '',
+      s.customerLocation || '',
+      s.items?.length || 0,
+      s.totalAmount || 0,
+      s.paymentMethod || '',
+      s.attendantName || ''
+    ]);
+    
+    const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `sales_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    showToast('Sales data exported', 'success');
+  };
+
+  window.refreshData = () => {
+    loadSales();
+    showToast('Data refreshed', 'success');
+  };
+
+  // Search functionality
+  document.getElementById('salesSearchInput').addEventListener('input', renderSales);
 
   // Initialize
   onAuthStateChanged(auth, async (u) => {
