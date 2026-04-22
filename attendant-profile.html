@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ff4da6">
-  <title>My Profile · FashionStone</title>
+  <title>My Profile · Omocreations</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 64px; --sidebar-width: 280px; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 70px; --sidebar-width: 280px; }
     body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
     .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
     .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
@@ -53,19 +53,10 @@
     .salary-box { background: linear-gradient(135deg, var(--primary-soft), white); border-radius: 16px; padding: 20px; margin-top: 15px; }
     .salary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); }
     .salary-row:last-child { border-bottom: none; }
+    .salary-row.total { margin-top: 5px; }
+    .salary-row.total .label { font-weight: 700; }
     .salary-row.total .value { font-size: 1.5rem; color: var(--primary); }
     .positive { color: var(--success); } .negative { color: var(--danger); }
-    
-    .tabs-container { display: flex; gap: 6px; margin-bottom: 20px; background: var(--gray-light); padding: 6px; border-radius: 40px; }
-    .tab-btn { padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; border: none; background: none; color: var(--gray); cursor: pointer; flex: 1; }
-    .tab-btn.active { background: var(--primary); color: white; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    
-    .announcement-card { background: var(--primary-soft); border-radius: 16px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--primary); }
-    .announcement-card h4 { font-size: 0.95rem; margin-bottom: 8px; }
-    .announcement-card p { font-size: 0.85rem; color: var(--gray); margin-bottom: 8px; }
-    .announcement-card .meta { font-size: 0.7rem; color: var(--gray); display: flex; justify-content: space-between; }
     
     .table-wrapper { overflow-x: auto; }
     .data-table { width: 100%; border-collapse: collapse; }
@@ -84,9 +75,10 @@
     
     .empty-state { text-align: center; padding: 30px; color: var(--gray); }
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
-    .modal { background: white; border-radius: 28px; padding: 28px; max-width: 500px; width: 100%; }
+    .modal { background: white; border-radius: 28px; padding: 28px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; }
     .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
     .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
     .form-control { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; font-size: 0.9rem; outline: none; }
     .pin-input-container { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
     .pin-input { width: 55px; height: 65px; text-align: center; font-size: 1.8rem; font-weight: 700; border: 2px solid rgba(255,77,166,0.2); border-radius: 14px; }
@@ -99,20 +91,13 @@
     .spinner { width: 40px; height: 40px; border: 3px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     
-    .session-lock-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); background: rgba(0,0,0,0.3); z-index: 9999; display: none; align-items: center; justify-content: center; }
-    .session-lock-modal { background: white; border-radius: 24px; padding: 28px; max-width: 350px; text-align: center; }
-    
     @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } .info-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-<div class="session-lock-overlay" id="sessionLockOverlay">
-  <div class="session-lock-modal"><i class="fas fa-lock" style="font-size:2.5rem;color:var(--primary);margin-bottom:16px;"></i><h3>Session Locked</h3><p style="color:var(--gray);margin-bottom:20px;">Enter your PIN</p><div class="pin-input-container"><input type="password" maxlength="1" class="pin-input" id="lockPin1"><input type="password" maxlength="1" class="pin-input" id="lockPin2"><input type="password" maxlength="1" class="pin-input" id="lockPin3"><input type="password" maxlength="1" class="pin-input" id="lockPin4"></div><button class="btn btn-primary" id="unlockBtn" style="width:100%;">Unlock</button></div>
-</div>
-
 <aside class="sidebar">
-  <div class="sidebar-header"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div>
+  <div class="sidebar-header"><div class="logo-icon">✨</div><div class="logo-text"><span>Omo</span>creations</div></div>
   <nav class="sidebar-nav">
     <button class="nav-item" onclick="window.location.href='attendant-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
     <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span>Inventory</span></button>
@@ -147,17 +132,6 @@
         <div class="stat-card"><div class="stat-header"><span>Tasks Assigned</span><div class="stat-icon"><i class="fas fa-tasks"></i></div></div><div class="stat-value" id="tasksAssigned">0</div><div class="stat-sub">This month</div></div>
         <div class="stat-card"><div class="stat-header"><span>Leave Days</span><div class="stat-icon"><i class="fas fa-umbrella-beach"></i></div></div><div class="stat-value" id="leaveDays">2</div><div class="stat-sub">Remaining</div></div>
         <div class="stat-card"><div class="stat-header"><span>Attendance</span><div class="stat-icon"><i class="fas fa-calendar-check"></i></div></div><div class="stat-value" id="attendanceStreak">0</div><div class="stat-sub">Day streak</div></div>
-      </div>
-      
-      <!-- Announcements Section -->
-      <div class="panel">
-        <div class="panel-header"><h3><i class="fas fa-bullhorn"></i> Announcements</h3></div>
-        <div class="tabs-container">
-          <button class="tab-btn active" data-tab="general">General</button>
-          <button class="tab-btn" data-tab="personal">Personal</button>
-        </div>
-        <div id="generalAnnouncements" class="tab-content active"></div>
-        <div id="personalAnnouncements" class="tab-content"></div>
       </div>
       
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
@@ -202,6 +176,7 @@
               <div class="salary-row"><span class="label">Points Adjustment</span><span class="value" id="pointsAdjustment">₦0</span></div>
               <div class="salary-row total"><span class="label">ESTIMATED SALARY</span><span class="value" id="finalSalary">₦0</span></div>
             </div>
+            <p style="font-size:0.7rem; color:var(--gray); margin-top:12px;"><i class="fas fa-calculator"></i> Base + (Points × Point Value). Updates in real-time.</p>
           </div>
         </div>
       </div>
@@ -213,8 +188,8 @@
       
       <div class="panel">
         <div class="panel-header"><h3><i class="fas fa-calendar-plus"></i> Request Leave</h3></div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;"><input type="date" id="leaveStartDate" class="form-control" style="flex:1;"><input type="date" id="leaveEndDate" class="form-control" style="flex:1;"><button class="btn btn-primary" onclick="openRequestLeave()">Request Leave</button></div>
-        <p style="font-size:0.75rem;color:var(--gray);margin-top:12px;">Max 2 days per month.</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;"><input type="date" id="leaveStartDate" class="form-control" style="flex:1;"><input type="date" id="leaveEndDate" class="form-control" style="flex:1;"><button class="btn btn-primary" onclick="openRequestLeave()">Request Leave</button></div>
+        <p style="font-size:0.75rem; color:var(--gray); margin-top:12px;">Max 2 days per month. Admin approval required.</p>
       </div>
       
       <div class="panel">
@@ -236,18 +211,14 @@
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-  let currentUser = null, userData = null, globalPointValue = 500, unsubscribes = [], inactivityTimer = null, sessionLocked = false;
+  let currentUser = null, userData = null, globalPointValue = 500, unsubscribes = [];
 
   function formatDate(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); }
   function formatDateTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
-  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
   window.hideModal = () => document.getElementById('modalOverlay').style.display = 'none';
   function showModal(title, content) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content; document.getElementById('modalOverlay').style.display = 'flex'; }
-
-  function resetInactivityTimer() { if (inactivityTimer) clearTimeout(inactivityTimer); inactivityTimer = setTimeout(() => { if (!sessionLocked) { sessionLocked = true; document.getElementById('sessionLockOverlay').style.display = 'flex'; document.getElementById('lockPin1').focus(); } }, 600000); }
-  document.addEventListener('mousemove', resetInactivityTimer); document.addEventListener('keypress', resetInactivityTimer); document.addEventListener('click', resetInactivityTimer);
-  document.getElementById('unlockBtn').addEventListener('click', () => { const pin = ['lockPin1','lockPin2','lockPin3','lockPin4'].map(id => document.getElementById(id).value).join(''); if (pin === (userData?.attendantPin || '1234')) { sessionLocked = false; document.getElementById('sessionLockOverlay').style.display = 'none'; ['lockPin1','lockPin2','lockPin3','lockPin4'].forEach(id => document.getElementById(id).value = ''); resetInactivityTimer(); showToast('Unlocked', 'success'); } else { showToast('Invalid PIN', 'error'); } });
 
   async function loadProfile() {
     try {
@@ -285,37 +256,59 @@
         updateSalaryDisplay();
       }));
       
-      function updateSalaryDisplay() { if (!userData) return; const ppv = globalPointValue / 5; const bonus = (userData.totalPoints || 0) * ppv; const final = (userData.baseSalary || 0) + bonus; document.getElementById('pointValue').textContent = ppv; document.getElementById('salaryBase').textContent = formatCurrency(userData.baseSalary || 0); document.getElementById('salaryPointValue').textContent = ppv; document.getElementById('salaryPoints').textContent = userData.totalPoints || 0; document.getElementById('pointsAdjustment').innerHTML = `<span class="${bonus>=0?'positive':'negative'}">${bonus>=0?'+':''}${formatCurrency(bonus)}</span>`; document.getElementById('finalSalary').textContent = formatCurrency(final); }
+      function updateSalaryDisplay() {
+        if (!userData) return;
+        const ppv = globalPointValue / 5;
+        const bonus = (userData.totalPoints || 0) * ppv;
+        const final = (userData.baseSalary || 0) + bonus;
+        document.getElementById('pointValue').textContent = ppv;
+        document.getElementById('salaryBase').textContent = formatCurrency(userData.baseSalary || 0);
+        document.getElementById('salaryPointValue').textContent = ppv;
+        document.getElementById('salaryPoints').textContent = userData.totalPoints || 0;
+        document.getElementById('pointsAdjustment').innerHTML = `<span class="${bonus>=0?'positive':'negative'}">${bonus>=0?'+':''}${formatCurrency(bonus)}</span>`;
+        document.getElementById('finalSalary').textContent = formatCurrency(final);
+      }
       
-      unsubscribes.push(onSnapshot(query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(20)), (snap) => { const tbody = document.getElementById('pointHistoryTable'); tbody.innerHTML = ''; if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No point history</div></td></tr>'; return; } snap.forEach(d => { const p = d.data(); tbody.innerHTML += `<tr><td>${formatDate(p.createdAt)}</td><td>${p.reason}</td><td class="${p.points>=0?'positive':'negative'}">${p.points>0?'+':''}${p.points}</td><td>${formatCurrency(p.points * (globalPointValue/5))}</td></tr>`; }); }));
+      unsubscribes.push(onSnapshot(query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(20)), (snap) => {
+        const tbody = document.getElementById('pointHistoryTable'); tbody.innerHTML = '';
+        if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No point history</div></td></tr>'; return; }
+        snap.forEach(d => { const p = d.data(); tbody.innerHTML += `<tr><td>${formatDate(p.createdAt)}</td><td>${p.reason}</td><td class="${p.points>=0?'positive':'negative'}">${p.points>0?'+':''}${p.points}</td><td>${formatCurrency(p.points * (globalPointValue/5))}</td></tr>`; });
+      }));
       
-      unsubscribes.push(onSnapshot(query(collection(db, 'leave_requests'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')), (snap) => { const tbody = document.getElementById('leaveHistoryTable'); tbody.innerHTML = ''; if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No leave requests</div></td></tr>'; return; } snap.forEach(d => { const l = d.data(); tbody.innerHTML += `<tr><td>${l.requestedDates?.join(' to ')}</td><td>${l.reason||'-'}</td><td><span class="badge badge-${l.status==='approved'?'success':l.status==='rejected'?'danger':'warning'}">${l.status}</span></td><td>${l.approvedByName||l.rejectedByName||'-'}</td></tr>`; }); }));
+      unsubscribes.push(onSnapshot(query(collection(db, 'leave_requests'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')), (snap) => {
+        const tbody = document.getElementById('leaveHistoryTable'); tbody.innerHTML = '';
+        if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No leave requests</div></td></tr>'; return; }
+        snap.forEach(d => { const l = d.data(); tbody.innerHTML += `<tr><td>${l.requestedDates?.join(' to ')}</td><td>${l.reason||'-'}</td><td><span class="badge badge-${l.status==='approved'?'success':l.status==='rejected'?'danger':'warning'}">${l.status}</span></td><td>${l.approvedByName||l.rejectedByName||'-'}</td></tr>`; });
+      }));
       
-      const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('assignedBy', '==', currentUser.uid))); document.getElementById('tasksAssigned').textContent = tasksSnap.size;
+      const tasksSnap = await getDocs(query(collection(db, 'tasks'), where('assignedBy', '==', currentUser.uid)));
+      document.getElementById('tasksAssigned').textContent = tasksSnap.size;
       
-      const attSnap = await getDocs(query(collection(db, 'attendance'), where('userId', '==', currentUser.uid), orderBy('date', 'desc'), limit(30))); let streak = 0; const dates = attSnap.docs.map(d => d.data().date).sort().reverse(); const today = new Date().toISOString().split('T')[0]; if (dates.length && dates[0] === today) streak = 1; for (let i = 1; i < dates.length; i++) { if ((new Date(dates[i-1]) - new Date(dates[i])) / 86400000 === 1) streak++; else break; } document.getElementById('attendanceStreak').textContent = streak;
-      
-      const generalQuery = query(collection(db, 'announcements'), where('target', 'in', ['all', 'attendants']), orderBy('createdAt', 'desc'), limit(10)); unsubscribes.push(onSnapshot(generalQuery, (snap) => { const c = document.getElementById('generalAnnouncements'); c.innerHTML = snap.empty ? '<div class="empty-state">No general announcements</div>' : snap.docs.map(d => { const a = d.data(); return `<div class="announcement-card"><h4>${a.title}</h4><p>${a.message}</p><div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div></div>`; }).join(''); }));
-      
-      const personalQuery = query(collection(db, 'announcements'), where('recipientIds', 'array-contains', currentUser.uid), orderBy('createdAt', 'desc'), limit(10)); unsubscribes.push(onSnapshot(personalQuery, (snap) => { const c = document.getElementById('personalAnnouncements'); c.innerHTML = snap.empty ? '<div class="empty-state">No personal announcements</div>' : snap.docs.map(d => { const a = d.data(); return `<div class="announcement-card"><h4>${a.title}</h4><p>${a.message}</p><div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div></div>`; }).join(''); }));
+      const attSnap = await getDocs(query(collection(db, 'attendance'), where('userId', '==', currentUser.uid), orderBy('date', 'desc'), limit(30)));
+      let streak = 0; const dates = attSnap.docs.map(d => d.data().date).sort().reverse();
+      const today = new Date().toISOString().split('T')[0];
+      if (dates.length && dates[0] === today) streak = 1;
+      for (let i = 1; i < dates.length; i++) { if ((new Date(dates[i-1]) - new Date(dates[i])) / 86400000 === 1) streak++; else break; }
+      document.getElementById('attendanceStreak').textContent = streak;
       
     } catch (e) { console.error(e); showToast('Error loading profile', 'error'); }
   }
 
-  document.querySelectorAll('.tab-btn').forEach(t => t.addEventListener('click', function() { document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active')); this.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById(this.dataset.tab + 'Announcements').classList.add('active'); }));
-
   window.openEditProfile = () => { showModal('Edit Profile', `<div class="form-group"><label>Full Name</label><input class="form-control" id="editName" value="${userData.fullName||''}"></div><div class="form-group"><label>Phone</label><input class="form-control" id="editPhone" value="${userData.phone||''}"></div><div class="form-group"><label>Address</label><input class="form-control" id="editAddress" value="${userData.address||''}"></div><div class="form-group"><label>Emergency Contact</label><input class="form-control" id="editEmergency" value="${userData.emergencyContact||''}"></div><button class="btn btn-primary" onclick="saveProfile()">Save</button>`); };
   window.saveProfile = async () => { await updateDoc(doc(db, 'users', currentUser.uid), { fullName: document.getElementById('editName').value, phone: document.getElementById('editPhone').value, address: document.getElementById('editAddress').value, emergencyContact: document.getElementById('editEmergency').value }); showToast('Profile updated', 'success'); hideModal(); };
+  
   window.openEditBank = () => { showModal('Edit Bank', `<div class="form-group"><label>Bank Name</label><input class="form-control" id="editBankName" value="${userData.bankName||''}"></div><div class="form-group"><label>Account Number</label><input class="form-control" id="editAccountNumber" value="${userData.accountNumber||''}"></div><div class="form-group"><label>Account Name</label><input class="form-control" id="editAccountName" value="${userData.accountName||userData.fullName||''}"></div><button class="btn btn-primary" onclick="saveBank()">Save</button>`); };
   window.saveBank = async () => { await updateDoc(doc(db, 'users', currentUser.uid), { bankName: document.getElementById('editBankName').value, accountNumber: document.getElementById('editAccountNumber').value, accountName: document.getElementById('editAccountName').value }); showToast('Bank details updated', 'success'); hideModal(); };
+  
   window.openRequestLeave = () => { showModal('Request Leave', `<div class="form-group"><label>Start Date</label><input type="date" class="form-control" id="modalStart" value="${document.getElementById('leaveStartDate').value}"></div><div class="form-group"><label>End Date</label><input type="date" class="form-control" id="modalEnd" value="${document.getElementById('leaveEndDate').value}"></div><div class="form-group"><label>Reason</label><textarea class="form-control" id="modalReason"></textarea></div><button class="btn btn-primary" onclick="submitLeave()">Submit</button>`); };
   window.submitLeave = async () => { const start = document.getElementById('modalStart').value, end = document.getElementById('modalEnd').value; if (!start || !end) { showToast('Select dates', 'error'); return; } const days = (new Date(end) - new Date(start)) / 86400000 + 1; if (days > 2) { showToast('Max 2 days', 'error'); return; } if (userData.leaveDaysRemaining < days) { showToast(`Only ${userData.leaveDaysRemaining} days left`, 'error'); return; } await addDoc(collection(db, 'leave_requests'), { userId: currentUser.uid, requestedDates: [start, end], reason: document.getElementById('modalReason').value, status: 'pending', createdAt: serverTimestamp() }); showToast('Leave requested', 'success'); hideModal(); document.getElementById('leaveStartDate').value = document.getElementById('leaveEndDate').value = ''; };
+  
   window.openSetPinModal = () => { showModal('Set Security PIN', `<div class="pin-input-container"><input type="password" maxlength="1" class="pin-input" id="newPin1"><input type="password" maxlength="1" class="pin-input" id="newPin2"><input type="password" maxlength="1" class="pin-input" id="newPin3"><input type="password" maxlength="1" class="pin-input" id="newPin4"></div><button class="btn btn-primary" onclick="savePin()">Save PIN</button>`); document.querySelectorAll('.pin-input').forEach((inp,i,arr)=>inp.addEventListener('input',e=>{if(e.target.value&&i<arr.length-1)arr[i+1].focus();})); };
   window.savePin = async () => { const pin = ['newPin1','newPin2','newPin3','newPin4'].map(id => document.getElementById(id).value).join(''); if (pin.length !== 4) { showToast('Enter 4-digit PIN', 'error'); return; } await updateDoc(doc(db, 'users', currentUser.uid), { attendantPin: pin }); showToast('PIN saved', 'success'); hideModal(); };
 
-  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || !snap.data().role?.includes('attendant')) { window.location.href = 'auth.html'; return; } document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadProfile(); resetInactivityTimer(); });
+  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || !snap.data().role?.includes('attendant')) { window.location.href = 'auth.html'; return; } document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadProfile(); });
   document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
-  window.addEventListener('beforeunload', () => { unsubscribes.forEach(u => u()); if (inactivityTimer) clearTimeout(inactivityTimer); });
+  window.addEventListener('beforeunload', () => unsubscribes.forEach(u => u()));
 </script>
 </body>
 </html>
