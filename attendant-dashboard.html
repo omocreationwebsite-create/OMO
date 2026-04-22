@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ff4da6">
-  <title>Attendant Dashboard · FashionStone</title>
+  <title>Attendant Dashboard · Omocreations</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -224,6 +224,27 @@
     /* ========== CONTENT WRAPPER ========== */
     .content-wrapper { padding: 28px; max-width: 1600px; margin: 0 auto; }
     
+    /* ========== WELCOME BANNER ========== */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--primary-soft), white);
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(255,77,166,0.15);
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .welcome-text h2 { font-size: 1.6rem; font-weight: 700; color: var(--dark); }
+    .welcome-text p { color: var(--gray); margin-top: 4px; font-size: 0.9rem; }
+    
+    .points-display { text-align: right; }
+    .points-value { font-size: 2.8rem; font-weight: 700; color: var(--primary); line-height: 1; }
+    .points-label { font-size: 0.8rem; color: var(--gray); margin-top: 4px; }
+    
     /* ========== STATS GRID ========== */
     .stats-grid {
       display: grid;
@@ -301,6 +322,9 @@
     .quick-action h4 { font-size: 0.85rem; margin-bottom: 4px; color: var(--dark); }
     .quick-action p { font-size: 0.65rem; color: var(--gray); }
     
+    /* ========== TWO COLUMN ========== */
+    .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    
     /* ========== PANELS ========== */
     .panel {
       background: white;
@@ -331,15 +355,149 @@
     
     .panel-header h3 i { color: var(--primary); }
     
-    .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    /* ========== SALARY SUMMARY ========== */
+    .salary-summary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 18px;
+      border-radius: 16px;
+    }
+    
+    .salary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 0.9rem;
+    }
+    
+    .salary-row.total {
+      border-top: 1px solid rgba(255,255,255,0.3);
+      margin-top: 8px;
+      padding-top: 12px;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    
+    /* ========== COIN TRANSACTIONS ========== */
+    .coin-transaction {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    
+    .coin-transaction:last-child { border-bottom: none; }
+    
+    .coin-info { display: flex; align-items: center; gap: 14px; }
+    
+    .coin-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .coin-icon.positive { background: rgba(16,185,129,0.1); color: var(--success); }
+    .coin-icon.negative { background: rgba(239,68,68,0.1); color: var(--danger); }
+    
+    .coin-details p { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+    .coin-details small { font-size: 0.7rem; color: var(--gray); }
+    
+    .coin-amount { font-weight: 700; font-size: 1.1rem; }
+    .coin-amount.positive { color: var(--success); }
+    .coin-amount.negative { color: var(--danger); }
+    
+    /* ========== ANNOUNCEMENTS ========== */
+    .announcement-card {
+      background: var(--primary-soft);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border-left: 4px solid var(--primary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .announcement-card:hover { transform: translateX(3px); }
+    .announcement-card.unread { background: rgba(255,77,166,0.15); }
+    
+    .announcement-card h4 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .announcement-card p {
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+    
+    .announcement-card .meta {
+      font-size: 0.7rem;
+      color: var(--gray);
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    /* ========== TABS ========== */
+    .tabs-container {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+      background: var(--gray-light);
+      padding: 5px;
+      border-radius: 40px;
+    }
+    
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      border: none;
+      background: none;
+      color: var(--gray);
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .tab-btn.active { background: var(--primary); color: white; }
+    
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    /* ========== TASKS ========== */
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    
+    .task-item:last-child { border-bottom: none; }
+    
+    .task-info h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .task-info p { font-size: 0.75rem; color: var(--gray); }
+    
+    .task-deadline { font-size: 0.75rem; }
+    .task-deadline.urgent { color: var(--danger); }
+    .task-deadline.warning { color: var(--warning); }
+    
+    .staff-selector { margin-bottom: 15px; }
     
     /* ========== TABLES ========== */
-    .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .table-wrapper { overflow-x: auto; }
     
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
     }
     
     .data-table th {
@@ -350,14 +508,12 @@
       color: var(--gray);
       text-transform: uppercase;
       border-bottom: 1.5px solid var(--primary-soft);
-      white-space: nowrap;
     }
     
     .data-table td {
-      padding: 16px 12px;
+      padding: 14px 12px;
       border-bottom: 1px solid rgba(0,0,0,0.04);
       font-size: 0.85rem;
-      white-space: nowrap;
     }
     
     /* ========== BADGES ========== */
@@ -366,13 +522,13 @@
       border-radius: 40px;
       font-size: 0.7rem;
       font-weight: 600;
+      display: inline-block;
     }
     
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
     .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
     .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
-    .badge-pending { background: rgba(107,114,128,0.1); color: var(--gray); }
     
     /* ========== BUTTONS ========== */
     .btn {
@@ -388,6 +544,7 @@
       background: white;
       border: 1px solid rgba(0,0,0,0.08);
       white-space: nowrap;
+      transition: all 0.15s;
     }
     
     .btn-primary {
@@ -400,8 +557,9 @@
     .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
     .btn-sm { padding: 6px 14px; font-size: 0.7rem; }
     .btn-success { background: var(--success); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
     
-    /* ========== PIN MODAL ========== */
+    /* ========== MODAL ========== */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -418,18 +576,37 @@
       background: white;
       border-radius: 28px;
       padding: 28px;
-      max-width: 400px;
+      max-width: 550px;
       width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
     }
     
     .modal-header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 22px;
     }
     
     .modal-header h3 { font-size: 1.25rem; font-weight: 700; }
     .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--gray); }
+    
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      font-size: 0.9rem;
+      outline: none;
+      background: white;
+    }
+    
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,77,166,0.1); }
+    textarea.form-control { resize: vertical; min-height: 80px; }
     
     .pin-input-container { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
     
@@ -446,19 +623,14 @@
     
     .pin-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,77,166,0.1); }
     
-    .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
-    
-    .form-control {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid rgba(0,0,0,0.08);
-      border-radius: 14px;
-      font-size: 0.9rem;
-      outline: none;
+    /* ========== EMPTY STATE ========== */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
     }
     
-    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,77,166,0.1); }
+    .empty-state i { font-size: 2.5rem; color: var(--primary-light); margin-bottom: 16px; }
     
     /* ========== TOAST ========== */
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
@@ -481,9 +653,25 @@
     .toast.success { border-left-color: var(--success); }
     .toast.error { border-left-color: var(--danger); }
     
-    /* ========== EMPTY STATE ========== */
-    .empty-state { text-align: center; padding: 40px 20px; color: var(--gray); }
-    .empty-state i { font-size: 2.5rem; color: var(--primary-light); margin-bottom: 16px; }
+    /* ========== SESSION LOCK ========== */
+    .session-lock-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.3);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .session-lock-modal {
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      max-width: 350px;
+      text-align: center;
+    }
     
     /* ========== MOBILE ========== */
     @media (max-width: 1200px) {
@@ -499,7 +687,6 @@
       .sidebar .nav-section-title { display: none; }
       .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); }
       .two-column { grid-template-columns: 1fr; }
-      .quick-actions { grid-template-columns: repeat(2, 1fr); }
     }
     
     @media (max-width: 768px) {
@@ -515,8 +702,15 @@
       .page-title { font-size: 1.2rem; }
       .date-badge { display: none; }
       .stats-grid { grid-template-columns: 1fr; }
-      .quick-actions { grid-template-columns: 1fr; }
+      .quick-actions { grid-template-columns: repeat(2, 1fr); }
       .panel { padding: 18px 14px; }
+      .welcome-banner { padding: 18px; }
+      .welcome-text h2 { font-size: 1.3rem; }
+      .points-value { font-size: 2rem; }
+    }
+    
+    @media (max-width: 480px) {
+      .quick-actions { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -524,11 +718,26 @@
 
 <div class="sidebar-overlay" id="sidebarOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99;" onclick="closeSidebar()"></div>
 
+<div class="session-lock-overlay" id="sessionLockOverlay">
+  <div class="session-lock-modal">
+    <i class="fas fa-lock" style="font-size:2.5rem;color:var(--primary);margin-bottom:16px;"></i>
+    <h3>Session Locked</h3>
+    <p style="color:var(--gray);margin-bottom:20px;">Enter your PIN to continue</p>
+    <div class="pin-input-container">
+      <input type="password" maxlength="1" class="pin-input" id="lockPin1">
+      <input type="password" maxlength="1" class="pin-input" id="lockPin2">
+      <input type="password" maxlength="1" class="pin-input" id="lockPin3">
+      <input type="password" maxlength="1" class="pin-input" id="lockPin4">
+    </div>
+    <button class="btn btn-primary" id="unlockBtn" style="width:100%;">Unlock</button>
+  </div>
+</div>
+
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <div class="logo-icon">💎</div>
-    <div class="logo-text"><span>Fashion</span>Stone</div>
+    <div class="logo-icon">✨</div>
+    <div class="logo-text"><span>Omo</span>creations</div>
   </div>
   
   <nav class="sidebar-nav">
@@ -568,6 +777,13 @@
       </button>
     </div>
     
+    <div class="nav-section">
+      <div class="nav-section-title">ACCOUNT</div>
+      <button class="nav-item" onclick="window.location.href='attendant-profile.html'">
+        <i class="fas fa-user"></i><span class="nav-text">My Profile</span>
+      </button>
+    </div>
+    
     <button class="nav-item logout" id="logoutBtn">
       <i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span>
     </button>
@@ -604,6 +820,18 @@
   
   <div class="content-wrapper">
     
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h2>Welcome back, <span id="welcomeName">Attendant</span>! 👋</h2>
+        <p><span id="currentDay"></span> · Ready to manage the store today?</p>
+      </div>
+      <div class="points-display">
+        <div class="points-value" id="totalPoints">0</div>
+        <div class="points-label">Total Points · ₦<span id="pointValue">100</span>/pt</div>
+      </div>
+    </div>
+    
     <!-- Quick Actions -->
     <div class="quick-actions">
       <div class="quick-action" onclick="window.location.href='sales.html'">
@@ -614,7 +842,7 @@
       <div class="quick-action" onclick="openAssignTaskModal()">
         <i class="fas fa-plus-circle"></i>
         <h4>Assign Task</h4>
-        <p>Delegate work</p>
+        <p>Delegate to staff</p>
       </div>
       <div class="quick-action" onclick="window.location.href='inventory.html'">
         <i class="fas fa-box"></i>
@@ -650,7 +878,7 @@
           <div class="stat-icon"><i class="fas fa-tasks"></i></div>
         </div>
         <div class="stat-value" id="activeTasks">0</div>
-        <div class="stat-change">Assigned today</div>
+        <div class="stat-change">Assigned to staff</div>
       </div>
       
       <div class="stat-card">
@@ -675,76 +903,114 @@
     <!-- Two Column -->
     <div class="two-column">
       
-      <!-- Recent Tasks -->
-      <div class="panel">
-        <div class="panel-header">
-          <h3><i class="fas fa-clipboard-list"></i> Recent Tasks</h3>
-          <button class="btn btn-primary btn-sm" onclick="openAssignTaskModal()">
-            <i class="fas fa-plus"></i> Assign Task
-          </button>
+      <!-- Left Column -->
+      <div>
+        <!-- Salary Overview -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-money-bill-wave"></i> Salary Overview</h3>
+          </div>
+          <div class="salary-summary" id="salarySummary">
+            <div class="salary-row"><span>Base Salary</span><span id="salaryBase">₦0</span></div>
+            <div class="salary-row"><span>Points Earned</span><span id="salaryPoints">0</span></div>
+            <div class="salary-row"><span>Point Value</span><span>₦<span id="salaryPointValue">100</span>/pt</span></div>
+            <div class="salary-row"><span>Points Bonus</span><span id="pointsBonus">₦0</span></div>
+            <div class="salary-row total"><span>Estimated Salary</span><span id="finalSalary">₦0</span></div>
+          </div>
         </div>
-        <div class="table-wrapper">
-          <table class="data-table">
-            <thead>
-              <tr><th>Task</th><th>Assigned To</th><th>Deadline</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody id="tasksTable"></tbody>
-          </table>
+        
+        <!-- Recent Coin Transactions -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-coins"></i> Recent Coin Transactions</h3>
+          </div>
+          <div id="coinTransactionsList"></div>
+        </div>
+        
+        <!-- Recent Sales -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-history"></i> Recent Sales</h3>
+            <button class="btn btn-outline btn-sm" onclick="window.location.href='sales.html'">View All</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Time</th><th>Customer</th><th>Amount</th><th>Payment</th></tr></thead>
+              <tbody id="recentSalesTable"></tbody>
+            </table>
+          </div>
         </div>
       </div>
       
-      <!-- Staff Overview -->
-      <div class="panel">
-        <div class="panel-header">
-          <h3><i class="fas fa-users"></i> Staff Overview</h3>
-          <button class="btn btn-outline btn-sm" onclick="refreshStaff()">
-            <i class="fas fa-sync-alt"></i>
-          </button>
+      <!-- Right Column -->
+      <div>
+        <!-- Announcements -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-bullhorn"></i> Announcements</h3>
+            <button class="btn btn-outline btn-sm" onclick="markAllAnnouncementsRead()"><i class="fas fa-check-double"></i> Mark All Read</button>
+          </div>
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="general">General</button>
+            <button class="tab-btn" data-tab="personal">Personal</button>
+          </div>
+          <div id="generalAnnouncements" class="tab-content active" style="max-height: 250px; overflow-y: auto;"></div>
+          <div id="personalAnnouncements" class="tab-content" style="max-height: 250px; overflow-y: auto;"></div>
         </div>
-        <div class="table-wrapper">
-          <table class="data-table">
-            <thead>
-              <tr><th>Name</th><th>Tasks Done</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody id="staffTable"></tbody>
-          </table>
+        
+        <!-- Staff Overview -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fas fa-users"></i> Staff Overview</h3>
+            <button class="btn btn-outline btn-sm" onclick="refreshStaff()"><i class="fas fa-sync-alt"></i></button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Name</th><th>Tasks Done</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="staffTable"></tbody>
+            </table>
+          </div>
         </div>
       </div>
+    </div>
+    
+    <!-- Tasks Management -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3><i class="fas fa-clipboard-list"></i> Task Management</h3>
+        <button class="btn btn-primary btn-sm" onclick="openAssignTaskModal()"><i class="fas fa-plus"></i> Assign Task</button>
+      </div>
       
+      <div class="tabs-container">
+        <button class="tab-btn active" data-task-tab="all">All Tasks</button>
+        <button class="tab-btn" data-task-tab="pending">Pending</button>
+        <button class="tab-btn" data-task-tab="inprogress">In Progress</button>
+        <button class="tab-btn" data-task-tab="submit">Submit for Staff</button>
+      </div>
+      
+      <div id="allTasks" class="tab-content active"></div>
+      <div id="pendingTasks" class="tab-content"></div>
+      <div id="inprogressTasks" class="tab-content"></div>
+      <div id="submitTasks" class="tab-content">
+        <div class="staff-selector">
+          <select class="form-control" id="staffSelect" style="max-width:300px;">
+            <option value="">-- Select Staff --</option>
+          </select>
+        </div>
+        <div id="submitTasksList"></div>
+      </div>
     </div>
     
     <!-- Low Stock Alert -->
     <div class="panel">
       <div class="panel-header">
         <h3><i class="fas fa-warehouse"></i> Low Stock Alert</h3>
-        <button class="btn btn-outline btn-sm" onclick="window.location.href='purchases.html'">
-          Create Purchase Request
-        </button>
+        <button class="btn btn-outline btn-sm" onclick="window.location.href='purchases.html'">Create Purchase Request</button>
       </div>
       <div class="table-wrapper">
         <table class="data-table">
-          <thead>
-            <tr><th>Item</th><th>Available</th><th>Threshold</th><th>Suggested Order</th><th>Action</th></tr>
-          </thead>
+          <thead><tr><th>Item</th><th>Available</th><th>Threshold</th><th>Suggested Order</th><th>Action</th></tr></thead>
           <tbody id="lowStockTable"></tbody>
-        </table>
-      </div>
-    </div>
-    
-    <!-- Recent Sales -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3><i class="fas fa-history"></i> Recent Sales</h3>
-        <button class="btn btn-outline btn-sm" onclick="window.location.href='sales.html'">
-          View All
-        </button>
-      </div>
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr><th>Time</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th></tr>
-          </thead>
-          <tbody id="salesTable"></tbody>
         </table>
       </div>
     </div>
@@ -752,11 +1018,11 @@
   </div>
 </main>
 
-<!-- PIN Modal -->
+<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="modalTitle">Verify PIN</h3>
+      <h3 id="modalTitle">Modal</h3>
       <button class="modal-close" onclick="hideModal()">&times;</button>
     </div>
     <div id="modalContent"></div>
@@ -769,108 +1035,83 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { 
-    getFirestore, doc, getDoc, collection, query, where, orderBy, limit, 
-    onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, increment 
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, orderBy, limit, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, increment, arrayUnion, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
-    authDomain: "fashion-46e5d.firebaseapp.com",
-    projectId: "fashion-46e5d",
-    storageBucket: "fashion-46e5d.firebasestorage.app",
-    messagingSenderId: "408062284317",
-    appId: "1:408062284317:web:eb905bce68926c10a0ecf4"
-  };
+  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let currentUser = null, userData = null, globalPointValue = 500, unsubscribes = [], allStaff = [], allTasks = [], inactivityTimer = null, sessionLocked = false;
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  let currentUser = null;
-  let userData = null;
-  let unsubscribes = [];
-  let pendingAction = null;
-
-  // Utilities
-  function formatTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
-  function formatDate(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }); }
+  function formatDate(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleDateString('en-GB', {day:'2-digit',month:'short'}); }
+  function formatTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); }
+  function formatDateTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
-  
-  function showToast(msg, type = 'success') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`;
-    container.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
-  }
+  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  window.hideModal = () => document.getElementById('modalOverlay').style.display = 'none';
+  function showModal(title, content) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content; document.getElementById('modalOverlay').style.display = 'flex'; }
 
-  function showPinModal(title, action, onSuccess) {
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalContent').innerHTML = `
-      <p style="text-align:center;margin-bottom:20px;">Enter your 4-digit PIN to ${action}</p>
-      <div class="pin-input-container">
-        <input type="password" maxlength="1" class="pin-input" id="pin1">
-        <input type="password" maxlength="1" class="pin-input" id="pin2">
-        <input type="password" maxlength="1" class="pin-input" id="pin3">
-        <input type="password" maxlength="1" class="pin-input" id="pin4">
-      </div>
-      <button class="btn btn-primary" id="verifyPinBtn" style="width:100%;">Verify</button>
-      <p style="text-align:center;margin-top:15px;font-size:0.75rem;color:var(--gray);">
-        <i class="fas fa-shield-alt"></i> PIN protects sensitive actions
-      </p>
-    `;
-    
-    document.getElementById('modalOverlay').style.display = 'flex';
-    document.getElementById('pin1').focus();
-    
-    document.querySelectorAll('.pin-input').forEach((input, i, inputs) => {
-      input.addEventListener('input', (e) => { if (e.target.value && i < inputs.length-1) inputs[i+1].focus(); });
-    });
-    
-    document.getElementById('verifyPinBtn').onclick = () => {
-      const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
-      if (pin === (userData?.attendantPin || '1234')) {
-        hideModal();
-        onSuccess();
-      } else {
-        showToast('Invalid PIN', 'error');
-      }
-    };
-  }
+  // Session Lock
+  function resetInactivityTimer() { if (inactivityTimer) clearTimeout(inactivityTimer); inactivityTimer = setTimeout(() => { if (!sessionLocked) { sessionLocked = true; document.getElementById('sessionLockOverlay').style.display = 'flex'; document.getElementById('lockPin1').focus(); } }, 600000); }
+  document.addEventListener('mousemove', resetInactivityTimer); document.addEventListener('keypress', resetInactivityTimer); document.addEventListener('click', resetInactivityTimer);
+  document.getElementById('unlockBtn').addEventListener('click', () => { const pin = ['lockPin1','lockPin2','lockPin3','lockPin4'].map(id => document.getElementById(id).value).join(''); if (pin === (userData?.attendantPin || '1234')) { sessionLocked = false; document.getElementById('sessionLockOverlay').style.display = 'none'; ['lockPin1','lockPin2','lockPin3','lockPin4'].forEach(id => document.getElementById(id).value = ''); resetInactivityTimer(); showToast('Unlocked', 'success'); } else { showToast('Invalid PIN', 'error'); } });
 
-  window.hideModal = function() { document.getElementById('modalOverlay').style.display = 'none'; };
-  
-  async function logAudit(action, note) {
-    try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } catch(e) {}
-  }
+  window.toggleSidebar = function() { const s = document.getElementById('sidebar'), o = document.getElementById('sidebarOverlay'); if (window.innerWidth <= 768) { s.classList.toggle('collapsed'); o.style.display = s.classList.contains('collapsed') ? 'none' : 'block'; } else { s.classList.toggle('collapsed'); } };
+  window.closeSidebar = function() { document.getElementById('sidebar').classList.add('collapsed'); document.getElementById('sidebarOverlay').style.display = 'none'; };
 
-  function cleanupSubscriptions() { unsubscribes.forEach(u => u()); unsubscribes = []; }
+  // Tab switching
+  document.querySelectorAll('[data-tab]').forEach(t => t.addEventListener('click', function() {
+    const container = this.closest('.panel') || document;
+    container.querySelectorAll('[data-tab]').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(this.dataset.tab + 'Announcements').classList.add('active');
+  }));
 
-  window.toggleSidebar = function() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    if (window.innerWidth <= 768) {
-      sidebar.classList.toggle('collapsed');
-      overlay.style.display = sidebar.classList.contains('collapsed') ? 'none' : 'block';
-    } else {
-      sidebar.classList.toggle('collapsed');
-    }
-  };
+  document.querySelectorAll('[data-task-tab]').forEach(t => t.addEventListener('click', function() {
+    document.querySelectorAll('[data-task-tab]').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelectorAll('#allTasks, #pendingTasks, #inprogressTasks, #submitTasks').forEach(c => c.classList.remove('active'));
+    document.getElementById(this.dataset.taskTab + 'Tasks').classList.add('active');
+  }));
 
-  window.closeSidebar = function() {
-    document.getElementById('sidebar').classList.add('collapsed');
-    document.getElementById('sidebarOverlay').style.display = 'none';
-  };
-
-  // Load Dashboard
   function loadDashboard() {
+    if (!currentUser) return;
     cleanupSubscriptions();
+    
     const today = new Date().toISOString().split('T')[0];
     
-    // Stats
+    // User data
+    unsubscribes.push(onSnapshot(doc(db, 'users', currentUser.uid), (snap) => {
+      if (!snap.exists()) return;
+      userData = snap.data();
+      document.getElementById('userAvatar').textContent = (userData.fullName || 'A').charAt(0).toUpperCase();
+      document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Attendant';
+      document.getElementById('userRole').textContent = userData.role === 'attendant_chief' ? 'Chief Attendant' : 'Attendant';
+      document.getElementById('welcomeName').textContent = userData.fullName?.split(' ')[0] || 'Attendant';
+      document.getElementById('currentDay').textContent = new Date().toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
+      document.getElementById('totalPoints').textContent = userData.totalPoints || 0;
+      updateSalaryDisplay();
+    }));
+    
+    // Point value
+    unsubscribes.push(onSnapshot(doc(db, 'system_settings', 'points'), (s) => {
+      if (s.exists()) globalPointValue = s.data().value || 500;
+      updateSalaryDisplay();
+    }));
+    
+    function updateSalaryDisplay() {
+      if (!userData) return;
+      const ppv = globalPointValue / 5;
+      const bonus = (userData.totalPoints || 0) * ppv;
+      const final = (userData.baseSalary || 0) + bonus;
+      document.getElementById('pointValue').textContent = ppv.toFixed(0);
+      document.getElementById('salaryBase').textContent = formatCurrency(userData.baseSalary || 0);
+      document.getElementById('salaryPoints').textContent = userData.totalPoints || 0;
+      document.getElementById('salaryPointValue').textContent = ppv.toFixed(0);
+      document.getElementById('pointsBonus').innerHTML = `<span style="color:${bonus>=0?'#10b981':'#ef4444'}">${bonus>=0?'+':''}${formatCurrency(bonus)}</span>`;
+      document.getElementById('finalSalary').textContent = formatCurrency(final);
+    }
+    
+    // Attendance stats
     const attQuery = query(collection(db, 'attendance'), where('date', '==', today));
     unsubscribes.push(onSnapshot(attQuery, (snap) => {
       const present = snap.size;
@@ -879,155 +1120,178 @@
       document.getElementById('lateCount').textContent = `${late} late`;
     }));
     
+    // Active tasks
     const tasksQuery = query(collection(db, 'tasks'), where('status', 'in', ['pending', 'in_progress']));
-    unsubscribes.push(onSnapshot(tasksQuery, (snap) => document.getElementById('activeTasks').textContent = snap.size));
+    unsubscribes.push(onSnapshot(tasksQuery, (snap) => {
+      allTasks = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      document.getElementById('activeTasks').textContent = allTasks.length;
+      renderTasks();
+    }));
     
-    const stockQuery = query(collection(db, 'stock_items'), where('status', '==', 'low'));
-    unsubscribes.push(onSnapshot(stockQuery, (snap) => document.getElementById('lowStock').textContent = snap.size));
+    // Low stock
+    const stockQuery = query(collection(db, 'stock_items'), where('status', 'in', ['low', 'out_of_stock']));
+    unsubscribes.push(onSnapshot(stockQuery, (snap) => {
+      document.getElementById('lowStock').textContent = snap.size;
+      const tbody = document.getElementById('lowStockTable'); tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">All items well stocked</div></td></tr>'; return; }
+      snap.forEach(d => { const i = d.data(); const suggested = Math.max(10, (i.threshold || 10) * 2 - (i.quantityAvailable || 0)); tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.quantityAvailable||0}</td><td>${i.threshold||10}</td><td>${suggested}</td><td><button class="btn btn-sm btn-primary" onclick="window.location.href='purchases.html'">Request</button></td></tr>`; });
+    }));
     
     // Today's Sales
-    getDocs(collection(db, 'sales')).then(snap => {
+    unsubscribes.push(onSnapshot(collection(db, 'sales'), (snap) => {
       let todaySales = 0;
       snap.forEach(d => { const s = d.data(); if (s.createdAt?.toDate().toISOString().split('T')[0] === today) todaySales += s.totalAmount || 0; });
       document.getElementById('todaySales').textContent = formatCurrency(todaySales);
-    });
-    
-    // Tasks Table
-    const recentTasksQuery = query(collection(db, 'tasks'), orderBy('createdAt', 'desc'), limit(5));
-    unsubscribes.push(onSnapshot(recentTasksQuery, async (snap) => {
-      const tbody = document.getElementById('tasksTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">No tasks</div></td></tr>'; return; }
-      for (const d of snap.docs) {
-        const t = d.data();
-        const u = await getDoc(doc(db, 'users', t.assignedTo));
-        const name = u.exists() ? u.data().fullName?.split(' ')[0] : 'Unknown';
-        tbody.innerHTML += `<tr><td>${t.title}</td><td>${name}</td><td>${formatDate(t.deadline)}</td><td><span class="badge badge-${t.status==='completed'?'success':t.status==='in_progress'?'info':'warning'}">${t.status||'pending'}</span></td><td>${t.status!=='completed'?`<button class="btn btn-sm btn-outline" onclick="submitTask('${d.id}','${t.assignedTo}')">Submit for Staff</button>`:'-'}</td></tr>`;
-      }
     }));
     
-    // Staff Table
-    const staffQuery = query(collection(db, 'users'), where('role', '==', 'staff'), where('status', '==', 'active'), limit(5));
+    // Recent Sales
+    const salesQuery = query(collection(db, 'sales'), orderBy('createdAt', 'desc'), limit(5));
+    unsubscribes.push(onSnapshot(salesQuery, (snap) => {
+      const tbody = document.getElementById('recentSalesTable'); tbody.innerHTML = '';
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No sales today</div></td></tr>'; return; }
+      snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${formatCurrency(s.totalAmount)}</td><td>${s.paymentMethod}</td></tr>`; });
+    }));
+    
+    // Coin transactions
+    const coinQuery = query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(5));
+    unsubscribes.push(onSnapshot(coinQuery, (snap) => {
+      const div = document.getElementById('coinTransactionsList');
+      if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-coins"></i><p>No transactions yet</p></div>'; return; }
+      div.innerHTML = snap.docs.map(d => {
+        const t = d.data();
+        return `<div class="coin-transaction">
+          <div class="coin-info"><div class="coin-icon ${t.points>=0?'positive':'negative'}"><i class="fas fa-${t.points>=0?'plus':'minus'}"></i></div><div class="coin-details"><p>${t.reason}</p><small>${formatDate(t.createdAt)}</small></div></div>
+          <div class="coin-amount ${t.points>=0?'positive':'negative'}">${t.points>0?'+':''}${t.points} pts</div>
+        </div>`;
+      }).join('');
+    }));
+    
+    // Staff list
+    const staffQuery = query(collection(db, 'users'), where('role', '==', 'staff'), where('status', '==', 'active'));
     unsubscribes.push(onSnapshot(staffQuery, (snap) => {
+      allStaff = snap.docs.map(d => ({id: d.id, ...d.data()}));
       const tbody = document.getElementById('staffTable'); tbody.innerHTML = '';
+      const select = document.getElementById('staffSelect'); select.innerHTML = '<option value="">-- Select Staff --</option>';
       if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No staff</div></td></tr>'; return; }
       snap.forEach(d => {
         const s = d.data();
         tbody.innerHTML += `<tr><td>${s.fullName?.split(' ')[0]}</td><td>${s.tasksCompleted||0}</td><td><span class="badge badge-success">Active</span></td><td><button class="btn btn-sm btn-outline" onclick="openSubmitForStaffModal('${d.id}')">Submit Task</button></td></tr>`;
+        select.innerHTML += `<option value="${d.id}">${s.fullName}</option>`;
       });
     }));
     
-    // Low Stock Table
-    const lowStockQuery = query(collection(db, 'stock_items'), where('status', 'in', ['low', 'out_of_stock']), limit(5));
-    unsubscribes.push(onSnapshot(lowStockQuery, (snap) => {
-      const tbody = document.getElementById('lowStockTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">All items well stocked</div></td></tr>'; return; }
-      snap.forEach(d => {
-        const i = d.data();
-        const suggested = Math.max(10, (i.threshold || 10) * 2 - (i.quantityAvailable || 0));
-        tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.quantityAvailable||0}</td><td>${i.threshold||10}</td><td>${suggested}</td><td><button class="btn btn-sm btn-primary" onclick="window.location.href='purchases.html'">Request</button></td></tr>`;
-      });
+    // Announcements - General
+    const generalQuery = query(collection(db, 'announcements'), where('target', 'in', ['all', 'attendants']), orderBy('createdAt', 'desc'), limit(5));
+    unsubscribes.push(onSnapshot(generalQuery, (snap) => {
+      const div = document.getElementById('generalAnnouncements');
+      if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No announcements</p></div>'; return; }
+      div.innerHTML = snap.docs.map(d => { const a = d.data(); const isRead = a.readBy?.includes(currentUser.uid); return `<div class="announcement-card ${!isRead ? 'unread' : ''}" onclick="openAnnouncement('${d.id}')"><h4>${!isRead ? '<i class="fas fa-circle" style="color:var(--primary);font-size:0.5rem;"></i>' : ''} ${a.title}</h4><p>${a.message.substring(0,80)}...</p><div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div></div>`; }).join('');
     }));
     
-    // Sales Table
-    const salesQuery = query(collection(db, 'sales'), orderBy('createdAt', 'desc'), limit(5));
-    unsubscribes.push(onSnapshot(salesQuery, (snap) => {
-      const tbody = document.getElementById('salesTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">No sales today</div></td></tr>'; return; }
-      snap.forEach(d => {
-        const s = d.data();
-        tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${s.items?.length||0} items</td><td>${formatCurrency(s.totalAmount)}</td><td>${s.paymentMethod}</td></tr>`;
-      });
+    // Announcements - Personal
+    const personalQuery = query(collection(db, 'announcements'), where('recipientIds', 'array-contains', currentUser.uid), orderBy('createdAt', 'desc'), limit(5));
+    unsubscribes.push(onSnapshot(personalQuery, (snap) => {
+      const div = document.getElementById('personalAnnouncements');
+      if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-envelope"></i><p>No personal announcements</p></div>'; return; }
+      div.innerHTML = snap.docs.map(d => { const a = d.data(); const isRead = a.readBy?.includes(currentUser.uid); return `<div class="announcement-card ${!isRead ? 'unread' : ''}" onclick="openAnnouncement('${d.id}')"><h4>${!isRead ? '<i class="fas fa-circle" style="color:var(--primary);font-size:0.5rem;"></i>' : ''} ${a.title}</h4><p>${a.message.substring(0,80)}...</p><div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div></div>`; }).join('');
     }));
   }
 
-  window.submitTask = function(taskId, staffId) {
-    showPinModal('Submit Task', 'submit task for staff', async () => {
-      const taskRef = doc(db, 'tasks', taskId);
-      const taskSnap = await getDoc(taskRef);
-      const task = taskSnap.data();
-      const now = new Date();
-      const early = now <= task.deadline.toDate();
-      const points = early ? 5 : -5;
-      
-      await updateDoc(taskRef, { status: 'completed', submittedAt: serverTimestamp(), submittedBy: currentUser.uid, submittedFor: staffId, pointsEarned: points });
-      await updateDoc(doc(db, 'users', staffId), { totalPoints: increment(points), tasksCompleted: increment(1) });
-      await addDoc(collection(db, 'coin_transactions'), { userId: staffId, points, reason: task.title, createdAt: serverTimestamp(), attendantId: currentUser.uid });
-      await addDoc(collection(db, 'notifications'), { userId: staffId, type: 'task_completed', title: 'Task Completed', message: `Your task "${task.title}" was marked complete. ${points>0?'+':''}${points} points`, isRead: false, createdAt: serverTimestamp() });
-      await logAudit('task_submit', `Submitted task for staff. Points: ${points}`);
-      showToast(`Task submitted! ${points>0?'+':''}${points} points`, 'success');
-    });
-  };
-
-  window.openSubmitForStaffModal = function(staffId) {
-    getDocs(query(collection(db, 'tasks'), where('assignedTo', '==', staffId), where('status', '==', 'in_progress'))).then(snap => {
-      if (snap.empty) { showToast('No in-progress tasks', 'warning'); return; }
-      let opts = ''; snap.forEach(d => opts += `<option value="${d.id}">${d.data().title}</option>`);
-      document.getElementById('modalTitle').textContent = 'Submit Task for Staff';
-      document.getElementById('modalContent').innerHTML = `<select id="taskSelect" class="form-control">${opts}</select><button class="btn btn-primary" style="margin-top:15px;" onclick="confirmSubmitForStaff('${staffId}')">Submit</button>`;
-      document.getElementById('modalOverlay').style.display = 'flex';
-    });
-  };
-
-  window.confirmSubmitForStaff = function(staffId) {
-    const taskId = document.getElementById('taskSelect').value;
-    hideModal();
-    window.submitTask(taskId, staffId);
-  };
-
-  window.openAssignTaskModal = function() {
-    getDocs(query(collection(db, 'users'), where('role', '==', 'staff'), where('status', '==', 'active'))).then(snap => {
-      let opts = ''; snap.forEach(d => opts += `<option value="${d.id}">${d.data().fullName}</option>`);
-      document.getElementById('modalTitle').textContent = 'Assign New Task';
-      document.getElementById('modalContent').innerHTML = `
-        <div class="form-group"><label>Task Title</label><input class="form-control" id="taskTitle" placeholder="e.g., Stone setting"></div>
-        <div class="form-group"><label>Assign To</label><select class="form-control" id="taskAssignee">${opts}</select></div>
-        <div class="form-group"><label>Deadline</label><input type="datetime-local" class="form-control" id="taskDeadline"></div>
-        <button class="btn btn-primary" onclick="createTask()">Assign (5 points)</button>
-      `;
-      document.getElementById('modalOverlay').style.display = 'flex';
-    });
-  };
-
-  window.createTask = async function() {
-    const title = document.getElementById('taskTitle')?.value;
-    const assignee = document.getElementById('taskAssignee')?.value;
-    const deadline = document.getElementById('taskDeadline')?.value;
-    if (!title || !assignee || !deadline) { showToast('All fields required', 'error'); return; }
+  function renderTasks() {
+    const allDiv = document.getElementById('allTasks');
+    const pendingDiv = document.getElementById('pendingTasks');
+    const inprogressDiv = document.getElementById('inprogressTasks');
     
-    showPinModal('Assign Task', 'assign task', async () => {
-      await addDoc(collection(db, 'tasks'), { title, assignedTo: assignee, assignedBy: currentUser.uid, assignedByName: userData.fullName, deadline: new Date(deadline), status: 'pending', pointsValue: 5, createdAt: serverTimestamp() });
-      await addDoc(collection(db, 'notifications'), { userId: assignee, type: 'task_assigned', title: 'New Task', message: `You have been assigned: ${title}`, isRead: false, createdAt: serverTimestamp() });
-      await logAudit('task_assigned', `Task: ${title}`);
-      showToast('Task assigned', 'success');
-      hideModal();
-    });
+    allDiv.innerHTML = allTasks.length ? allTasks.map(t => `<div class="task-item"><div class="task-info"><h4>${t.title}</h4><p>Assigned to: ${t.assignedToName || 'Unknown'}</p></div><span class="badge badge-${t.status==='completed'?'success':t.status==='in_progress'?'info':'warning'}">${t.status}</span></div>`).join('') : '<div class="empty-state">No tasks</div>';
+    
+    const pending = allTasks.filter(t => t.status === 'pending');
+    pendingDiv.innerHTML = pending.length ? pending.map(t => `<div class="task-item"><div class="task-info"><h4>${t.title}</h4><p>Deadline: ${formatDate(t.deadline)}</p></div><span class="badge badge-warning">Pending</span></div>`).join('') : '<div class="empty-state">No pending tasks</div>';
+    
+    const inprogress = allTasks.filter(t => t.status === 'in_progress');
+    inprogressDiv.innerHTML = inprogress.length ? inprogress.map(t => `<div class="task-item"><div class="task-info"><h4>${t.title}</h4><p>Started: ${formatDate(t.startedAt)}</p></div><span class="badge badge-info">In Progress</span></div>`).join('') : '<div class="empty-state">No tasks in progress</div>';
+  }
+
+  window.openAnnouncement = async (id) => {
+    const snap = await getDoc(doc(db, 'announcements', id));
+    if (!snap.exists()) return;
+    const a = snap.data();
+    if (!a.readBy?.includes(currentUser.uid)) await updateDoc(doc(db, 'announcements', id), { readBy: arrayUnion(currentUser.uid) });
+    let html = `<h4>${a.title}</h4><p style="margin:15px 0;">${a.message}</p><p style="font-size:0.8rem;color:var(--gray);">From: ${a.sentByName} · ${formatDateTime(a.createdAt)}</p>`;
+    if (a.requireAcknowledgment && !a.acknowledgedBy?.includes(currentUser.uid)) html += `<button class="btn btn-success" onclick="acknowledgeAnnouncement('${id}')"><i class="fas fa-check"></i> Acknowledge</button>`;
+    else if (a.acknowledgedBy?.includes(currentUser.uid)) html += '<p><i class="fas fa-check-circle" style="color:var(--success);"></i> You have acknowledged this.</p>';
+    html += `<div style="margin-top:15px;"><textarea class="form-control" id="replyMessage" placeholder="Reply..."></textarea><button class="btn btn-primary" style="margin-top:10px;" onclick="sendReply('${id}')"><i class="fas fa-reply"></i> Send Reply</button></div>`;
+    html += '<button class="btn btn-outline" onclick="hideModal()" style="margin-top:15px;width:100%;">Close</button>';
+    showModal('Announcement', html);
   };
 
-  window.refreshStaff = function() { loadDashboard(); showToast('Refreshed', 'success'); };
+  window.acknowledgeAnnouncement = async (id) => {
+    await updateDoc(doc(db, 'announcements', id), { acknowledgedBy: arrayUnion(currentUser.uid) });
+    await addDoc(collection(db, 'announcement_replies'), { announcementId: id, announcementTitle: (await getDoc(doc(db, 'announcements', id))).data().title, userId: currentUser.uid, userName: userData.fullName, type: 'acknowledgment', message: 'Acknowledged', createdAt: serverTimestamp() });
+    showToast('Acknowledged', 'success'); hideModal();
+  };
 
-  // Init
+  window.sendReply = async (announcementId) => {
+    const msg = document.getElementById('replyMessage')?.value.trim(); if (!msg) { showToast('Enter a reply', 'error'); return; }
+    const a = (await getDoc(doc(db, 'announcements', announcementId))).data();
+    await addDoc(collection(db, 'announcement_replies'), { announcementId, announcementTitle: a.title, userId: currentUser.uid, userName: userData.fullName, type: 'reply', message: msg, createdAt: serverTimestamp() });
+    showToast('Reply sent', 'success'); hideModal();
+  };
+
+  window.markAllAnnouncementsRead = async () => {
+    const snap = await getDocs(collection(db, 'announcements')); const batch = writeBatch(db);
+    snap.forEach(d => { if (!d.data().readBy?.includes(currentUser.uid)) batch.update(d.ref, { readBy: arrayUnion(currentUser.uid) }); });
+    await batch.commit(); showToast('All marked as read', 'success');
+  };
+
+  window.openAssignTaskModal = () => {
+    let opts = ''; allStaff.forEach(s => opts += `<option value="${s.id}">${s.fullName}</option>`);
+    showModal('Assign Task', `<div class="form-group"><label>Task Title</label><input class="form-control" id="taskTitle" placeholder="e.g., Stone setting"></div><div class="form-group"><label>Assign To</label><select class="form-control" id="taskAssignee">${opts}</select></div><div class="form-group"><label>Deadline</label><input type="datetime-local" class="form-control" id="taskDeadline"></div><button class="btn btn-primary" onclick="createTask()">Assign (5 points)</button>`);
+  };
+
+  window.createTask = async () => {
+    const title = document.getElementById('taskTitle')?.value, assignee = document.getElementById('taskAssignee')?.value, deadline = document.getElementById('taskDeadline')?.value;
+    if (!title || !assignee || !deadline) { showToast('All fields required', 'error'); return; }
+    await addDoc(collection(db, 'tasks'), { title, assignedTo: assignee, assignedBy: currentUser.uid, assignedByName: userData.fullName, deadline: new Date(deadline), status: 'pending', pointsValue: 5, createdAt: serverTimestamp() });
+    await addDoc(collection(db, 'notifications'), { userId: assignee, type: 'task_assigned', title: 'New Task', message: `You have been assigned: ${title}`, isRead: false, createdAt: serverTimestamp() });
+    showToast('Task assigned', 'success'); hideModal();
+  };
+
+  window.openSubmitForStaffModal = (staffId) => {
+    const staffTasks = allTasks.filter(t => t.assignedTo === staffId && t.status === 'in_progress');
+    if (!staffTasks.length) { showToast('No in-progress tasks', 'warning'); return; }
+    let opts = ''; staffTasks.forEach(t => opts += `<option value="${t.id}">${t.title}</option>`);
+    showModal('Submit Task for Staff', `<select id="taskSelect" class="form-control">${opts}</select><button class="btn btn-primary" style="margin-top:15px;" onclick="confirmSubmitForStaff('${staffId}')">Submit</button>`);
+  };
+
+  window.confirmSubmitForStaff = (staffId) => {
+    const taskId = document.getElementById('taskSelect').value; hideModal();
+    const task = allTasks.find(t => t.id === taskId);
+    const early = new Date() <= task.deadline.toDate(); const points = early ? 5 : -5;
+    updateDoc(doc(db, 'tasks', taskId), { status: 'completed', submittedAt: serverTimestamp(), submittedBy: currentUser.uid, submittedFor: staffId, pointsEarned: points });
+    updateDoc(doc(db, 'users', staffId), { totalPoints: increment(points), tasksCompleted: increment(1) });
+    addDoc(collection(db, 'coin_transactions'), { userId: staffId, points, reason: task.title, createdAt: serverTimestamp() });
+    addDoc(collection(db, 'notifications'), { userId: staffId, type: 'task_completed', title: 'Task Completed', message: `Your task "${task.title}" was marked complete. ${points>0?'+':''}${points} points`, isRead: false, createdAt: serverTimestamp() });
+    showToast(`Task submitted! ${points>0?'+':''}${points} points`, 'success');
+  };
+
+  window.refreshStaff = () => { loadDashboard(); showToast('Refreshed', 'success'); };
+
+  function cleanupSubscriptions() { unsubscribes.forEach(u => u()); unsubscribes = []; }
+
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'auth.html'; return; }
     currentUser = user;
     const userSnap = await getDoc(doc(db, 'users', user.uid));
     if (!userSnap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; }
-    
     userData = userSnap.data();
     if (userData.role !== 'attendant' && userData.role !== 'attendant_chief') { window.location.href = userData.role?.includes('admin') ? 'admin-dashboard.html' : 'staff-dashboard.html'; return; }
     if (userData.status !== 'active') { await signOut(auth); window.location.href = 'auth.html'; return; }
-    
-    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Attendant';
-    document.getElementById('userRole').textContent = userData.role === 'attendant_chief' ? 'Chief Attendant' : 'Attendant';
-    document.getElementById('userAvatar').textContent = (userData.fullName || 'A').charAt(0).toUpperCase();
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    
-    loadDashboard();
-    await logAudit('dashboard_view', 'Attendant viewed dashboard');
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+    loadDashboard(); resetInactivityTimer();
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', async () => { await logAudit('logout', 'Attendant logged out'); await signOut(auth); window.location.href = 'auth.html'; });
-  document.getElementById('modalOverlay').addEventListener('click', (e) => { if (e.target === document.getElementById('modalOverlay')) hideModal(); });
-  window.addEventListener('beforeunload', cleanupSubscriptions);
+  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+  window.addEventListener('beforeunload', () => { cleanupSubscriptions(); if (inactivityTimer) clearTimeout(inactivityTimer); });
 </script>
 </body>
 </html>
