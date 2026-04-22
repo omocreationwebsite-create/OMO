@@ -199,7 +199,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, onSnapshot, addDoc, updateDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
@@ -251,7 +251,6 @@
     };
   }
 
-  // Session Lock
   function resetInactivityTimer() {
     if (inactivityTimer) clearTimeout(inactivityTimer);
     inactivityTimer = setTimeout(() => {
@@ -265,29 +264,28 @@
   document.addEventListener('mousemove', resetInactivityTimer);
   document.addEventListener('keypress', resetInactivityTimer);
   document.addEventListener('click', resetInactivityTimer);
+  
   document.getElementById('unlockBtn').addEventListener('click', () => {
-    const pin = ['lockPin1', 'lockPin2', 'lockPin3', 'lockPin4'].map(id => document.getElementById(id).value).join('');
+    const pin = ['lockPin1','lockPin2','lockPin3','lockPin4'].map(id => document.getElementById(id).value).join('');
     if (pin === (userData?.attendantPin || '1234')) {
       sessionLocked = false;
       document.getElementById('sessionLockOverlay').style.display = 'none';
-      ['lockPin1', 'lockPin2', 'lockPin3', 'lockPin4'].forEach(id => document.getElementById(id).value = '');
+      ['lockPin1','lockPin2','lockPin3','lockPin4'].forEach(id => document.getElementById(id).value = '');
       resetInactivityTimer();
       showToast('Unlocked', 'success');
-    } else {
-      showToast('Invalid PIN', 'error');
-    }
+    } else { showToast('Invalid PIN', 'error'); }
   });
 
   async function logAudit(action, note) {
-    try { 
-      await addDoc(collection(db, 'audit_logs'), { 
-        actionType: action, 
-        performedBy: currentUser?.uid, 
-        performedByName: userData?.fullName, 
-        performedAt: serverTimestamp(), 
-        note 
-      }); 
-    } catch(e) { console.warn('Audit failed:', e); }
+    try { await addDoc(collection(db, 'audit_logs'), { actionType: action, performedBy: currentUser?.uid, performedByName: userData?.fullName, performedAt: serverTimestamp(), note }); } 
+    catch(e) { console.warn('Audit failed:', e); }
+  }
+
+  // Calculate status based on quantity and threshold
+  function calculateStatus(quantity, threshold) {
+    if (quantity === 0) return 'out_of_stock';
+    if (quantity <= threshold) return 'low';
+    return 'available';
   }
 
   function renderInventory() {
@@ -301,7 +299,6 @@
     const status = document.getElementById('statusFilter').value;
     if (status !== 'all') filtered = filtered.filter(i => i.status === status);
     
-    // Update stats
     document.getElementById('totalItems').textContent = allItems.length;
     const lowItems = allItems.filter(i => i.status === 'low');
     const outItems = allItems.filter(i => i.status === 'out_of_stock');
@@ -311,13 +308,11 @@
     const totalValue = allItems.reduce((sum, i) => sum + ((i.quantityAvailable || 0) * (i.unitPrice || 0)), 0);
     document.getElementById('totalValue').textContent = formatCurrency(totalValue);
     
-    // Low stock banner
     const lowCount = lowItems.length + outItems.length;
     const banner = document.getElementById('lowStockBanner');
     banner.style.display = lowCount > 0 ? 'flex' : 'none';
     document.getElementById('lowStockCount').textContent = lowCount;
     
-    // Render table
     const tbody = document.getElementById('inventoryTable');
     tbody.innerHTML = '';
     
@@ -335,7 +330,7 @@
       tbody.innerHTML += `<tr>
         <td>${item.name || '-'}</td>
         <td>${item.category || '-'}</td>
-        <td>${item.quantityAvailable || 0}</td>
+        <td style="font-weight:600;">${item.quantityAvailable || 0}</td>
         <td>${item.quantitySold || 0}</td>
         <td>${formatCurrency(item.unitPrice)}</td>
         <td>${formatCurrency(totalItemValue)}</td>
@@ -354,8 +349,7 @@
     if (unsubscribes.length) unsubscribes.forEach(u => u());
     unsubscribes = [];
     
-    const q = query(collection(db, 'stock_items'), orderBy('name'));
-    unsubscribes.push(onSnapshot(q, (snap) => {
+    unsubscribes.push(onSnapshot(collection(db, 'stock_items'), (snap) => {
       allItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderInventory();
     }, (error) => {
@@ -372,9 +366,9 @@
         <option value="bridal">Bridal Materials</option><option value="paperstones">Paperstones</option>
         <option value="other">Other</option>
       </select></div>
-      <div class="form-group"><label>Initial Quantity</label><input type="number" class="form-control" id="itemQty" value="0"></div>
-      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="itemPrice" value="0"></div>
-      <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="itemThreshold" value="10"></div>
+      <div class="form-group"><label>Initial Quantity</label><input type="number" class="form-control" id="itemQty" value="0" min="0"></div>
+      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="itemPrice" value="0" min="0" step="0.01"></div>
+      <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="itemThreshold" value="10" min="1"></div>
       <p style="font-size:0.75rem;color:var(--gray);margin-bottom:15px;">
         <i class="fas fa-info-circle"></i> Item will require admin approval before becoming available.
       </p>
@@ -393,35 +387,23 @@
         const price = parseFloat(document.getElementById('itemPrice')?.value) || 0;
         const category = document.getElementById('itemCategory')?.value || 'other';
         
-        // Determine status based on role
         const isAdmin = userData?.role === 'admin' || userData?.role === 'super_admin';
-        const status = isAdmin ? 
-          (qty === 0 ? 'out_of_stock' : qty <= threshold ? 'low' : 'available') : 
-          'pending_approval';
+        const status = isAdmin ? calculateStatus(qty, threshold) : 'pending_approval';
         
-        // Create the document
         const docRef = await addDoc(collection(db, 'stock_items'), {
-          name,
-          category,
-          quantityAvailable: qty,
-          quantitySold: 0,
-          unitPrice: price,
-          threshold,
-          status,
-          createdBy: currentUser.uid,
-          createdByName: userData?.fullName || 'Attendant',
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+          name, category, quantityAvailable: qty, quantitySold: 0, unitPrice: price,
+          threshold, status, createdBy: currentUser.uid, createdByName: userData?.fullName || 'Attendant',
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
         
-        console.log('Item created with ID:', docRef.id);
+        console.log('✅ Item created:', { id: docRef.id, name, qty, status });
         
         await logAudit('add_item', `Added item: ${name} (Qty: ${qty}, Price: ₦${price})`);
-        showToast(isAdmin ? 'Item added successfully' : 'Item submitted for admin approval', 'success');
+        showToast(isAdmin ? `Item added (${qty} units)` : 'Item submitted for admin approval', 'success');
         hideModal();
       } catch (error) {
         console.error('Error adding item:', error);
-        showToast('Failed to add item: ' + error.message, 'error');
+        showToast('Failed to add item', 'error');
       }
     });
   };
@@ -439,9 +421,10 @@
         <option value="paperstones" ${item.category === 'paperstones' ? 'selected' : ''}>Paperstones</option>
         <option value="other" ${item.category === 'other' ? 'selected' : ''}>Other</option>
       </select></div>
-      <div class="form-group"><label>Available Quantity</label><input type="number" class="form-control" id="editQty" value="${item.quantityAvailable || 0}"></div>
-      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${item.unitPrice || 0}"></div>
-      <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="editThreshold" value="${item.threshold || 10}"></div>
+      <div class="form-group"><label>Available Quantity</label><input type="number" class="form-control" id="editQty" value="${item.quantityAvailable || 0}" min="0"></div>
+      <div class="form-group"><label>Sold Quantity</label><input type="number" class="form-control" id="editSold" value="${item.quantitySold || 0}" min="0" readonly style="background:#f5f5f5;"></div>
+      <div class="form-group"><label>Unit Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${item.unitPrice || 0}" min="0" step="0.01"></div>
+      <div class="form-group"><label>Low Stock Threshold</label><input type="number" class="form-control" id="editThreshold" value="${item.threshold || 10}" min="1"></div>
       <button class="btn btn-primary" onclick="saveEdit('${id}')">Save Changes</button>
     `);
   };
@@ -451,19 +434,18 @@
       try {
         const qty = parseInt(document.getElementById('editQty')?.value) || 0;
         const threshold = parseInt(document.getElementById('editThreshold')?.value) || 10;
-        const status = qty === 0 ? 'out_of_stock' : qty <= threshold ? 'low' : 'available';
+        const price = parseFloat(document.getElementById('editPrice')?.value) || 0;
+        const name = document.getElementById('editName')?.value;
+        const category = document.getElementById('editCategory')?.value;
+        
+        const item = allItems.find(i => i.id === id);
+        const status = item.status === 'pending_approval' ? 'pending_approval' : calculateStatus(qty, threshold);
         
         await updateDoc(doc(db, 'stock_items', id), {
-          name: document.getElementById('editName')?.value,
-          category: document.getElementById('editCategory')?.value,
-          quantityAvailable: qty,
-          unitPrice: parseFloat(document.getElementById('editPrice')?.value) || 0,
-          threshold,
-          status,
-          updatedAt: serverTimestamp()
+          name, category, quantityAvailable: qty, unitPrice: price, threshold, status, updatedAt: serverTimestamp()
         });
         
-        await logAudit('edit_item', `Updated item: ${document.getElementById('editName')?.value}`);
+        await logAudit('edit_item', `Updated item: ${name}, Qty: ${qty}`);
         showToast('Item updated successfully', 'success');
         hideModal();
       } catch (error) {
@@ -492,22 +474,13 @@
         
         const item = allItems.find(i => i.id === id);
         const newQty = (item.quantityAvailable || 0) + qty;
-        const status = newQty === 0 ? 'out_of_stock' : newQty <= (item.threshold || 10) ? 'low' : 'available';
+        const status = calculateStatus(newQty, item.threshold || 10);
         
-        await updateDoc(doc(db, 'stock_items', id), {
-          quantityAvailable: newQty,
-          status,
-          updatedAt: serverTimestamp()
-        });
+        await updateDoc(doc(db, 'stock_items', id), { quantityAvailable: newQty, status, updatedAt: serverTimestamp() });
         
         await addDoc(collection(db, 'stock_history'), {
-          itemId: id,
-          itemName: item.name,
-          type: 'restock',
-          quantity: qty,
-          performedBy: currentUser.uid,
-          performedByName: userData?.fullName,
-          createdAt: serverTimestamp()
+          itemId: id, itemName: item.name, type: 'restock', quantity: qty,
+          performedBy: currentUser.uid, performedByName: userData?.fullName, createdAt: serverTimestamp()
         });
         
         await logAudit('restock_item', `Restocked ${item.name} by ${qty} units`);
@@ -522,99 +495,51 @@
 
   window.deleteItem = async (id) => {
     if (!confirm('Are you sure you want to delete this item?')) return;
-    
     try {
       const item = allItems.find(i => i.id === id);
       await deleteDoc(doc(db, 'stock_items', id));
       await logAudit('delete_item', `Deleted item: ${item?.name}`);
       showToast('Item deleted', 'success');
-    } catch (error) {
-      console.error('Error deleting item:', error);
-      showToast('Failed to delete item', 'error');
-    }
+    } catch (error) { showToast('Failed to delete item', 'error'); }
   };
 
-  window.refreshInventory = () => {
-    loadInventory();
-    showToast('Inventory refreshed', 'success');
-  };
+  window.refreshInventory = () => { loadInventory(); showToast('Inventory refreshed', 'success'); };
 
-  // Export CSV
   document.getElementById('exportBtn').addEventListener('click', () => {
     const headers = ['Name', 'Category', 'Available', 'Sold', 'Unit Price', 'Total Value', 'Status'];
-    const rows = allItems.map(i => [
-      i.name || '', i.category || '', i.quantityAvailable || 0, i.quantitySold || 0,
-      i.unitPrice || 0, (i.quantityAvailable || 0) * (i.unitPrice || 0), i.status || ''
-    ]);
-    
+    const rows = allItems.map(i => [i.name||'', i.category||'', i.quantityAvailable||0, i.quantitySold||0, i.unitPrice||0, (i.quantityAvailable||0)*(i.unitPrice||0), i.status||'']);
     const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `inventory_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `inventory_${new Date().toISOString().split('T')[0]}.csv`; a.click();
     showToast('Inventory exported', 'success');
   });
 
-  // Filters
   document.getElementById('searchInput').addEventListener('input', renderInventory);
   document.getElementById('categoryFilter').addEventListener('change', renderInventory);
   document.getElementById('statusFilter').addEventListener('change', renderInventory);
 
-  // Initialize
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'auth.html'; return; }
-    
     currentUser = user;
-    
     try {
       const userSnap = await getDoc(doc(db, 'users', user.uid));
-      if (!userSnap.exists()) { 
-        await signOut(auth); 
-        window.location.href = 'auth.html'; 
-        return; 
-      }
-      
+      if (!userSnap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; }
       userData = userSnap.data();
-      
-      if (userData.status !== 'active') { 
-        await signOut(auth); 
-        window.location.href = 'auth.html'; 
-        return; 
+      if (userData.status !== 'active') { await signOut(auth); window.location.href = 'auth.html'; return; }
+      if (userData.role !== 'attendant' && userData.role !== 'attendant_chief' && userData.role !== 'admin' && userData.role !== 'super_admin') {
+        window.location.href = 'staff-dashboard.html'; return;
       }
-      
-      // Check role
-      if (userData.role !== 'attendant' && userData.role !== 'attendant_chief' && 
-          userData.role !== 'admin' && userData.role !== 'super_admin') {
-        window.location.href = 'staff-dashboard.html';
-        return;
-      }
-      
-      // Update UI
       document.getElementById('sidebarAvatar').textContent = (userData.fullName || 'A').charAt(0).toUpperCase();
       document.getElementById('sidebarName').textContent = userData.fullName?.split(' ')[0] || 'Attendant';
       document.getElementById('sidebarRole').textContent = userData.role || 'Attendant';
       document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
-      
-      // Load inventory
-      loadInventory();
-      resetInactivityTimer();
-      
-    } catch (error) {
-      console.error('Init error:', error);
-      showToast('Error initializing', 'error');
-    }
+      loadInventory(); resetInactivityTimer();
+    } catch (error) { console.error('Init error:', error); showToast('Error initializing', 'error'); }
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await signOut(auth);
-    window.location.href = 'auth.html';
-  });
-
-  window.addEventListener('beforeunload', () => {
-    unsubscribes.forEach(u => u());
-    if (inactivityTimer) clearTimeout(inactivityTimer);
-  });
+  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+  window.addEventListener('beforeunload', () => { unsubscribes.forEach(u => u()); if (inactivityTimer) clearTimeout(inactivityTimer); });
 </script>
 </body>
 </html>
