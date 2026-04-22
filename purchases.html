@@ -28,7 +28,7 @@
     .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; }
     .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
     .content-wrapper { padding: 28px; max-width: 1600px; }
-    .tabs-container { background: white; border-radius: 20px; padding: 6px; margin-bottom: 24px; display: flex; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .tabs-container { background: white; border-radius: 20px; padding: 6px; margin-bottom: 24px; display: flex; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); flex-wrap: wrap; }
     .tab { padding: 14px 24px; border-radius: 16px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; background: none; color: var(--gray); flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .tab.active { background: var(--primary); color: white; }
     .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
@@ -126,7 +126,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, addDoc, updateDoc, serverTimestamp, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
@@ -191,7 +191,7 @@
           const diff = received - expected; 
           diffHtml += `<div>${i.name}: ${received}/${expected} <span class="${diff<0?'difference-negative':'difference-positive'}">(${diff>0?'+':''}${diff})</span></div>`; 
         });
-        purchasedTbody.innerHTML += `<tr><td>${formatDate(r.createdAt)}</td><td>${r.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${diffHtml || '-'}</td></tr>`;
+        purchasedTbody.innerHTML += `<tr><td>${formatDate(r.purchasedAt || r.createdAt)}</td><td>${r.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${diffHtml || '-'}</td></tr>`;
       }
     });
     
@@ -210,7 +210,6 @@
       renderTables(); 
     }, (error) => {
       console.error('❌ Error loading requests:', error);
-      showToast('Error loading requests', 'error');
     })); 
     loadLowStockItems();
   }
@@ -253,9 +252,6 @@
       document.getElementById('modalTitle').textContent = 'New Purchase Request'; 
       document.getElementById('modalContent').innerHTML = `<div id="itemsContainer"><div class="item-row"><select class="form-control item-select">${opts}</select><input type="number" class="form-control item-qty" placeholder="Qty" value="10"></div></div><button class="btn btn-outline btn-sm" onclick="addItemRow()"><i class="fas fa-plus"></i> Add Item</button><div class="form-group"><label>Note (optional)</label><textarea class="form-control" id="reqNote"></textarea></div><div style="display:flex;gap:10px;"><button class="btn btn-outline" onclick="saveAsDraft()">Save as Draft</button><button class="btn btn-primary" onclick="submitNewRequest()">Submit for Approval</button></div>`; 
       document.getElementById('modalOverlay').style.display = 'flex'; 
-    }).catch(error => {
-      console.error('Error loading stock:', error);
-      showToast('Error loading stock items', 'error');
     }); 
   };
   
@@ -294,7 +290,7 @@
     
     showPinModal(status==='draft'?'Save Draft':'Submit Request', status==='draft'?'save draft':'submit request', async () => { 
       try {
-        await addDoc(collection(db, 'purchase_requests'), { 
+        const docRef = await addDoc(collection(db, 'purchase_requests'), { 
           items, 
           note: document.getElementById('reqNote')?.value||'', 
           status, 
@@ -302,11 +298,12 @@
           requestedByName: userData.fullName, 
           createdAt: serverTimestamp() 
         }); 
+        console.log('✅ Request created:', docRef.id);
         await logAudit(status==='draft'?'draft_request':'submit_request', `${status} with ${items.length} items`); 
-        showToast(status==='draft'?'Draft saved':'Request submitted', 'success'); 
+        showToast(status==='draft'?'Draft saved':'Request submitted for approval', 'success'); 
         hideModal(); 
       } catch (error) {
-        console.error('Save error:', error);
+        console.error('❌ Save error:', error);
         showToast('Failed to save: ' + error.message, 'error');
       }
     }); 
@@ -338,7 +335,7 @@
   window.openMarkPurchased = (id) => { 
     const r = allRequests.find(x => x.id === id); 
     if(!r) return; 
-    let html = `<p>Enter received quantities:</p>`; 
+    let html = `<p>Enter actual quantities purchased:</p>`; 
     r.items?.forEach((item, idx) => { 
       const qty = item.suggested || item.quantity || 0;
       html += `<div class="form-group"><label>${item.name} (Expected: ${qty})</label><input type="number" class="form-control" id="rec-${idx}" value="${qty}"></div>`; 
@@ -354,30 +351,48 @@
       const r = allRequests.find(x => x.id === id); 
       const receivedItems = r.items.map((item, idx) => {
         const expected = item.suggested || item.quantity || 0;
-        const received = parseInt(document.getElementById(`rec-${idx}`).value) || expected;
+        const received = parseInt(document.getElementById(`rec-${idx}`)?.value) || expected;
         return { ...item, expected, received }; 
       });
       
-      // Update stock
+      console.log('📦 Marking as purchased:', receivedItems);
+      
+      // Update stock in inventory - FIXED
       const batch = writeBatch(db);
       for (const item of receivedItems) { 
         if (item.id) { 
           const ref = doc(db, 'stock_items', item.id); 
           const snap = await getDoc(ref); 
           if (snap.exists()) { 
-            const cur = snap.data().quantityAvailable || 0; 
-            const threshold = snap.data().threshold || 10;
+            const data = snap.data();
+            const cur = data.quantityAvailable || 0; 
+            const threshold = data.threshold || 10;
             const newQty = cur + item.received;
+            
+            console.log(`📦 Updating ${item.name}: ${cur} + ${item.received} = ${newQty}`);
+            
             batch.update(ref, { 
               quantityAvailable: newQty, 
               status: newQty === 0 ? 'out_of_stock' : newQty <= threshold ? 'low' : 'available',
               updatedAt: serverTimestamp()
             }); 
-          } 
+          } else {
+            console.warn('⚠️ Item not found:', item.id);
+          }
         } 
       }
-      await batch.commit();
       
+      try {
+        await batch.commit();
+        console.log('✅ Stock updated successfully');
+        showToast('Stock updated successfully', 'success');
+      } catch (error) {
+        console.error('❌ Batch commit error:', error);
+        showToast('Error updating stock: ' + error.message, 'error');
+        return;
+      }
+      
+      // Mark request as purchased
       await updateDoc(doc(db, 'purchase_requests', id), { 
         status: 'purchased', 
         receivedItems, 
@@ -385,17 +400,26 @@
         purchasedByName: userData.fullName,
         purchasedAt: serverTimestamp() 
       }); 
+      
       await logAudit('purchase_completed', `Completed purchase with ${receivedItems.length} items`); 
-      showToast('Purchase completed, stock updated', 'success'); 
+      showToast('Purchase completed!', 'success'); 
       hideModal(); 
     }); 
   };
 
   window.openQuickRestockModal = () => {
+    if (lowStockItems.length === 0) {
+      showToast('No low stock items', 'info');
+      return;
+    }
     let html = `<p>Select low stock items to restock:</p>`;
     lowStockItems.forEach(item => {
       const suggested = Math.max((item.threshold || 10) * 2 - (item.quantityAvailable || 0), 10);
-      html += `<div class="item-row"><input type="checkbox" id="quick-${item.id}" value="${item.id}" data-name="${item.name}" data-price="${item.unitPrice||0}" checked style="margin-right:10px;"><label style="flex:1;">${item.name} (Stock: ${item.quantityAvailable||0})</label><input type="number" value="${suggested}" style="width:80px;"></div>`;
+      html += `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <input type="checkbox" id="quick-${item.id}" value="${item.id}" data-name="${item.name}" data-price="${item.unitPrice||0}" checked>
+        <label style="flex:1;">${item.name} (Stock: ${item.quantityAvailable||0})</label>
+        <input type="number" value="${suggested}" style="width:80px;padding:8px;border-radius:8px;border:1px solid #ddd;">
+      </div>`;
     });
     html += `<button class="btn btn-primary" onclick="createQuickRestock()">Create Restock Request</button>`;
     document.getElementById('modalTitle').textContent = 'Quick Restock';
