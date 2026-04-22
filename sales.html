@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ff4da6">
-  <title>Sales · FashionStone</title>
+  <title>Sales · Omocreations</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -116,6 +116,7 @@
     
     .receipt-container { background: #f8f9fa; border-radius: 12px; padding: 20px; font-family: 'Courier New', monospace; }
     .receipt-header { text-align: center; border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 10px; }
+    .receipt-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
     .receipt-items { margin: 15px 0; }
     .receipt-item { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; }
     .receipt-total { border-top: 1px dashed #ccc; padding-top: 10px; font-weight: bold; font-size: 1.1rem; }
@@ -147,7 +148,7 @@
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-header"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div>
+  <div class="sidebar-header"><div class="logo-icon">✨</div><div class="logo-text"><span>Omo</span>creations</div></div>
   <nav class="sidebar-nav">
     <button class="nav-item" onclick="window.location.href='attendant-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
     <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span>Inventory</span></button>
@@ -165,7 +166,6 @@
   <header class="top-bar"><h1 class="page-title">Sales & Transactions</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
     
-    <!-- Index Creation Links -->
     <div class="index-warning" id="indexWarning" style="display:none;">
       <i class="fas fa-database"></i> <strong>Missing Firestore Indexes?</strong> 
       <a href="#" id="salesIndexLink" target="_blank">Create Sales Index</a> | 
@@ -228,11 +228,8 @@
   
   let currentUser = null, userData = null, unsubscribes = [], allSales = [], allCustomers = [], allStockItems = [];
   let selectedPayment = 'cash', customerType = 'existing', selectedCustomerId = '', inactivityTimer = null, sessionLocked = false;
+  const BUSINESS_NAME = "Omocreations";
 
-  // Update Firestore rules link
-  console.log('🔥 Firestore Rules: Add stock_history to your rules!');
-  
-  // Generate index creation links
   const projectId = "fashion-46e5d";
   const salesIndexLink = `https://console.firebase.google.com/project/${projectId}/firestore/indexes?create_index=EgNzYWxlcxoACghjcmVhdGVkQXQQAhoLdG90YWxBbW91bnQQAxoMY3VzdG9tZXJJZBAEGgwKA2tleRABGg8KC19uYW1lX2FzY18xEAEaEAoMX19uYW1lX2FzY18yEAEaEAoMX19uYW1lX2FzY18zEAE`;
   const stockHistoryIndexLink = `https://console.firebase.google.com/project/${projectId}/firestore/indexes?create_index=Eg1zdG9ja19oaXN0b3J5GgAKCGl0ZW1JZBABGgoLY3JlYXRlZEF0EAIaDAoDa2V5EAEaDwoLX25hbWVfYXNjXzEQARoQCgxfX25hbWVfYXNjXzIQARoQCgxfX25hbWVfYXNjXzMQAQ`;
@@ -404,7 +401,6 @@
           document.getElementById('indexWarning').style.display = 'block';
           showToast('Click the link above to create required index', 'error');
         }
-        // Fallback: Load without ordering
         loadSalesWithoutOrder();
       }));
     } catch (e) {
@@ -686,7 +682,6 @@
       try {
         const batch = writeBatch(db);
         
-        // Create new customer if needed
         if (customerType === 'new') {
           const custRef = doc(collection(db, 'customers'));
           batch.set(custRef, {
@@ -704,7 +699,6 @@
           customerId = custRef.id;
         }
         
-        // Update stock quantities
         for (const item of items) {
           const ref = doc(db, 'stock_items', item.id);
           const snap = await getDoc(ref);
@@ -721,7 +715,6 @@
           }
         }
         
-        // Create sale record
         const saleRef = doc(collection(db, 'sales'));
         const saleData = {
           receiptNumber,
@@ -739,7 +732,6 @@
         };
         batch.set(saleRef, saleData);
         
-        // Update customer stats
         if (customerId && customerType === 'existing') {
           const custRef = doc(db, 'customers', customerId);
           batch.update(custRef, {
@@ -751,7 +743,6 @@
         
         await batch.commit();
         
-        // Log audit (non-blocking)
         logAudit('sale', `Sale ${receiptNumber}: ${formatCurrency(total)} to ${customerName}`).catch(console.warn);
         
         showToast(`Sale completed! Receipt #${receiptNumber}`, 'success');
@@ -761,7 +752,7 @@
       } catch (error) {
         console.error('Sale error:', error);
         if (error.message.includes('permission')) {
-          showToast('Permission denied. Check Firestore rules for stock_history.', 'error');
+          showToast('Permission denied. Check Firestore rules.', 'error');
           document.getElementById('indexWarning').style.display = 'block';
         } else {
           showToast('Failed to process sale: ' + error.message, 'error');
@@ -781,14 +772,15 @@
     const receiptHtml = `
       <div class="receipt-container">
         <div class="receipt-header">
-          <h3>💎 FashionStone</h3>
+          <h2>✨ ${BUSINESS_NAME} ✨</h2>
           <p>Receipt #${sale.receiptNumber}</p>
           <p>${new Date().toLocaleString()}</p>
         </div>
         <div style="margin:15px 0;">
           <p><strong>Customer:</strong> ${sale.customerName}</p>
           <p><strong>Phone:</strong> ${sale.customerPhone || 'N/A'}</p>
-          <p><strong>Attendant:</strong> ${sale.attendantName}</p>
+          <p><strong>Served by:</strong> ${sale.attendantName}</p>
+          ${sale.customerLocation ? `<p><strong>Location:</strong> ${sale.customerLocation}</p>` : ''}
         </div>
         <div class="receipt-items">
           ${itemsHtml}
@@ -798,8 +790,10 @@
           <span>${formatCurrency(sale.totalAmount)}</span>
         </div>
         <div style="margin-top:15px;text-align:center;font-size:0.85rem;">
-          <p>Payment: ${sale.paymentMethod.toUpperCase()}</p>
-          <p>Thank you for your purchase!</p>
+          <p>Payment Method: ${sale.paymentMethod.toUpperCase()}</p>
+          ${sale.transferRef ? `<p>Ref: ${sale.transferRef}</p>` : ''}
+          <p style="margin-top:10px;">Thank you for shopping with us!</p>
+          <p style="margin-top:5px;font-style:italic;">- ${BUSINESS_NAME} -</p>
         </div>
       </div>
       <div style="display:flex;gap:10px;margin-top:20px;">
@@ -826,13 +820,32 @@
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <html><head><title>Receipt ${sale.receiptNumber}</title>
-      <style>body{font-family:'Courier New',monospace;padding:20px;} .header{text-align:center;} .items{margin:20px 0;} .total{font-weight:bold;}</style>
+      <style>
+        body{font-family:'Courier New',monospace;padding:20px;max-width:400px;margin:0 auto;}
+        .header{text-align:center;border-bottom:1px dashed #000;padding-bottom:10px;}
+        .header h2{color:#ff4da6;margin:5px 0;}
+        .items{margin:20px 0;}
+        .item{display:flex;justify-content:space-between;margin:5px 0;}
+        .total{border-top:1px dashed #000;padding-top:10px;font-weight:bold;font-size:1.2em;text-align:right;}
+        .footer{text-align:center;margin-top:20px;font-size:0.9em;}
+      </style>
       </head><body>
-      <div class="header"><h2>FashionStone</h2><p>Receipt #${sale.receiptNumber}</p><p>${new Date(sale.createdAt?.toDate()).toLocaleString()}</p></div>
-      <p>Customer: ${sale.customerName}<br>Phone: ${sale.customerPhone||'N/A'}</p>
-      <div class="items">${sale.items.map(i => `<p>${i.quantity}x ${i.name} - ${formatCurrency(i.quantity * i.unitPrice)}</p>`).join('')}</div>
-      <p class="total">Total: ${formatCurrency(sale.totalAmount)}</p>
-      <p>Payment: ${sale.paymentMethod}</p>
+      <div class="header">
+        <h2>✨ ${BUSINESS_NAME} ✨</h2>
+        <p>Receipt #${sale.receiptNumber}</p>
+        <p>${new Date(sale.createdAt?.toDate()).toLocaleString()}</p>
+      </div>
+      <p><strong>Customer:</strong> ${sale.customerName}<br>
+      <strong>Phone:</strong> ${sale.customerPhone||'N/A'}<br>
+      <strong>Served by:</strong> ${sale.attendantName}</p>
+      <div class="items">
+        ${sale.items.map(i => `<div class="item"><span>${i.quantity}x ${i.name}</span><span>${formatCurrency(i.quantity * i.unitPrice)}</span></div>`).join('')}
+      </div>
+      <div class="total">Total: ${formatCurrency(sale.totalAmount)}</div>
+      <div class="footer">
+        <p>Payment: ${sale.paymentMethod.toUpperCase()}</p>
+        <p>Thank you for shopping with ${BUSINESS_NAME}!</p>
+      </div>
       </body></html>
     `);
     printWindow.document.close();
@@ -846,16 +859,19 @@
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    doc.setFontSize(18);
-    doc.text('FashionStone', 105, 20, { align: 'center' });
+    doc.setFontSize(20);
+    doc.setTextColor(255, 77, 166);
+    doc.text(BUSINESS_NAME, 105, 20, { align: 'center' });
     doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
     doc.text(`Receipt #${sale.receiptNumber}`, 105, 30, { align: 'center' });
     doc.text(new Date(sale.createdAt?.toDate()).toLocaleString(), 105, 40, { align: 'center' });
     
     doc.text(`Customer: ${sale.customerName}`, 20, 60);
     doc.text(`Phone: ${sale.customerPhone || 'N/A'}`, 20, 70);
+    doc.text(`Served by: ${sale.attendantName}`, 20, 80);
     
-    let y = 90;
+    let y = 100;
     doc.text('Items:', 20, y);
     y += 10;
     sale.items.forEach(item => {
@@ -868,6 +884,9 @@
     doc.text(`Total: ${formatCurrency(sale.totalAmount)}`, 20, y);
     doc.setFontSize(12);
     doc.text(`Payment Method: ${sale.paymentMethod}`, 20, y + 15);
+    
+    doc.setFontSize(10);
+    doc.text(`Thank you for shopping with ${BUSINESS_NAME}!`, 105, y + 35, { align: 'center' });
     
     doc.save(`receipt_${sale.receiptNumber}.pdf`);
     showToast('PDF downloaded', 'success');
@@ -903,7 +922,6 @@
 
   document.getElementById('salesSearchInput').addEventListener('input', renderSales);
 
-  // Initialize
   onAuthStateChanged(auth, async (u) => {
     if (!u) { window.location.href = 'auth.html'; return; }
     currentUser = u;
