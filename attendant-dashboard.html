@@ -12,9 +12,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
-    /* All styles remain exactly the same as in your provided code */
+    /* ========== EXACT SAME STYLES AS YOUR ORIGINAL FILE ========== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --sidebar-width: 280px; --header-height: 70px; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --sidebar-width: 280px; --sidebar-collapsed: 80px; --header-height: 70px; }
     body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
     .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
     .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
@@ -33,11 +33,13 @@
     .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
     .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
     .content-wrapper { padding: 28px; max-width: 1600px; }
-    .welcome-banner { background: linear-gradient(135deg, var(--primary-soft), white); border-radius: 20px; padding: 24px 28px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; }
+    
+    .welcome-banner { background: linear-gradient(135deg, var(--primary-soft), white); border-radius: 20px; padding: 24px 28px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,77,166,0.15); flex-wrap: wrap; gap: 20px; }
     .welcome-text h2 { font-size: 1.6rem; font-weight: 700; color: var(--dark); }
     .points-display { text-align: right; }
-    .points-value { font-size: 2.8rem; font-weight: 700; color: var(--primary); }
-    .points-label { font-size: 0.8rem; color: var(--gray); }
+    .points-value { font-size: 2.8rem; font-weight: 700; color: var(--primary); line-height: 1; }
+    .points-label { font-size: 0.8rem; color: var(--gray); margin-top: 4px; }
+    
     .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-bottom: 28px; }
     .stat-card { background: white; padding: 22px 20px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.03); }
     .stat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -45,41 +47,65 @@
     .stat-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--primary-soft); display: flex; align-items: center; justify-content: center; color: var(--primary); }
     .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--dark); }
     .stat-change { font-size: 0.75rem; margin-top: 8px; font-weight: 500; color: var(--gray); }
+    
     .quick-actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
-    .quick-action { background: white; padding: 20px 12px; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid rgba(0,0,0,0.03); }
+    .quick-action { background: white; padding: 20px 12px; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid rgba(0,0,0,0.03); transition: all 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .quick-action:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(255,77,166,0.1); border-color: var(--primary); }
     .quick-action i { font-size: 1.8rem; color: var(--primary); margin-bottom: 10px; }
-    .quick-action h4 { font-size: 0.85rem; color: var(--dark); }
+    .quick-action h4 { font-size: 0.85rem; margin-bottom: 4px; color: var(--dark); }
+    .quick-action p { font-size: 0.65rem; color: var(--gray); }
+    
     .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
     .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.03); }
     .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-    .panel-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .panel-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 10px; }
+    
     .salary-summary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 18px; border-radius: 16px; }
     .salary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.9rem; }
     .salary-row.total { border-top: 1px solid rgba(255,255,255,0.3); margin-top: 8px; padding-top: 12px; font-weight: 700; font-size: 1.2rem; }
+    
     .coin-transaction { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+    .coin-transaction:last-child { border-bottom: none; }
+    .coin-info { display: flex; align-items: center; gap: 14px; }
     .coin-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
     .coin-icon.positive { background: rgba(16,185,129,0.1); color: var(--success); }
     .coin-icon.negative { background: rgba(239,68,68,0.1); color: var(--danger); }
-    .coin-amount { font-weight: 700; } .coin-amount.positive { color: var(--success); } .coin-amount.negative { color: var(--danger); }
+    .coin-details p { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+    .coin-details small { font-size: 0.7rem; color: var(--gray); }
+    .coin-amount { font-weight: 700; font-size: 1.1rem; }
+    .coin-amount.positive { color: var(--success); } .coin-amount.negative { color: var(--danger); }
+    
     .announcement-card { background: var(--primary-soft); border-radius: 14px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--primary); cursor: pointer; }
     .announcement-card.unread { background: rgba(255,77,166,0.15); }
+    .announcement-card h4 { font-size: 0.95rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .announcement-card p { font-size: 0.85rem; color: var(--gray); margin-bottom: 8px; }
+    .announcement-card .meta { font-size: 0.7rem; color: var(--gray); display: flex; justify-content: space-between; }
+    
     .tabs-container { display: flex; gap: 6px; margin-bottom: 18px; background: var(--gray-light); padding: 5px; border-radius: 40px; }
     .tab-btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; border: none; background: none; color: var(--gray); cursor: pointer; flex: 1; }
     .tab-btn.active { background: var(--primary); color: white; }
     .tab-content { display: none; } .tab-content.active { display: block; }
+    
     .task-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+    .task-item:last-child { border-bottom: none; }
+    .task-info h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .task-info p { font-size: 0.75rem; color: var(--gray); }
+    
     .table-wrapper { overflow-x: auto; }
     .data-table { width: 100%; border-collapse: collapse; }
     .data-table th { text-align: left; padding: 14px 12px; font-size: 0.7rem; font-weight: 600; color: var(--gray); text-transform: uppercase; border-bottom: 1.5px solid var(--primary-soft); }
     .data-table td { padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 0.85rem; }
+    
     .badge { padding: 5px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
     .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
     .badge-info { background: rgba(59,130,246,0.1); color: var(--info); }
+    
     .btn { padding: 10px 18px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: white; border: 1px solid rgba(0,0,0,0.08); }
     .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; }
     .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
     .btn-sm { padding: 6px 14px; font-size: 0.7rem; }
+    
     .empty-state { text-align: center; padding: 40px 20px; color: var(--gray); }
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .modal { background: white; border-radius: 28px; padding: 28px; max-width: 550px; width: 100%; max-height: 85vh; overflow-y: auto; }
@@ -93,18 +119,82 @@
     .toast.show { transform: translateX(0); }
     .session-lock-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); background: rgba(0,0,0,0.3); z-index: 9999; display: none; align-items: center; justify-content: center; }
     .session-lock-modal { background: white; border-radius: 24px; padding: 28px; max-width: 350px; text-align: center; }
-    @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .stats-grid { grid-template-columns: 1fr; } .quick-actions { grid-template-columns: repeat(2,1fr); } }
+    
+    @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .quick-actions { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 992px) { .sidebar { width: var(--sidebar-collapsed); } .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: none; } .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); } .two-column { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); width: var(--sidebar-width); } .sidebar:not(.collapsed) { transform: translateX(0); } .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: block; } .main-content { margin-left: 0 !important; width: 100% !important; } .content-wrapper { padding: 18px 14px; } .top-bar { padding: 0 16px; } .page-title { font-size: 1.2rem; } .date-badge { display: none; } .stats-grid { grid-template-columns: 1fr; } .quick-actions { grid-template-columns: repeat(2, 1fr); } .panel { padding: 18px 14px; } }
   </style>
 </head>
 <body>
 
-<!-- Sidebar and overlay omitted for brevity (identical to your code) -->
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99;" onclick="closeSidebar()"></div>
 
+<!-- Session Lock Overlay -->
+<div class="session-lock-overlay" id="sessionLockOverlay">
+  <div class="session-lock-modal">
+    <i class="fas fa-lock" style="font-size:2.5rem;color:var(--primary);margin-bottom:16px;"></i>
+    <h3>Session Locked</h3>
+    <p style="color:var(--gray);margin-bottom:20px;">Enter your PIN to continue</p>
+    <div class="pin-input-container">
+      <input type="password" maxlength="1" class="pin-input" id="lockPin1">
+      <input type="password" maxlength="1" class="pin-input" id="lockPin2">
+      <input type="password" maxlength="1" class="pin-input" id="lockPin3">
+      <input type="password" maxlength="1" class="pin-input" id="lockPin4">
+    </div>
+    <button class="btn btn-primary" id="unlockBtn" style="width:100%;">Unlock</button>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-icon">✨</div>
+    <div class="logo-text"><span>Omo</span>creations</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">MAIN</div>
+      <button class="nav-item active" onclick="window.location.href='attendant-dashboard.html'"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">OPERATIONS</div>
+      <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span class="nav-text">Inventory</span></button>
+      <button class="nav-item" onclick="window.location.href='purchases.html'"><i class="fas fa-shopping-cart"></i><span class="nav-text">Purchases</span></button>
+      <button class="nav-item" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i><span class="nav-text">Customers</span></button>
+      <button class="nav-item" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><span class="nav-text">Sales</span></button>
+      <button class="nav-item" onclick="window.location.href='tasks.html'"><i class="fas fa-clipboard-list"></i><span class="nav-text">Tasks</span></button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">ACCOUNT</div>
+      <button class="nav-item" onclick="window.location.href='attendant-profile.html'"><i class="fas fa-user"></i><span class="nav-text">My Profile</span></button>
+    </div>
+    <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span></button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-profile">
+      <div class="user-avatar" id="userAvatar">A</div>
+      <div class="user-details">
+        <h4 id="userName">Attendant</h4>
+        <p id="userRole">Attendant</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
 <main class="main-content">
-  <header class="top-bar"><h1 class="page-title">Attendant Dashboard</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <h1 class="page-title">Attendant Dashboard</h1>
+    </div>
+    <div class="top-bar-right">
+      <div class="date-badge"><i class="far fa-calendar-alt"></i><span id="currentDate"></span></div>
+    </div>
+  </header>
   
   <div class="content-wrapper">
-    
     <!-- Welcome Banner -->
     <div class="welcome-banner">
       <div class="welcome-text">
@@ -119,11 +209,11 @@
     
     <!-- Quick Actions -->
     <div class="quick-actions">
-      <div class="quick-action" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><h4>New Sale</h4></div>
-      <div class="quick-action" onclick="openAssignTaskModal()"><i class="fas fa-plus-circle"></i><h4>Assign Task</h4></div>
-      <div class="quick-action" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><h4>Add Stock</h4></div>
-      <div class="quick-action" onclick="window.location.href='purchases.html'"><i class="fas fa-cart-plus"></i><h4>Purchase</h4></div>
-      <div class="quick-action" onclick="window.location.href='customers.html'"><i class="fas fa-user-plus"></i><h4>Add Customer</h4></div>
+      <div class="quick-action" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><h4>New Sale</h4><p>Process transaction</p></div>
+      <div class="quick-action" onclick="openAssignTaskModal()"><i class="fas fa-plus-circle"></i><h4>Assign Task</h4><p>Delegate to staff</p></div>
+      <div class="quick-action" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><h4>Add Stock</h4><p>New inventory item</p></div>
+      <div class="quick-action" onclick="window.location.href='purchases.html'"><i class="fas fa-cart-plus"></i><h4>Purchase</h4><p>Request items</p></div>
+      <div class="quick-action" onclick="window.location.href='customers.html'"><i class="fas fa-user-plus"></i><h4>Add Customer</h4><p>New record</p></div>
     </div>
     
     <!-- Stats Grid -->
@@ -134,7 +224,7 @@
       <div class="stat-card"><div class="stat-header"><span>Today's Sales</span><div class="stat-icon"><i class="fas fa-naira-sign"></i></div></div><div class="stat-value" id="todaySales">₦0</div><div class="stat-change">Counter</div></div>
     </div>
     
-    <!-- Two Column -->
+    <!-- Two Column Layout -->
     <div class="two-column">
       <div>
         <div class="panel">
@@ -196,11 +286,19 @@
       <div class="panel-header"><h3><i class="fas fa-warehouse"></i> Low Stock Alert</h3><button class="btn btn-outline btn-sm" onclick="window.location.href='purchases.html'">Create Purchase Request</button></div>
       <div class="table-wrapper"><table class="data-table"><thead><tr><th>Item</th><th>Available</th><th>Threshold</th><th>Suggested Order</th><th>Action</th></tr></thead><tbody id="lowStockTable"></tbody></table></div>
     </div>
-    
   </div>
 </main>
 
-<!-- Modal and Toasts (same as before) -->
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header"><h3 id="modalTitle">Modal</h3><button class="modal-close" onclick="hideModal()">&times;</button></div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -215,17 +313,17 @@
   function formatTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); }
   function formatDateTime(d) { if (!d) return '-'; const date = d.toDate ? d.toDate() : new Date(d); return date.toLocaleString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
-  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
   window.hideModal = () => document.getElementById('modalOverlay').style.display = 'none';
   function showModal(title, content) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content; document.getElementById('modalOverlay').style.display = 'flex'; }
 
-  // Session Lock (same)
+  // Session Lock
   function resetInactivityTimer() { if (inactivityTimer) clearTimeout(inactivityTimer); inactivityTimer = setTimeout(() => { if (!sessionLocked) { sessionLocked = true; document.getElementById('sessionLockOverlay').style.display = 'flex'; document.getElementById('lockPin1').focus(); } }, 600000); }
   document.addEventListener('mousemove', resetInactivityTimer); document.addEventListener('keypress', resetInactivityTimer); document.addEventListener('click', resetInactivityTimer);
   document.getElementById('unlockBtn').addEventListener('click', () => { const pin = ['lockPin1','lockPin2','lockPin3','lockPin4'].map(id => document.getElementById(id).value).join(''); if (pin === (userData?.attendantPin || '1234')) { sessionLocked = false; document.getElementById('sessionLockOverlay').style.display = 'none'; ['lockPin1','lockPin2','lockPin3','lockPin4'].forEach(id => document.getElementById(id).value = ''); resetInactivityTimer(); showToast('Unlocked', 'success'); } else { showToast('Invalid PIN', 'error'); } });
 
-  window.toggleSidebar = function() { /* same */ };
-  window.closeSidebar = function() { /* same */ };
+  window.toggleSidebar = function() { const s = document.getElementById('sidebar'), o = document.getElementById('sidebarOverlay'); if (window.innerWidth <= 768) { s.classList.toggle('collapsed'); o.style.display = s.classList.contains('collapsed') ? 'none' : 'block'; } else { s.classList.toggle('collapsed'); } };
+  window.closeSidebar = function() { document.getElementById('sidebar').classList.add('collapsed'); document.getElementById('sidebarOverlay').style.display = 'none'; };
 
   // Tab switching
   document.querySelectorAll('[data-tab]').forEach(t => t.addEventListener('click', function() {
@@ -235,7 +333,6 @@
     container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById(this.dataset.tab + 'Announcements').classList.add('active');
   }));
-
   document.querySelectorAll('[data-task-tab]').forEach(t => t.addEventListener('click', function() {
     document.querySelectorAll('[data-task-tab]').forEach(x => x.classList.remove('active'));
     this.classList.add('active');
@@ -245,18 +342,16 @@
 
   function loadDashboard() {
     if (!currentUser) return;
-    cleanupSubscriptions();
-    
+    unsubscribes.forEach(u => u()); unsubscribes = [];
     const today = new Date().toISOString().split('T')[0];
-    console.log('📅 Today:', today);
     
     // User data
     unsubscribes.push(onSnapshot(doc(db, 'users', currentUser.uid), (snap) => {
       if (!snap.exists()) return;
       userData = snap.data();
-      console.log('👤 User data:', userData);
       document.getElementById('userAvatar').textContent = (userData.fullName || 'A').charAt(0).toUpperCase();
       document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'Attendant';
+      document.getElementById('userRole').textContent = userData.role === 'attendant_chief' ? 'Chief Attendant' : 'Attendant';
       document.getElementById('welcomeName').textContent = userData.fullName?.split(' ')[0] || 'Attendant';
       document.getElementById('currentDay').textContent = new Date().toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
       document.getElementById('totalPoints').textContent = userData.totalPoints || 0;
@@ -266,7 +361,6 @@
     // Point value
     unsubscribes.push(onSnapshot(doc(db, 'system_settings', 'points'), (s) => {
       if (s.exists()) globalPointValue = s.data().value || 500;
-      console.log('💎 Point value:', globalPointValue);
       updateSalaryDisplay();
     }));
     
@@ -283,32 +377,23 @@
       document.getElementById('finalSalary').textContent = formatCurrency(final);
     }
     
-    // Attendance stats
+    // Attendance
     const attQuery = query(collection(db, 'attendance'), where('date', '==', today));
     unsubscribes.push(onSnapshot(attQuery, (snap) => {
-      const present = snap.size;
-      const late = snap.docs.filter(d => d.data().status === 'late').length;
-      console.log(`📋 Attendance today: ${present} present, ${late} late`);
-      document.getElementById('presentToday').textContent = present;
-      document.getElementById('lateCount').textContent = `${late} late`;
-    }, (error) => console.error('Attendance query error:', error)));
-    
-    // Active tasks (this query requires index on status + createdAt)
-    const tasksQuery = query(collection(db, 'tasks'), where('status', 'in', ['pending', 'in_progress']), orderBy('createdAt', 'desc'));
-    unsubscribes.push(onSnapshot(tasksQuery, (snap) => {
-      allTasks = snap.docs.map(d => ({id: d.id, ...d.data()}));
-      console.log(`📝 Active tasks: ${allTasks.length}`);
-      document.getElementById('activeTasks').textContent = allTasks.length;
-      renderTasks();
-    }, (error) => {
-      console.error('Tasks query error (likely missing index):', error);
-      showToast('Tasks index required. Check console.', 'error');
+      document.getElementById('presentToday').textContent = snap.size;
+      document.getElementById('lateCount').textContent = `${snap.docs.filter(d => d.data().status === 'late').length} late`;
     }));
     
-    // Low stock
-    const stockQuery = query(collection(db, 'stock_items'), where('status', 'in', ['low', 'out_of_stock']));
-    unsubscribes.push(onSnapshot(stockQuery, (snap) => {
-      console.log(`📦 Low stock items: ${snap.size}`);
+    // Active Tasks
+    const tasksQuery = query(collection(db, 'tasks'), where('status', 'in', ['pending', 'in_progress']));
+    unsubscribes.push(onSnapshot(tasksQuery, (snap) => {
+      allTasks = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      document.getElementById('activeTasks').textContent = allTasks.length;
+      renderTasks();
+    }));
+    
+    // Low Stock
+    unsubscribes.push(onSnapshot(query(collection(db, 'stock_items'), where('status', 'in', ['low', 'out_of_stock'])), (snap) => {
       document.getElementById('lowStock').textContent = snap.size;
       const tbody = document.getElementById('lowStockTable'); tbody.innerHTML = '';
       if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">All items well stocked</div></td></tr>'; return; }
@@ -319,23 +404,19 @@
     unsubscribes.push(onSnapshot(collection(db, 'sales'), (snap) => {
       let todaySales = 0;
       snap.forEach(d => { const s = d.data(); if (s.createdAt?.toDate().toISOString().split('T')[0] === today) todaySales += s.totalAmount || 0; });
-      console.log(`💰 Today's sales: ${formatCurrency(todaySales)}`);
       document.getElementById('todaySales').textContent = formatCurrency(todaySales);
     }));
     
     // Recent Sales
-    const salesQuery = query(collection(db, 'sales'), orderBy('createdAt', 'desc'), limit(5));
-    unsubscribes.push(onSnapshot(salesQuery, (snap) => {
+    unsubscribes.push(onSnapshot(query(collection(db, 'sales'), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const tbody = document.getElementById('recentSalesTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No sales today</div></td></tr>'; return; }
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No sales</div></td></tr>'; return; }
       snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${formatCurrency(s.totalAmount)}</td><td>${s.paymentMethod}</td></tr>`; });
     }));
     
-    // Coin transactions
-    const coinQuery = query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(5));
-    unsubscribes.push(onSnapshot(coinQuery, (snap) => {
+    // Coin Transactions
+    unsubscribes.push(onSnapshot(query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const div = document.getElementById('coinTransactionsList');
-      console.log(`🪙 Coin transactions: ${snap.size}`);
       if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-coins"></i><p>No transactions yet</p></div>'; return; }
       div.innerHTML = snap.docs.map(d => {
         const t = d.data();
@@ -346,11 +427,9 @@
       }).join('');
     }));
     
-    // Staff list
-    const staffQuery = query(collection(db, 'users'), where('role', '==', 'staff'), where('status', '==', 'active'));
-    unsubscribes.push(onSnapshot(staffQuery, (snap) => {
+    // Staff List
+    unsubscribes.push(onSnapshot(query(collection(db, 'users'), where('role', '==', 'staff'), where('status', '==', 'active')), (snap) => {
       allStaff = snap.docs.map(d => ({id: d.id, ...d.data()}));
-      console.log(`👥 Staff members: ${allStaff.length}`);
       const tbody = document.getElementById('staffTable'); tbody.innerHTML = '';
       const select = document.getElementById('staffSelect'); select.innerHTML = '<option value="">-- Select Staff --</option>';
       if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No staff</div></td></tr>'; return; }
@@ -362,20 +441,16 @@
     }));
     
     // Announcements - General
-    const generalQuery = query(collection(db, 'announcements'), where('target', 'in', ['all', 'attendants']), orderBy('createdAt', 'desc'), limit(5));
-    unsubscribes.push(onSnapshot(generalQuery, (snap) => {
+    unsubscribes.push(onSnapshot(query(collection(db, 'announcements'), where('target', 'in', ['all', 'attendants']), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const div = document.getElementById('generalAnnouncements');
-      console.log(`📢 General announcements: ${snap.size}`);
-      if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No announcements</p></div>'; return; }
+      if (snap.empty) { div.innerHTML = '<div class="empty-state">No announcements</div>'; return; }
       div.innerHTML = snap.docs.map(d => { const a = d.data(); const isRead = a.readBy?.includes(currentUser.uid); return `<div class="announcement-card ${!isRead ? 'unread' : ''}" onclick="openAnnouncement('${d.id}')"><h4>${!isRead ? '<i class="fas fa-circle" style="color:var(--primary);font-size:0.5rem;"></i>' : ''} ${a.title}</h4><p>${a.message.substring(0,80)}...</p><div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div></div>`; }).join('');
     }));
     
     // Announcements - Personal
-    const personalQuery = query(collection(db, 'announcements'), where('recipientIds', 'array-contains', currentUser.uid), orderBy('createdAt', 'desc'), limit(5));
-    unsubscribes.push(onSnapshot(personalQuery, (snap) => {
+    unsubscribes.push(onSnapshot(query(collection(db, 'announcements'), where('recipientIds', 'array-contains', currentUser.uid), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const div = document.getElementById('personalAnnouncements');
-      console.log(`📧 Personal announcements: ${snap.size}`);
-      if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-envelope"></i><p>No personal announcements</p></div>'; return; }
+      if (snap.empty) { div.innerHTML = '<div class="empty-state">No personal announcements</div>'; return; }
       div.innerHTML = snap.docs.map(d => { const a = d.data(); const isRead = a.readBy?.includes(currentUser.uid); return `<div class="announcement-card ${!isRead ? 'unread' : ''}" onclick="openAnnouncement('${d.id}')"><h4>${!isRead ? '<i class="fas fa-circle" style="color:var(--primary);font-size:0.5rem;"></i>' : ''} ${a.title}</h4><p>${a.message.substring(0,80)}...</p><div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div></div>`; }).join('');
     }));
   }
@@ -384,17 +459,72 @@
     const allDiv = document.getElementById('allTasks');
     const pendingDiv = document.getElementById('pendingTasks');
     const inprogressDiv = document.getElementById('inprogressTasks');
-    
     allDiv.innerHTML = allTasks.length ? allTasks.map(t => `<div class="task-item"><div class="task-info"><h4>${t.title}</h4><p>Assigned to: ${t.assignedToName || 'Unknown'}</p></div><span class="badge badge-${t.status==='completed'?'success':t.status==='in_progress'?'info':'warning'}">${t.status}</span></div>`).join('') : '<div class="empty-state">No tasks</div>';
-    
-    const pending = allTasks.filter(t => t.status === 'pending');
-    pendingDiv.innerHTML = pending.length ? pending.map(t => `<div class="task-item"><div class="task-info"><h4>${t.title}</h4><p>Deadline: ${formatDate(t.deadline)}</p></div><span class="badge badge-warning">Pending</span></div>`).join('') : '<div class="empty-state">No pending tasks</div>';
-    
-    const inprogress = allTasks.filter(t => t.status === 'in_progress');
-    inprogressDiv.innerHTML = inprogress.length ? inprogress.map(t => `<div class="task-item"><div class="task-info"><h4>${t.title}</h4><p>Started: ${formatDate(t.startedAt)}</p></div><span class="badge badge-info">In Progress</span></div>`).join('') : '<div class="empty-state">No tasks in progress</div>';
+    pendingDiv.innerHTML = allTasks.filter(t => t.status === 'pending').map(t => `<div class="task-item"><div class="task-info"><h4>${t.title}</h4><p>Deadline: ${formatDate(t.deadline)}</p></div><span class="badge badge-warning">Pending</span></div>`).join('') || '<div class="empty-state">No pending tasks</div>';
+    inprogressDiv.innerHTML = allTasks.filter(t => t.status === 'in_progress').map(t => `<div class="task-item"><div class="task-info"><h4>${t.title}</h4><p>Started: ${formatDate(t.startedAt)}</p></div><span class="badge badge-info">In Progress</span></div>`).join('') || '<div class="empty-state">No tasks in progress</div>';
   }
 
-  // ... (rest of functions: openAnnouncement, acknowledgeAnnouncement, sendReply, markAllAnnouncementsRead, openAssignTaskModal, createTask, openSubmitForStaffModal, confirmSubmitForStaff, refreshStaff, cleanupSubscriptions) remain identical to your provided code ...
+  window.openAnnouncement = async (id) => {
+    const snap = await getDoc(doc(db, 'announcements', id));
+    if (!snap.exists()) return;
+    const a = snap.data();
+    if (!a.readBy?.includes(currentUser.uid)) await updateDoc(doc(db, 'announcements', id), { readBy: arrayUnion(currentUser.uid) });
+    let html = `<h4>${a.title}</h4><p style="margin:15px 0;">${a.message}</p><p style="font-size:0.8rem;color:var(--gray);">From: ${a.sentByName} · ${formatDateTime(a.createdAt)}</p>`;
+    if (a.requireAcknowledgment && !a.acknowledgedBy?.includes(currentUser.uid)) html += `<button class="btn btn-success" onclick="acknowledgeAnnouncement('${id}')">Acknowledge</button>`;
+    html += `<div style="margin-top:15px;"><textarea class="form-control" id="replyMessage" placeholder="Reply..."></textarea><button class="btn btn-primary" style="margin-top:10px;" onclick="sendReply('${id}')">Send Reply</button></div>`;
+    html += '<button class="btn btn-outline" onclick="hideModal()" style="margin-top:15px;width:100%;">Close</button>';
+    showModal('Announcement', html);
+  };
+
+  window.acknowledgeAnnouncement = async (id) => {
+    await updateDoc(doc(db, 'announcements', id), { acknowledgedBy: arrayUnion(currentUser.uid) });
+    await addDoc(collection(db, 'announcement_replies'), { announcementId: id, announcementTitle: (await getDoc(doc(db, 'announcements', id))).data().title, userId: currentUser.uid, userName: userData.fullName, type: 'acknowledgment', message: 'Acknowledged', createdAt: serverTimestamp() });
+    showToast('Acknowledged', 'success'); hideModal();
+  };
+
+  window.sendReply = async (announcementId) => {
+    const msg = document.getElementById('replyMessage')?.value.trim(); if (!msg) { showToast('Enter a reply', 'error'); return; }
+    const a = (await getDoc(doc(db, 'announcements', announcementId))).data();
+    await addDoc(collection(db, 'announcement_replies'), { announcementId, announcementTitle: a.title, userId: currentUser.uid, userName: userData.fullName, type: 'reply', message: msg, createdAt: serverTimestamp() });
+    showToast('Reply sent', 'success'); hideModal();
+  };
+
+  window.markAllAnnouncementsRead = async () => {
+    const snap = await getDocs(collection(db, 'announcements')); const batch = writeBatch(db);
+    snap.forEach(d => { if (!d.data().readBy?.includes(currentUser.uid)) batch.update(d.ref, { readBy: arrayUnion(currentUser.uid) }); });
+    await batch.commit(); showToast('All marked as read', 'success');
+  };
+
+  window.openAssignTaskModal = () => {
+    let opts = ''; allStaff.forEach(s => opts += `<option value="${s.id}">${s.fullName}</option>`);
+    showModal('Assign Task', `<div class="form-group"><label>Task Title</label><input class="form-control" id="taskTitle"></div><div class="form-group"><label>Assign To</label><select class="form-control" id="taskAssignee">${opts}</select></div><div class="form-group"><label>Deadline</label><input type="datetime-local" class="form-control" id="taskDeadline"></div><button class="btn btn-primary" onclick="createTask()">Assign</button>`);
+  };
+
+  window.createTask = async () => {
+    const title = document.getElementById('taskTitle')?.value, assignee = document.getElementById('taskAssignee')?.value, deadline = document.getElementById('taskDeadline')?.value;
+    if (!title || !assignee || !deadline) { showToast('All fields required', 'error'); return; }
+    await addDoc(collection(db, 'tasks'), { title, assignedTo: assignee, assignedBy: currentUser.uid, assignedByName: userData.fullName, deadline: new Date(deadline), status: 'pending', pointsValue: 5, createdAt: serverTimestamp() });
+    showToast('Task assigned', 'success'); hideModal();
+  };
+
+  window.openSubmitForStaffModal = (staffId) => {
+    const staffTasks = allTasks.filter(t => t.assignedTo === staffId && t.status === 'in_progress');
+    if (!staffTasks.length) { showToast('No in-progress tasks', 'warning'); return; }
+    let opts = ''; staffTasks.forEach(t => opts += `<option value="${t.id}">${t.title}</option>`);
+    showModal('Submit Task for Staff', `<select id="taskSelect" class="form-control">${opts}</select><button class="btn btn-primary" style="margin-top:15px;" onclick="confirmSubmitForStaff('${staffId}')">Submit</button>`);
+  };
+
+  window.confirmSubmitForStaff = (staffId) => {
+    const taskId = document.getElementById('taskSelect').value; hideModal();
+    const task = allTasks.find(t => t.id === taskId);
+    const early = new Date() <= task.deadline.toDate(); const points = early ? 5 : -5;
+    updateDoc(doc(db, 'tasks', taskId), { status: 'completed', submittedAt: serverTimestamp(), submittedBy: currentUser.uid, submittedFor: staffId, pointsEarned: points });
+    updateDoc(doc(db, 'users', staffId), { totalPoints: increment(points), tasksCompleted: increment(1) });
+    addDoc(collection(db, 'coin_transactions'), { userId: staffId, points, reason: task.title, createdAt: serverTimestamp() });
+    showToast(`Task submitted! ${points>0?'+':''}${points} points`, 'success');
+  };
+
+  window.refreshStaff = () => { loadDashboard(); showToast('Refreshed', 'success'); };
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'auth.html'; return; }
@@ -409,7 +539,7 @@
   });
 
   document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
-  window.addEventListener('beforeunload', () => { cleanupSubscriptions(); if (inactivityTimer) clearTimeout(inactivityTimer); });
+  window.addEventListener('beforeunload', () => { unsubscribes.forEach(u => u()); if (inactivityTimer) clearTimeout(inactivityTimer); });
 </script>
 </body>
 </html>
