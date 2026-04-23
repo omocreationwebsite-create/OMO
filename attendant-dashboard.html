@@ -22,22 +22,17 @@
     .logo-text { font-size: 1.25rem; font-weight: 700; } .logo-text span { color: var(--primary); }
     .sidebar-nav { padding: 20px 12px; display: flex; flex-direction: column; height: calc(100vh - 180px); overflow-y: auto; }
     .nav-section-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.35); margin: 16px 12px 8px 12px; }
-    /* ADDED: Style for icon label text under each icon */
-    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 12px 8px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.7rem; font-weight: 500; margin-bottom: 3px; text-align: center; transition: all 0.15s; }
-    .nav-item i { width: auto; font-size: 1.2rem; margin-bottom: 2px; }
-    .nav-item .nav-text { font-size: 0.65rem; font-weight: 500; display: block; line-height: 1.2; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; margin-bottom: 3px; text-align: left; transition: all 0.15s; }
+    .nav-item i { width: 22px; font-size: 1.1rem; }
     .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
     .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
     .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: auto; }
-    /* For collapsed sidebar we hide the text but keep icon visible */
-    .sidebar.collapsed .nav-item .nav-text { display: none; }
-    .sidebar.collapsed .nav-item { padding: 12px 4px; }
     .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); position: absolute; bottom: 0; width: 100%; background: inherit; }
     .user-profile { display: flex; align-items: center; gap: 12px; }
     .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
     .user-details h4 { font-size: 0.85rem; } .user-details p { font-size: 0.7rem; opacity: 0.6; }
     .sidebar.collapsed { width: var(--sidebar-collapsed); }
-    .sidebar.collapsed .logo-text, .sidebar.collapsed .user-details, .sidebar.collapsed .nav-section-title { display: none; }
+    .sidebar.collapsed .logo-text, .sidebar.collapsed .nav-text, .sidebar.collapsed .user-details, .sidebar.collapsed .nav-section-title { display: none; }
     .main-content { flex: 1; margin-left: var(--sidebar-width); transition: margin-left 0.25s ease; width: calc(100% - var(--sidebar-width)); }
     .sidebar.collapsed + .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); }
     .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
@@ -141,9 +136,19 @@
     .notification-badge { position: absolute; top: -4px; right: -4px; background: var(--danger); color: white; font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 30px; }
     .relative { position: relative; }
     
+    /* ADDED: Icon labels for mobile */
+    .quick-action .icon-label { display: none; }
+    .sidebar .nav-item .icon-label { display: none; }
+    
+    @media (max-width: 768px) {
+      /* Show icon labels on mobile */
+      .quick-action .icon-label { display: block; font-size: 0.7rem; color: var(--gray); margin-top: 2px; font-weight: 500; }
+      .sidebar .nav-item .icon-label { display: inline; font-size: 0.85rem; }
+    }
+    
     @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .quick-actions { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 992px) { .sidebar { width: var(--sidebar-collapsed); } .sidebar .logo-text, .sidebar .user-details, .sidebar .nav-section-title { display: none; } .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); } .two-column { grid-template-columns: 1fr; } }
-    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); width: 70%; transition: transform 0.25s ease; } .sidebar:not(.collapsed) { transform: translateX(0); } .sidebar .logo-text, .sidebar .user-details, .sidebar .nav-section-title { display: block; } .main-content { margin-left: 0 !important; width: 100% !important; } .content-wrapper { padding: 18px 14px; } .top-bar { padding: 0 16px; } .page-title { font-size: 1.2rem; } .stats-grid { grid-template-columns: 1fr; } .quick-actions { grid-template-columns: repeat(2, 1fr); } .panel { padding: 18px 14px; } }
+    @media (max-width: 992px) { .sidebar { width: var(--sidebar-collapsed); } .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: none; } .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); } .two-column { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); width: 70%; transition: transform 0.25s ease; } .sidebar:not(.collapsed) { transform: translateX(0); } .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: block; } .main-content { margin-left: 0 !important; width: 100% !important; } .content-wrapper { padding: 18px 14px; } .top-bar { padding: 0 16px; } .page-title { font-size: 1.2rem; } .stats-grid { grid-template-columns: 1fr; } .quick-actions { grid-template-columns: repeat(2, 1fr); } .panel { padding: 18px 14px; } }
   </style>
 </head>
 <body>
@@ -172,21 +177,21 @@
   <nav class="sidebar-nav">
     <div class="nav-section">
       <div class="nav-section-title">MAIN</div>
-      <button class="nav-item active" onclick="window.location.href='attendant-dashboard.html'"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></button>
+      <button class="nav-item active" onclick="window.location.href='attendant-dashboard.html'"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span> <span class="icon-label">Dashboard</span></button>
     </div>
     <div class="nav-section">
       <div class="nav-section-title">OPERATIONS</div>
-      <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span class="nav-text">Inventory</span></button>
-      <button class="nav-item" onclick="window.location.href='purchases.html'"><i class="fas fa-shopping-cart"></i><span class="nav-text">Purchases</span></button>
-      <button class="nav-item" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i><span class="nav-text">Customers</span></button>
-      <button class="nav-item" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><span class="nav-text">Sales</span></button>
-      <button class="nav-item" onclick="window.location.href='tasks.html'"><i class="fas fa-clipboard-list"></i><span class="nav-text">Tasks</span></button>
+      <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span class="nav-text">Inventory</span> <span class="icon-label">Inventory</span></button>
+      <button class="nav-item" onclick="window.location.href='purchases.html'"><i class="fas fa-shopping-cart"></i><span class="nav-text">Purchases</span> <span class="icon-label">Purchases</span></button>
+      <button class="nav-item" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i><span class="nav-text">Customers</span> <span class="icon-label">Customers</span></button>
+      <button class="nav-item" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><span class="nav-text">Sales</span> <span class="icon-label">Sales</span></button>
+      <button class="nav-item" onclick="window.location.href='tasks.html'"><i class="fas fa-clipboard-list"></i><span class="nav-text">Tasks</span> <span class="icon-label">Tasks</span></button>
     </div>
     <div class="nav-section">
       <div class="nav-section-title">ACCOUNT</div>
-      <button class="nav-item" onclick="window.location.href='attendant-profile.html'"><i class="fas fa-user"></i><span class="nav-text">My Profile</span></button>
+      <button class="nav-item" onclick="window.location.href='attendant-profile.html'"><i class="fas fa-user"></i><span class="nav-text">My Profile</span> <span class="icon-label">Profile</span></button>
     </div>
-    <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span></button>
+    <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span> <span class="icon-label">Logout</span></button>
   </nav>
   <div class="sidebar-footer">
     <div class="user-profile">
@@ -229,11 +234,11 @@
     </div>
     
     <div class="quick-actions">
-      <div class="quick-action" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><h4>New Sale</h4><p>Process transaction</p></div>
-      <div class="quick-action" onclick="openAssignTaskModal()"><i class="fas fa-plus-circle"></i><h4>Assign Task</h4><p>Delegate to staff</p></div>
-      <div class="quick-action" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><h4>Add Stock</h4><p>New inventory item</p></div>
-      <div class="quick-action" onclick="window.location.href='purchases.html'"><i class="fas fa-cart-plus"></i><h4>Purchase</h4><p>Request items</p></div>
-      <div class="quick-action" onclick="window.location.href='customers.html'"><i class="fas fa-user-plus"></i><h4>Add Customer</h4><p>New record</p></div>
+      <div class="quick-action" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><h4>New Sale</h4><p>Process transaction</p><span class="icon-label">New Sale</span></div>
+      <div class="quick-action" onclick="openAssignTaskModal()"><i class="fas fa-plus-circle"></i><h4>Assign Task</h4><p>Delegate to staff</p><span class="icon-label">Assign Task</span></div>
+      <div class="quick-action" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><h4>Add Stock</h4><p>New inventory item</p><span class="icon-label">Add Stock</span></div>
+      <div class="quick-action" onclick="window.location.href='purchases.html'"><i class="fas fa-cart-plus"></i><h4>Purchase</h4><p>Request items</p><span class="icon-label">Purchase</span></div>
+      <div class="quick-action" onclick="window.location.href='customers.html'"><i class="fas fa-user-plus"></i><h4>Add Customer</h4><p>New record</p><span class="icon-label">Add Customer</span></div>
     </div>
     
     <div class="stats-grid">
@@ -278,7 +283,7 @@
         </div>
         <div class="panel">
           <div class="panel-header"><h3><i class="fas fa-history"></i> Recent Sales</h3><button class="btn btn-outline btn-sm" onclick="window.location.href='sales.html'">View All</button></div>
-          <div class="table-wrapper"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Amount</th><th>Payment</th></tr></thead><tbody id="recentSalesTable"></tbody></table></div>
+          <div class="table-wrapper"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Amount</th><th>Payment</th><tr></thead><tbody id="recentSalesTable"></tbody></table></div>
         </div>
       </div>
       <div>
@@ -498,7 +503,7 @@
       document.getElementById('lowStock').textContent = snap.size;
       const tbody = document.getElementById('lowStockTable'); tbody.innerHTML = '';
       if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state">All items well stocked</div></td></tr>'; return; }
-      snap.forEach(d => { const i = d.data(); const suggested = Math.max(10, (i.threshold || 10) * 2 - (i.quantityAvailable || 0)); tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.quantityAvailable||0}</td><td>${i.threshold||10}</td><td>${suggested}</td><td><button class="btn btn-sm btn-primary" onclick="window.location.href='purchases.html'">Request</button></td>`; });
+      snap.forEach(d => { const i = d.data(); const suggested = Math.max(10, (i.threshold || 10) * 2 - (i.quantityAvailable || 0)); tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.quantityAvailable||0}</td><td>${i.threshold||10}</td><td>${suggested}</td><td><button class="btn btn-sm btn-primary" onclick="window.location.href='purchases.html'">Request</button></td></tr>`; });
     }));
     
     unsubscribes.push(onSnapshot(collection(db, 'sales'), (snap) => {
@@ -509,8 +514,8 @@
     
     unsubscribes.push(onSnapshot(query(collection(db, 'sales'), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const tbody = document.getElementById('recentSalesTable'); tbody.innerHTML = '';
-      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No sales</div><table></tr>'; return; }
-      snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${formatCurrency(s.totalAmount)}</td><td>${s.paymentMethod||'Cash'}</td>`; });
+      if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No sales</div></td></tr>'; return; }
+      snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${formatCurrency(s.totalAmount)}</td><td>${s.paymentMethod||'Cash'}</td></tr>`; });
     }));
     
     unsubscribes.push(onSnapshot(query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
@@ -524,7 +529,7 @@
       const tbody = document.getElementById('staffTable'); tbody.innerHTML = '';
       const select = document.getElementById('staffSelect'); if(select) { select.innerHTML = '<option value="">-- Select Staff --</option>'; }
       if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No staff</div></td></tr>'; return; }
-      snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${s.fullName?.split(' ')[0]}</td><td>${s.tasksCompleted||0}</td><td><span class="badge badge-success">Active</span></td><td><button class="btn btn-sm btn-outline" onclick="openSubmitForStaffModal('${d.id}')">Submit Task</button></td>`; if(select) select.innerHTML += `<option value="${d.id}">${s.fullName}</option>`; });
+      snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${s.fullName?.split(' ')[0]}</td><td>${s.tasksCompleted||0}</td><td><span class="badge badge-success">Active</span></td><td><button class="btn btn-sm btn-outline" onclick="openSubmitForStaffModal('${d.id}')">Submit Task</button></td></tr>`; if(select) select.innerHTML += `<option value="${d.id}">${s.fullName}</option>`; });
     }));
     
     unsubscribes.push(onSnapshot(query(collection(db, 'announcements'), where('target', 'in', ['all', 'attendants']), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
