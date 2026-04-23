@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* All existing styles remain exactly the same */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 70px; --sidebar-width: 280px; }
     body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
@@ -222,7 +223,15 @@
 
   async function loadProfile() {
     try {
-      unsubscribes.push(onSnapshot(doc(db, 'system_settings', 'points'), (s) => { if (s.exists()) globalPointValue = s.data().value || 500; updateSalaryDisplay(); }));
+      // Point value - FIXED: Read from system_settings/points/value
+      unsubscribes.push(onSnapshot(doc(db, 'system_settings', 'points'), (s) => { 
+        if (s.exists()) {
+          globalPointValue = s.data().value || 500;
+        } else {
+          globalPointValue = 500;
+        }
+        updateSalaryDisplay(); 
+      }));
       
       unsubscribes.push(onSnapshot(doc(db, 'users', currentUser.uid), (snap) => {
         if (!snap.exists()) return;
