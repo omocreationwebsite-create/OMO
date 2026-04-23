@@ -212,7 +212,15 @@
 
   async function loadProfile() {
     try {
-      unsubscribes.push(onSnapshot(doc(db, 'system_settings', 'points'), (s) => { if (s.exists()) globalPointValue = s.data().value || 500; updateSalaryDisplay(); }));
+      // FIXED: Read point value from system_settings/points/value
+      unsubscribes.push(onSnapshot(doc(db, 'system_settings', 'points'), (s) => { 
+        if (s.exists()) {
+          globalPointValue = s.data().value || 500;
+        } else {
+          globalPointValue = 500;
+        }
+        updateSalaryDisplay(); 
+      }));
       
       unsubscribes.push(onSnapshot(doc(db, 'users', currentUser.uid), (snap) => {
         if (!snap.exists()) return;
@@ -254,7 +262,7 @@
         const bonus = (userData.totalPoints || 0) * ppv;
         const final = (userData.baseSalary || 0) + bonus;
         document.getElementById('salaryBase').textContent = formatCurrency(userData.baseSalary || 0);
-        document.getElementById('salaryPointValue').textContent = ppv;
+        document.getElementById('salaryPointValue').textContent = ppv.toFixed(0);
         document.getElementById('salaryPoints').textContent = userData.totalPoints || 0;
         document.getElementById('pointsBonus').innerHTML = `<span class="${bonus>=0?'positive':'negative'}">${bonus>=0?'+':''}${formatCurrency(bonus)}</span>`;
         document.getElementById('finalSalary').textContent = formatCurrency(final);
