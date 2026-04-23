@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ff4da6">
+  <title>Notifications · Omocreations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 70px; --sidebar-width: 280px; }
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
+    
+    /* Sidebar – same as other pages */
+    .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
+    .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; }
+    .logo-text { font-size: 1.25rem; font-weight: 700; } .logo-text span { color: var(--primary); }
+    .sidebar-nav { padding: 20px 12px; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; margin-bottom: 3px; }
+    .nav-item i { width: 22px; } .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
+    .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 20px; }
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); position: absolute; bottom: 0; width: 100%; background: inherit; }
+    .user-profile { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .user-details h4 { font-size: 0.85rem; } .user-details p { font-size: 0.7rem; opacity: 0.6; }
+    
+    /* Main content */
+    .main-content { flex: 1; margin-left: var(--sidebar-width); }
+    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+    .content-wrapper { padding: 28px; max-width: 1200px; margin: 0 auto; }
+    
+    /* Notification cards */
+    .notif-list { display: flex; flex-direction: column; gap: 12px; }
+    .notif-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); display: flex; align-items: flex-start; gap: 16px; transition: all 0.15s; cursor: pointer; }
+    .notif-card:hover { background: #fafafa; border-color: var(--primary-soft); }
+    .notif-card.unread { background: var(--primary-soft); border-left: 4px solid var(--primary); }
+    .notif-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .notif-icon.task { background: rgba(59,130,246,0.1); color: var(--info); }
+    .notif-icon.approval { background: rgba(245,158,11,0.1); color: var(--warning); }
+    .notif-icon.stock { background: rgba(239,68,68,0.1); color: var(--danger); }
+    .notif-icon.success { background: rgba(16,185,129,0.1); color: var(--success); }
+    .notif-icon.announcement { background: rgba(255,77,166,0.1); color: var(--primary); }
+    .notif-content { flex: 1; }
+    .notif-title { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+    .notif-message { color: var(--gray); font-size: 0.9rem; margin-bottom: 8px; }
+    .notif-time { font-size: 0.7rem; color: var(--gray); display: flex; align-items: center; gap: 5px; }
+    .unread-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; }
+    
+    .panel { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .panel-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .btn { padding: 8px 16px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid rgba(0,0,0,0.08); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; }
+    .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
+    .empty-state { text-align: center; padding: 50px 20px; color: var(--gray); }
+    .empty-state i { font-size: 3rem; color: var(--primary-light); margin-bottom: 16px; opacity: 0.6; }
+    .loading-state { display: flex; justify-content: center; padding: 40px; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
+    .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
+    .toast.show { transform: translateX(0); }
+    
+    @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header"><div class="logo-icon">✨</div><div class="logo-text"><span>Omo</span>creations</div></div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <!-- Navigation will be dynamically built based on user role -->
+  </nav>
+  <div class="sidebar-footer"><div class="user-profile"><div class="user-avatar" id="userAvatar">U</div><div class="user-details"><h4 id="userName">User</h4><p id="userRole">Role</p></div></div></div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar"><h1 class="page-title">Notifications</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
+  
+  <div class="content-wrapper">
+    <div class="panel">
+      <div class="panel-header">
+        <h3><i class="fas fa-bell"></i> All Notifications</h3>
+        <div>
+          <button class="btn btn-outline btn-sm" onclick="markAllAsRead()"><i class="fas fa-check-double"></i> Mark all read</button>
+          <button class="btn btn-outline btn-sm" onclick="refreshNotifications()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="notificationsContainer">
+        <div class="loading-state"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, where, orderBy, onSnapshot, updateDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let currentUser = null, userData = null, unsubscribes = [];
+
+  function formatDateTime(d) { if (!d) return 'Just now'; const date = d.toDate ? d.toDate() : new Date(d); const now = new Date(); const diff = Math.floor((now - date) / 1000); if (diff < 60) return 'Just now'; if (diff < 3600) return `${Math.floor(diff/60)} min ago`; if (diff < 86400) return `${Math.floor(diff/3600)} hours ago`; return date.toLocaleDateString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
+  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i><span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+
+  function getIconAndClass(type) {
+    const map = {
+      'task_assigned': { icon: 'clipboard-list', class: 'task' },
+      'task_completed': { icon: 'check-circle', class: 'success' },
+      'task_submitted': { icon: 'paper-plane', class: 'success' },
+      'approved': { icon: 'user-check', class: 'success' },
+      'rejected': { icon: 'user-times', class: 'approval' },
+      'pending_approval': { icon: 'clock', class: 'approval' },
+      'announcement': { icon: 'bullhorn', class: 'announcement' },
+      'leave_approved': { icon: 'calendar-check', class: 'success' },
+      'leave_rejected': { icon: 'calendar-times', class: 'approval' },
+      'low_stock': { icon: 'exclamation-triangle', class: 'stock' },
+      'out_of_stock': { icon: 'times-circle', class: 'stock' },
+      'purchase_approved': { icon: 'shopping-cart', class: 'success' },
+      'termination_approval': { icon: 'user-slash', class: 'approval' }
+    };
+    return map[type] || { icon: 'bell', class: 'task' };
+  }
+
+  function buildSidebar() {
+    const nav = document.getElementById('sidebarNav');
+    const role = userData?.role;
+    let html = '';
+    
+    if (role === 'admin' || role === 'super_admin') {
+      html = `
+        <div class="nav-section"><div class="nav-section-title">OVERVIEW</div>
+          <button class="nav-item" onclick="window.location.href='admin-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
+          <button class="nav-item" onclick="window.location.href='approvals.html'"><i class="fas fa-check-circle"></i><span>Approvals</span></button>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">MANAGEMENT</div>
+          <button class="nav-item" onclick="window.location.href='staff-management.html'"><i class="fas fa-users-cog"></i><span>Staff Management</span></button>
+          <button class="nav-item" onclick="window.location.href='finance.html'"><i class="fas fa-chart-line"></i><span>Finance</span></button>
+          <button class="nav-item" onclick="window.location.href='audit.html'"><i class="fas fa-history"></i><span>Audit Logs</span></button>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">MONITORING</div>
+          <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span>Inventory</span></button>
+          <button class="nav-item" onclick="window.location.href='purchases.html'"><i class="fas fa-shopping-cart"></i><span>Purchases</span></button>
+          <button class="nav-item" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i><span>Customers</span></button>
+          <button class="nav-item" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><span>Sales</span></button>
+        </div>
+      `;
+    } else if (role === 'attendant' || role === 'attendant_chief') {
+      html = `
+        <div class="nav-section"><div class="nav-section-title">MAIN</div>
+          <button class="nav-item" onclick="window.location.href='attendant-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">OPERATIONS</div>
+          <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span>Inventory</span></button>
+          <button class="nav-item" onclick="window.location.href='purchases.html'"><i class="fas fa-shopping-cart"></i><span>Purchases</span></button>
+          <button class="nav-item" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i><span>Customers</span></button>
+          <button class="nav-item" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><span>Sales</span></button>
+          <button class="nav-item" onclick="window.location.href='tasks.html'"><i class="fas fa-clipboard-list"></i><span>Tasks</span></button>
+        </div>
+        <div class="nav-section"><div class="nav-section-title">ACCOUNT</div>
+          <button class="nav-item" onclick="window.location.href='attendant-profile.html'"><i class="fas fa-user"></i><span>My Profile</span></button>
+        </div>
+      `;
+    } else {
+      html = `
+        <div class="nav-section"><div class="nav-section-title">MAIN</div>
+          <button class="nav-item" onclick="window.location.href='staff-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
+          <button class="nav-item" onclick="window.location.href='staff-profile.html'"><i class="fas fa-user"></i><span>My Profile</span></button>
+        </div>
+      `;
+    }
+    
+    html += `<button class="nav-item active"><i class="fas fa-bell"></i><span>Notifications</span></button>`;
+    html += `<button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>`;
+    nav.innerHTML = html;
+    document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+  }
+
+  function loadNotifications() {
+    if (!currentUser) return;
+    unsubscribes.forEach(u => u()); unsubscribes = [];
+    
+    const q = query(collection(db, 'notifications'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
+    unsubscribes.push(onSnapshot(q, (snap) => {
+      const container = document.getElementById('notificationsContainer');
+      if (snap.empty) {
+        container.innerHTML = '<div class="empty-state"><i class="far fa-bell-slash"></i><p>No notifications yet</p></div>';
+        return;
+      }
+      
+      let html = '<div class="notif-list">';
+      snap.forEach(doc => {
+        const n = doc.data();
+        const { icon, class: iconClass } = getIconAndClass(n.type);
+        const unreadClass = n.isRead ? '' : 'unread';
+        html += `
+          <div class="notif-card ${unreadClass}" onclick="markAsRead('${doc.id}', ${!n.isRead})">
+            <div class="notif-icon ${iconClass}"><i class="fas fa-${icon}"></i></div>
+            <div class="notif-content">
+              <div class="notif-title">
+                ${n.title}
+                ${!n.isRead ? '<span class="unread-dot"></span>' : ''}
+              </div>
+              <div class="notif-message">${n.message}</div>
+              <div class="notif-time"><i class="far fa-clock"></i> ${formatDateTime(n.createdAt)}</div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }));
+  }
+
+  window.markAsRead = async (id, currentlyUnread) => {
+    if (currentlyUnread) {
+      await updateDoc(doc(db, 'notifications', id), { isRead: true });
+    }
+  };
+
+  window.markAllAsRead = async () => {
+    const q = query(collection(db, 'notifications'), where('userId', '==', currentUser.uid), where('isRead', '==', false));
+    const snap = await getDocs(q);
+    if (snap.empty) { showToast('No unread notifications', 'info'); return; }
+    const batch = writeBatch(db);
+    snap.forEach(d => batch.update(d.ref, { isRead: true }));
+    await batch.commit();
+    showToast('All notifications marked as read', 'success');
+  };
+
+  window.refreshNotifications = () => { loadNotifications(); showToast('Refreshed', 'success'); };
+
+  onAuthStateChanged(auth, async (u) => {
+    if (!u) { window.location.href = 'auth.html'; return; }
+    currentUser = u;
+    const snap = await getDoc(doc(db, 'users', u.uid));
+    if (!snap.exists()) { await signOut(auth); window.location.href = 'auth.html'; return; }
+    userData = snap.data();
+    if (userData.status !== 'active') { await signOut(auth); window.location.href = 'auth.html'; return; }
+    
+    document.getElementById('userName').textContent = userData.fullName?.split(' ')[0] || 'User';
+    document.getElementById('userRole').textContent = userData.role || 'User';
+    document.getElementById('userAvatar').textContent = (userData.fullName||'U').charAt(0).toUpperCase();
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+    
+    buildSidebar();
+    loadNotifications();
+  });
+
+  window.addEventListener('beforeunload', () => unsubscribes.forEach(u => u()));
+</script>
+</body>
+</html>
