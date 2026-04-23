@@ -249,7 +249,7 @@
       </div>
       <div class="points-display">
         <div class="points-value" id="totalPoints">0</div>
-        <div class="points-label">Total Points · ₦<span id="pointValue">100</span>/pt</div>
+        <div class="points-label">Total Points · ₦<span id="pointValue">500</span>/5pts</div>
       </div>
     </div>
     
@@ -273,13 +273,13 @@
     <!-- Two Column Layout -->
     <div class="two-column">
       <div>
-        <!-- Salary Overview - UNCHANGED -->
+        <!-- Salary Overview -->
         <div class="panel">
           <div class="panel-header"><h3><i class="fas fa-money-bill-wave"></i> Salary Overview</h3></div>
           <div class="salary-summary" id="salarySummary">
             <div class="salary-row"><span>Base Salary</span><span id="salaryBase">₦0</span></div>
             <div class="salary-row"><span>Points Earned</span><span id="salaryPoints">0</span></div>
-            <div class="salary-row"><span>Point Value</span><span>₦<span id="salaryPointValue">100</span>/pt</span></div>
+            <div class="salary-row"><span>Point Value (5pts)</span><span>₦<span id="salaryPointValue">500</span></span></div>
             <div class="salary-row"><span>Points Bonus</span><span id="pointsBonus">₦0</span></div>
             <div class="salary-row total"><span>Estimated Salary</span><span id="finalSalary">₦0</span></div>
           </div>
@@ -469,7 +469,7 @@
       updateSalaryDisplay();
     }));
     
-    // Point value
+    // Point value - CORRECTED: reads from Firebase, defaults to 500
     unsubscribes.push(onSnapshot(doc(db, 'system_settings', 'points'), (s) => {
       if (s.exists()) globalPointValue = s.data().value || 500;
       updateSalaryDisplay();
@@ -480,10 +480,10 @@
       const ppv = globalPointValue / 5;
       const bonus = (userData.totalPoints || 0) * ppv;
       const final = (userData.baseSalary || 0) + bonus;
-      document.getElementById('pointValue').textContent = ppv.toFixed(0);
+      document.getElementById('pointValue').textContent = globalPointValue;
       document.getElementById('salaryBase').textContent = formatCurrency(userData.baseSalary || 0);
       document.getElementById('salaryPoints').textContent = userData.totalPoints || 0;
-      document.getElementById('salaryPointValue').textContent = ppv.toFixed(0);
+      document.getElementById('salaryPointValue').textContent = globalPointValue;
       document.getElementById('pointsBonus').innerHTML = `<span style="color:${bonus>=0?'#10b981':'#ef4444'}">${bonus>=0?'+':''}${formatCurrency(bonus)}</span>`;
       document.getElementById('finalSalary').textContent = formatCurrency(final);
     }
