@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* ----- KEEP ALL EXISTING STYLES UNCHANGED ----- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --header-height: 70px; --sidebar-width: 280px; }
     body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
@@ -39,7 +40,6 @@
       font-weight: 700;
       transition: all 0.2s ease;
     }
-    /* Bright glowing count badges */
     .tab .count.glowing {
       background: #ff4da6;
       color: white;
@@ -90,14 +90,12 @@
     
     .page-view { display: none; } .page-view.active { display: block; }
     
-    /* Mobile & responsive already handled by existing media queries */
     @media (max-width: 768px) { 
       .sidebar { display: none; } 
       .main-content { margin-left: 0; } 
       .content-wrapper { padding: 16px; } 
       .tab { padding: 10px 16px; font-size: 0.8rem; } 
     }
-    /* Collapsible sidebar not fully implemented here but the structure supports it (you already have toggle logic elsewhere) */
   </style>
 </head>
 <body>
@@ -121,14 +119,13 @@
   <div class="content-wrapper">
     
     <div class="tabs-container">
-      <!-- Removed Users tab -->
       <button class="tab active" data-tab="items"><i class="fas fa-box"></i> Stock Items <span class="count" id="itemCount">0</span></button>
       <button class="tab" data-tab="purchases"><i class="fas fa-shopping-cart"></i> Purchases <span class="count" id="purchaseCount">0</span></button>
       <button class="tab" data-tab="customers"><i class="fas fa-users"></i> Customers <span class="count" id="customerCount">0</span></button>
       <button class="tab" data-tab="leave"><i class="fas fa-calendar"></i> Leave <span class="count" id="leaveCount">0</span></button>
     </div>
     
-    <!-- STOCK ITEMS TAB (now first and active by default) -->
+    <!-- STOCK ITEMS TAB -->
     <div id="itemsPanel" class="page-view active">
       <div class="panel">
         <div class="panel-header"><h3><i class="fas fa-box"></i> Pending Stock Items</h3><button class="btn btn-outline btn-sm" onclick="refreshAll()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
@@ -181,26 +178,21 @@
 
   function cleanup() { unsubscribes.forEach(u => u()); unsubscribes = []; }
 
-  // Helper to update count badges with glow effect
   function updateCountBadge(elementId, count) {
     const el = document.getElementById(elementId);
     if (el) {
       el.textContent = count;
-      if (count > 0) {
-        el.classList.add('glowing');
-      } else {
-        el.classList.remove('glowing');
-      }
+      if (count > 0) el.classList.add('glowing');
+      else el.classList.remove('glowing');
     }
   }
 
-  // ========== LOAD STOCK ITEMS ==========
+  // ========== STOCK ITEMS ==========
   function loadItems() {
     const q = query(collection(db, 'stock_items'), where('status', '==', 'pending_approval'));
     unsubscribes.push(onSnapshot(q, (snap) => {
       const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-      
       updateCountBadge('itemCount', items.length);
       const tbody = document.getElementById('itemsTable'); tbody.innerHTML = '';
       if (items.length === 0) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-box"></i><p>No pending stock items</p></div></td></tr>'; return; }
@@ -211,30 +203,28 @@
   window.approveItem = async (id) => { await updateDoc(doc(db, 'stock_items', id), { status: 'available', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_item', 'Approved stock item'); showToast('Item approved', 'success'); };
   window.rejectItem = async (id) => { await updateDoc(doc(db, 'stock_items', id), { status: 'rejected' }); await logAudit('reject_item', 'Rejected stock item'); showToast('Item rejected', 'info'); };
 
-  // ========== LOAD PURCHASES ==========
+  // ========== PURCHASES ==========
   function loadPurchases() {
     const q = query(collection(db, 'purchase_requests'), where('status', '==', 'pending_approval'));
     unsubscribes.push(onSnapshot(q, (snap) => {
       const purchases = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       purchases.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-      
       updateCountBadge('purchaseCount', purchases.length);
       const tbody = document.getElementById('purchasesTable'); tbody.innerHTML = '';
       if (purchases.length === 0) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-shopping-cart"></i><p>No pending purchase requests</p></div></td></tr>'; return; }
-      purchases.forEach(p => { const total = p.items?.reduce((s,i)=>s+((i.suggested||0)*(i.price||0)),0)||0; tbody.innerHTML += `<tr><td>${p.requestedByName||'-'}</td><td>${p.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${formatDate(p.createdAt)}</td><td>${p.note||'-'}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approvePurchase('${p.id}')">✓ Approve</button><button class="btn btn-sm btn10 bg-danger" onclick="window.rejectPurchase('${p.id}')">✕ Reject</button></td></tr>`; });
+      purchases.forEach(p => { const total = p.items?.reduce((s,i)=>s+((i.suggested||0)*(i.price||0)),0)||0; tbody.innerHTML += `<tr><td>${p.requestedByName||'-'}</td><td>${p.items?.length||0} items</td><td>${formatCurrency(total)}</td><td>${formatDate(p.createdAt)}</td><td>${p.note||'-'}</td><td style="display:flex;gap:5px;"><button class="btn btn-sm btn-success" onclick="window.approvePurchase('${p.id}')">✓ Approve</button><button class="btn btn-sm btn-danger" onclick="window.rejectPurchase('${p.id}')">✕ Reject</button></td></tr>`; });
     }));
   }
 
   window.approvePurchase = async (id) => { await updateDoc(doc(db, 'purchase_requests', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_purchase', 'Approved purchase request'); showToast('Request approved', 'success'); };
   window.rejectPurchase = async (id) => { const reason = prompt('Rejection reason:') || 'No reason'; await updateDoc(doc(db, 'purchase_requests', id), { status: 'rejected', rejectionReason: reason }); await logAudit('reject_purchase', `Rejected. Reason: ${reason}`); showToast('Request rejected', 'info'); };
 
-  // ========== LOAD CUSTOMERS ==========
+  // ========== CUSTOMERS (FIXED: status 'pending_approval') ==========
   function loadCustomers() {
-    const q = query(collection(db, 'customers'), where('status', '==', 'pending'));
+    const q = query(collection(db, 'customers'), where('status', '==', 'pending_approval'));
     unsubscribes.push(onSnapshot(q, (snap) => {
       const customers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       customers.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-      
       updateCountBadge('customerCount', customers.length);
       const tbody = document.getElementById('customersTable'); tbody.innerHTML = '';
       if (customers.length === 0) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i><p>No pending customers</p></div></td></tr>'; return; }
@@ -245,13 +235,12 @@
   window.approveCustomer = async (id) => { await updateDoc(doc(db, 'customers', id), { status: 'approved', approvedBy: currentUser.uid, approvedAt: serverTimestamp() }); await logAudit('approve_customer', 'Approved customer'); showToast('Customer approved', 'success'); };
   window.rejectCustomer = async (id) => { await updateDoc(doc(db, 'customers', id), { status: 'rejected' }); await logAudit('reject_customer', 'Rejected customer'); showToast('Customer rejected', 'info'); };
 
-  // ========== LOAD LEAVE REQUESTS ==========
+  // ========== LEAVE REQUESTS ==========
   function loadLeave() {
     const q = query(collection(db, 'leave_requests'), where('status', '==', 'pending'));
     unsubscribes.push(onSnapshot(q, async (snap) => {
       const requests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       requests.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-      
       updateCountBadge('leaveCount', requests.length);
       const tbody = document.getElementById('leaveTable'); tbody.innerHTML = '';
       if (requests.length === 0) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-calendar"></i><p>No pending leave requests</p></div></td></tr>'; return; }
@@ -289,7 +278,6 @@
     document.getElementById(tabName + 'Panel').classList.add('active'); 
   }));
 
-  // Init
   onAuthStateChanged(auth, async (u) => { 
     if (!u) { window.location.href = 'auth.html'; return; } 
     currentUser = u; 
