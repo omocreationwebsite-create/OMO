@@ -109,7 +109,7 @@
     
     <div class="welcome-banner">
       <div class="welcome-text"><h2>Welcome, <span id="welcomeName">Worker</span>! 👋</h2><p id="currentDay"></p></div>
-      <div class="points-display"><div class="points-value" id="totalPoints">0</div><div class="points-label">Total Points · ₦<span id="pointValue">100</span>/pt</div></div>
+      <div class="points-display"><div class="points-value" id="totalPoints">0</div><div class="points-label">Total Points · ₦<span id="pointValue">500</span>/5pts</div></div>
     </div>
     
     <div class="stats-grid">
@@ -127,7 +127,7 @@
           <div class="salary-summary">
             <div class="salary-row"><span>Initial Base Salary</span><span id="initialSalary">₦0</span></div>
             <div class="salary-row"><span>Current Base Salary</span><span id="salaryBase">₦0</span></div>
-            <div class="salary-row"><span>Point Value</span><span>₦<span id="salaryPointValue">100</span>/pt</span></div>
+            <div class="salary-row"><span>Point Value (5pts)</span><span>₦<span id="salaryPointValue">500</span></span></div>
           </div>
           <div class="points-breakdown">
             <h4 style="margin-bottom:12px;font-size:0.9rem;"><i class="fas fa-coins"></i> Points Breakdown</h4>
@@ -135,7 +135,7 @@
             <div class="points-row"><span>Points Deducted (Late/Penalties)</span><span class="negative" id="pointsDeducted">-0</span></div>
             <div class="points-row" style="border-top:1px dashed #ddd;margin-top:8px;padding-top:12px;"><strong>Net Points</strong><strong id="netPoints">0</strong></div>
             <div class="points-row"><span>Points Bonus Value</span><span id="pointsBonusValue">₦0</span></div>
-            <div class="points-row total" style="border-top:1px solid #ddd;margin-top:8px;padding-top:12px;"><strong>TOTAL ESTIMATED SALARY</strong><strong id="finalSalary">₦0</span></strong></div>
+            <div class="points-row total" style="border-top:1px solid #ddd;margin-top:8px;padding-top:12px;"><strong>TOTAL ESTIMATED SALARY</strong><strong id="finalSalary">₦0</strong></div>
           </div>
         </div>
         
@@ -252,8 +252,8 @@
       
       document.getElementById('initialSalary').textContent = formatCurrency(userData.initialBaseSalary || userData.baseSalary || 0);
       document.getElementById('salaryBase').textContent = formatCurrency(userData.baseSalary || 0);
-      document.getElementById('salaryPointValue').textContent = ppv.toFixed(0);
-      document.getElementById('pointValue').textContent = ppv.toFixed(0);
+      document.getElementById('salaryPointValue').textContent = globalPointValue;
+      document.getElementById('pointValue').textContent = globalPointValue;
       document.getElementById('pointsBonusValue').textContent = formatCurrency(bonus);
       document.getElementById('finalSalary').textContent = formatCurrency(final);
     }
@@ -317,7 +317,7 @@
       taskDiv.innerHTML = html || '<div class="empty-state"><i class="fas fa-tasks"></i><p>No tasks available</p></div>';
     }));
     
-    // ANNOUNCEMENTS - GENERAL (target: all, workers)
+    // ANNOUNCEMENTS - GENERAL
     const generalQuery = query(collection(db, 'announcements'), where('target', 'in', ['all', 'workers']), orderBy('createdAt', 'desc'), limit(10));
     unsubscribes.push(onSnapshot(generalQuery, (snap) => {
       const div = document.getElementById('generalAnnouncements');
@@ -333,7 +333,7 @@
       }).join('');
     }));
     
-    // ANNOUNCEMENTS - PERSONAL (recipientIds includes current user)
+    // ANNOUNCEMENTS - PERSONAL
     const personalQuery = query(collection(db, 'announcements'), where('recipientIds', 'array-contains', currentUser.uid), orderBy('createdAt', 'desc'), limit(10));
     unsubscribes.push(onSnapshot(personalQuery, (snap) => {
       const div = document.getElementById('personalAnnouncements');
