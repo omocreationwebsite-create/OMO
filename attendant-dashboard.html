@@ -16,26 +16,31 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6; --sidebar-width: 280px; --sidebar-collapsed: 80px; --header-height: 70px; }
     body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
-    .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; transition: width 0.25s ease; }
+    
+    /* Sidebar */
+    .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; transition: width 0.25s ease; z-index: 100; box-shadow: 4px 0 24px rgba(0,0,0,0.08); }
+    .sidebar.collapsed { width: var(--sidebar-collapsed); }
     .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; }
-    .logo-text { font-size: 1.25rem; font-weight: 700; } .logo-text span { color: var(--primary); }
+    .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; flex-shrink: 0; }
+    .logo-text { font-size: 1.25rem; font-weight: 700; white-space: nowrap; } .logo-text span { color: var(--primary); }
+    .sidebar.collapsed .logo-text, .sidebar.collapsed .nav-text, .sidebar.collapsed .user-details, .sidebar.collapsed .nav-section-title { display: none; }
     .sidebar-nav { padding: 20px 12px; display: flex; flex-direction: column; height: calc(100vh - 180px); overflow-y: auto; }
-    .nav-section-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.35); margin: 16px 12px 8px 12px; }
-    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; margin-bottom: 3px; text-align: left; transition: all 0.15s; }
+    .nav-section { margin-bottom: 8px; }
+    .nav-section-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); padding: 8px 14px 6px; font-weight: 600; }
+    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; text-align: left; margin-bottom: 3px; transition: all 0.15s; }
     .nav-item i { width: 22px; font-size: 1.1rem; }
     .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
     .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
     .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: auto; }
     .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); position: absolute; bottom: 0; width: 100%; background: inherit; }
     .user-profile { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; flex-shrink: 0; }
     .user-details h4 { font-size: 0.85rem; } .user-details p { font-size: 0.7rem; opacity: 0.6; }
-    .sidebar.collapsed { width: var(--sidebar-collapsed); }
-    .sidebar.collapsed .logo-text, .sidebar.collapsed .nav-text, .sidebar.collapsed .user-details, .sidebar.collapsed .nav-section-title { display: none; }
-    .main-content { flex: 1; margin-left: var(--sidebar-width); transition: margin-left 0.25s ease; width: calc(100% - var(--sidebar-width)); }
+    
+    /* Main content */
+    .main-content { flex: 1; margin-left: var(--sidebar-width); transition: margin-left 0.25s ease; min-height: 100vh; width: calc(100% - var(--sidebar-width)); }
     .sidebar.collapsed + .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); }
-    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
+    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 50; }
     .top-bar-left { display: flex; align-items: center; gap: 14px; }
     .menu-toggle { background: none; border: none; font-size: 1.3rem; color: var(--gray); cursor: pointer; padding: 10px; border-radius: 10px; }
     .menu-toggle:hover { background: var(--primary-soft); color: var(--primary); }
@@ -118,7 +123,6 @@
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .modal { background: white; border-radius: 28px; padding: 28px; max-width: 550px; width: 100%; max-height: 85vh; overflow-y: auto; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
-    .modal-close { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--gray); }
     .form-group { margin-bottom: 18px; }
     .form-control { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; font-size: 0.9rem; outline: none; background: white; }
     .pin-input-container { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
@@ -129,31 +133,46 @@
     .session-lock-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); background: rgba(0,0,0,0.3); z-index: 9999; display: none; align-items: center; justify-content: center; }
     .session-lock-modal { background: white; border-radius: 24px; padding: 28px; max-width: 350px; text-align: center; }
     
+    .notification-badge { position: absolute; top: 6px; right: 6px; background: var(--danger); color: white; font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 30px; }
+    .notification-btn { position: relative; cursor: pointer; padding: 8px; border-radius: 10px; background: none; border: none; }
+    .notification-btn:hover { background: var(--primary-soft); }
+    .notification-btn i { font-size: 1.2rem; color: var(--gray); }
+    
     .leave-type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
     .leave-type-btn { flex: 1; padding: 12px; border: 2px solid rgba(0,0,0,0.08); border-radius: 14px; text-align: center; cursor: pointer; font-weight: 600; font-size: 0.85rem; background: white; transition: all 0.15s; }
     .leave-type-btn.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
     .leave-summary { background: var(--primary-soft); padding: 12px; border-radius: 12px; margin-top: 10px; font-size: 0.85rem; font-weight: 600; color: var(--primary); text-align: center; }
-    .notification-badge { position: absolute; top: -4px; right: -4px; background: var(--danger); color: white; font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 30px; }
-    .relative { position: relative; }
-    
-    /* ADDED: Icon labels for mobile */
-    .quick-action .icon-label { display: none; }
-    .sidebar .nav-item .icon-label { display: none; }
-    
-    @media (max-width: 768px) {
-      /* Show icon labels on mobile */
-      .quick-action .icon-label { display: block; font-size: 0.7rem; color: var(--gray); margin-top: 2px; font-weight: 500; }
-      .sidebar .nav-item .icon-label { display: inline; font-size: 0.85rem; }
-    }
+    .leave-stat { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.85rem; }
+    .leave-stat .label { color: var(--gray); }
     
     @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .quick-actions { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 992px) { .sidebar { width: var(--sidebar-collapsed); } .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: none; } .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); } .two-column { grid-template-columns: 1fr; } }
-    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); width: 70%; transition: transform 0.25s ease; } .sidebar:not(.collapsed) { transform: translateX(0); } .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: block; } .main-content { margin-left: 0 !important; width: 100% !important; } .content-wrapper { padding: 18px 14px; } .top-bar { padding: 0 16px; } .page-title { font-size: 1.2rem; } .stats-grid { grid-template-columns: 1fr; } .quick-actions { grid-template-columns: repeat(2, 1fr); } .panel { padding: 18px 14px; } }
+    @media (max-width: 992px) { 
+      .sidebar { width: var(--sidebar-collapsed); } 
+      .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: none; } 
+      .main-content { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); } 
+      .two-column { grid-template-columns: 1fr; } 
+    }
+    @media (max-width: 768px) { 
+      .sidebar { transform: translateX(-100%); width: 80%; max-width: 300px; } 
+      .sidebar.collapsed { transform: translateX(0); width: 80% !important; max-width: 300px; }
+      .sidebar .logo-text, .sidebar .nav-text, .sidebar .user-details, .sidebar .nav-section-title { display: block; }
+      .main-content { margin-left: 0 !important; width: 100% !important; } 
+      .content-wrapper { padding: 18px 14px; } 
+      .top-bar { padding: 0 16px; } 
+      .page-title { font-size: 1.2rem; } 
+      .date-badge { display: none; } 
+      .stats-grid { grid-template-columns: 1fr; } 
+      .quick-actions { grid-template-columns: repeat(2, 1fr); } 
+      .panel { padding: 18px 14px; } 
+    }
   </style>
 </head>
 <body>
 
+<!-- Sidebar Overlay -->
 <div class="sidebar-overlay" id="sidebarOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99;" onclick="closeSidebar()"></div>
+
+<!-- Session Lock Overlay -->
 <div class="session-lock-overlay" id="sessionLockOverlay">
   <div class="session-lock-modal">
     <i class="fas fa-lock" style="font-size:2.5rem;color:var(--primary);margin-bottom:16px;"></i>
@@ -169,6 +188,7 @@
   </div>
 </div>
 
+<!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo-icon">✨</div>
@@ -177,21 +197,21 @@
   <nav class="sidebar-nav">
     <div class="nav-section">
       <div class="nav-section-title">MAIN</div>
-      <button class="nav-item active" onclick="window.location.href='attendant-dashboard.html'"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span> <span class="icon-label">Dashboard</span></button>
+      <button class="nav-item active" onclick="window.location.href='attendant-dashboard.html'"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></button>
     </div>
     <div class="nav-section">
       <div class="nav-section-title">OPERATIONS</div>
-      <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span class="nav-text">Inventory</span> <span class="icon-label">Inventory</span></button>
-      <button class="nav-item" onclick="window.location.href='purchases.html'"><i class="fas fa-shopping-cart"></i><span class="nav-text">Purchases</span> <span class="icon-label">Purchases</span></button>
-      <button class="nav-item" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i><span class="nav-text">Customers</span> <span class="icon-label">Customers</span></button>
-      <button class="nav-item" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><span class="nav-text">Sales</span> <span class="icon-label">Sales</span></button>
-      <button class="nav-item" onclick="window.location.href='tasks.html'"><i class="fas fa-clipboard-list"></i><span class="nav-text">Tasks</span> <span class="icon-label">Tasks</span></button>
+      <button class="nav-item" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><span class="nav-text">Inventory</span></button>
+      <button class="nav-item" onclick="window.location.href='purchases.html'"><i class="fas fa-shopping-cart"></i><span class="nav-text">Purchases</span></button>
+      <button class="nav-item" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i><span class="nav-text">Customers</span></button>
+      <button class="nav-item" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><span class="nav-text">Sales</span></button>
+      <button class="nav-item" onclick="window.location.href='tasks.html'"><i class="fas fa-clipboard-list"></i><span class="nav-text">Tasks</span></button>
     </div>
     <div class="nav-section">
       <div class="nav-section-title">ACCOUNT</div>
-      <button class="nav-item" onclick="window.location.href='attendant-profile.html'"><i class="fas fa-user"></i><span class="nav-text">My Profile</span> <span class="icon-label">Profile</span></button>
+      <button class="nav-item" onclick="window.location.href='attendant-profile.html'"><i class="fas fa-user"></i><span class="nav-text">My Profile</span></button>
     </div>
-    <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span> <span class="icon-label">Logout</span></button>
+    <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span></button>
   </nav>
   <div class="sidebar-footer">
     <div class="user-profile">
@@ -204,24 +224,24 @@
   </div>
 </aside>
 
+<!-- Main Content -->
 <main class="main-content">
   <header class="top-bar">
     <div class="top-bar-left">
       <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
       <h1 class="page-title">Attendant Dashboard</h1>
     </div>
-    <div class="top-bar-right" style="display:flex;align-items:center;gap:16px;">
-      <div class="relative">
-        <button class="notification-btn" onclick="openNotificationsModal()" style="background:none;border:none;cursor:pointer;position:relative;padding:8px;">
-          <i class="far fa-bell" style="font-size:1.3rem;color:var(--gray);"></i>
-          <span class="notification-badge" id="notificationBadge" style="display:none;">0</span>
-        </button>
-      </div>
-      <div class="date-badge"><i class="far fa-calendar-alt"></i><span id="currentDate"></span></div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button class="notification-btn" onclick="window.location.href='notifications.html'">
+        <i class="far fa-bell"></i>
+        <span class="notification-badge" id="notificationBadge" style="display:none;">0</span>
+      </button>
+      <span style="color:var(--gray);font-size:0.85rem;" id="currentDate"></span>
     </div>
   </header>
   
   <div class="content-wrapper">
+    <!-- Welcome Banner -->
     <div class="welcome-banner">
       <div class="welcome-text">
         <h2>Welcome back, <span id="welcomeName">Attendant</span>! 👋</h2>
@@ -233,14 +253,16 @@
       </div>
     </div>
     
+    <!-- Quick Actions -->
     <div class="quick-actions">
-      <div class="quick-action" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><h4>New Sale</h4><p>Process transaction</p><span class="icon-label">New Sale</span></div>
-      <div class="quick-action" onclick="openAssignTaskModal()"><i class="fas fa-plus-circle"></i><h4>Assign Task</h4><p>Delegate to staff</p><span class="icon-label">Assign Task</span></div>
-      <div class="quick-action" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><h4>Add Stock</h4><p>New inventory item</p><span class="icon-label">Add Stock</span></div>
-      <div class="quick-action" onclick="window.location.href='purchases.html'"><i class="fas fa-cart-plus"></i><h4>Purchase</h4><p>Request items</p><span class="icon-label">Purchase</span></div>
-      <div class="quick-action" onclick="window.location.href='customers.html'"><i class="fas fa-user-plus"></i><h4>Add Customer</h4><p>New record</p><span class="icon-label">Add Customer</span></div>
+      <div class="quick-action" onclick="window.location.href='sales.html'"><i class="fas fa-cash-register"></i><h4>New Sale</h4><p>Process transaction</p></div>
+      <div class="quick-action" onclick="openAssignTaskModal()"><i class="fas fa-plus-circle"></i><h4>Assign Task</h4><p>Delegate to staff</p></div>
+      <div class="quick-action" onclick="window.location.href='inventory.html'"><i class="fas fa-box"></i><h4>Add Stock</h4><p>New inventory item</p></div>
+      <div class="quick-action" onclick="window.location.href='purchases.html'"><i class="fas fa-cart-plus"></i><h4>Purchase</h4><p>Request items</p></div>
+      <div class="quick-action" onclick="window.location.href='customers.html'"><i class="fas fa-user-plus"></i><h4>Add Customer</h4><p>New record</p></div>
     </div>
     
+    <!-- Stats Grid -->
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-header"><span>Present Today</span><div class="stat-icon"><i class="fas fa-user-check"></i></div></div><div class="stat-value" id="presentToday">0</div><div class="stat-change" id="lateCount">0 late</div></div>
       <div class="stat-card"><div class="stat-header"><span>Active Tasks</span><div class="stat-icon"><i class="fas fa-tasks"></i></div></div><div class="stat-value" id="activeTasks">0</div><div class="stat-change">Assigned to staff</div></div>
@@ -248,8 +270,10 @@
       <div class="stat-card"><div class="stat-header"><span>Today's Sales</span><div class="stat-icon"><i class="fas fa-naira-sign"></i></div></div><div class="stat-value" id="todaySales">₦0</div><div class="stat-change">Counter</div></div>
     </div>
     
+    <!-- Two Column Layout -->
     <div class="two-column">
       <div>
+        <!-- Salary Overview - UNCHANGED -->
         <div class="panel">
           <div class="panel-header"><h3><i class="fas fa-money-bill-wave"></i> Salary Overview</h3></div>
           <div class="salary-summary" id="salarySummary">
@@ -261,7 +285,7 @@
           </div>
         </div>
         
-        <!-- LEAVE REQUEST PANEL (ADDED) -->
+        <!-- REQUEST LEAVE (NEW) -->
         <div class="panel">
           <div class="panel-header"><h3><i class="fas fa-calendar-plus"></i> Request Leave</h3></div>
           <div class="leave-type-selector">
@@ -270,10 +294,14 @@
           </div>
           <div class="form-group">
             <label style="font-size:0.8rem;font-weight:600;margin-bottom:6px;display:block;">Start Date</label>
-            <input type="date" id="leaveStartDate" class="form-control" style="width:100%;padding:12px;border-radius:14px;border:1px solid #ddd;">
+            <input type="date" id="leaveStartDate" class="form-control">
           </div>
           <div class="leave-summary" id="leaveSummary" style="display:none;"></div>
           <button class="btn btn-primary" id="requestLeaveBtn" style="width:100%;margin-top:10px;">Request Leave</button>
+          <div style="margin-top:12px;background:var(--gray-light);border-radius:12px;padding:12px;">
+            <div class="leave-stat"><span class="label">Leave Days Left</span><strong id="leaveDaysLeft">2</strong></div>
+            <div class="leave-stat"><span class="label">Pending Requests</span><strong id="pendingLeaveRequests">0</strong></div>
+          </div>
           <p style="font-size:0.7rem;color:var(--gray);margin-top:8px;">Max 2 days per month. Admin approval required.</p>
         </div>
         
@@ -283,7 +311,7 @@
         </div>
         <div class="panel">
           <div class="panel-header"><h3><i class="fas fa-history"></i> Recent Sales</h3><button class="btn btn-outline btn-sm" onclick="window.location.href='sales.html'">View All</button></div>
-          <div class="table-wrapper"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Amount</th><th>Payment</th><tr></thead><tbody id="recentSalesTable"></tbody></table></div>
+          <div class="table-wrapper"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Amount</th><th>Payment</th></tr></thead><tbody id="recentSalesTable"></tbody></table></div>
         </div>
       </div>
       <div>
@@ -303,6 +331,7 @@
       </div>
     </div>
     
+    <!-- Tasks Management -->
     <div class="panel">
       <div class="panel-header"><h3><i class="fas fa-clipboard-list"></i> Task Management</h3><button class="btn btn-primary btn-sm" onclick="openAssignTaskModal()"><i class="fas fa-plus"></i> Assign Task</button></div>
       <div class="tabs-container">
@@ -320,6 +349,7 @@
       </div>
     </div>
     
+    <!-- Low Stock Alert -->
     <div class="panel">
       <div class="panel-header"><h3><i class="fas fa-warehouse"></i> Low Stock Alert</h3><button class="btn btn-outline btn-sm" onclick="window.location.href='purchases.html'">Create Purchase Request</button></div>
       <div class="table-wrapper"><table class="data-table"><thead><tr><th>Item</th><th>Available</th><th>Threshold</th><th>Suggested Order</th><th>Action</th></tr></thead><tbody id="lowStockTable"></tbody></table></div>
@@ -327,13 +357,15 @@
   </div>
 </main>
 
+<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
-    <div class="modal-header"><h3 id="modalTitle">Modal</h3><button class="modal-close" onclick="hideModal()">&times;</button></div>
+    <div class="modal-header"><h3 id="modalTitle">Modal</h3><button class="modal-close" onclick="hideModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--gray);">&times;</button></div>
     <div id="modalContent"></div>
   </div>
 </div>
 
+<!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script type="module">
@@ -353,6 +385,34 @@
   window.hideModal = () => document.getElementById('modalOverlay').style.display = 'none';
   function showModal(title, content) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalContent').innerHTML = content; document.getElementById('modalOverlay').style.display = 'flex'; }
 
+  // Session Lock
+  function resetInactivityTimer() { if (inactivityTimer) clearTimeout(inactivityTimer); inactivityTimer = setTimeout(() => { if (!sessionLocked) { sessionLocked = true; document.getElementById('sessionLockOverlay').style.display = 'flex'; document.getElementById('lockPin1').focus(); } }, 600000); }
+  document.addEventListener('mousemove', resetInactivityTimer); document.addEventListener('keypress', resetInactivityTimer); document.addEventListener('click', resetInactivityTimer);
+  document.getElementById('unlockBtn').addEventListener('click', () => { const pin = ['lockPin1','lockPin2','lockPin3','lockPin4'].map(id => document.getElementById(id).value).join(''); if (pin === (userData?.attendantPin || '1234')) { sessionLocked = false; document.getElementById('sessionLockOverlay').style.display = 'none'; ['lockPin1','lockPin2','lockPin3','lockPin4'].forEach(id => document.getElementById(id).value = ''); resetInactivityTimer(); showToast('Unlocked', 'success'); } else { showToast('Invalid PIN', 'error'); } });
+
+  // Pin input auto-focus
+  document.querySelectorAll('.pin-input').forEach((input, index, inputs) => {
+    input.addEventListener('input', (e) => { if (e.target.value.length === 1 && index < inputs.length - 1) inputs[index + 1].focus(); });
+    input.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !e.target.value && index > 0) inputs[index - 1].focus(); });
+  });
+
+  // SIDEBAR TOGGLE - EXACT COPY from first file
+  window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (window.innerWidth <= 768) {
+      sidebar.classList.toggle('collapsed');
+      overlay.style.display = sidebar.classList.contains('collapsed') ? 'block' : 'none';
+    } else {
+      sidebar.classList.toggle('collapsed');
+    }
+  };
+  window.closeSidebar = function() {
+    document.getElementById('sidebar').classList.add('collapsed');
+    document.getElementById('sidebarOverlay').style.display = 'none';
+  };
+
+  // LEAVE DAYS SELECTOR
   window.selectLeaveDays = function(days) {
     selectedLeaveDays = days;
     document.querySelectorAll('.leave-type-btn').forEach(b => b.classList.remove('active'));
@@ -373,72 +433,9 @@
     summary.innerHTML = `📅 Leave: ${startDate} → Resume: ${resume.toISOString().split('T')[0]} (${selectedLeaveDays} day${selectedLeaveDays>1?'s':''})`;
   }
 
-  document.getElementById('leaveStartDate')?.addEventListener('change', updateLeaveSummary);
+  document.getElementById('leaveStartDate').addEventListener('change', updateLeaveSummary);
 
-  document.getElementById('requestLeaveBtn')?.addEventListener('click', async () => {
-    const startDate = document.getElementById('leaveStartDate').value;
-    if (!startDate) { showToast('Please select a start date', 'error'); return; }
-    
-    const start = new Date(startDate);
-    const end = new Date(start);
-    end.setDate(end.getDate() + selectedLeaveDays - 1);
-    const resume = new Date(end);
-    resume.setDate(resume.getDate() + 1);
-    
-    if ((userData?.leaveDaysRemaining || 2) < selectedLeaveDays) {
-      showToast(`Only ${userData?.leaveDaysRemaining || 2} leave day${(userData?.leaveDaysRemaining || 2)>1?'s':''} remaining`, 'error');
-      return;
-    }
-    
-    await addDoc(collection(db, 'leave_requests'), {
-      userId: currentUser.uid,
-      userName: userData?.fullName,
-      requestedDates: selectedLeaveDays === 1 ? [startDate] : [startDate, end.toISOString().split('T')[0]],
-      resumeDate: resume.toISOString().split('T')[0],
-      days: selectedLeaveDays,
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-    
-    await addDoc(collection(db, 'notifications'), {
-      userId: currentUser.uid,
-      type: 'leave_requested',
-      title: 'Leave Request Sent',
-      message: `Your ${selectedLeaveDays}-day leave starting ${startDate} has been sent for admin approval.`,
-      isRead: false,
-      createdAt: serverTimestamp()
-    });
-    
-    showToast('✅ Leave request sent! Waiting for admin approval.', 'success');
-    document.getElementById('leaveStartDate').value = '';
-    document.getElementById('leaveSummary').style.display = 'none';
-  });
-
-  window.openNotificationsModal = async () => {
-    const snap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(20)));
-    if (snap.empty) { showModal('Notifications', '<div class="empty-state">No notifications</div>'); return; }
-    let html = '<div style="max-height:400px;overflow-y:auto;">';
-    snap.forEach(d => { const n = d.data(); html += `<div style="padding:12px;border-bottom:1px solid #eee;${!n.isRead?'background:var(--primary-soft);':''}"><strong>${n.title}</strong><p style="font-size:0.8rem;color:var(--gray);margin:4px 0;">${n.message}</p><small style="font-size:0.65rem;">${formatDateTime(n.createdAt)}</small></div>`; });
-    html += '</div><button class="btn btn-primary" style="margin-top:15px;width:100%;" onclick="markAllNotificationsRead()">Mark All Read</button>';
-    showModal('Notifications', html);
-  };
-
-  window.markAllNotificationsRead = async () => {
-    const snap = await getDocs(query(collection(db, 'notifications'), where('userId', '==', currentUser.uid), where('isRead', '==', false)));
-    const batch = writeBatch(db);
-    snap.forEach(d => batch.update(d.ref, { isRead: true }));
-    await batch.commit();
-    showToast('All notifications marked as read', 'success');
-    hideModal();
-  };
-
-  function resetInactivityTimer() { if (inactivityTimer) clearTimeout(inactivityTimer); inactivityTimer = setTimeout(() => { if (!sessionLocked) { sessionLocked = true; document.getElementById('sessionLockOverlay').style.display = 'flex'; document.getElementById('lockPin1')?.focus(); } }, 600000); }
-  document.addEventListener('mousemove', resetInactivityTimer); document.addEventListener('keypress', resetInactivityTimer); document.addEventListener('click', resetInactivityTimer);
-  document.getElementById('unlockBtn')?.addEventListener('click', () => { const pin = ['lockPin1','lockPin2','lockPin3','lockPin4'].map(id => document.getElementById(id)?.value || '').join(''); if (pin === (userData?.attendantPin || '1234')) { sessionLocked = false; document.getElementById('sessionLockOverlay').style.display = 'none'; ['lockPin1','lockPin2','lockPin3','lockPin4'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; }); resetInactivityTimer(); showToast('Unlocked', 'success'); } else { showToast('Invalid PIN', 'error'); } });
-
-  window.toggleSidebar = function() { const s = document.getElementById('sidebar'), o = document.getElementById('sidebarOverlay'); if (window.innerWidth <= 768) { s.classList.toggle('collapsed'); o.style.display = s.classList.contains('collapsed') ? 'none' : 'block'; } else { s.classList.toggle('collapsed'); } };
-  window.closeSidebar = function() { document.getElementById('sidebar').classList.add('collapsed'); document.getElementById('sidebarOverlay').style.display = 'none'; };
-
+  // Tab switching
   document.querySelectorAll('[data-tab]').forEach(t => t.addEventListener('click', function() {
     const container = this.closest('.panel') || document;
     container.querySelectorAll('[data-tab]').forEach(x => x.classList.remove('active'));
@@ -458,6 +455,7 @@
     unsubscribes.forEach(u => u()); unsubscribes = [];
     const today = new Date().toISOString().split('T')[0];
     
+    // User data
     unsubscribes.push(onSnapshot(doc(db, 'users', currentUser.uid), (snap) => {
       if (!snap.exists()) return;
       userData = snap.data();
@@ -467,9 +465,11 @@
       document.getElementById('welcomeName').textContent = userData.fullName?.split(' ')[0] || 'Attendant';
       document.getElementById('currentDay').textContent = new Date().toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
       document.getElementById('totalPoints').textContent = userData.totalPoints || 0;
+      document.getElementById('leaveDaysLeft').textContent = userData.leaveDaysRemaining || 2;
       updateSalaryDisplay();
     }));
     
+    // Point value
     unsubscribes.push(onSnapshot(doc(db, 'system_settings', 'points'), (s) => {
       if (s.exists()) globalPointValue = s.data().value || 500;
       updateSalaryDisplay();
@@ -488,17 +488,22 @@
       document.getElementById('finalSalary').textContent = formatCurrency(final);
     }
     
-    unsubscribes.push(onSnapshot(query(collection(db, 'attendance'), where('date', '==', today)), (snap) => {
+    // Attendance
+    const attQuery = query(collection(db, 'attendance'), where('date', '==', today));
+    unsubscribes.push(onSnapshot(attQuery, (snap) => {
       document.getElementById('presentToday').textContent = snap.size;
       document.getElementById('lateCount').textContent = `${snap.docs.filter(d => d.data().status === 'late').length} late`;
     }));
     
-    unsubscribes.push(onSnapshot(query(collection(db, 'tasks'), where('status', 'in', ['pending', 'in_progress'])), (snap) => {
+    // Active Tasks
+    const tasksQuery = query(collection(db, 'tasks'), where('status', 'in', ['pending', 'in_progress']));
+    unsubscribes.push(onSnapshot(tasksQuery, (snap) => {
       allTasks = snap.docs.map(d => ({id: d.id, ...d.data()}));
       document.getElementById('activeTasks').textContent = allTasks.length;
       renderTasks();
     }));
     
+    // Low Stock
     unsubscribes.push(onSnapshot(query(collection(db, 'stock_items'), where('status', 'in', ['low', 'out_of_stock'])), (snap) => {
       document.getElementById('lowStock').textContent = snap.size;
       const tbody = document.getElementById('lowStockTable'); tbody.innerHTML = '';
@@ -506,44 +511,66 @@
       snap.forEach(d => { const i = d.data(); const suggested = Math.max(10, (i.threshold || 10) * 2 - (i.quantityAvailable || 0)); tbody.innerHTML += `<tr><td>${i.name}</td><td>${i.quantityAvailable||0}</td><td>${i.threshold||10}</td><td>${suggested}</td><td><button class="btn btn-sm btn-primary" onclick="window.location.href='purchases.html'">Request</button></td></tr>`; });
     }));
     
+    // Today's Sales
     unsubscribes.push(onSnapshot(collection(db, 'sales'), (snap) => {
       let todaySales = 0;
       snap.forEach(d => { const s = d.data(); if (s.createdAt?.toDate().toISOString().split('T')[0] === today) todaySales += s.totalAmount || 0; });
       document.getElementById('todaySales').textContent = formatCurrency(todaySales);
     }));
     
+    // Recent Sales
     unsubscribes.push(onSnapshot(query(collection(db, 'sales'), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const tbody = document.getElementById('recentSalesTable'); tbody.innerHTML = '';
       if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No sales</div></td></tr>'; return; }
-      snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${formatCurrency(s.totalAmount)}</td><td>${s.paymentMethod||'Cash'}</td></tr>`; });
+      snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${formatTime(s.createdAt)}</td><td>${s.customerName||'Walk-in'}</td><td>${formatCurrency(s.totalAmount)}</td><td>${s.paymentMethod}</td></tr>`; });
     }));
     
+    // Coin Transactions
     unsubscribes.push(onSnapshot(query(collection(db, 'coin_transactions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const div = document.getElementById('coinTransactionsList');
       if (snap.empty) { div.innerHTML = '<div class="empty-state"><i class="fas fa-coins"></i><p>No transactions yet</p></div>'; return; }
-      div.innerHTML = snap.docs.map(d => { const t = d.data(); return `<div class="coin-transaction"><div class="coin-info"><div class="coin-icon ${t.points>=0?'positive':'negative'}"><i class="fas fa-${t.points>=0?'plus':'minus'}"></i></div><div class="coin-details"><p>${t.reason}</p><small>${formatDate(t.createdAt)}</small></div></div><div class="coin-amount ${t.points>=0?'positive':'negative'}">${t.points>0?'+':''}${t.points} pts</div></div>`; }).join('');
+      div.innerHTML = snap.docs.map(d => {
+        const t = d.data();
+        return `<div class="coin-transaction">
+          <div class="coin-info"><div class="coin-icon ${t.points>=0?'positive':'negative'}"><i class="fas fa-${t.points>=0?'plus':'minus'}"></i></div><div class="coin-details"><p>${t.reason}</p><small>${formatDate(t.createdAt)}</small></div></div>
+          <div class="coin-amount ${t.points>=0?'positive':'negative'}">${t.points>0?'+':''}${t.points} pts</div>
+        </div>`;
+      }).join('');
     }));
     
+    // Staff List
     unsubscribes.push(onSnapshot(query(collection(db, 'users'), where('role', '==', 'staff'), where('status', '==', 'active')), (snap) => {
       allStaff = snap.docs.map(d => ({id: d.id, ...d.data()}));
       const tbody = document.getElementById('staffTable'); tbody.innerHTML = '';
-      const select = document.getElementById('staffSelect'); if(select) { select.innerHTML = '<option value="">-- Select Staff --</option>'; }
+      const select = document.getElementById('staffSelect'); select.innerHTML = '<option value="">-- Select Staff --</option>';
       if (snap.empty) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No staff</div></td></tr>'; return; }
-      snap.forEach(d => { const s = d.data(); tbody.innerHTML += `<tr><td>${s.fullName?.split(' ')[0]}</td><td>${s.tasksCompleted||0}</td><td><span class="badge badge-success">Active</span></td><td><button class="btn btn-sm btn-outline" onclick="openSubmitForStaffModal('${d.id}')">Submit Task</button></td></tr>`; if(select) select.innerHTML += `<option value="${d.id}">${s.fullName}</option>`; });
+      snap.forEach(d => {
+        const s = d.data();
+        tbody.innerHTML += `<tr><td>${s.fullName?.split(' ')[0]}</td><td>${s.tasksCompleted||0}</td><td><span class="badge badge-success">Active</span></td><td><button class="btn btn-sm btn-outline" onclick="openSubmitForStaffModal('${d.id}')">Submit Task</button></td></tr>`;
+        select.innerHTML += `<option value="${d.id}">${s.fullName}</option>`;
+      });
     }));
     
+    // Pending Leave Requests
+    unsubscribes.push(onSnapshot(query(collection(db, 'leave_requests'), where('userId', '==', currentUser.uid), where('status', '==', 'pending')), (snap) => {
+      document.getElementById('pendingLeaveRequests').textContent = snap.size;
+    }));
+    
+    // Announcements - General
     unsubscribes.push(onSnapshot(query(collection(db, 'announcements'), where('target', 'in', ['all', 'attendants']), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const div = document.getElementById('generalAnnouncements');
       if (snap.empty) { div.innerHTML = '<div class="empty-state">No announcements</div>'; return; }
       div.innerHTML = snap.docs.map(d => { const a = d.data(); const isRead = a.readBy?.includes(currentUser.uid); return `<div class="announcement-card ${!isRead ? 'unread' : ''}" onclick="openAnnouncement('${d.id}')"><h4>${!isRead ? '<i class="fas fa-circle" style="color:var(--primary);font-size:0.5rem;"></i>' : ''} ${a.title}</h4><p>${a.message.substring(0,80)}...</p><div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div></div>`; }).join('');
     }));
     
+    // Announcements - Personal
     unsubscribes.push(onSnapshot(query(collection(db, 'announcements'), where('recipientIds', 'array-contains', currentUser.uid), orderBy('createdAt', 'desc'), limit(5)), (snap) => {
       const div = document.getElementById('personalAnnouncements');
       if (snap.empty) { div.innerHTML = '<div class="empty-state">No personal announcements</div>'; return; }
       div.innerHTML = snap.docs.map(d => { const a = d.data(); const isRead = a.readBy?.includes(currentUser.uid); return `<div class="announcement-card ${!isRead ? 'unread' : ''}" onclick="openAnnouncement('${d.id}')"><h4>${!isRead ? '<i class="fas fa-circle" style="color:var(--primary);font-size:0.5rem;"></i>' : ''} ${a.title}</h4><p>${a.message.substring(0,80)}...</p><div class="meta"><span>From: ${a.sentByName}</span><span>${formatDateTime(a.createdAt)}</span></div></div>`; }).join('');
     }));
     
+    // Notification Badge
     unsubscribes.push(onSnapshot(query(collection(db, 'notifications'), where('userId', '==', currentUser.uid), where('isRead', '==', false)), (snap) => {
       const badge = document.getElementById('notificationBadge');
       const count = snap.size;
@@ -600,8 +627,7 @@
   window.createTask = async () => {
     const title = document.getElementById('taskTitle')?.value, assignee = document.getElementById('taskAssignee')?.value, deadline = document.getElementById('taskDeadline')?.value;
     if (!title || !assignee || !deadline) { showToast('All fields required', 'error'); return; }
-    const staffName = allStaff.find(s => s.id === assignee)?.fullName || 'Unknown';
-    await addDoc(collection(db, 'tasks'), { title, assignedTo: assignee, assignedToName: staffName, assignedBy: currentUser.uid, assignedByName: userData.fullName, deadline: new Date(deadline), status: 'pending', pointsValue: 5, createdAt: serverTimestamp() });
+    await addDoc(collection(db, 'tasks'), { title, assignedTo: assignee, assignedBy: currentUser.uid, assignedByName: userData.fullName, deadline: new Date(deadline), status: 'pending', pointsValue: 5, createdAt: serverTimestamp() });
     showToast('Task assigned', 'success'); hideModal();
   };
 
@@ -624,6 +650,47 @@
 
   window.refreshStaff = () => { loadDashboard(); showToast('Refreshed', 'success'); };
 
+  // LEAVE REQUEST
+  document.getElementById('requestLeaveBtn').addEventListener('click', async () => {
+    const startDate = document.getElementById('leaveStartDate').value;
+    if (!startDate) { showToast('Please select a start date', 'error'); return; }
+    
+    const start = new Date(startDate);
+    const end = new Date(start);
+    end.setDate(end.getDate() + selectedLeaveDays - 1);
+    const resume = new Date(end);
+    resume.setDate(resume.getDate() + 1);
+    
+    if ((userData.leaveDaysRemaining || 2) < selectedLeaveDays) {
+      showToast(`Only ${userData.leaveDaysRemaining || 2} leave day${(userData.leaveDaysRemaining || 2)>1?'s':''} remaining`, 'error');
+      return;
+    }
+    
+    const requestedDates = selectedLeaveDays === 1 ? [startDate] : [startDate, end.toISOString().split('T')[0]];
+    
+    await addDoc(collection(db, 'leave_requests'), {
+      userId: currentUser.uid,
+      requestedDates,
+      resumeDate: resume.toISOString().split('T')[0],
+      days: selectedLeaveDays,
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+    
+    await addDoc(collection(db, 'notifications'), {
+      userId: currentUser.uid,
+      type: 'leave_requested',
+      title: 'Leave Request Sent',
+      message: `Your ${selectedLeaveDays}-day leave starting ${startDate} has been sent for admin approval.`,
+      isRead: false,
+      createdAt: serverTimestamp()
+    });
+    
+    showToast('✅ Leave request sent! Waiting for admin approval.', 'success');
+    document.getElementById('leaveStartDate').value = '';
+    document.getElementById('leaveSummary').style.display = 'none';
+  });
+
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'auth.html'; return; }
     currentUser = user;
@@ -636,7 +703,7 @@
     loadDashboard(); resetInactivityTimer();
   });
 
-  document.getElementById('logoutBtn')?.addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
   window.addEventListener('beforeunload', () => { unsubscribes.forEach(u => u()); if (inactivityTimer) clearTimeout(inactivityTimer); });
 </script>
 </body>
