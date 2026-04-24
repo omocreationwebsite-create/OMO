@@ -55,7 +55,6 @@
     .badge { padding: 4px 10px; border-radius: 40px; font-size: 0.65rem; font-weight: 600; display: inline-block; }
     .badge-success { background: rgba(16,185,129,0.1); color: var(--success); }
     .badge-warning { background: rgba(245,158,11,0.1); color: var(--warning); }
-    .badge-danger { background: rgba(239,68,68,0.1); color: var(--danger); }
     
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
     .modal { background: white; border-radius: 28px; padding: 28px; max-width: 550px; width: 100%; max-height: 85vh; overflow-y: auto; }
@@ -68,12 +67,18 @@
     .form-control:focus { border-color: var(--primary); }
     textarea.form-control { min-height: 80px; resize: vertical; }
     
+    .image-upload-area { border: 2px dashed rgba(0,0,0,0.1); border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; margin-bottom: 15px; transition: all 0.2s; }
+    .image-upload-area:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .image-upload-area i { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; }
+    .image-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
+    .upload-progress { width: 100%; height: 6px; background: var(--gray-light); border-radius: 10px; margin: 10px 0; overflow: hidden; display: none; }
+    .upload-progress-bar { height: 100%; background: var(--primary); border-radius: 10px; transition: width 0.3s; }
+    
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
     .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
     .toast.show { transform: translateX(0); }
     
     .empty-state { text-align: center; padding: 40px; color: var(--gray); }
-    .empty-state i { font-size: 2.5rem; color: var(--primary-light); margin-bottom: 10px; }
     
     @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } .product-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .product-grid { grid-template-columns: 1fr; } }
@@ -129,6 +134,7 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
+<script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -137,6 +143,11 @@
   const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
   let currentUser = null, userData = null, unsubscribes = [], allProducts = [], currentCategory = 'all';
+  let currentEditId = null;
+
+  // Cloudinary Config
+  const CLOUDINARY_CLOUD_NAME = 'dw80fw9un';
+  const CLOUDINARY_UPLOAD_PRESET = 'kiosk_attendance';
 
   function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
   function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
@@ -146,16 +157,10 @@
   function renderProducts() {
     let filtered = [...allProducts];
     if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
-    
     document.getElementById('productCount').textContent = `${filtered.length} products`;
     const grid = document.getElementById('productGrid');
     grid.innerHTML = '';
-    
-    if (filtered.length === 0) {
-      grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No products in this category. Click "Sync from Inventory" to add.</p></div>';
-      return;
-    }
-    
+    if (filtered.length === 0) { grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No products in this category.</p></div>'; return; }
     filtered.forEach(p => {
       const imageHtml = p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}">` : '<i class="fas fa-image no-image"></i>';
       grid.innerHTML += `
@@ -168,13 +173,10 @@
             <div class="product-stock">📦 ${p.inStock || 0} in stock</div>
             <div style="margin-bottom:8px;">
               <span class="badge badge-${p.published ? 'success' : 'warning'}">${p.published ? 'Published' : 'Draft'}</span>
-              ${p.description ? '<span class="badge" style="background:rgba(59,130,246,0.1);color:#3b82f6;">Has description</span>' : ''}
             </div>
             <div class="product-actions">
               <button class="btn btn-sm btn-outline" onclick="openEditModal('${p.id}')"><i class="fas fa-edit"></i> Edit</button>
-              <button class="btn btn-sm ${p.published ? 'btn-warning' : 'btn-success'}" onclick="togglePublish('${p.id}')">
-                <i class="fas fa-${p.published ? 'eye-slash' : 'eye'}"></i> ${p.published ? 'Unpublish' : 'Publish'}
-              </button>
+              <button class="btn btn-sm ${p.published ? 'btn-warning' : 'btn-success'}" onclick="togglePublish('${p.id}')"><i class="fas fa-${p.published ? 'eye-slash' : 'eye'}"></i> ${p.published ? 'Unpublish' : 'Publish'}</button>
             </div>
           </div>
         </div>
@@ -184,15 +186,13 @@
 
   function loadProducts() {
     if (unsubscribes.length) unsubscribes.forEach(u => u()); unsubscribes = [];
-    unsubscribes.push(onSnapshot(collection(db, 'catalog'), (snap) => {
-      allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderProducts();
-    }));
+    unsubscribes.push(onSnapshot(collection(db, 'catalog'), (snap) => { allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderProducts(); }));
   }
 
   window.openEditModal = (id) => {
     const p = allProducts.find(x => x.id === id);
     if (!p) return;
+    currentEditId = id;
     
     showModal('Edit Product', `
       <div class="form-group"><label>Product Name</label><input class="form-control" id="editName" value="${p.name || ''}"></div>
@@ -204,12 +204,44 @@
         <option value="other" ${p.category==='other'?'selected':''}>Other</option>
       </select></div>
       <div class="form-group"><label>Description</label><textarea class="form-control" id="editDesc" placeholder="Describe the product...">${p.description || ''}</textarea></div>
-      <div class="form-group"><label>Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${p.price || 0}"></div>
-      <div class="form-group"><label>Image URL</label><input class="form-control" id="editImageUrl" placeholder="https://res.cloudinary.com/.../image.jpg" value="${p.imageUrl || ''}"></div>
-      <p style="font-size:0.75rem;color:var(--gray);margin-bottom:15px;"><i class="fas fa-info-circle"></i> Upload images to Cloudinary and paste the URL here.</p>
-      ${p.imageUrl ? `<div style="margin-bottom:15px;"><img src="${p.imageUrl}" style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;"></div>` : ''}
+      <div class="form-group"><label>Price (₦)</label><input type="number" class="form-control" id="editPrice" value="${p.price || 0}" step="0.01"></div>
+      
+      <div class="form-group"><label>Product Image</label>
+        <div class="image-upload-area" onclick="openCloudinaryWidget()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Click to upload image from device</p>
+          <p style="font-size:0.7rem;color:var(--gray);">Supported: JPG, PNG, WEBP</p>
+        </div>
+        <div class="upload-progress" id="uploadProgress"><div class="upload-progress-bar" id="uploadProgressBar" style="width:0%;"></div></div>
+        <div id="imagePreviewContainer">${p.imageUrl ? `<img src="${p.imageUrl}" class="image-preview" id="imagePreview">` : ''}</div>
+        <input type="hidden" id="editImageUrl" value="${p.imageUrl || ''}">
+      </div>
+      
       <button class="btn btn-primary" onclick="saveProduct('${id}')"><i class="fas fa-save"></i> Save Changes</button>
     `);
+  };
+
+  window.openCloudinaryWidget = () => {
+    const widget = cloudinary.createUploadWidget({
+      cloudName: CLOUDINARY_CLOUD_NAME,
+      uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+      folder: 'catalog_products',
+      maxFiles: 1,
+      resourceType: 'image',
+      clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+      maxFileSize: 5000000,
+      styles: { palette: { window: "#FFFFFF", windowBorder: "#ff4da6", tabIcon: "#ff4da6", menuIcons: "#6b7280", textDark: "#0f0f1a", textLight: "#FFFFFF", link: "#ff4da6", action: "#ff4da6", inProgress: "#ff4da6", complete: "#10b981", error: "#ef4444", sourceBg: "#f3f4f6" } }
+    }, (error, result) => {
+      if (!error && result && result.event === "success") {
+        console.log('Uploaded:', result.info.secure_url);
+        document.getElementById('editImageUrl').value = result.info.secure_url;
+        const preview = document.getElementById('imagePreviewContainer');
+        preview.innerHTML = `<img src="${result.info.secure_url}" class="image-preview" id="imagePreview">`;
+        showToast('Image uploaded!', 'success');
+      }
+      if (error) { showToast('Upload failed', 'error'); }
+    });
+    widget.open();
   };
 
   window.saveProduct = async (id) => {
@@ -237,40 +269,25 @@
     try {
       const stockSnap = await getDocs(query(collection(db, 'stock_items'), where('status', 'in', ['available', 'low'])));
       let count = 0;
-      
       for (const d of stockSnap.docs) {
         const item = d.data();
         const existing = allProducts.find(p => p.stockId === d.id);
-        
         if (!existing) {
           await addDoc(collection(db, 'catalog'), {
-            stockId: d.id,
-            name: item.name,
-            category: item.category || 'other',
-            description: '',
-            price: item.unitPrice || 0,
-            inStock: item.quantityAvailable || 0,
-            imageUrl: '',
-            published: false,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
+            stockId: d.id, name: item.name, category: item.category || 'other', description: '',
+            price: item.unitPrice || 0, inStock: item.quantityAvailable || 0, imageUrl: '',
+            published: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
           });
           count++;
         } else {
-          await updateDoc(doc(db, 'catalog', existing.id), {
-            inStock: item.quantityAvailable || 0,
-            price: item.unitPrice || 0,
-            updatedAt: serverTimestamp()
-          });
+          await updateDoc(doc(db, 'catalog', existing.id), { inStock: item.quantityAvailable || 0, price: item.unitPrice || 0, updatedAt: serverTimestamp() });
         }
       }
-      
-      showToast(`Synced ${count} new products from inventory!`, 'success');
+      showToast(`Synced ${count} new products!`, 'success');
     } catch (e) { showToast('Error: ' + e.message, 'error'); }
   };
 
   window.refreshCatalog = () => { loadProducts(); showToast('Refreshed', 'success'); };
-
   document.getElementById('categoryFilter').addEventListener('change', e => { currentCategory = e.target.value; renderProducts(); });
 
   onAuthStateChanged(auth, async (user) => {
