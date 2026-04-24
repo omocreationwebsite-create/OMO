@@ -27,42 +27,58 @@
     .main-content { flex: 1; margin-left: var(--sidebar-width); }
     .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
     .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
-    .content-wrapper { padding: 28px; max-width: 800px; margin: 0 auto; }
+    .content-wrapper { padding: 28px; max-width: 900px; margin: 0 auto; }
     
-    .settings-card { background: white; border-radius: 24px; padding: 30px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
-    .settings-header { margin-bottom: 25px; }
-    .settings-header h2 { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--dark); }
+    .settings-card { background: white; border-radius: 24px; padding: 28px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
+    .settings-header { margin-bottom: 22px; }
+    .settings-header h2 { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--dark); }
     .settings-header p { color: var(--gray); font-size: 0.85rem; margin-top: 5px; }
     
-    .form-group { margin-bottom: 24px; }
+    .form-group { margin-bottom: 22px; }
     .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 8px; }
     .form-group .hint { font-size: 0.75rem; color: var(--gray); margin-top: 5px; }
     
     .time-input-group { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
     .time-input { display: flex; align-items: center; gap: 5px; background: var(--gray-light); padding: 8px 15px; border-radius: 40px; }
-    .time-input input { width: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 1rem; font-weight: 600; }
-    .time-input span { font-size: 1.2rem; font-weight: 600; color: var(--gray); }
+    .time-input input { width: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 1rem; font-weight: 600; outline: none; }
+    .time-input input:focus { border-color: var(--primary); }
     
     .penalty-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
     .penalty-item { flex: 1; min-width: 150px; }
-    .penalty-item label { font-size: 0.75rem; margin-bottom: 5px; }
-    .penalty-item input { width: 100%; padding: 12px 15px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px; font-size: 1rem; font-weight: 600; }
+    .penalty-item input { width: 100%; padding: 12px 15px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px; font-size: 1rem; font-weight: 600; outline: none; }
+    .penalty-item input:focus { border-color: var(--primary); }
     
     .divider { height: 1px; background: rgba(0,0,0,0.08); margin: 25px 0; }
     
     .btn { padding: 12px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
     .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; width: 100%; justify-content: center; }
-    .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(255,77,166,0.3); }
+    .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; width: 100%; justify-content: center; margin-top: 12px; }
     
     .info-box { background: var(--primary-soft); border-radius: 16px; padding: 20px; margin-top: 20px; }
     .info-box h4 { font-size: 0.9rem; margin-bottom: 10px; color: var(--dark); }
     .info-box ul { list-style: none; }
     .info-box li { font-size: 0.8rem; color: var(--gray); padding: 5px 0; display: flex; align-items: center; gap: 8px; }
-    .info-box li i { color: var(--primary); width: 18px; }
+    
+    /* Photos Grid */
+    .attendance-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
+    .photo-card { background: var(--gray-light); border-radius: 16px; overflow: hidden; }
+    .photo-card img { width: 100%; height: 140px; object-fit: cover; display: block; cursor: pointer; }
+    .photo-info { padding: 10px 12px; }
+    .photo-info h4 { font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
+    .photo-info p { font-size: 0.7rem; color: var(--gray); }
+    .photo-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; margin-top: 4px; }
+    .photo-badge.on-time { background: #d1fae5; color: var(--success); }
+    .photo-badge.late { background: #fee2e2; color: var(--danger); }
+    .photo-badge.early { background: #fee2e2; color: var(--danger); }
     
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
     .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
     .toast.show { transform: translateX(0); }
+    
+    .loading-state { display: flex; justify-content: center; padding: 30px; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     
     @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } }
   </style>
@@ -87,8 +103,29 @@
   <header class="top-bar"><h1 class="page-title">Kiosk Settings</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
   <div class="content-wrapper">
     
+    <!-- Cloudinary Configuration -->
     <div class="settings-card">
-      <div class="settings-header"><h2><i class="fas fa-clock"></i> Attendance Time Settings</h2><p>Configure check-in and check-out times. Staff checking in late or checking out early will receive penalties.</p></div>
+      <div class="settings-header">
+        <h2><i class="fas fa-cloud-upload-alt"></i> Cloudinary Configuration</h2>
+        <p>Your Cloudinary account for storing attendance photos.</p>
+      </div>
+      
+      <div class="form-group">
+        <label>Cloudinary Cloud Name</label>
+        <input type="text" id="cloudinaryCloudName" class="form-control" value="dw80fw9un" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;">
+        <p class="hint">Your Cloudinary cloud name. Found in your Cloudinary Dashboard.</p>
+      </div>
+      
+      <div class="form-group">
+        <label>Upload Preset (Unsigned)</label>
+        <input type="text" id="cloudinaryUploadPreset" class="form-control" value="kiosk_attendance" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;">
+        <p class="hint">Unsigned upload preset for kiosk photo uploads.</p>
+      </div>
+    </div>
+    
+    <!-- Time Settings -->
+    <div class="settings-card">
+      <div class="settings-header"><h2><i class="fas fa-clock"></i> Attendance Time Settings</h2><p>Configure check-in and check-out times.</p></div>
       
       <div class="form-group">
         <label><i class="fas fa-sign-in-alt"></i> Check-In Time (Latest arrival)</label>
@@ -96,7 +133,7 @@
           <div class="time-input"><input type="number" id="checkInHour" min="0" max="23" value="9"> <span>:</span> <input type="number" id="checkInMinute" min="0" max="59" value="0"></div>
           <span style="color:var(--gray);">AM</span>
         </div>
-        <p class="hint"><i class="fas fa-info-circle"></i> Staff checking in after this time are marked LATE and lose points.</p>
+        <p class="hint">Staff arriving after this time are marked LATE.</p>
       </div>
       
       <div class="form-group">
@@ -105,42 +142,42 @@
           <div class="time-input"><input type="number" id="checkOutHour" min="0" max="23" value="18"> <span>:</span> <input type="number" id="checkOutMinute" min="0" max="59" value="0"></div>
           <span style="color:var(--gray);">PM</span>
         </div>
-        <p class="hint"><i class="fas fa-info-circle"></i> Staff checking out before this time are marked EARLY DEPARTURE and lose points.</p>
+        <p class="hint">Staff leaving before this time are marked EARLY DEPARTURE.</p>
       </div>
       
       <div class="divider"></div>
       
-      <div class="settings-header"><h2><i class="fas fa-coins"></i> Penalty Settings</h2><p>Points deducted for attendance violations.</p></div>
+      <div class="settings-header"><h2><i class="fas fa-coins"></i> Penalty Settings</h2></div>
       
       <div class="penalty-group">
-        <div class="penalty-item"><label>Late Check-In Penalty</label><input type="number" id="latePenalty" value="5" min="1" max="50"></div>
-        <div class="penalty-item"><label>Early Check-Out Penalty</label><input type="number" id="earlyPenalty" value="5" min="1" max="50"></div>
+        <div class="penalty-item"><label>Late Penalty</label><input type="number" id="latePenalty" value="5" min="1" max="50"></div>
+        <div class="penalty-item"><label>Early Departure</label><input type="number" id="earlyPenalty" value="5" min="1" max="50"></div>
         <div class="penalty-item"><label>Absent Penalty</label><input type="number" id="absentPenalty" value="10" min="1" max="50"></div>
       </div>
       
       <div class="divider"></div>
       
-      <div class="settings-header"><h2><i class="fas fa-shield-alt"></i> Security Settings</h2></div>
+      <div class="settings-header"><h2><i class="fas fa-shield-alt"></i> Security</h2></div>
       
       <div class="form-group">
         <label>Admin Exit PIN</label>
-        <input type="password" id="adminPin" class="form-control" placeholder="4-digit PIN" maxlength="4" value="1234" style="width:150px;padding:12px;border-radius:12px;border:1px solid #ddd;">
-        <p class="hint">PIN required to exit kiosk mode and return to admin dashboard.</p>
+        <input type="password" id="adminPin" class="form-control" maxlength="4" value="1234" style="width:150px;padding:12px;border-radius:12px;border:1px solid #ddd;">
+        <p class="hint">Required to exit kiosk mode.</p>
       </div>
       
-      <div class="info-box">
-        <h4><i class="fas fa-ruler"></i> Kiosk Rules for Staff</h4>
-        <ul>
-          <li><i class="fas fa-check-circle" style="color:var(--success);"></i> Check-in before check-in time = ON TIME (+0 points)</li>
-          <li><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> Check-in after check-in time = LATE (-<span id="displayLatePenalty">5</span> points)</li>
-          <li><i class="fas fa-check-circle" style="color:var(--success);"></i> Check-out after check-out time = ON TIME (+0 points)</li>
-          <li><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> Check-out before check-out time = EARLY DEPARTURE (-<span id="displayEarlyPenalty">5</span> points)</li>
-          <li><i class="fas fa-times-circle" style="color:var(--danger);"></i> No check-in for the day = ABSENT (-<span id="displayAbsentPenalty">10</span> points)</li>
-        </ul>
+      <button class="btn btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Save All Settings</button>
+      <button class="btn btn-outline" onclick="window.open('kiosk.html', '_blank')"><i class="fas fa-desktop"></i> Open Kiosk Terminal</button>
+    </div>
+    
+    <!-- Today's Photos -->
+    <div class="settings-card">
+      <div class="settings-header">
+        <h2><i class="fas fa-images"></i> Today's Attendance Photos</h2>
+        <p>Photos captured by the kiosk today.</p>
       </div>
-      
-      <button class="btn btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Save Kiosk Settings</button>
-      <button class="btn btn-outline" onclick="window.open('kiosk.html', '_blank')" style="margin-top:15px;width:100%;justify-content:center;"><i class="fas fa-desktop"></i> Open Kiosk Terminal</button>
+      <div id="attendancePhotosContainer">
+        <div class="loading-state"><div class="spinner"></div></div>
+      </div>
     </div>
     
   </div>
@@ -151,14 +188,33 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
-  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  const firebaseConfig = { 
+    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", 
+    authDomain: "fashion-46e5d.firebaseapp.com", 
+    projectId: "fashion-46e5d", 
+    storageBucket: "fashion-46e5d.firebasestorage.app", 
+    messagingSenderId: "408062284317", 
+    appId: "1:408062284317:web:eb905bce68926c10a0ecf4" 
+  };
+  
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app); 
+  const db = getFirestore(app);
   let currentUser = null;
 
-  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  function showToast(msg, type='success') { 
+    const c = document.getElementById('toastContainer'); 
+    const t = document.createElement('div'); 
+    t.className = `toast ${type}`; 
+    t.innerHTML = `<span>${msg}</span>`; 
+    c.appendChild(t); 
+    setTimeout(() => t.classList.add('show'), 10); 
+    setTimeout(() => t.remove(), 4000); 
+  }
 
+  // ========== LOAD SETTINGS ==========
   async function loadSettings() {
     const snap = await getDoc(doc(db, 'system_settings', 'kiosk'));
     if (snap.exists()) {
@@ -171,21 +227,12 @@
       document.getElementById('earlyPenalty').value = s.earlyPenalty || 5;
       document.getElementById('absentPenalty').value = s.absentPenalty || 10;
       document.getElementById('adminPin').value = s.adminPin || '1234';
-      updateDisplayPenalties();
+      document.getElementById('cloudinaryCloudName').value = s.cloudinaryCloudName || 'dw80fw9un';
+      document.getElementById('cloudinaryUploadPreset').value = s.cloudinaryUploadPreset || 'kiosk_attendance';
     }
-    updateDisplayPenalties();
   }
 
-  function updateDisplayPenalties() {
-    document.getElementById('displayLatePenalty').textContent = document.getElementById('latePenalty').value;
-    document.getElementById('displayEarlyPenalty').textContent = document.getElementById('earlyPenalty').value;
-    document.getElementById('displayAbsentPenalty').textContent = document.getElementById('absentPenalty').value;
-  }
-
-  document.getElementById('latePenalty').addEventListener('input', updateDisplayPenalties);
-  document.getElementById('earlyPenalty').addEventListener('input', updateDisplayPenalties);
-  document.getElementById('absentPenalty').addEventListener('input', updateDisplayPenalties);
-
+  // ========== SAVE SETTINGS ==========
   window.saveSettings = async () => {
     const settings = {
       checkInHour: parseInt(document.getElementById('checkInHour').value) || 9,
@@ -196,15 +243,87 @@
       earlyPenalty: parseInt(document.getElementById('earlyPenalty').value) || 5,
       absentPenalty: parseInt(document.getElementById('absentPenalty').value) || 10,
       adminPin: document.getElementById('adminPin').value || '1234',
+      cloudinaryCloudName: document.getElementById('cloudinaryCloudName').value || 'dw80fw9un',
+      cloudinaryUploadPreset: document.getElementById('cloudinaryUploadPreset').value || 'kiosk_attendance',
       updatedAt: serverTimestamp(),
       updatedBy: currentUser?.uid
     };
     
     await setDoc(doc(db, 'system_settings', 'kiosk'), settings);
-    showToast('Kiosk settings saved successfully!', 'success');
+    showToast('All settings saved!', 'success');
   };
 
-  onAuthStateChanged(auth, async (u) => { if (!u) { window.location.href = 'auth.html'; return; } currentUser = u; const snap = await getDoc(doc(db, 'users', u.uid)); if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } const data = snap.data(); document.getElementById('userName').textContent = data.fullName?.split(' ')[0] || 'Admin'; document.getElementById('userRole').textContent = data.role; document.getElementById('userAvatar').textContent = (data.fullName||'A').charAt(0); document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); loadSettings(); });
+  // ========== LOAD TODAY'S PHOTOS ==========
+  async function loadTodayPhotos() {
+    const container = document.getElementById('attendancePhotosContainer');
+    const today = new Date().toISOString().split('T')[0];
+    
+    try {
+      const attQuery = query(collection(db, 'attendance'), where('date', '==', today), orderBy('checkInTime', 'desc'));
+      const attSnap = await getDocs(attQuery);
+      
+      if (attSnap.empty) {
+        container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gray);"><i class="fas fa-camera" style="font-size:2rem;margin-bottom:10px;"></i><p>No attendance photos today</p></div>';
+        return;
+      }
+      
+      let html = '<div class="attendance-photos">';
+      
+      attSnap.forEach(doc => {
+        const a = doc.data();
+        
+        if (a.photoUrl) {
+          const time = a.checkInTime?.toDate().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}) || '-';
+          html += `
+            <div class="photo-card">
+              <img src="${a.photoUrl}" onclick="window.open('${a.photoUrl}')" alt="${a.staffName}">
+              <div class="photo-info">
+                <h4>${a.staffName || 'Unknown'}</h4>
+                <p>Check-in: ${time}</p>
+                <span class="photo-badge ${a.status==='late'?'late':'on-time'}">${a.status==='late'?'LATE':'ON TIME'}</span>
+              </div>
+            </div>
+          `;
+        }
+        
+        if (a.checkOutPhotoUrl) {
+          const time = a.checkOutTime?.toDate().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}) || '-';
+          html += `
+            <div class="photo-card">
+              <img src="${a.checkOutPhotoUrl}" onclick="window.open('${a.checkOutPhotoUrl}')" alt="${a.staffName}">
+              <div class="photo-info">
+                <h4>${a.staffName || 'Unknown'}</h4>
+                <p>Check-out: ${time}</p>
+                <span class="photo-badge ${a.checkOutStatus==='early'?'early':'on-time'}">${a.checkOutStatus==='early'?'EARLY':'ON TIME'}</span>
+              </div>
+            </div>
+          `;
+        }
+      });
+      
+      html += '</div>';
+      container.innerHTML = html;
+      
+    } catch (e) {
+      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--danger);">Error loading photos</div>';
+    }
+  }
+
+  // ========== INIT ==========
+  onAuthStateChanged(auth, async (u) => { 
+    if (!u) { window.location.href = 'auth.html'; return; } 
+    currentUser = u; 
+    const snap = await getDoc(doc(db, 'users', u.uid)); 
+    if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { window.location.href = 'auth.html'; return; } 
+    const data = snap.data(); 
+    document.getElementById('userName').textContent = data.fullName?.split(' ')[0] || 'Admin'; 
+    document.getElementById('userRole').textContent = data.role; 
+    document.getElementById('userAvatar').textContent = (data.fullName||'A').charAt(0); 
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); 
+    await loadSettings(); 
+    await loadTodayPhotos();
+  });
+  
   document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
 </script>
 </body>
