@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ff4da6">
+  <title>Shop · FashionStone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; min-height: 100vh; }
+    
+    .top-nav { background: white; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .nav-brand { font-size: 1.3rem; font-weight: 700; color: var(--dark); }
+    .nav-brand span { color: var(--primary); }
+    .cart-icon { position: relative; cursor: pointer; padding: 8px; border-radius: 12px; background: var(--primary-soft); }
+    .cart-icon i { font-size: 1.2rem; color: var(--primary); }
+    .cart-count { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 30px; font-weight: 700; }
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+    .admin-link { font-size: 0.8rem; color: var(--gray); text-decoration: none; }
+    
+    .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .search-wrapper { flex: 1; min-width: 200px; position: relative; }
+    .search-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+    .search-input { width: 100%; padding: 12px 16px 12px 42px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; font-size: 0.9rem; outline: none; }
+    .filter-select { padding: 12px 20px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 40px; font-size: 0.85rem; background: white; }
+    
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+    .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); transition: transform 0.15s; cursor: pointer; }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,77,166,0.1); }
+    .product-image { width: 100%; aspect-ratio: 1; background: var(--gray-light); display: flex; align-items: center; justify-content: center; }
+    .product-image img { width: 100%; height: 100%; object-fit: cover; }
+    .product-image .no-img { font-size: 3rem; color: var(--gray); }
+    .product-info { padding: 16px; }
+    .product-name { font-weight: 700; margin-bottom: 4px; color: var(--dark); }
+    .product-desc { font-size: 0.75rem; color: var(--gray); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-price { color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+    .add-cart-btn { width: 100%; padding: 10px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; background: var(--primary); color: white; }
+    .add-cart-btn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--gray); }
+    
+    .cart-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; }
+    .cart-overlay.show { display: block; }
+    .cart-panel { position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100vh; background: white; z-index: 101; transition: right 0.3s; display: flex; flex-direction: column; }
+    .cart-panel.show { right: 0; }
+    .cart-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .cart-header h3 { font-size: 1.1rem; }
+    .cart-items { flex: 1; overflow-y: auto; padding: 20px; }
+    .cart-item { display: flex; gap: 12px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+    .cart-item-img { width: 60px; height: 60px; border-radius: 12px; background: var(--gray-light); flex-shrink: 0; }
+    .cart-item-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+    .cart-item-price { color: var(--primary); font-weight: 600; font-size: 0.85rem; }
+    .cart-item-actions { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+    .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: 600; }
+    .qty-value { font-weight: 600; min-width: 20px; text-align: center; }
+    .remove-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.8rem; }
+    .cart-footer { padding: 20px; border-top: 1px solid #eee; }
+    .cart-total { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; }
+    .checkout-btn { width: 100%; padding: 14px; border-radius: 30px; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; background: var(--primary); color: white; }
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 16px; }
+    .modal { background: white; border-radius: 28px; padding: 28px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--gray); }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 14px; font-size: 0.9rem; outline: none; }
+    
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
+    .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
+    .toast.show { transform: translateX(0); }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
+    .empty-state i { font-size: 3rem; color: var(--primary-light); margin-bottom: 15px; }
+    
+    .whatsapp-btn { background: #25D366; color: white; width: 100%; padding: 14px; border-radius: 30px; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
+    
+    @media (max-width: 768px) { .product-grid { grid-template-columns: repeat(2, 1fr); } .cart-panel { max-width: 100%; } }
+    @media (max-width: 480px) { .product-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <div class="nav-brand">💎 Fashion<span>Stone</span></div>
+  <div class="nav-actions">
+    <a href="auth.html" class="admin-link"><i class="fas fa-user-shield"></i> Staff Login</a>
+    <div class="cart-icon" onclick="toggleCart()">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-count" id="cartCount">0</span>
+    </div>
+  </div>
+</div>
+
+<div class="content-wrapper">
+  
+  <div class="filter-bar">
+    <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" class="search-input" id="searchInput" placeholder="Search products..."></div>
+    <select class="filter-select" id="categoryFilter">
+      <option value="all">All Categories</option>
+      <option value="rhinestones">Rhinestones</option><option value="beads">Beads</option>
+      <option value="bridal">Bridal</option><option value="paperstones">Paperstones</option><option value="other">Other</option>
+    </select>
+  </div>
+  
+  <div class="product-grid" id="productGrid">
+    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading products...</p></div>
+  </div>
+</div>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> Your Cart</h3><button style="background:none;border:none;font-size:1.2rem;cursor:pointer;" onclick="toggleCart()">&times;</button></div>
+  <div class="cart-items" id="cartItems"><div class="empty-state"><i class="fas fa-shopping-cart"></i><p>Your cart is empty</p></div></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>Total:</span><span id="cartTotal">₦0</span></div>
+    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Checkout</h3><button class="modal-close" onclick="hideCheckout()">&times;</button></div>
+    <div id="checkoutContent"></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, where, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = { apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", authDomain: "fashion-46e5d.firebaseapp.com", projectId: "fashion-46e5d", storageBucket: "fashion-46e5d.firebasestorage.app", messagingSenderId: "408062284317", appId: "1:408062284317:web:eb905bce68926c10a0ecf4" };
+  const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+  
+  // UPDATED WHATSAPP NUMBER
+  const WHATSAPP_NUMBER = '2348107595812';
+  
+  let allProducts = [], cart = JSON.parse(localStorage.getItem('fashionstone_cart') || '[]');
+  let currentCategory = 'all', cartOpen = false;
+
+  function formatCurrency(n) { return '₦' + (n || 0).toLocaleString(); }
+  function showToast(msg, type='success') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.remove(), 4000); }
+  function saveCart() { localStorage.setItem('fashionstone_cart', JSON.stringify(cart)); updateCartUI(); }
+
+  function updateCartUI() {
+    document.getElementById('cartCount').textContent = cart.reduce((s,i) => s + i.quantity, 0);
+    document.getElementById('cartTotal').textContent = formatCurrency(cart.reduce((s,i) => s + (i.price * i.quantity), 0));
+    const container = document.getElementById('cartItems');
+    if (cart.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-cart"></i><p>Your cart is empty</p></div>'; }
+    else { container.innerHTML = cart.map((item, idx) => `<div class="cart-item"><div class="cart-item-img">${item.imageUrl ? `<img src="${item.imageUrl}">` : ''}</div><div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">${formatCurrency(item.price)}</div><div class="cart-item-actions"><button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button><span class="qty-value">${item.quantity}</span><button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button><button class="remove-btn" onclick="removeItem(${idx})"><i class="fas fa-trash"></i></button></div></div></div>`).join(''); }
+  }
+
+  window.changeQty = (idx, delta) => { cart[idx].quantity += delta; if (cart[idx].quantity < 1) cart.splice(idx, 1); saveCart(); };
+  window.removeItem = (idx) => { cart.splice(idx, 1); saveCart(); };
+  window.toggleCart = () => { cartOpen = !cartOpen; document.getElementById('cartPanel').classList.toggle('show', cartOpen); document.getElementById('cartOverlay').classList.toggle('show', cartOpen); };
+  window.hideCheckout = () => document.getElementById('checkoutModal').style.display = 'none';
+
+  function renderProducts() {
+    let filtered = [...allProducts];
+    if (currentCategory !== 'all') filtered = filtered.filter(p => p.category === currentCategory);
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    if (search) filtered = filtered.filter(p => (p.name||'').toLowerCase().includes(search) || (p.description||'').toLowerCase().includes(search));
+    const grid = document.getElementById('productGrid');
+    if (filtered.length === 0) { grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No products found</p></div>'; return; }
+    grid.innerHTML = filtered.map(p => `<div class="product-card" onclick="openDetail('${p.id}')"><div class="product-image">${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}">` : '<i class="fas fa-image no-img"></i>'}</div><div class="product-info"><div class="product-name">${p.name}</div><div class="product-desc">${p.description || 'No description'}</div><div class="product-price">${formatCurrency(p.price)}</div><button class="add-cart-btn" onclick="event.stopPropagation(); addToCart('${p.id}')" ${p.inStock < 1 ? 'disabled' : ''}><i class="fas fa-cart-plus"></i> ${p.inStock < 1 ? 'Out of Stock' : 'Add to Cart'}</button></div></div>`).join('');
+  }
+
+  window.openDetail = (id) => {
+    const p = allProducts.find(x => x.id === id); if (!p) return;
+    document.getElementById('checkoutContent').innerHTML = `<div style="text-align:center;">${p.imageUrl ? `<img src="${p.imageUrl}" style="width:100%;max-height:300px;object-fit:cover;border-radius:16px;margin-bottom:15px;">` : ''}</div><h2>${p.name}</h2><p style="color:var(--gray);">${p.category}</p><p style="font-size:1.5rem;font-weight:700;color:var(--primary);">${formatCurrency(p.price)}</p><p>${p.description || 'No description available'}</p><p>📦 ${p.inStock} in stock</p><button class="add-cart-btn" onclick="addToCart('${p.id}'); hideCheckout();" ${p.inStock < 1 ? 'disabled' : ''}>${p.inStock < 1 ? 'Out of Stock' : 'Add to Cart'}</button>`;
+    document.getElementById('checkoutModal').style.display = 'flex';
+  };
+
+  window.addToCart = (id) => {
+    const p = allProducts.find(x => x.id === id); if (!p) return;
+    const existing = cart.find(i => i.id === id);
+    if (existing) { existing.quantity++; } else { cart.push({ id: p.id, name: p.name, price: p.price, imageUrl: p.imageUrl, quantity: 1 }); }
+    saveCart(); showToast(`${p.name} added!`, 'success');
+  };
+
+  window.openCheckout = () => {
+    if (cart.length === 0) { showToast('Cart is empty', 'error'); return; }
+    const total = cart.reduce((s,i) => s + (i.price * i.quantity), 0);
+    const itemsList = cart.map(i => `${i.name} x${i.quantity}`).join(', ');
+    document.getElementById('checkoutContent').innerHTML = `<div class="form-group"><label>Full Name *</label><input class="form-control" id="custName"></div><div class="form-group"><label>Phone Number *</label><input class="form-control" id="custPhone"></div><div class="form-group"><label>Delivery Address</label><textarea class="form-control" id="custAddress"></textarea></div><div style="background:var(--gray-light);border-radius:12px;padding:15px;margin-bottom:15px;"><h4>Order Summary</h4>${cart.map(i => `<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:0.85rem;"><span>${i.name} x${i.quantity}</span><span>${formatCurrency(i.price * i.quantity)}</span></div>`).join('')}<div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px dashed #ccc;padding-top:10px;margin-top:5px;"><span>Total</span><span>${formatCurrency(total)}</span></div></div><button class="whatsapp-btn" onclick="proceedToWhatsApp()"><i class="fab fa-whatsapp"></i> Pay via WhatsApp</button><button class="checkout-btn" onclick="confirmOrder()" style="margin-top:10px;">I've Made Payment</button>`;
+    document.getElementById('checkoutModal').style.display = 'flex';
+  };
+
+  window.proceedToWhatsApp = () => {
+    const name = document.getElementById('custName')?.value || 'Customer';
+    const phone = document.getElementById('custPhone')?.value || '';
+    const address = document.getElementById('custAddress')?.value || '';
+    const total = cart.reduce((s,i) => s + (i.price * i.quantity), 0);
+    const itemsList = cart.map(i => `${i.name} x${i.quantity}`).join(', ');
+    const message = `Hello FashionStone,%0A%0AI want to place an order:%0A${itemsList}%0ATotal: ₦${total.toLocaleString()}%0A%0AName: ${name}%0APhone: ${phone}%0AAddress: ${address}`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+    showToast('Redirecting to WhatsApp...', 'success');
+  };
+
+  window.confirmOrder = async () => {
+    const name = document.getElementById('custName')?.value?.trim();
+    const phone = document.getElementById('custPhone')?.value?.trim();
+    const address = document.getElementById('custAddress')?.value?.trim();
+    if (!name || !phone) { showToast('Name and phone required', 'error'); return; }
+    const total = cart.reduce((s,i) => s + (i.price * i.quantity), 0);
+    try {
+      await addDoc(collection(db, 'orders'), { customerName: name, customerPhone: phone, shippingAddress: address, items: cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.price })), totalAmount: total, status: 'pending', paymentMethod: 'whatsapp', createdAt: serverTimestamp() });
+      cart = []; saveCart(); hideCheckout();
+      showToast('Order placed! We will contact you.', 'success');
+    } catch (e) { showToast('Error: ' + e.message, 'error'); }
+  };
+
+  onSnapshot(query(collection(db, 'catalog'), where('published', '==', true)), (snap) => { allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderProducts(); });
+  document.getElementById('searchInput').addEventListener('input', renderProducts);
+  document.getElementById('categoryFilter').addEventListener('change', e => { currentCategory = e.target.value; renderProducts(); });
+  updateCartUI();
+</script>
+</body>
+</html>
