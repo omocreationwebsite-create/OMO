@@ -4,374 +4,513 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ff4da6">
-  <title>Kiosk Settings · FashionStone</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Kiosk · FashionStone Attendance</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #ff4da6; --primary-dark: #e6398c; --primary-soft: #fff0f6; --dark: #0f0f1a; --gray: #6b7280; --gray-light: #f3f4f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --header-height: 70px; --sidebar-width: 280px; }
-    body { font-family: 'Inter', sans-serif; background: #f9fafb; display: flex; min-height: 100vh; }
-    .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; }
-    .sidebar-header { padding: 24px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; }
-    .logo-text { font-size: 1.25rem; font-weight: 700; } .logo-text span { color: var(--primary); }
-    .sidebar-nav { padding: 20px 12px; }
-    .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,0.65); cursor: pointer; border: none; background: none; width: 100%; font-size: 0.9rem; font-weight: 500; margin-bottom: 3px; }
-    .nav-item i { width: 22px; } .nav-item:hover { background: rgba(255,77,166,0.12); color: white; }
-    .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
-    .nav-item.logout { color: rgba(239,68,68,0.7); margin-top: 20px; }
-    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.06); position: absolute; bottom: 0; width: 100%; background: inherit; }
-    .user-profile { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-weight: 700; }
-    .user-details h4 { font-size: 0.85rem; } .user-details p { font-size: 0.7rem; opacity: 0.6; }
-    .main-content { flex: 1; margin-left: var(--sidebar-width); }
-    .top-bar { height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 40; }
-    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
-    .content-wrapper { padding: 28px; max-width: 900px; margin: 0 auto; }
+    :root { --primary: #ff4da6; --primary-dark: #e6398c; --dark: #0f0f1a; --gray: #6b7280; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
+    body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%); min-height: 100vh; padding: 15px; }
     
-    .settings-card { background: white; border-radius: 24px; padding: 30px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
-    .settings-header { margin-bottom: 25px; }
-    .settings-header h2 { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--dark); }
-    .settings-header p { color: var(--gray); font-size: 0.85rem; margin-top: 5px; }
+    .kiosk-container { max-width: 650px; margin: 0 auto; }
     
-    .form-group { margin-bottom: 24px; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 8px; }
-    .form-group .hint { font-size: 0.75rem; color: var(--gray); margin-top: 5px; }
+    .header { text-align: center; margin-bottom: 15px; }
+    .header h1 { color: white; font-size: 1.5rem; }
+    .header h1 i { color: var(--primary); } .header h1 span { color: var(--primary); }
+    .header p { color: var(--gray); font-size: 0.8rem; margin-top: 5px; }
     
-    .time-input-group { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-    .time-input { display: flex; align-items: center; gap: 5px; background: var(--gray-light); padding: 8px 15px; border-radius: 40px; }
-    .time-input input { width: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 1rem; font-weight: 600; outline: none; }
-    .time-input input:focus { border-color: var(--primary); }
-    .time-input span { font-size: 1.2rem; font-weight: 600; color: var(--gray); }
+    .clock { text-align: center; margin-bottom: 15px; }
+    .clock-time { font-size: 2.5rem; font-weight: 800; color: white; letter-spacing: 2px; }
+    .clock-date { font-size: 0.85rem; color: var(--gray); }
     
-    .penalty-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .penalty-item { flex: 1; min-width: 150px; }
-    .penalty-item label { font-size: 0.75rem; margin-bottom: 5px; }
-    .penalty-item input { width: 100%; padding: 12px 15px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px; font-size: 1rem; font-weight: 600; outline: none; }
-    .penalty-item input:focus { border-color: var(--primary); }
+    .mode-toggle { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
+    .mode-btn { padding: 12px 28px; border-radius: 30px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; background: rgba(255,255,255,0.1); color: white; transition: all 0.2s; }
+    .mode-btn.active { background: var(--success); }
+    .mode-btn.checkout.active { background: var(--warning); }
     
-    .divider { height: 1px; background: rgba(0,0,0,0.08); margin: 25px 0; }
+    .stats { display: flex; justify-content: space-around; margin-bottom: 15px; background: rgba(255,255,255,0.05); border-radius: 30px; padding: 10px; }
+    .stat { text-align: center; } .stat-value { font-size: 1.3rem; font-weight: 700; color: white; } .stat-label { font-size: 0.6rem; color: var(--gray); text-transform: uppercase; }
     
-    .btn { padding: 12px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; width: 100%; justify-content: center; }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(255,77,166,0.3); }
-    .btn-outline { border: 1.5px solid rgba(255,77,166,0.3); color: var(--primary); background: transparent; }
+    .camera-section { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 10px; margin-bottom: 15px; }
+    .camera-container { border-radius: 12px; overflow: hidden; background: #000; }
+    #webcamVideo { width: 100%; height: auto; display: block; object-fit: cover; }
+    .camera-controls { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
+    .camera-controls button { background: rgba(255,255,255,0.1); border: none; color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; }
     
-    .info-box { background: var(--primary-soft); border-radius: 16px; padding: 20px; margin-top: 20px; }
-    .info-box h4 { font-size: 0.9rem; margin-bottom: 10px; color: var(--dark); }
-    .info-box ul { list-style: none; }
-    .info-box li { font-size: 0.8rem; color: var(--gray); padding: 5px 0; display: flex; align-items: center; gap: 8px; }
-    .info-box li i { color: var(--primary); width: 18px; }
+    .staff-section { background: white; border-radius: 16px; padding: 15px; max-height: 320px; overflow-y: auto; }
+    .staff-section h3 { font-size: 0.95rem; margin-bottom: 12px; color: var(--dark); display: flex; align-items: center; gap: 8px; }
     
-    /* Today's Attendance Photos */
-    .attendance-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
-    .photo-card { background: var(--gray-light); border-radius: 16px; overflow: hidden; }
-    .photo-card img { width: 100%; height: 150px; object-fit: cover; display: block; }
-    .photo-info { padding: 12px; }
-    .photo-info h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
-    .photo-info p { font-size: 0.75rem; color: var(--gray); }
+    .staff-table { width: 100%; border-collapse: collapse; }
+    .staff-table tr { border-bottom: 1px solid #eee; }
+    .staff-table tr:last-child { border-bottom: none; }
+    .staff-table td { padding: 14px 8px; font-size: 0.9rem; }
+    .staff-table .staff-name { font-weight: 600; color: var(--dark); }
+    .staff-table .staff-role { font-size: 0.7rem; color: var(--gray); display: block; }
+    .staff-table .status-badge { font-size: 0.6rem; padding: 3px 8px; border-radius: 20px; background: #eee; white-space: nowrap; }
+    .staff-table .status-badge.checked-in { background: #d1fae5; color: var(--success); }
+    .staff-table .status-badge.late { background: #fee2e2; color: var(--danger); }
+    .staff-table .status-badge.completed { background: #e0e7ff; color: #4f46e5; }
     
-    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
-    .toast { background: white; padding: 14px 20px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 12px; transform: translateX(400px); transition: transform 0.25s; border-left: 4px solid var(--primary); margin-top: 10px; }
-    .toast.show { transform: translateX(0); }
-    .toast.success { border-left-color: var(--success); }
+    .check-btn { padding: 10px 18px; border-radius: 30px; font-weight: 600; font-size: 0.75rem; border: none; cursor: pointer; background: var(--primary); color: white; white-space: nowrap; transition: all 0.2s; }
+    .check-btn:active { transform: scale(0.95); }
+    .check-btn:disabled { opacity: 0.4; cursor: not-allowed; background: var(--gray); }
+    .check-btn.checkout-btn { background: var(--warning); color: white; }
     
-    .loading-state { display: flex; justify-content: center; padding: 20px; }
-    .spinner { width: 32px; height: 32px; border: 3px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .message { text-align: center; margin-top: 12px; padding: 14px; border-radius: 30px; font-weight: 500; font-size: 0.9rem; display: none; }
+    .message.show { display: block; }
+    .message.success { background: rgba(16,185,129,0.2); color: var(--success); }
+    .message.warning { background: rgba(245,158,11,0.2); color: var(--warning); }
+    .message.error { background: rgba(239,68,68,0.2); color: var(--danger); }
+    
+    .uploading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 500; }
+    .uploading-overlay.show { display: flex; }
+    .uploading-box { background: white; border-radius: 20px; padding: 30px; text-align: center; }
+    .uploading-box .spinner { width: 45px; height: 45px; border: 4px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 15px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .uploading-box p { font-weight: 600; color: var(--dark); }
     
-    @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } .content-wrapper { padding: 16px; } }
+    .footer { display: flex; justify-content: space-between; margin-top: 15px; }
+    .btn { padding: 10px 16px; border-radius: 30px; border: none; cursor: pointer; font-weight: 500; font-size: 0.85rem; background: transparent; border: 1px solid var(--gray); color: white; }
+    
+    .pin-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .pin-modal.show { display: flex; }
+    .pin-box { background: white; border-radius: 24px; padding: 30px; text-align: center; max-width: 350px; width: 100%; }
+    .pin-box h3 { margin-bottom: 15px; font-size: 1.1rem; }
+    .pin-inputs { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .pin-input { width: 55px; height: 65px; text-align: center; font-size: 1.8rem; border: 2px solid #ddd; border-radius: 12px; outline: none; }
+    .pin-input:focus { border-color: var(--primary); }
+    .pin-actions { display: flex; gap: 8px; } .pin-actions button { flex: 1; padding: 12px; border-radius: 30px; font-weight: 600; border: none; cursor: pointer; }
+    
+    .loading { text-align: center; padding: 20px; color: var(--gray); }
   </style>
 </head>
 <body>
 
-<aside class="sidebar">
-  <div class="sidebar-header"><div class="logo-icon">💎</div><div class="logo-text"><span>Fashion</span>Stone</div></div>
-  <nav class="sidebar-nav">
-    <button class="nav-item" onclick="window.location.href='admin-dashboard.html'"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
-    <button class="nav-item" onclick="window.location.href='approvals.html'"><i class="fas fa-check-circle"></i><span>Approvals</span></button>
-    <button class="nav-item" onclick="window.location.href='staff-management.html'"><i class="fas fa-users-cog"></i><span>Staff Management</span></button>
-    <button class="nav-item" onclick="window.location.href='finance.html'"><i class="fas fa-chart-line"></i><span>Finance</span></button>
-    <button class="nav-item" onclick="window.location.href='audit.html'"><i class="fas fa-history"></i><span>Audit Logs</span></button>
-    <button class="nav-item active"><i class="fas fa-cog"></i><span>Kiosk Settings</span></button>
-    <button class="nav-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
-  </nav>
-  <div class="sidebar-footer"><div class="user-profile"><div class="user-avatar" id="userAvatar">A</div><div class="user-details"><h4 id="userName">Admin</h4><p id="userRole">Admin</p></div></div></div>
-</aside>
-
-<main class="main-content">
-  <header class="top-bar"><h1 class="page-title">Kiosk Settings</h1><div style="color:var(--gray);"><span id="currentDate"></span></div></header>
-  <div class="content-wrapper">
-    
-    <!-- Cloudinary Configuration -->
-    <div class="settings-card">
-      <div class="settings-header">
-        <h2><i class="fas fa-cloud-upload-alt"></i> Cloudinary Configuration</h2>
-        <p>Configure your Cloudinary account for storing kiosk attendance photos.</p>
-      </div>
-      
-      <div class="form-group">
-        <label>Cloudinary Cloud Name</label>
-        <input type="text" id="cloudinaryCloudName" class="form-control" placeholder="e.g., my-cloud-name" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;">
-        <p class="hint">Found in your Cloudinary Dashboard. This is the unique identifier for your account.</p>
-      </div>
-      
-      <div class="form-group">
-        <label>Upload Preset (Unsigned)</label>
-        <input type="text" id="cloudinaryUploadPreset" class="form-control" placeholder="e.g., kiosk_attendance" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;">
-        <p class="hint">Create an unsigned upload preset in Cloudinary Settings → Upload. This allows the kiosk to upload without API keys.</p>
-      </div>
-      
-      <div class="info-box">
-        <h4><i class="fas fa-info-circle"></i> How to Set Up Cloudinary</h4>
-        <ul>
-          <li><i class="fas fa-1"></i> Go to <strong>cloudinary.com</strong> and create a free account</li>
-          <li><i class="fas fa-2"></i> Copy your <strong>Cloud Name</strong> from the dashboard</li>
-          <li><i class="fas fa-3"></i> Go to Settings → Upload → Upload presets → Add upload preset</li>
-          <li><i class="fas fa-4"></i> Set Signing Mode to <strong>Unsigned</strong></li>
-          <li><i class="fas fa-5"></i> Set Folder to <strong>kiosk_attendance</strong></li>
-          <li><i class="fas fa-6"></i> Copy the preset name and paste above</li>
-        </ul>
-      </div>
-    </div>
-    
-    <!-- Attendance Time Settings -->
-    <div class="settings-card">
-      <div class="settings-header"><h2><i class="fas fa-clock"></i> Attendance Time Settings</h2><p>Configure check-in and check-out times. Staff checking in late or checking out early will receive penalties.</p></div>
-      
-      <div class="form-group">
-        <label><i class="fas fa-sign-in-alt"></i> Check-In Time (Latest arrival)</label>
-        <div class="time-input-group">
-          <div class="time-input"><input type="number" id="checkInHour" min="0" max="23" value="9"> <span>:</span> <input type="number" id="checkInMinute" min="0" max="59" value="0"></div>
-          <span style="color:var(--gray);">AM</span>
-        </div>
-        <p class="hint"><i class="fas fa-info-circle"></i> Staff checking in after this time are marked LATE and lose points.</p>
-      </div>
-      
-      <div class="form-group">
-        <label><i class="fas fa-sign-out-alt"></i> Check-Out Time (Earliest departure)</label>
-        <div class="time-input-group">
-          <div class="time-input"><input type="number" id="checkOutHour" min="0" max="23" value="18"> <span>:</span> <input type="number" id="checkOutMinute" min="0" max="59" value="0"></div>
-          <span style="color:var(--gray);">PM</span>
-        </div>
-        <p class="hint"><i class="fas fa-info-circle"></i> Staff checking out before this time are marked EARLY DEPARTURE and lose points.</p>
-      </div>
-      
-      <div class="divider"></div>
-      
-      <div class="settings-header"><h2><i class="fas fa-coins"></i> Penalty Settings</h2><p>Points deducted for attendance violations.</p></div>
-      
-      <div class="penalty-group">
-        <div class="penalty-item"><label>Late Check-In Penalty</label><input type="number" id="latePenalty" value="5" min="1" max="50"></div>
-        <div class="penalty-item"><label>Early Check-Out Penalty</label><input type="number" id="earlyPenalty" value="5" min="1" max="50"></div>
-        <div class="penalty-item"><label>Absent Penalty</label><input type="number" id="absentPenalty" value="10" min="1" max="50"></div>
-      </div>
-      
-      <div class="divider"></div>
-      
-      <div class="settings-header"><h2><i class="fas fa-shield-alt"></i> Security Settings</h2></div>
-      
-      <div class="form-group">
-        <label>Admin Exit PIN</label>
-        <input type="password" id="adminPin" class="form-control" placeholder="4-digit PIN" maxlength="4" value="1234" style="width:150px;padding:12px;border-radius:12px;border:1px solid #ddd;">
-        <p class="hint">PIN required to exit kiosk mode and return to admin dashboard.</p>
-      </div>
-      
-      <div class="info-box">
-        <h4><i class="fas fa-ruler"></i> Kiosk Rules for Staff</h4>
-        <ul>
-          <li><i class="fas fa-check-circle" style="color:var(--success);"></i> Check-in before check-in time = ON TIME (+0 points)</li>
-          <li><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> Check-in after check-in time = LATE (-<span id="displayLatePenalty">5</span> points)</li>
-          <li><i class="fas fa-check-circle" style="color:var(--success);"></i> Check-out after check-out time = ON TIME (+0 points)</li>
-          <li><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> Check-out before check-out time = EARLY DEPARTURE (-<span id="displayEarlyPenalty">5</span> points)</li>
-          <li><i class="fas fa-times-circle" style="color:var(--danger);"></i> No check-in for the day = ABSENT (-<span id="displayAbsentPenalty">10</span> points)</li>
-        </ul>
-      </div>
-      
-      <button class="btn btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> Save All Settings</button>
-      <button class="btn btn-outline" onclick="window.open('kiosk.html', '_blank')" style="margin-top:15px;width:100%;justify-content:center;"><i class="fas fa-desktop"></i> Open Kiosk Terminal</button>
-    </div>
-    
-    <!-- Today's Attendance with Photos -->
-    <div class="settings-card">
-      <div class="settings-header">
-        <h2><i class="fas fa-images"></i> Today's Attendance Photos</h2>
-        <p>Photos captured by the kiosk today. Click any image to view full size.</p>
-      </div>
-      <div id="attendancePhotosContainer">
-        <div class="loading-state"><div class="spinner"></div></div>
-      </div>
-    </div>
-    
+<!-- Uploading Overlay -->
+<div class="uploading-overlay" id="uploadingOverlay">
+  <div class="uploading-box">
+    <div class="spinner"></div>
+    <p>Capturing Photo...</p>
+    <p style="font-size:0.8rem;color:var(--gray);margin-top:5px;">Uploading to Cloudinary</p>
   </div>
-</main>
+</div>
 
-<div class="toast-container" id="toastContainer"></div>
+<div class="kiosk-container">
+  
+  <div class="header">
+    <h1><i class="fas fa-camera"></i> Fashion<span>Stone</span></h1>
+    <p>Tap your name · Photo captured & uploaded automatically</p>
+  </div>
+  
+  <div class="clock">
+    <div class="clock-time" id="liveClock">--:--:--</div>
+    <div class="clock-date" id="liveDate"></div>
+  </div>
+  
+  <div class="stats">
+    <div class="stat"><div class="stat-value" id="presentCount">0</div><div class="stat-label">Present</div></div>
+    <div class="stat"><div class="stat-value" id="lateCount">0</div><div class="stat-label">Late</div></div>
+    <div class="stat"><div class="stat-value" id="absentCount">0</div><div class="stat-label">Absent</div></div>
+  </div>
+  
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="checkinModeBtn"><i class="fas fa-sign-in-alt"></i> CHECK-IN</button>
+    <button class="mode-btn checkout" id="checkoutModeBtn"><i class="fas fa-sign-out-alt"></i> CHECK-OUT</button>
+  </div>
+  
+  <div class="camera-section">
+    <div class="camera-container">
+      <video id="webcamVideo" autoplay playsinline></video>
+    </div>
+    <div class="camera-controls">
+      <button onclick="switchCamera()"><i class="fas fa-sync-alt"></i> Switch</button>
+      <button onclick="retryCamera()"><i class="fas fa-redo"></i> Retry</button>
+    </div>
+  </div>
+  
+  <div class="staff-section">
+    <h3><i class="fas fa-users" style="color:var(--primary);"></i> Staff List <span style="margin-left:auto;font-size:0.7rem;color:var(--gray);" id="staffCount">0</span></h3>
+    <div id="staffListContainer">
+      <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading staff...</div>
+    </div>
+  </div>
+  
+  <div class="message" id="messageBanner"></div>
+  
+  <div class="footer">
+    <button class="btn" onclick="loadStaffList()"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <button class="btn" onclick="showExitModal()"><i class="fas fa-lock"></i> Exit Kiosk</button>
+  </div>
+</div>
+
+<!-- PIN Modal -->
+<div class="pin-modal" id="pinModal">
+  <div class="pin-box">
+    <i class="fas fa-lock" style="font-size:2.5rem;color:var(--primary);margin-bottom:10px;"></i>
+    <h3>Admin Verification</h3>
+    <p style="color:var(--gray);margin-bottom:20px;font-size:0.85rem;">Enter admin PIN to exit kiosk</p>
+    <div class="pin-inputs">
+      <input type="password" maxlength="1" class="pin-input" id="pin1" inputmode="numeric">
+      <input type="password" maxlength="1" class="pin-input" id="pin2" inputmode="numeric">
+      <input type="password" maxlength="1" class="pin-input" id="pin3" inputmode="numeric">
+      <input type="password" maxlength="1" class="pin-input" id="pin4" inputmode="numeric">
+    </div>
+    <div class="pin-actions">
+      <button onclick="hidePinModal()" style="background:#eee;color:var(--dark);">Cancel</button>
+      <button onclick="verifyExitPin()" style="background:var(--primary);color:white;">Exit</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, where, addDoc, serverTimestamp, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = { 
-    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI", 
-    authDomain: "fashion-46e5d.firebaseapp.com", 
-    projectId: "fashion-46e5d", 
-    storageBucket: "fashion-46e5d.firebasestorage.app", 
-    messagingSenderId: "408062284317", 
-    appId: "1:408062284317:web:eb905bce68926c10a0ecf4" 
+  const firebaseConfig = {
+    apiKey: "AIzaSyA_JPUfHVotadGfntwk8qQXFp64pvDfTRI",
+    authDomain: "fashion-46e5d.firebaseapp.com",
+    projectId: "fashion-46e5d",
+    storageBucket: "fashion-46e5d.firebasestorage.app",
+    messagingSenderId: "408062284317",
+    appId: "1:408062284317:web:eb905bce68926c10a0ecf4"
   };
-  
-  const app = initializeApp(firebaseConfig); 
-  const auth = getAuth(app); 
-  const db = getFirestore(app);
-  let currentUser = null;
 
-  function showToast(msg, type='success') { 
-    const c = document.getElementById('toastContainer'); 
-    const t = document.createElement('div'); 
-    t.className = `toast ${type}`; 
-    t.innerHTML = `<span>${msg}</span>`; 
-    c.appendChild(t); 
-    setTimeout(() => t.classList.add('show'), 10); 
-    setTimeout(() => t.remove(), 4000); 
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ========== CLOUDINARY CONFIG (YOUR CREDENTIALS) ==========
+  const CLOUDINARY_CLOUD_NAME = 'dw80fw9un';
+  const CLOUDINARY_UPLOAD_PRESET = 'kiosk_attendance';
+  const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+  
+  let webcamStream = null;
+  let allStaff = [];
+  let todayAttendance = new Map();
+  let kioskSettings = { 
+    checkInHour: 9, checkInMinute: 0, checkOutHour: 18, checkOutMinute: 0, 
+    latePenalty: 5, earlyPenalty: 5, absentPenalty: 10, adminPin: '1234',
+    cloudinaryCloudName: 'dw80fw9un', cloudinaryUploadPreset: 'kiosk_attendance'
+  };
+  let currentMode = 'checkin';
+  let currentFacingMode = 'user';
+
+  // ========== AUTO ANONYMOUS LOGIN ==========
+  async function loginAnonymously() {
+    try {
+      await signInAnonymously(auth);
+      console.log('✅ Signed in anonymously');
+    } catch (e) {
+      console.error('Anonymous login failed:', e);
+    }
   }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      console.log('Kiosk ready');
+      await loadSettings();
+      await initCamera();
+      await loadStaffList();
+    } else {
+      await loginAnonymously();
+    }
+  });
+
+  // ========== CLOCK ==========
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-GB');
+    document.getElementById('liveDate').textContent = now.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
+  }
+  setInterval(updateClock, 1000); updateClock();
+
+  // ========== CAMERA ==========
+  async function initCamera(facingMode = 'user') {
+    try {
+      if (webcamStream) webcamStream.getTracks().forEach(t => t.stop());
+      webcamStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode, width: { ideal: 640 }, height: { ideal: 480 } } 
+      });
+      document.getElementById('webcamVideo').srcObject = webcamStream;
+      currentFacingMode = facingMode;
+      console.log('✅ Camera ready:', facingMode);
+    } catch (e) {
+      console.error('Camera error:', e);
+      showMessage('Camera denied. Please allow camera access.', 'error');
+    }
+  }
+
+  window.switchCamera = async () => {
+    const newMode = currentFacingMode === 'user' ? 'environment' : 'user';
+    await initCamera(newMode);
+  };
+
+  window.retryCamera = () => initCamera(currentFacingMode);
 
   // ========== LOAD SETTINGS ==========
   async function loadSettings() {
-    const snap = await getDoc(doc(db, 'system_settings', 'kiosk'));
-    if (snap.exists()) {
-      const s = snap.data();
-      document.getElementById('checkInHour').value = s.checkInHour || 9;
-      document.getElementById('checkInMinute').value = s.checkInMinute || 0;
-      document.getElementById('checkOutHour').value = s.checkOutHour || 18;
-      document.getElementById('checkOutMinute').value = s.checkOutMinute || 0;
-      document.getElementById('latePenalty').value = s.latePenalty || 5;
-      document.getElementById('earlyPenalty').value = s.earlyPenalty || 5;
-      document.getElementById('absentPenalty').value = s.absentPenalty || 10;
-      document.getElementById('adminPin').value = s.adminPin || '1234';
-      document.getElementById('cloudinaryCloudName').value = s.cloudinaryCloudName || '';
-      document.getElementById('cloudinaryUploadPreset').value = s.cloudinaryUploadPreset || 'kiosk_attendance';
-      updateDisplayPenalties();
-    }
-    updateDisplayPenalties();
-  }
-
-  function updateDisplayPenalties() {
-    document.getElementById('displayLatePenalty').textContent = document.getElementById('latePenalty').value;
-    document.getElementById('displayEarlyPenalty').textContent = document.getElementById('earlyPenalty').value;
-    document.getElementById('displayAbsentPenalty').textContent = document.getElementById('absentPenalty').value;
-  }
-
-  document.getElementById('latePenalty').addEventListener('input', updateDisplayPenalties);
-  document.getElementById('earlyPenalty').addEventListener('input', updateDisplayPenalties);
-  document.getElementById('absentPenalty').addEventListener('input', updateDisplayPenalties);
-
-  // ========== SAVE SETTINGS ==========
-  window.saveSettings = async () => {
-    const settings = {
-      checkInHour: parseInt(document.getElementById('checkInHour').value) || 9,
-      checkInMinute: parseInt(document.getElementById('checkInMinute').value) || 0,
-      checkOutHour: parseInt(document.getElementById('checkOutHour').value) || 18,
-      checkOutMinute: parseInt(document.getElementById('checkOutMinute').value) || 0,
-      latePenalty: parseInt(document.getElementById('latePenalty').value) || 5,
-      earlyPenalty: parseInt(document.getElementById('earlyPenalty').value) || 5,
-      absentPenalty: parseInt(document.getElementById('absentPenalty').value) || 10,
-      adminPin: document.getElementById('adminPin').value || '1234',
-      cloudinaryCloudName: document.getElementById('cloudinaryCloudName').value || '',
-      cloudinaryUploadPreset: document.getElementById('cloudinaryUploadPreset').value || 'kiosk_attendance',
-      updatedAt: serverTimestamp(),
-      updatedBy: currentUser?.uid
-    };
-    
-    await setDoc(doc(db, 'system_settings', 'kiosk'), settings);
-    showToast('All kiosk settings saved successfully!', 'success');
-  };
-
-  // ========== LOAD TODAY'S ATTENDANCE PHOTOS ==========
-  async function loadTodayPhotos() {
-    const container = document.getElementById('attendancePhotosContainer');
-    const today = new Date().toISOString().split('T')[0];
-    
     try {
-      const attQuery = query(
-        collection(db, 'attendance'), 
-        where('date', '==', today),
-        orderBy('checkInTime', 'desc')
-      );
-      const attSnap = await getDocs(attQuery);
+      const snap = await getDoc(doc(db, 'system_settings', 'kiosk'));
+      if (snap.exists()) {
+        const s = snap.data();
+        kioskSettings = { ...kioskSettings, ...s };
+        // Override Cloudinary from settings
+        if (s.cloudinaryCloudName) CLOUDINARY_CLOUD_NAME_VAR = s.cloudinaryCloudName;
+        if (s.cloudinaryUploadPreset) CLOUDINARY_UPLOAD_PRESET_VAR = s.cloudinaryUploadPreset;
+      }
+      console.log('✅ Settings loaded');
+    } catch (e) { console.error('Settings error:', e); }
+  }
+
+  // ========== LOAD STAFF ==========
+  async function loadStaffList() {
+    try {
+      const usersQuery = query(collection(db, 'users'), where('status', '==', 'active'));
+      const usersSnap = await getDocs(usersQuery);
       
-      if (attSnap.empty) {
-        container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gray);"><i class="fas fa-camera" style="font-size:2rem;margin-bottom:10px;"></i><p>No attendance photos today</p></div>';
-        return;
+      allStaff = usersSnap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(u => u.role === 'staff' || u.role === 'attendant' || u.role === 'attendant_chief');
+      
+      const today = new Date().toISOString().split('T')[0];
+      const attSnap = await getDocs(query(collection(db, 'attendance'), where('date', '==', today)));
+      todayAttendance.clear();
+      attSnap.docs.forEach(d => { const a = d.data(); todayAttendance.set(a.userId, { ...a, docId: d.id }); });
+      
+      const present = attSnap.size;
+      const late = attSnap.docs.filter(d => d.data().status === 'late').length;
+      document.getElementById('presentCount').textContent = present;
+      document.getElementById('lateCount').textContent = late;
+      document.getElementById('absentCount').textContent = allStaff.length - present;
+      
+      renderStaffTable();
+    } catch (e) {
+      console.error('Load staff error:', e);
+    }
+  }
+
+  function renderStaffTable() {
+    const container = document.getElementById('staffListContainer');
+    
+    if (allStaff.length === 0) {
+      container.innerHTML = '<div class="loading">No active staff</div>';
+      return;
+    }
+    
+    allStaff.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
+    document.getElementById('staffCount').textContent = `${allStaff.length} staff`;
+    
+    let html = '<table class="staff-table">';
+    
+    allStaff.forEach(staff => {
+      const att = todayAttendance.get(staff.id);
+      const hasCheckedIn = att && att.checkInTime;
+      const hasCheckedOut = att && att.checkOutTime;
+      
+      let statusText = 'Not checked in';
+      let statusClass = '';
+      let buttonText = currentMode === 'checkin' ? 'CHECK IN' : 'CHECK OUT';
+      let buttonDisabled = false;
+      let buttonClass = currentMode === 'checkin' ? '' : 'checkout-btn';
+      
+      if (hasCheckedIn && !hasCheckedOut) {
+        statusText = att.status === 'late' ? 'LATE' : 'Checked In';
+        statusClass = att.status === 'late' ? 'late' : 'checked-in';
+        if (currentMode === 'checkin') buttonDisabled = true;
+      } else if (hasCheckedIn && hasCheckedOut) {
+        statusText = 'Done';
+        statusClass = 'completed';
+        buttonDisabled = true;
       }
       
-      let html = '<div class="attendance-photos">';
+      if (currentMode === 'checkout') {
+        if (!hasCheckedIn) buttonDisabled = true;
+        if (hasCheckedOut) buttonDisabled = true;
+      }
       
-      attSnap.forEach(doc => {
-        const a = doc.data();
-        
-        // Check-in photo
-        if (a.photoUrl) {
-          html += `
-            <div class="photo-card">
-              <img src="${a.photoUrl}" alt="${a.staffName || 'Staff'}" onclick="window.open('${a.photoUrl}', '_blank')" style="cursor:pointer;">
-              <div class="photo-info">
-                <h4>${a.staffName || 'Unknown'}</h4>
-                <p><i class="fas fa-sign-in-alt"></i> Check-in: ${a.checkInTime?.toDate().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}) || '-'}</p>
-                <p><span class="badge" style="background:${a.status==='late'?'#fee2e2':'#d1fae5'};color:${a.status==='late'?'var(--danger)':'var(--success)'};padding:2px 8px;border-radius:20px;font-size:0.7rem;">
-                  ${a.status === 'late' ? 'LATE' : 'ON TIME'}
-                </span></p>
-              </div>
-            </div>
-          `;
+      html += `<tr>
+        <td><span class="staff-name">${staff.fullName || 'Staff'}</span><span class="staff-role">${staff.role || 'staff'}</span></td>
+        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        <td style="text-align:right;">
+          <button class="check-btn ${buttonClass}" onclick="handleAction('${staff.id}')" ${buttonDisabled ? 'disabled' : ''}>
+            <i class="fas fa-${currentMode === 'checkin' ? 'sign-in-alt' : 'sign-out-alt'}"></i> ${buttonText}
+          </button>
+        </td>
+      </tr>`;
+    });
+    
+    html += '</table>';
+    container.innerHTML = html;
+    
+    window.handleAction = async (staffId) => {
+      const staff = allStaff.find(s => s.id === staffId);
+      if (!staff) return;
+      
+      const att = todayAttendance.get(staffId);
+      
+      document.getElementById('uploadingOverlay').classList.add('show');
+      
+      try {
+        if (currentMode === 'checkin') {
+          await processCheckIn(staff);
+        } else {
+          await processCheckOut(staff, att);
         }
-        
-        // Check-out photo
-        if (a.checkOutPhotoUrl) {
-          html += `
-            <div class="photo-card">
-              <img src="${a.checkOutPhotoUrl}" alt="${a.staffName || 'Staff'}" onclick="window.open('${a.checkOutPhotoUrl}', '_blank')" style="cursor:pointer;">
-              <div class="photo-info">
-                <h4>${a.staffName || 'Unknown'}</h4>
-                <p><i class="fas fa-sign-out-alt"></i> Check-out: ${a.checkOutTime?.toDate().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}) || '-'}</p>
-                <p><span class="badge" style="background:${a.checkOutStatus==='early'?'#fee2e2':'#d1fae5'};color:${a.checkOutStatus==='early'?'var(--danger)':'var(--success)'};padding:2px 8px;border-radius:20px;font-size:0.7rem;">
-                  ${a.checkOutStatus === 'early' ? 'EARLY' : 'ON TIME'}
-                </span></p>
-              </div>
-            </div>
-          `;
-        }
-      });
+      } finally {
+        document.getElementById('uploadingOverlay').classList.remove('show');
+      }
+    };
+  }
+
+  // ========== CAPTURE PHOTO ==========
+  function capturePhoto() {
+    const video = document.getElementById('webcamVideo');
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    
+    if (currentFacingMode === 'user') {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.85);
+    });
+  }
+
+  // ========== UPLOAD TO CLOUDINARY ==========
+  async function uploadToCloudinary(imageBlob, staffName, type) {
+    const formData = new FormData();
+    formData.append('file', imageBlob);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('folder', 'kiosk_attendance');
+    formData.append('public_id', `${type}_${Date.now()}_${staffName.replace(/\s+/g, '_')}`);
+    
+    try {
+      const response = await fetch(CLOUDINARY_UPLOAD_URL, { method: 'POST', body: formData });
+      const data = await response.json();
       
-      html += '</div>';
-      container.innerHTML = html;
-      
-    } catch (e) {
-      console.error('Error loading photos:', e);
-      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--danger);">Error loading photos</div>';
+      if (data.secure_url) {
+        console.log('✅ Uploaded:', data.secure_url);
+        return { url: data.secure_url, publicId: data.public_id };
+      } else {
+        throw new Error(data.error?.message || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
     }
   }
 
-  // ========== INITIALIZE ==========
-  onAuthStateChanged(auth, async (u) => { 
-    if (!u) { window.location.href = 'auth.html'; return; } 
-    currentUser = u; 
-    const snap = await getDoc(doc(db, 'users', u.uid)); 
-    if (!snap.exists() || (snap.data().role !== 'admin' && snap.data().role !== 'super_admin')) { 
-      window.location.href = 'auth.html'; 
-      return; 
-    } 
-    const data = snap.data(); 
-    document.getElementById('userName').textContent = data.fullName?.split(' ')[0] || 'Admin'; 
-    document.getElementById('userRole').textContent = data.role; 
-    document.getElementById('userAvatar').textContent = (data.fullName||'A').charAt(0); 
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); 
-    await loadSettings(); 
-    await loadTodayPhotos();
+  // ========== CHECK-IN ==========
+  async function processCheckIn(staff) {
+    try {
+      const imageBlob = await capturePhoto();
+      const cloudinaryResult = await uploadToCloudinary(imageBlob, staff.fullName, 'checkin');
+      
+      const now = new Date();
+      const checkInTime = new Date();
+      checkInTime.setHours(kioskSettings.checkInHour, kioskSettings.checkInMinute, 0);
+      const isLate = now > checkInTime;
+      const status = isLate ? 'late' : 'on_time';
+      const pointsDeducted = isLate ? kioskSettings.latePenalty : 0;
+      
+      await addDoc(collection(db, 'attendance'), {
+        userId: staff.id, staffName: staff.fullName,
+        checkInTime: serverTimestamp(), date: now.toISOString().split('T')[0],
+        status, pointsDeducted,
+        photoUrl: cloudinaryResult.url, photoPublicId: cloudinaryResult.publicId
+      });
+      
+      if (pointsDeducted > 0) {
+        await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) });
+        await addDoc(collection(db, 'coin_transactions'), {
+          userId: staff.id, points: -pointsDeducted,
+          reason: `Late check-in (${now.toLocaleTimeString()})`, createdAt: serverTimestamp()
+        });
+      }
+      
+      showMessage(`${staff.fullName} checked in ${isLate ? '(LATE -' + pointsDeducted + 'pts)' : '✓ On time!'}`, isLate ? 'warning' : 'success');
+      await loadStaffList();
+    } catch (e) {
+      showMessage('Check-in failed: ' + (e.message || 'Try again'), 'error');
+    }
+  }
+
+  // ========== CHECK-OUT ==========
+  async function processCheckOut(staff, att) {
+    try {
+      const imageBlob = await capturePhoto();
+      const cloudinaryResult = await uploadToCloudinary(imageBlob, staff.fullName, 'checkout');
+      
+      const now = new Date();
+      const checkOutTime = new Date();
+      checkOutTime.setHours(kioskSettings.checkOutHour, kioskSettings.checkOutMinute, 0);
+      const isEarly = now < checkOutTime;
+      const checkOutStatus = isEarly ? 'early' : 'on_time';
+      const pointsDeducted = isEarly ? kioskSettings.earlyPenalty : 0;
+      
+      await updateDoc(doc(db, 'attendance', att.docId), {
+        checkOutTime: serverTimestamp(), checkOutStatus,
+        pointsDeducted: (att.pointsDeducted || 0) + pointsDeducted,
+        checkOutPhotoUrl: cloudinaryResult.url, checkOutPhotoPublicId: cloudinaryResult.publicId
+      });
+      
+      if (pointsDeducted > 0) {
+        await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) });
+        await addDoc(collection(db, 'coin_transactions'), {
+          userId: staff.id, points: -pointsDeducted,
+          reason: `Early departure (${now.toLocaleTimeString()})`, createdAt: serverTimestamp()
+        });
+      }
+      
+      showMessage(`${staff.fullName} checked out ${isEarly ? '(EARLY -' + pointsDeducted + 'pts)' : '✓ On time!'}`, isEarly ? 'warning' : 'success');
+      await loadStaffList();
+    } catch (e) {
+      showMessage('Check-out failed: ' + (e.message || 'Try again'), 'error');
+    }
+  }
+
+  function showMessage(msg, type) {
+    const el = document.getElementById('messageBanner');
+    el.textContent = msg; el.className = `message show ${type}`;
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // ========== MODE TOGGLE ==========
+  document.getElementById('checkinModeBtn').addEventListener('click', () => {
+    currentMode = 'checkin';
+    document.getElementById('checkinModeBtn').classList.add('active');
+    document.getElementById('checkoutModeBtn').classList.remove('active');
+    renderStaffTable();
   });
   
-  document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.href = 'auth.html'; });
+  document.getElementById('checkoutModeBtn').addEventListener('click', () => {
+    currentMode = 'checkout';
+    document.getElementById('checkoutModeBtn').classList.add('active');
+    document.getElementById('checkinModeBtn').classList.remove('active');
+    renderStaffTable();
+  });
+
+  // ========== PIN MODAL ==========
+  window.showExitModal = () => { document.getElementById('pinModal').classList.add('show'); document.getElementById('pin1').focus(); };
+  window.hidePinModal = () => { document.getElementById('pinModal').classList.remove('show'); ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = ''); };
+  window.verifyExitPin = () => {
+    const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
+    if (pin === kioskSettings.adminPin) {
+      if (webcamStream) webcamStream.getTracks().forEach(t => t.stop());
+      window.location.href = 'admin-dashboard.html';
+    } else { alert('Invalid PIN'); }
+  };
+  
+  document.querySelectorAll('.pin-input').forEach((inp, i, arr) => inp.addEventListener('input', e => { if (e.target.value && i < arr.length - 1) arr[i + 1].focus(); }));
+
+  window.loadStaffList = loadStaffList;
 </script>
 </body>
 </html>
