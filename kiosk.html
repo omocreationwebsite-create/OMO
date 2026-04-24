@@ -62,6 +62,12 @@
     .message.warning { background: rgba(245,158,11,0.2); color: var(--warning); }
     .message.error { background: rgba(239,68,68,0.2); color: var(--danger); }
     
+    .uploading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 500; }
+    .uploading-overlay.show { display: flex; }
+    .uploading-box { background: white; border-radius: 20px; padding: 25px; text-align: center; }
+    .uploading-box .spinner { width: 40px; height: 40px; border: 4px solid var(--primary-soft); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 15px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
     .footer { display: flex; justify-content: space-between; margin-top: 15px; }
     .btn { padding: 10px 16px; border-radius: 30px; border: none; cursor: pointer; font-weight: 500; font-size: 0.85rem; background: transparent; border: 1px solid var(--gray); color: white; }
     
@@ -77,6 +83,15 @@
   </style>
 </head>
 <body>
+
+<!-- Uploading Overlay -->
+<div class="uploading-overlay" id="uploadingOverlay">
+  <div class="uploading-box">
+    <div class="spinner"></div>
+    <p style="font-weight:600;">Capturing & Uploading...</p>
+    <p style="font-size:0.8rem;color:var(--gray);">Please wait</p>
+  </div>
+</div>
 
 <div class="kiosk-container">
   
@@ -104,6 +119,7 @@
   <div class="camera-section">
     <div class="camera-container">
       <video id="webcamVideo" autoplay playsinline></video>
+      <canvas id="webcamCanvas" style="display:none;"></canvas>
     </div>
     <div class="camera-toggle">
       <button onclick="switchCamera()"><i class="fas fa-sync-alt"></i> Switch Camera</button>
@@ -125,6 +141,7 @@
   </div>
 </div>
 
+<!-- PIN Modal -->
 <div class="pin-modal" id="pinModal">
   <div class="pin-box">
     <i class="fas fa-lock" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i>
@@ -160,6 +177,12 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // ========== CLOUDINARY CONFIGURATION ==========
+  // CHANGE THESE TO YOUR OWN CLOUDINARY DETAILS
+  const CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME'; // ← CHANGE THIS
+  const CLOUDINARY_UPLOAD_PRESET = 'kiosk_attendance'; // ← CHANGE THIS (unsigned preset)
+  const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
   
   let webcamStream = null;
   let allStaff = [];
@@ -178,15 +201,13 @@
     }
   }
 
-  // ========== CHECK AUTH STATE ==========
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      console.log('Kiosk authenticated:', user.uid);
+      console.log('Kiosk authenticated');
       await loadSettings();
       await initCamera();
       await loadStaffList();
     } else {
-      // Not logged in - try anonymous login
       await loginAnonymously();
     }
   });
@@ -204,12 +225,14 @@
   async function initCamera(facingMode = 'user') {
     try {
       if (webcamStream) webcamStream.getTracks().forEach(t => t.stop());
-      webcamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode, width: { ideal: 640 }, height: { ideal: 480 } } });
+      webcamStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode, width: { ideal: 640 }, height: { ideal: 480 } } 
+      });
       document.getElementById('webcamVideo').srcObject = webcamStream;
       currentFacingMode = facingMode;
     } catch (e) {
       console.error('Camera error:', e);
-      showMessage('Camera access denied', 'error');
+      showMessage('Camera access denied. Please allow camera permissions.', 'error');
     }
   }
 
@@ -241,16 +264,14 @@
       todayAttendance.clear();
       attSnap.docs.forEach(d => { const a = d.data(); todayAttendance.set(a.userId, { ...a, docId: d.id }); });
       
-      const present = attSnap.size;
-      const late = attSnap.docs.filter(d => d.data().status === 'late').length;
-      document.getElementById('presentCount').textContent = present;
-      document.getElementById('lateCount').textContent = late;
-      document.getElementById('absentCount').textContent = allStaff.length - present;
+      document.getElementById('presentCount').textContent = attSnap.size;
+      document.getElementById('lateCount').textContent = attSnap.docs.filter(d => d.data().status === 'late').length;
+      document.getElementById('absentCount').textContent = allStaff.length - attSnap.size;
       
       renderStaffTable();
     } catch (e) {
       console.error('Load staff error:', e);
-      document.getElementById('staffListContainer').innerHTML = '<div class="loading"><i class="fas fa-exclamation-triangle"></i> Error loading staff</div>';
+      document.getElementById('staffListContainer').innerHTML = '<div class="loading">Error loading staff</div>';
     }
   }
 
@@ -258,7 +279,7 @@
     const container = document.getElementById('staffListContainer');
     
     if (allStaff.length === 0) {
-      container.innerHTML = '<div class="loading"><i class="fas fa-users"></i> No active staff found</div>';
+      container.innerHTML = '<div class="loading"><i class="fas fa-users"></i> No active staff</div>';
       document.getElementById('staffCount').textContent = '0 staff';
       return;
     }
@@ -317,27 +338,93 @@
       
       const att = todayAttendance.get(staffId);
       
-      if (currentMode === 'checkin') {
-        await processCheckIn(staff);
-      } else {
-        await processCheckOut(staff, att);
+      // Show uploading overlay
+      document.getElementById('uploadingOverlay').classList.add('show');
+      
+      try {
+        if (currentMode === 'checkin') {
+          await processCheckIn(staff);
+        } else {
+          await processCheckOut(staff, att);
+        }
+      } finally {
+        document.getElementById('uploadingOverlay').classList.remove('show');
       }
     };
   }
 
+  // ========== CAPTURE PHOTO FROM WEBCAM ==========
   function capturePhoto() {
     const video = document.getElementById('webcamVideo');
-    const canvas = document.createElement('canvas');
+    const canvas = document.getElementById('webcamCanvas');
+    
+    // Set canvas to match video dimensions
     canvas.width = video.videoWidth || 640;
     canvas.height = video.videoHeight || 480;
+    
+    // Draw video frame to canvas
     const ctx = canvas.getContext('2d');
+    // Flip horizontally if using front camera (mirror effect)
+    if (currentFacingMode === 'user') {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/jpeg', 0.8);
+    
+    // Convert to blob
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(blob);
+      }, 'image/jpeg', 0.85);
+    });
   }
 
+  // ========== UPLOAD TO CLOUDINARY ==========
+  async function uploadToCloudinary(imageBlob, staffName, type) {
+    const formData = new FormData();
+    formData.append('file', imageBlob);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('folder', 'kiosk_attendance');
+    formData.append('public_id', `${type}_${Date.now()}_${staffName.replace(/\s+/g, '_')}`);
+    
+    // Add metadata
+    formData.append('context', `staff=${staffName}|type=${type}|date=${new Date().toISOString()}`);
+    
+    try {
+      const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (data.secure_url) {
+        console.log('✅ Uploaded to Cloudinary:', data.secure_url);
+        return {
+          url: data.secure_url,
+          publicId: data.public_id,
+          width: data.width,
+          height: data.height
+        };
+      } else {
+        throw new Error(data.error?.message || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      throw error;
+    }
+  }
+
+  // ========== PROCESS CHECK-IN ==========
   async function processCheckIn(staff) {
     try {
-      const photoData = capturePhoto();
+      // 1. Capture photo
+      const imageBlob = await capturePhoto();
+      
+      // 2. Upload to Cloudinary
+      const cloudinaryResult = await uploadToCloudinary(imageBlob, staff.fullName, 'checkin');
+      
+      // 3. Save to Firestore with Cloudinary URL
       const now = new Date();
       const checkInTime = new Date();
       checkInTime.setHours(kioskSettings.checkInHour, kioskSettings.checkInMinute, 0);
@@ -346,46 +433,93 @@
       const pointsDeducted = isLate ? kioskSettings.latePenalty : 0;
       
       await addDoc(collection(db, 'attendance'), {
-        userId: staff.id, checkInTime: serverTimestamp(), date: now.toISOString().split('T')[0],
-        status, pointsDeducted, photoData
+        userId: staff.id,
+        staffName: staff.fullName,
+        checkInTime: serverTimestamp(),
+        date: now.toISOString().split('T')[0],
+        status,
+        pointsDeducted,
+        // Cloudinary image data
+        photoUrl: cloudinaryResult.url,
+        photoPublicId: cloudinaryResult.publicId,
+        photoWidth: cloudinaryResult.width,
+        photoHeight: cloudinaryResult.height
       });
       
+      // Deduct points if late
       if (pointsDeducted > 0) {
-        await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) });
+        await updateDoc(doc(db, 'users', staff.id), { 
+          totalPoints: increment(-pointsDeducted) 
+        });
+        await addDoc(collection(db, 'coin_transactions'), {
+          userId: staff.id,
+          points: -pointsDeducted,
+          reason: `Late check-in (${now.toLocaleTimeString()})`,
+          createdAt: serverTimestamp()
+        });
       }
       
-      showMessage(`${staff.fullName} checked in ${isLate ? '(LATE)' : '✓'}`, isLate ? 'warning' : 'success');
+      showMessage(
+        `${staff.fullName} checked in ${isLate ? '(LATE -' + pointsDeducted + ' pts)' : '✓ On time!'}`,
+        isLate ? 'warning' : 'success'
+      );
+      
       await loadStaffList();
     } catch (e) {
       console.error('Check-in error:', e);
-      showMessage('Check-in failed', 'error');
+      showMessage('Check-in failed: ' + (e.message || 'Unknown error'), 'error');
     }
   }
 
+  // ========== PROCESS CHECK-OUT ==========
   async function processCheckOut(staff, att) {
     try {
-      const photoData = capturePhoto();
+      // 1. Capture photo
+      const imageBlob = await capturePhoto();
+      
+      // 2. Upload to Cloudinary
+      const cloudinaryResult = await uploadToCloudinary(imageBlob, staff.fullName, 'checkout');
+      
+      // 3. Update attendance record
       const now = new Date();
       const checkOutTime = new Date();
       checkOutTime.setHours(kioskSettings.checkOutHour, kioskSettings.checkOutMinute, 0);
       const isEarly = now < checkOutTime;
       const checkOutStatus = isEarly ? 'early' : 'on_time';
       const pointsDeducted = isEarly ? kioskSettings.earlyPenalty : 0;
+      const totalPointsDeducted = (att.pointsDeducted || 0) + pointsDeducted;
       
       await updateDoc(doc(db, 'attendance', att.docId), {
-        checkOutTime: serverTimestamp(), checkOutStatus,
-        pointsDeducted: (att.pointsDeducted || 0) + pointsDeducted, checkOutPhotoData: photoData
+        checkOutTime: serverTimestamp(),
+        checkOutStatus,
+        pointsDeducted: totalPointsDeducted,
+        // Cloudinary image data for check-out
+        checkOutPhotoUrl: cloudinaryResult.url,
+        checkOutPhotoPublicId: cloudinaryResult.publicId
       });
       
+      // Deduct points if early departure
       if (pointsDeducted > 0) {
-        await updateDoc(doc(db, 'users', staff.id), { totalPoints: increment(-pointsDeducted) });
+        await updateDoc(doc(db, 'users', staff.id), { 
+          totalPoints: increment(-pointsDeducted) 
+        });
+        await addDoc(collection(db, 'coin_transactions'), {
+          userId: staff.id,
+          points: -pointsDeducted,
+          reason: `Early departure (${now.toLocaleTimeString()})`,
+          createdAt: serverTimestamp()
+        });
       }
       
-      showMessage(`${staff.fullName} checked out ${isEarly ? '(EARLY)' : '✓'}`, isEarly ? 'warning' : 'success');
+      showMessage(
+        `${staff.fullName} checked out ${isEarly ? '(EARLY -' + pointsDeducted + ' pts)' : '✓ On time!'}`,
+        isEarly ? 'warning' : 'success'
+      );
+      
       await loadStaffList();
     } catch (e) {
       console.error('Check-out error:', e);
-      showMessage('Check-out failed', 'error');
+      showMessage('Check-out failed: ' + (e.message || 'Unknown error'), 'error');
     }
   }
 
@@ -393,7 +527,7 @@
     const el = document.getElementById('messageBanner');
     el.textContent = msg;
     el.className = `message show ${type}`;
-    setTimeout(() => el.classList.remove('show'), 2500);
+    setTimeout(() => el.classList.remove('show'), 3000);
   }
 
   // ========== MODE TOGGLE ==========
@@ -412,17 +546,31 @@
   });
 
   // ========== PIN MODAL ==========
-  window.showExitModal = () => { document.getElementById('pinModal').classList.add('show'); document.getElementById('pin1').focus(); };
-  window.hidePinModal = () => { document.getElementById('pinModal').classList.remove('show'); ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = ''); };
+  window.showExitModal = () => { 
+    document.getElementById('pinModal').classList.add('show'); 
+    document.getElementById('pin1').focus(); 
+  };
+  
+  window.hidePinModal = () => { 
+    document.getElementById('pinModal').classList.remove('show'); 
+    ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = ''); 
+  };
+  
   window.verifyExitPin = () => {
     const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
     if (pin === kioskSettings.adminPin) {
       if (webcamStream) webcamStream.getTracks().forEach(t => t.stop());
       window.location.href = 'admin-dashboard.html';
-    } else { alert('Invalid PIN'); }
+    } else { 
+      alert('Invalid PIN'); 
+    }
   };
   
-  document.querySelectorAll('.pin-input').forEach((inp, i, arr) => inp.addEventListener('input', e => { if (e.target.value && i < arr.length - 1) arr[i + 1].focus(); }));
+  document.querySelectorAll('.pin-input').forEach((inp, i, arr) => 
+    inp.addEventListener('input', e => { 
+      if (e.target.value && i < arr.length - 1) arr[i + 1].focus(); 
+    })
+  );
 
   window.loadStaffList = loadStaffList;
 </script>
