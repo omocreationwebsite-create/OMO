@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
-  <title>O.M.Ocreation - Luxury Stone Fashion | Premium Rhinestones & Beads Abeokuta</title>
+  <title>OmoCreations - Luxury Stone Fashion | Premium Rhinestones & Beads Abeokuta</title>
   
-  <!-- Preload Critical Images via CDN for Speed -->
-  <link rel="preload" as="image" href="https://res.cloudinary.com/demo/image/fetch/w_1200,q_auto,f_auto/https://raw.githubusercontent.com/omocreationwebsite-create/OMO/main/assets/p1.jpg">
-  <link rel="preload" as="image" href="https://res.cloudinary.com/demo/image/fetch/w_1200,q_auto,f_auto/https://raw.githubusercontent.com/omocreationwebsite-create/OMO/main/assets/p2.jpg">
+  <!-- Preload Critical Images from Cloudinary for Speed -->
+  <link rel="preload" as="image" href="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1920,c_limit/v1777337288/p1_h8uvcu.jpg">
+  <link rel="preload" as="image" href="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1920,c_limit/v1777337287/p2_h9jwd2.jpg">
   
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -224,7 +224,7 @@
       .hamburger.active { opacity: 0; visibility: hidden; }
     }
     
-    /* ========== HERO SECTION - REDUCED HEIGHT ========== */
+    /* ========== HERO SECTION ========== */
     .hero {
       height: 90vh;
       min-height: 600px;
@@ -282,7 +282,6 @@
       max-width: 650px;
     }
     
-    /* BIGGER HERO TEXT */
     .slide-content h1 {
       font-size: 4.5rem;
       font-family: 'Playfair Display', serif;
@@ -448,6 +447,7 @@
       text-decoration: none;
       transition: 0.2s;
       font-size: 1rem;
+      cursor: pointer;
     }
     
     .btn-primary {
@@ -934,6 +934,26 @@
     .back-to-top.show { opacity: 1; visibility: visible; }
     .back-to-top:hover { background: var(--pink-dark); transform: translateY(-3px); }
     
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      right: 25px;
+      background: var(--dark);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      z-index: 1000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      font-size: 0.9rem;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+    
+    .toast.show {
+      transform: translateX(0);
+    }
+    
     @media (max-width: 992px) {
       .hero { height: 80vh; min-height: 500px; }
       .slide-content h1 { font-size: 2.8rem; }
@@ -962,8 +982,8 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="#" class="logo">
-      <img src="assets/log1.jpg" alt="O.M.Ocreation Logo" id="logoImg">
-      <div class="logo-text"><span>O.M.O</span><span>creation</span></div>
+      <img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_200,c_limit/v1777337288/p1_h8uvcu.jpg" alt="OmoCreations Logo" id="logoImg">
+      <div class="logo-text"><span>Omo</span><span>Creations</span></div>
     </a>
     <div class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
@@ -983,25 +1003,25 @@
 <!-- Hero Section -->
 <section class="hero" id="home">
   <div class="slide active">
-    <div class="slide-bg" style="background-image: url('assets/p1.jpg');"></div>
+    <div class="slide-bg" style="background-image: url('https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1920,c_limit/v1777337288/p1_h8uvcu.jpg');"></div>
     <div class="slide-overlay"></div>
     <div class="slide-content">
       <h1>Luxury Stone Fashion</h1>
       <p>Where elegance meets craftsmanship in every detail.</p>
-      <a href="#gallery" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Explore Collection</a>
+      <a href="shop.html" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
     </div>
   </div>
   <div class="slide">
-    <div class="slide-bg" style="background-image: url('assets/p2.jpg');"></div>
+    <div class="slide-bg" style="background-image: url('https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1920,c_limit/v1777337287/p2_h9jwd2.jpg');"></div>
     <div class="slide-overlay"></div>
     <div class="slide-content">
       <h1>Original Rhinestones</h1>
       <p>Premium quality rhinestones for all your fashion needs in Abeokuta.</p>
-      <a href="https://wa.me/2348077340294" class="btn btn-outline"><i class="fab fa-whatsapp"></i> Order Now</a>
+      <a href="https://wa.me/2348077340294?text=Hello%20@%20OmoCreations%20I%20want%20to%20make%20an%20enquiry%20on%20your%20products" class="btn btn-outline"><i class="fab fa-whatsapp"></i> Inquire Now</a>
     </div>
   </div>
   <div class="slide">
-    <div class="slide-bg" style="background-image: url('assets/p3.jpg');"></div>
+    <div class="slide-bg" style="background-image: url('https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1920,c_limit/v1777337289/p3_zbaxok.jpg');"></div>
     <div class="slide-overlay"></div>
     <div class="slide-content">
       <h1>Beads & Bridal Materials</h1>
@@ -1010,16 +1030,16 @@
     </div>
   </div>
   <div class="slide">
-    <div class="slide-bg" style="background-image: url('assets/p4.jpg');"></div>
+    <div class="slide-bg" style="background-image: url('https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1920,c_limit/v1777337287/p4_ypnkmx.jpg');"></div>
     <div class="slide-overlay"></div>
     <div class="slide-content">
       <h1>Paperstones</h1>
       <p>High-quality paperstones for unique fashion designs.</p>
-      <a href="https://wa.me/2348077340294" class="btn btn-outline"><i class="fab fa-whatsapp"></i> Inquire Now</a>
+      <a href="https://wa.me/2348077340294?text=Hello%20@%20OmoCreations%20I%20want%20to%20make%20an%20enquiry%20on%20your%20products" class="btn btn-outline"><i class="fab fa-whatsapp"></i> Inquire Now</a>
     </div>
   </div>
   <div class="slide">
-    <div class="slide-bg" style="background-image: url('assets/p5.jpg');"></div>
+    <div class="slide-bg" style="background-image: url('https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1920,c_limit/v1777337289/p5_kyhtju.jpg');"></div>
     <div class="slide-overlay"></div>
     <div class="slide-content">
       <h1>Training Available</h1>
@@ -1028,10 +1048,10 @@
     </div>
   </div>
   <div class="slide">
-    <div class="slide-bg" style="background-image: url('assets/p6.jpg');"></div>
+    <div class="slide-bg" style="background-image: url('https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1920,c_limit/v1777337289/p6_pl2hfo.jpg');"></div>
     <div class="slide-overlay"></div>
     <div class="slide-content">
-      <h1>O.M.Ocreation</h1>
+      <h1>OmoCreations</h1>
       <p>Your trusted source for rhinestones, beads, and bridal materials in Ogun State.</p>
       <a href="#contact" class="btn btn-outline"><i class="fas fa-map-marker-alt"></i> Visit Us</a>
     </div>
@@ -1047,7 +1067,7 @@
 <section class="brand-story" id="brand-story">
   <div class="container">
     <h2>Your Trusted Source for <span>Premium Rhinestones</span> in Abeokuta</h2>
-    <p>For over 5 years, O.M.Ocreation has been the go-to destination for fashion designers, bridal stylists, and creative entrepreneurs seeking the finest stones, beads, and bridal materials. We combine quality craftsmanship with exceptional customer service to bring your creative visions to life.</p>
+    <p>For over 5 years, OmoCreations has been the go-to destination for fashion designers, bridal stylists, and creative entrepreneurs seeking the finest stones, beads, and bridal materials. We combine quality craftsmanship with exceptional customer service to bring your creative visions to life.</p>
     <div class="stats">
       <div class="stat-item"><div class="stat-number">500+</div><div class="stat-label">Happy Clients</div></div>
       <div class="stat-item"><div class="stat-number">1000+</div><div class="stat-label">Designs Created</div></div>
@@ -1060,23 +1080,23 @@
 <!-- Divider Image with Flame Ring -->
 <div class="divider-section">
   <div class="flame-ring">
-    <img src="assets/pp2.jpg" alt="Featured Design" class="divider-image" loading="lazy">
+    <img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_1200,c_limit/v1777337288/pp2_iok21q.jpg" alt="Featured Design" class="divider-image" loading="lazy">
   </div>
 </div>
 
 <!-- About Section -->
 <section class="section" id="about">
   <h2 class="section-title">About <span>Us</span></h2>
-  <p class="section-subtitle">Discover the story behind O.M.Ocreation and our passion for stone fashion</p>
+  <p class="section-subtitle">Discover the story behind OmoCreations and our passion for stone fashion</p>
   <div class="about-grid">
     <div class="about-text">
-      <p><strong>O.M.Ocreation</strong> is a premium fashion stone design company located at <strong>3 Oyebo Street, Abiola Way, behind Laroy Suite, Abeokuta 111101, Ogun State, Nigeria</strong>.</p>
-      <p>We specialize in <strong>Sales of Beads, Rhinestones, Bridal Materials, and Paperstones</strong>. O.M.Ocreations sells Original Rhinestones in Abeokuta, Ogun State, Nigeria.</p>
+      <p><strong>OmoCreations</strong> is a premium fashion stone design company located at <strong>3 Oyebo Street, Abiola Way, behind Laroy Suite, Abeokuta 111101, Ogun State, Nigeria</strong>.</p>
+      <p>We specialize in <strong>Sales of Beads, Rhinestones, Bridal Materials, and Paperstones</strong>. OmoCreations sells Original Rhinestones in Abeokuta, Ogun State, Nigeria.</p>
       <p>We also offer professional training on how to make paperstones in Abeokuta, Ogun State, Nigeria. Our mission is to bring elegance, beauty, and uniqueness to every fabric we touch.</p>
       <p>With years of experience and a passion for perfection, we create masterpieces that stand out for weddings, parties, and special events.</p>
     </div>
     <div class="about-image flame-ring">
-      <img src="assets/pp1.jpg" alt="Fashion stone design" loading="lazy">
+      <img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_800,c_limit/v1777337289/pp1_hfebst.jpg" alt="Fashion stone design" loading="lazy">
     </div>
   </div>
 </section>
@@ -1100,14 +1120,14 @@
   <h2 class="section-title">Our <span>Catalog</span></h2>
   <p class="section-subtitle">Browse our stunning stone fashion creations</p>
   <div class="gallery-grid">
-    <div class="gallery-item flame-ring"><img src="assets/pp1.jpg" alt="Luxury Stone" loading="lazy"><div class="gallery-info"><h3>Luxury Stone Dress</h3><p>Elegant evening gown with hand-placed crystals</p></div></div>
-    <div class="gallery-item flame-ring"><img src="assets/pp2.jpg" alt="Rhinestone" loading="lazy"><div class="gallery-info"><h3>Rhinestone Craft</h3><p>Precision-cut rhinestone patterns</p></div></div>
-    <div class="gallery-item flame-ring"><img src="assets/pp3.jpg" alt="Bridal" loading="lazy"><div class="gallery-info"><h3>Bridal Collection</h3><p>Wedding stone embellishments</p></div></div>
-    <div class="gallery-item flame-ring"><img src="assets/pp4.jpg" alt="Paperstone" loading="lazy"><div class="gallery-info"><h3>Paperstone Art</h3><p>Creative paperstone designs</p></div></div>
-    <div class="gallery-item flame-ring"><img src="assets/pp5.jpg" alt="Beads" loading="lazy"><div class="gallery-info"><h3>Beads Collection</h3><p>Premium beads for fashion</p></div></div>
-    <div class="gallery-item flame-ring"><img src="assets/pp6.jpg" alt="Bridal Materials" loading="lazy"><div class="gallery-info"><h3>Bridal Materials</h3><p>Complete bridal stone collection</p></div></div>
+    <div class="gallery-item flame-ring"><img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_600,c_limit/v1777337289/pp1_hfebst.jpg" alt="Luxury Stone" loading="lazy"><div class="gallery-info"><h3>Luxury Stone Dress</h3><p>Elegant evening gown with hand-placed crystals</p></div></div>
+    <div class="gallery-item flame-ring"><img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_600,c_limit/v1777337288/pp2_iok21q.jpg" alt="Rhinestone" loading="lazy"><div class="gallery-info"><h3>Rhinestone Craft</h3><p>Precision-cut rhinestone patterns</p></div></div>
+    <div class="gallery-item flame-ring"><img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_600,c_limit/v1777337288/pp3_pigaxv.jpg" alt="Bridal" loading="lazy"><div class="gallery-info"><h3>Bridal Collection</h3><p>Wedding stone embellishments</p></div></div>
+    <div class="gallery-item flame-ring"><img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_600,c_limit/v1777337288/pp4_ql7xpa.jpg" alt="Paperstone" loading="lazy"><div class="gallery-info"><h3>Paperstone Art</h3><p>Creative paperstone designs</p></div></div>
+    <div class="gallery-item flame-ring"><img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_600,c_limit/v1777337287/pp5_hxu5ab.jpg" alt="Beads" loading="lazy"><div class="gallery-info"><h3>Beads Collection</h3><p>Premium beads for fashion</p></div></div>
+    <div class="gallery-item flame-ring"><img src="https://res.cloudinary.com/dw80fw9un/image/upload/q_auto,f_auto,w_600,c_limit/v1777337289/pp6_iibil6.jpg" alt="Bridal Materials" loading="lazy"><div class="gallery-info"><h3>Bridal Materials</h3><p>Complete bridal stone collection</p></div></div>
   </div>
-  <div style="text-align:center; margin-top:45px;"><a href="gallery.html" class="btn btn-primary">View Full Catalog <i class="fas fa-arrow-right"></i></a></div>
+  <div style="text-align:center; margin-top:45px;"><a href="shop.html" class="btn btn-primary">View Full Catalog <i class="fas fa-arrow-right"></i></a></div>
 </section>
 
 <!-- Contact Section -->
@@ -1117,7 +1137,7 @@
   <div class="contact-grid">
     <div class="contact-info">
       <div class="info-card"><div class="info-icon"><i class="fas fa-location-dot"></i></div><div class="info-content"><h4>Visit Our Store</h4><p>3 Oyebo Street, Abiola Way, behind Laroy Suite<br>Abeokuta 111101, Ogun State, Nigeria</p><a href="https://maps.app.goo.gl/73uZDK4zoHJa17NR7" target="_blank" style="color:var(--pink);">Get Directions <i class="fas fa-arrow-right"></i></a></div></div>
-      <div class="info-card"><div class="info-icon"><i class="fas fa-phone"></i></div><div class="info-content"><h4>Call / WhatsApp</h4><p><a href="tel:+2348077340294">+234 807 734 0294</a></p><a href="https://wa.me/2348077340294" target="_blank" style="color:#25D366;"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a></div></div>
+      <div class="info-card"><div class="info-icon"><i class="fas fa-phone"></i></div><div class="info-content"><h4>Call / WhatsApp</h4><p><a href="tel:+2348077340294">+234 807 734 0294</a></p><a href="https://wa.me/2348077340294?text=Hello%20@%20OmoCreations%20I%20want%20to%20make%20an%20enquiry%20on%20your%20products" target="_blank" style="color:#25D366;"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a></div></div>
       <div class="info-card"><div class="info-icon"><i class="fas fa-envelope"></i></div><div class="info-content"><h4>Email Us</h4><p><a href="mailto:omocreationwebsite@gmail.com">omocreationwebsite@gmail.com</a></p></div></div>
       <div class="info-card"><div class="info-icon"><i class="fas fa-clock"></i></div><div class="info-content"><h4>Working Hours</h4><p>Monday - Saturday: 9:00 AM - 6:00 PM<br>Sunday: Closed</p></div></div>
     </div>
@@ -1132,10 +1152,10 @@
     <div class="social-grid">
       <a href="https://www.instagram.com/o.m.ocreations?igsh=MWNvaDVtMGRtYTR3Zg==" target="_blank" class="social-card instagram"><div class="social-icon"><i class="fab fa-instagram"></i></div><div class="social-info"><h4>Main Instagram</h4><p>@o.m.ocreations</p></div><i class="fas fa-external-link-alt"></i></a>
       <a href="https://www.instagram.com/o.m.ocreationsupshot?igsh=cDZqaXVsb3VienVy" target="_blank" class="social-card instagram"><div class="social-icon"><i class="fab fa-instagram"></i></div><div class="social-info"><h4>Upshot Instagram</h4><p>@o.m.ocreationsupshot</p></div><i class="fas fa-external-link-alt"></i></a>
-      <a href="https://www.facebook.com/share/1A8jUnhgPw/" target="_blank" class="social-card facebook"><div class="social-icon"><i class="fab fa-facebook-f"></i></div><div class="social-info"><h4>Main Facebook</h4><p>O.M.Ocreation</p></div><i class="fas fa-external-link-alt"></i></a>
+      <a href="https://www.facebook.com/share/1A8jUnhgPw/" target="_blank" class="social-card facebook"><div class="social-icon"><i class="fab fa-facebook-f"></i></div><div class="social-info"><h4>Main Facebook</h4><p>OmoCreations</p></div><i class="fas fa-external-link-alt"></i></a>
       <a href="https://www.facebook.com/share/17xrV2UHZZ/" target="_blank" class="social-card facebook"><div class="social-icon"><i class="fab fa-facebook-f"></i></div><div class="social-info"><h4>Patternboard</h4><p>Size 6 Patternboard</p></div><i class="fas fa-external-link-alt"></i></a>
       <a href="https://tiktok.com/@o.m.ocreations01" target="_blank" class="social-card tiktok"><div class="social-icon"><i class="fab fa-tiktok"></i></div><div class="social-info"><h4>TikTok</h4><p>@o.m.ocreations01</p></div><i class="fas fa-external-link-alt"></i></a>
-      <a href="https://wa.me/2348077340294" target="_blank" class="social-card whatsapp"><div class="social-icon"><i class="fab fa-whatsapp"></i></div><div class="social-info"><h4>WhatsApp</h4><p>Order & Inquiries</p></div><i class="fas fa-comment-dots"></i></a>
+      <a href="https://wa.me/2348077340294?text=Hello%20@%20OmoCreations%20I%20want%20to%20make%20an%20enquiry%20on%20your%20products" target="_blank" class="social-card whatsapp"><div class="social-icon"><i class="fab fa-whatsapp"></i></div><div class="social-info"><h4>WhatsApp</h4><p>Order & Inquiries</p></div><i class="fas fa-comment-dots"></i></a>
       <a href="mailto:omocreationwebsite@gmail.com" class="social-card email"><div class="social-icon"><i class="fas fa-envelope"></i></div><div class="social-info"><h4>Email</h4><p>omocreationwebsite@gmail.com</p></div><i class="fas fa-paper-plane"></i></a>
       <a href="https://instagram.com/o.m.ocreationsdesigns?igshid=OGQ5ZDc2ODk2ZA==" target="_blank" class="social-card instagram"><div class="social-icon"><i class="fab fa-instagram"></i></div><div class="social-info"><h4>Designs Instagram</h4><p>@o.m.ocreationsdesigns</p></div><i class="fas fa-external-link-alt"></i></a>
     </div>
@@ -1147,7 +1167,7 @@
   <h3>Stay Updated</h3>
   <p>Subscribe for exclusive offers, new collections, and training announcements</p>
   <form class="newsletter-form" id="newsletterForm">
-    <input type="email" placeholder="Your email address" required>
+    <input type="email" id="newsletterEmail" placeholder="Your email address" required>
     <button type="submit">Subscribe <i class="fas fa-paper-plane"></i></button>
   </form>
   <p style="margin-top:15px; font-size:0.7rem; opacity:0.8;">We respect your privacy. Unsubscribe anytime.</p>
@@ -1157,14 +1177,14 @@
 <footer class="footer">
   <div class="footer-grid">
     <div class="footer-col">
-      <div class="footer-logo">💎 <span>O.M.Ocreation</span></div>
+      <div class="footer-logo">💎 <span>OmoCreations</span></div>
       <p>Luxury Stone Fashion | Original Rhinestones | Beads | Bridal Materials | Paperstones</p>
       <p><strong>We sell Original Rhinestones in Abeokuta, Ogun State, Nigeria</strong></p>
       <div class="footer-social">
         <a href="https://www.instagram.com/o.m.ocreations" target="_blank"><i class="fab fa-instagram"></i></a>
         <a href="https://www.facebook.com/share/1A8jUnhgPw/" target="_blank"><i class="fab fa-facebook-f"></i></a>
         <a href="https://tiktok.com/@o.m.ocreations01" target="_blank"><i class="fab fa-tiktok"></i></a>
-        <a href="https://wa.me/2348077340294" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://wa.me/2348077340294?text=Hello%20@%20OmoCreations%20I%20want%20to%20make%20an%20enquiry%20on%20your%20products" target="_blank"><i class="fab fa-whatsapp"></i></a>
       </div>
       <div class="payment-methods">
         <span><i class="fab fa-cc-visa"></i></span>
@@ -1186,11 +1206,11 @@
     <div class="footer-col">
       <h4>Our Products</h4>
       <ul>
-        <li><a href="#">Original Rhinestones</a></li>
-        <li><a href="#">Beads Collection</a></li>
-        <li><a href="#">Bridal Materials</a></li>
-        <li><a href="#">Paperstones</a></li>
-        <li><a href="#">Training Programs</a></li>
+        <li><a href="shop.html">Original Rhinestones</a></li>
+        <li><a href="shop.html">Beads Collection</a></li>
+        <li><a href="shop.html">Bridal Materials</a></li>
+        <li><a href="shop.html">Paperstones</a></li>
+        <li><a href="#contact">Training Programs</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -1204,15 +1224,37 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 O.M.Ocreation. All Rights Reserved. | Sales of Beads, Rhinestones & Bridal Materials in Abeokuta, Ogun State, Nigeria</p>
+    <p>© 2026 OmoCreations. All Rights Reserved. | Sales of Beads, Rhinestones & Bridal Materials in Abeokuta, Ogun State, Nigeria</p>
     <p style="margin-top: 10px;">Designed with <i class="fas fa-heart" style="color: var(--pink);"></i> for fashion excellence</p>
   </div>
 </footer>
 
-<a href="https://wa.me/2348077340294" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+<!-- Floating WhatsApp with custom message -->
+<a href="https://wa.me/2348077340294?text=Hello%20@%20OmoCreations%20I%20want%20to%20make%20an%20enquiry%20on%20your%20products" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
 <a href="#" class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></a>
 
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
 <script>
+  // Show toast notification
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // Send email using mailto for newsletter
+  function sendNewsletterEmail(email) {
+    const subject = encodeURIComponent('Newsletter Subscription - OmoCreations');
+    const body = encodeURIComponent(`Hello OmoCreations,\n\nI would like to subscribe to your newsletter.\n\nEmail: ${email}\n\nPlease add me to your mailing list.\n\nThank you!`);
+    window.location.href = `mailto:omocreationwebsite@gmail.com?subject=${subject}&body=${body}`;
+    showToast('📧 Opening email client to subscribe...');
+  }
+
   // Slider
   const slides = document.querySelectorAll('.slide');
   const prevBtn = document.getElementById('prevSlide');
@@ -1274,9 +1316,18 @@
     });
   });
 
-  // Newsletter
+  // Newsletter Form - Send email
   const newsletterForm = document.getElementById('newsletterForm');
-  if (newsletterForm) newsletterForm.addEventListener('submit', (e) => { e.preventDefault(); alert('✨ Thank you for subscribing!'); newsletterForm.reset(); });
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', (e) => { 
+      e.preventDefault(); 
+      const email = document.getElementById('newsletterEmail').value;
+      if(email) {
+        sendNewsletterEmail(email);
+        newsletterForm.reset();
+      }
+    });
+  }
 
   // Scroll animations
   const animateElements = document.querySelectorAll('.service-card, .gallery-item, .info-card');
@@ -1285,7 +1336,7 @@
   }, { threshold: 0.1 });
   animateElements.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; el.style.transition = 'opacity 0.4s ease, transform 0.4s ease'; observer.observe(el); });
 
-  console.log('%c✨ O.M.Ocreation - Luxury Stone Fashion ✨', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
+  console.log('%c✨ OmoCreations - Luxury Stone Fashion ✨', 'color: #ff4da6; font-size: 14px; font-weight: bold;');
 </script>
 </body>
 </html>
